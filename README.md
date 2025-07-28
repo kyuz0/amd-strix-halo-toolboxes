@@ -18,9 +18,9 @@ Both images load the latest ROCm/Vulkan libraries from Fedora Rawhide to ensure 
 
 ## Prerequisites
 
-- **Podman** (or Docker aliased to Podman) installed on a Fedora Rawhide (or compatible) host
-- **Fedora Toolbox** (for creating dev containers)
-- AMD GPU drivers (ROCm/Vulkan) installed on the host
+- **Podman** (or Docker aliased to Podman)
+- **Toolbx** (for creating interactive dev containers, https://containertoolbx.org/)
+- Recent Linux kernel with AMD GPU drivers (`amdgpu`) installed on the host
 
 
 ## 1. Building the Images
