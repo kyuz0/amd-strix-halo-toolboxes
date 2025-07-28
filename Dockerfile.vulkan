@@ -5,7 +5,7 @@ RUN dnf install -y \
       git vim \
       make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
       vulkan-loader-devel mesa-vulkan-drivers \
-      glslc \
+      radeontop glslc \
     && dnf clean all
 
 WORKDIR /opt/llama.cpp
