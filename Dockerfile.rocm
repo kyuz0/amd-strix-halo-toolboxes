@@ -1,0 +1,35 @@
+FROM fedora:rawhide
+
+# Install build dependencies and tools
+RUN dnf install -y \
+       make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
+       rocminfo radeontop 'rocm-*' 'rocblas-*' 'hipblas' 'hipblas-*' \
+       git vim \
+    && dnf clean all
+
+# Set up working directory
+WORKDIR /opt/llama.cpp
+
+# Clone llama.cpp repository (with submodules)
+RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
+
+# Build llama.cpp with HIP support
+RUN git clean -xdf \
+    && git pull \
+    && git submodule update --recursive \
+    && \
+    # Configure and compile with HIP toolchain
+    HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
+      cmake -S . -B build \
+            -DGGML_HIP=ON \
+            -DAMDGPU_TARGETS=gfx1151 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DLLAMA_HIP_UMA=ON \
+    && cmake --build build --config Release -- -j$(nproc) \
+    && cmake --install build --config Release
+
+RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
+ && ldconfig
+
+# Default to interactive shell
+CMD ["/bin/bash"]
