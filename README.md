@@ -120,22 +120,36 @@ All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` w
 
 **🏆 Vulkan Advantages:**
 - Consistently stable across all model sizes
-- Best performance on small models (Gemma3 12B) and very large models (235B+)
+- Significantly better prompt processing on smaller quantized models (127% faster on Gemma3 12B)
 - Only option that can handle >64GB models efficiently
+- Moderate advantage on larger quantized models (3-14% better on Llama4 17B)
 
 **🏆 ROCm 6.4.2 Advantages:**
-- Superior performance on medium-sized MoE models (30B Qwen3)
-- Better text generation speeds on some models
+- **Dramatically superior performance on BF16 models** (112% faster prompt processing, 222% faster text generation on Qwen3 MoE 30B)
+- Optimized native floating-point operations through HIP compute
+- Better suited for models using native precision formats
+
+**📊 Performance by Model Type:**
+- **BF16/Native Precision Models**: ROCm 6.4.2 is the clear winner with 2-3x better performance
+- **Small Quantized Models**: Vulkan has significant advantages for prompt processing
+- **Large Quantized Models**: Performance is similar between backends (differences within noise)
+- **Large Models (>64GB)**: Vulkan is the only viable option due to ROCm's memory allocation issues
 
 **❌ ROCm 6.4.2 Limitations:**
 - Extremely slow memory loading for models >64GB (unusable)
-- Performance varies significantly by model type
+- Performance advantage limited to BF16/native precision models
 
 **❌ ROCm 7.0 Beta Issues:**
 - GPU hangs/crashes on larger models (Llama4 17B causes "GPU Hang" and core dump)
 - Similar slow loading issues as ROCm 6.4.2 for models >64GB
 - Performance similar to ROCm 6.4.2 when it works, but reliability is poor
 - Uses [official AMD RPMs](https://repo.radeon.com/rocm/el9/7.0_beta/main) (beta quality)
+
+**💡 Recommendation Strategy:**
+- Use **ROCm 6.4.2** for BF16/native precision models under 64GB
+- Use **Vulkan** for quantized models (especially smaller ones) and all models over 64GB
+- For large quantized models under 64GB, either backend performs similarly
+- Avoid ROCm 7.0 beta for production workloads
 
 ## Building Containers Locally (Optional)
 
