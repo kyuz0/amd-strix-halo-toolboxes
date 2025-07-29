@@ -1,38 +1,51 @@
 # amd-strix-halo-toolboxes
 
-This repository provides Fedora Rawhide–based containers for dev work on AMD **Strix Halo** GPUs (gfx1151):
+This repository provides Fedora Rawhide-based containers for working with Ryzen AI MAX+ 395 **Strix Halo** chips with integrated GPU (gfx1151) and unified memory. The containers come pre-built with `llama.cpp` and all necessary GPU compute libraries.
 
-- **Dockerfile.rocm** — builds `llama.cpp` with ROCm (HIP) support
-- **Dockerfile.vulkan** — builds `llama.cpp` with Vulkan compute support
+## TL;DR - Performance Summary
 
-Both containers have up-to-date ROCm/Vulkan libs from Fedora Rawhide.
+After extensive testing, **Vulkan is currently the most stable and performant option** for Strix Halo GPUs:
+
+| Backend | Status | Notes |
+|---------|---------|-------|
+| **Vulkan** | ✅ **Recommended** | Most stable, best performance across all model sizes |
+| **ROCm 6.4.2** | ⚠️ Limited | Works ok, but extremely slow past 64GB memory allocations |
+| **ROCm 7.0 beta** | ❌ Unstable | Frequent crashes under heavy load (llama-bench), basic usage possible |
+
+## Available Containers
+
+| Container | Backend | Status | Use Case |
+|-----------|---------|---------|----------|
+| `vulkan` | Vulkan compute | Stable | **Primary recommendation** |
+| `rocm-6.4.2` | ROCm 6.4.2 (HIP) | Stable for <64GB models | Smaller models only |
+| `rocm-7beta` | ROCm 7.0 beta (HIP) | Beta/Unstable | Testing only |
+
+All containers include up-to-date libraries from Fedora Rawhide, except ROCm 7.0 beta which uses [official AMD RPMs](https://repo.radeon.com/rocm/el9/7.0_beta/main).
 
 ## Prerequisites
 
-- Podman (or Docker, aliased)
-- Toolbox (https://containertoolbx.org/)
+- [Podman](https://podman.io/) (or Docker with alias)
+- [Toolbox](https://containertoolbx.org/)
 - Linux kernel with AMD GPU (`amdgpu`) drivers
+- AMD Strix Halo GPU with proper host configuration (see below)
 
-## Pull and Run Pre-built Containers
+## Quick Start
 
-**Pull pre-built images:**
+### 1. Pull Pre-built Images
 
 ```bash
-podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:rocm
+# Recommended: Vulkan (most stable)
 podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan
+
+# Optional: ROCm variants for testing
+podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.2
+podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7beta
 ```
 
-**Create toolboxes:**
+### 2. Create Toolboxes
 
+**For Vulkan (Recommended):**
 ```bash
-toolbox create llama-rocm \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm \
-  -- \
-    --device /dev/kfd \
-    --device /dev/dri \
-    --group-add video \
-    --security-opt seccomp=unconfined
-
 toolbox create llama-vulkan \
   --image docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan \
   -- \
@@ -41,41 +54,176 @@ toolbox create llama-vulkan \
     --security-opt seccomp=unconfined
 ```
 
-> The `--` passes remaining flags to Podman/Docker for GPU access.
-
-**Enter and test:**
-
+**For ROCm 6.4.2:**
 ```bash
-toolbox enter llama-rocm
-llama-cli --list-devices
-
-toolbox enter llama-vulkan
-vulkaninfo | head -n 10
-llama-cli --help
+toolbox create llama-rocm-6.4.2 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.2 \
+  -- \
+    --device /dev/kfd \
+    --device /dev/dri \
+    --group-add video \
+    --security-opt seccomp=unconfined
 ```
 
-## (Optional) Building the Images
+**For ROCm 7.0 beta:**
+```bash
+toolbox create llama-rocm-7beta \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7beta \
+  -- \
+    --device /dev/kfd \
+    --device /dev/dri \
+    --group-add video \
+    --security-opt seccomp=unconfined
+```
+
+> **Note:** The `--` separator passes the remaining flags to Podman/Docker for GPU access.
+
+### 3. Enter and Test
+
+**Test Vulkan container:**
+```bash
+toolbox enter llama-vulkan
+vulkaninfo | head -n 10
+llama-cli --list-devices
+```
+
+**Test ROCm containers:**
+```bash
+toolbox enter llama-rocm-6.4.2
+llama-cli --list-devices
+rocm-smi
+```
+
+## Performance Benchmarks
+
+All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` with all layers offloaded to GPU.
+
+### Prompt Processing (pp512) - tokens/second
+
+| Model | Size | Params | Vulkan | ROCm 6.4.2 | ROCm 7 Beta | Winner |
+|-------|------|---------|---------|-------------|-------------|---------|
+| **Gemma3 12B Q8_0** | 13.40 GiB | 11.77B | 509.45 ± 1.01 | 224.43 ± 0.26 | 219.55 ± 0.41 | 🏆 **Vulkan** (+132%) |
+| **Qwen3 MoE 30B.A3B BF16** | 56.89 GiB | 30.53B | 74.62 ± 0.63 | 157.87 ± 2.71 | 155.37 ± 2.64 | 🏆 **ROCm 6.4.2** (+112%) |
+| **Llama4 17Bx16E (Scout) Q4_K** | 57.73 GiB | 107.77B | 136.47 ± 1.52 | 132.61 ± 0.65 | ❌ GPU Hang | 🏆 **Vulkan** (+3%) |
+| **Qwen3 MoE 235B.A22B Q3_K** | 96.99 GiB | 235.09B | 59.12 ± 0.39 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
+
+### Text Generation (tg128) - tokens/second
+
+| Model | Size | Params | Vulkan | ROCm 6.4.2 | ROCm 7 Beta | Winner |
+|-------|------|---------|---------|-------------|-------------|---------|
+| **Gemma3 12B Q8_0** | 13.40 GiB | 11.77B | 13.67 ± 0.01 | 13.80 ± 0.00 | 13.43 ± 0.00 | 🏆 **ROCm 6.4.2** (+1%) |
+| **Qwen3 MoE 30B.A3B BF16** | 56.89 GiB | 30.53B | 7.36 ± 0.00 | 23.67 ± 0.02 | 22.21 ± 0.00 | 🏆 **ROCm 6.4.2** (+222%) |
+| **Llama4 17Bx16E (Scout) Q4_K** | 57.73 GiB | 107.77B | 20.05 ± 0.00 | 17.61 ± 0.00 | ❌ GPU Hang | 🏆 **Vulkan** (+14%) |
+| **Qwen3 MoE 235B.A22B Q3_K** | 96.99 GiB | 235.09B | 15.97 ± 0.02 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
+
+### Performance Summary
+
+**🏆 Vulkan Advantages:**
+- Consistently stable across all model sizes
+- Best performance on small models (Gemma3 12B) and very large models (235B+)
+- Only option that can handle >64GB models efficiently
+
+**🏆 ROCm 6.4.2 Advantages:**
+- Superior performance on medium-sized MoE models (30B Qwen3)
+- Better text generation speeds on some models
+
+**❌ ROCm 6.4.2 Limitations:**
+- Extremely slow memory loading for models >64GB (unusable)
+- Performance varies significantly by model type
+
+**❌ ROCm 7.0 Beta Issues:**
+- GPU hangs/crashes on larger models (Llama4 17B causes "GPU Hang" and core dump)
+- Similar slow loading issues as ROCm 6.4.2 for models >64GB
+- Performance similar to ROCm 6.4.2 when it works, but reliability is poor
+- Uses [official AMD RPMs](https://repo.radeon.com/rocm/el9/7.0_beta/main) (beta quality)
+
+## Building Containers Locally (Optional)
+
+If you prefer to build the containers yourself:
 
 ```bash
-podman build -t llama-rocm -f Dockerfile.rocm .
-podman build -t llama-vulkan -f Dockerfile.vulkan .
+# Build all variants
+podman build -t localhost/llama-vulkan -f Dockerfile.vulkan .
+podman build -t localhost/llama-rocm-6.4.2 -f Dockerfile.rocm-6.4.2 .
+podman build -t localhost/llama-rocm-7beta -f Dockerfile.rocm-7beta .
+```
+
+### Create Toolboxes from Local Images
+
+```bash
+# Using locally built images
+toolbox create llama-vulkan-local \
+  --image localhost/llama-vulkan \
+  -- \
+    --device /dev/dri \
+    --group-add video \
+    --security-opt seccomp=unconfined
+
+toolbox create llama-rocm-local \
+  --image localhost/llama-rocm-6.4.2 \
+  -- \
+    --device /dev/kfd \
+    --device /dev/dri \
+    --group-add video \
+    --security-opt seccomp=unconfined
 ```
 
 ## Host Configuration
 
-- **Machine:** HP Z2 Mini G1a
-- **Memory:** 128 GB RAM (512 MB GPU in BIOS)
-- **Host OS:** Fedora 42, kernel 6.15.6-200.fc42.x86_64
-- **Kernel boot parameters:**
-  ```
-  amd_iommu=off amdgpu.gttsize=131072 ttm.pages_limit=335544321
-  ```
-  - `amd_iommu=off` disables IOMMU for lower latency.
-  - `amdgpu.gttsize=131072` enables unified GPU/system memory (up to 128 GB).
-  - `ttm.pages_limit=335544321` allows large pinned allocations.
-- **Apply with:**
-  ```bash
-  sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-  ```
+This should work on any Strix Halo device. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
 
-Both containers use Fedora Rawhide packages for up-to-date ROCm and Vulkan support.
+### My Test Configuration
+| Component | Specification |
+|-----------|---------------|
+| **Test Machine** | HP Z2 Mini G1a |
+| **CPU** | Ryzen AI MAX+ 395 "Strix Halo" |
+| **System Memory** | 128 GB RAM |
+| **GPU Memory** | 512 MB allocated in BIOS |
+| **Host OS** | Fedora 42, kernel 6.15.6-200.fc42.x86_64 |
+
+### Kernel Parameters
+
+Add these boot parameters to enable unified memory and optimal performance:
+
+```
+amd_iommu=off amdgpu.gttsize=131072 ttm.pages_limit=335544321
+```
+
+| Parameter | Purpose |
+|-----------|---------|
+| `amd_iommu=off` | Disables IOMMU for lower latency |
+| `amdgpu.gttsize=131072` | Enables unified GPU/system memory (up to 128 GB) |
+| `ttm.pages_limit=335544321` | Allows large pinned memory allocations |
+
+**Apply the changes:**
+```bash
+# Edit /etc/default/grub to add parameters to GRUB_CMDLINE_LINUX
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+sudo reboot
+```
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| GPU not detected | Verify `/dev/dri` and `/dev/kfd` devices exist on host |
+| Memory errors | Check that kernel parameters are properly applied |
+| Permission denied | Ensure your user is in the `video` group |
+| ROCm crashes | Try Vulkan backend instead |
+| Slow loading (>64GB models) | Use Vulkan instead of ROCm for large models |
+
+### Verify GPU Access
+
+```bash
+# Check devices
+ls -la /dev/dri /dev/kfd
+
+# Check ROCm (in ROCm containers)
+rocm-smi
+
+# Check Vulkan (in Vulkan container)
+vulkaninfo --summary
+```
+
