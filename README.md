@@ -105,7 +105,10 @@ All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` w
 | **Gemma3 12B Q8_0** | 13.40 GiB | 11.77B | 509.45 ± 1.01 | 224.43 ± 0.26 | 219.55 ± 0.41 | 🏆 **Vulkan** (+132%) |
 | **Qwen3 MoE 30B.A3B BF16** | 56.89 GiB | 30.53B | 74.62 ± 0.63 | 157.87 ± 2.71 | 155.37 ± 2.64 | 🏆 **ROCm 6.4.2** (+112%) |
 | **Llama4 17Bx16E (Scout) Q4_K** | 57.73 GiB | 107.77B | 136.47 ± 1.52 | 132.61 ± 0.65 | ❌ GPU Hang | 🏆 **Vulkan** (+3%) |
+| **Llama3.3 70B Q8_0** | 75.65 GiB | 70.55B | 76.51 ± 0.47 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
+| **Llama4 17Bx16E (Scout) Q6_K** | 82.35 GiB | 107.77B | 139.05 ± 0.79 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
 | **Qwen3 MoE 235B.A22B Q3_K** | 96.99 GiB | 235.09B | 59.12 ± 0.39 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
+| **Llama4 17Bx16E (Scout) Q8_0** | 106.65 GiB | 107.77B | 148.17 ± 2.99 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
 
 ### Text Generation (tg128) - tokens/second
 
@@ -114,7 +117,10 @@ All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` w
 | **Gemma3 12B Q8_0** | 13.40 GiB | 11.77B | 13.67 ± 0.01 | 13.80 ± 0.00 | 13.43 ± 0.00 | 🏆 **ROCm 6.4.2** (+1%) |
 | **Qwen3 MoE 30B.A3B BF16** | 56.89 GiB | 30.53B | 7.36 ± 0.00 | 23.67 ± 0.02 | 22.21 ± 0.00 | 🏆 **ROCm 6.4.2** (+222%) |
 | **Llama4 17Bx16E (Scout) Q4_K** | 57.73 GiB | 107.77B | 20.05 ± 0.00 | 17.61 ± 0.00 | ❌ GPU Hang | 🏆 **Vulkan** (+14%) |
+| **Llama3.3 70B Q8_0** | 75.65 GiB | 70.55B | 2.72 ± 0.00 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
+| **Llama4 17Bx16E (Scout) Q6_K** | 82.35 GiB | 107.77B | 15.22 ± 0.01 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
 | **Qwen3 MoE 235B.A22B Q3_K** | 96.99 GiB | 235.09B | 15.97 ± 0.02 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
+| **Llama4 17Bx16E (Scout) Q8_0** | 106.65 GiB | 107.77B | 12.22 ± 0.01 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
 
 ### Performance Summary
 
