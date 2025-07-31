@@ -27,4 +27,7 @@ RUN git clean -xdf \
  && cmake --build build --config Release \
  && cmake --install build --config Release
 
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
 CMD ["/bin/bash"]

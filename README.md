@@ -157,6 +157,111 @@ All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` w
 - For large quantized models under 64GB, either backend performs similarly
 - Avoid ROCm 7.0 beta for production workloads
 
+
+## VRAM Planning with `gguf-vram-estimator.py`
+
+### Why Model File Size Isn't the Whole Story
+
+A model's VRAM footprint has three main components:
+
+1.  **Model Weights:** The static size of the model on disk.
+2.  **Context Memory (KV Cache):** A dynamic buffer that grows linearly with the number of tokens in your context. For every token processed, a Key/Value state is stored in VRAM. This is often the largest variable consumer of memory.
+3.  **Overhead:** A semi-fixed amount of memory for compute buffers, drivers, and other scratchpads. This can be 1-3 GiB or more.
+
+The total VRAM required is `Model Size + Context Memory + Overhead`. To run a model, you must have enough memory for all three.
+
+### The `gguf-vram-estimator.py` Utility
+
+To help plan your workload, this repository includes the `gguf-vram-estimator.py` utility. It inspects a GGUF file and calculates the total VRAM needed for different context lengths, allowing you to make informed decisions about which model quantization and context size will fit in your system's memory.
+
+#### How to Use
+
+The script is included in the container. Run it by pointing it at the first part of any GGUF model:
+
+```bash
+# Syntax
+gguf-vram-estimator.py <path-to-gguf-file> [options]
+```
+**Key Options:**
+- `--contexts`: A space-separated list of context sizes to calculate (e.g., `--contexts 4096 16384`).
+- `--overhead`: A float value to set the estimated overhead in GiB (default: `2.0`).
+
+### Practical Examples: Planning for a 128GB Strix Halo System
+
+The key to using a unified memory system is balancing model quality (quantization) against context length.
+
+#### Scenario 1: High Quality, Short Context (Coding & Chat)
+
+You need the highest precision for tasks that don't require massive context windows.
+
+**Goal:** Run the highest quality `Llama-4-Scout` model (`Q8_0`) with a standard 8k-16k context.
+
+```bash
+gguf-vram-estimator.py models/llama-4-scout-17b-16e/Q8_0/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003.gguf
+```
+```
+--- Model 'Llama-4-Scout-17B-16E-Instruct' ---
+Max Context: 10,485,760 tokens
+Model Size: 106.67 GiB (from file size)
+Incl. Overhead: 2.00 GiB (for compute buffer, etc. adjustable via --overhead)
+
+--- Memory Footprint Estimation ---
+   Context Size |  Context Memory | Est. Total VRAM
+---------------------------------------------------
+          4,096 |      768.00 MiB |      109.42 GiB
+          8,192 |        1.50 GiB |      110.17 GiB
+         16,384 |        1.88 GiB |      110.54 GiB
+```
+**Analysis:** The `Q8_0` model consumes **106.7 GiB**. A 16k context adds another **~1.9 GiB**, for a total of **~111 GiB**. This fits comfortably within a 128GB system.
+
+#### Scenario 2: Massive Context, Lower Precision (RAG & Document Analysis)
+
+You need to process a huge amount of text and are willing to trade some precision for a massive context window.
+
+**Goal:** Run `Llama-4-Scout` with a 1,000,000 token context. This requires a much smaller model quantization (`Q4_K_XL`).
+
+```bash
+gguf-vram-estimator.py models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf
+```
+```
+--- Model 'Llama-4-Scout-17B-16E-Instruct' ---
+Max Context: 10,485,760 tokens
+Model Size: 57.74 GiB (from file size)
+Incl. Overhead: 2.00 GiB (for compute buffer, etc. adjustable via --overhead)
+
+--- Memory Footprint Estimation ---
+   Context Size |  Context Memory | Est. Total VRAM
+---------------------------------------------------
+        524,288 |       25.12 GiB |       84.87 GiB
+      1,048,576 |       49.12 GiB |      108.87 GiB
+```
+**Analysis:** To enable this, we use a `Q4_K_XL` model that is only **57.7 GiB**. The 1M token context adds a massive **49.1 GiB** of memory. The total, **~109 GiB**, is a tight but achievable fit on a 128GB system.
+
+#### Scenario 3: Fitting a Very Large Model
+
+**Goal:** Determine the maximum viable context for the huge `Qwen3-235B` model.
+
+```bash
+gguf-vram-estimator.py models/qwen-3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf
+```
+```
+--- Model 'Qwen3-235B-A22B-Instruct-2507' ---
+Max Context: 262,144 tokens
+Model Size: 97.00 GiB (from file size)
+Incl. Overhead: 2.00 GiB (for compute buffer, etc. adjustable via --overhead)
+
+--- Memory Footprint Estimation ---
+   Context Size |  Context Memory | Est. Total VRAM
+---------------------------------------------------
+         65,536 |       11.75 GiB |      110.75 GiB
+        131,072 |       23.50 GiB |      122.50 GiB
+        262,144 |       47.00 GiB |      146.00 GiB
+```
+**Analysis:** The base model takes **97 GiB**. You have approximately **30 GiB** of headroom. This allows for a very large context of **~131k tokens** before exceeding the system's 128GB capacity. Attempting the full 262k context would require `146 GiB` and fail.
+
+> **Key Takeaway:** This tool is essential for balancing **Model Quality (Quantization)** vs. **Context Length** to fit your specific task within your system's VRAM limits.
+
+
 ## Building Containers Locally (Optional)
 
 If you prefer to build the containers yourself:
@@ -221,29 +326,3 @@ amd_iommu=off amdgpu.gttsize=131072 ttm.pages_limit=335544321
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 sudo reboot
 ```
-
-## Troubleshooting
-
-### Common Issues
-
-| Issue | Solution |
-|-------|----------|
-| GPU not detected | Verify `/dev/dri` and `/dev/kfd` devices exist on host |
-| Memory errors | Check that kernel parameters are properly applied |
-| Permission denied | Ensure your user is in the `video` group |
-| ROCm crashes | Try Vulkan backend instead |
-| Slow loading (>64GB models) | Use Vulkan instead of ROCm for large models |
-
-### Verify GPU Access
-
-```bash
-# Check devices
-ls -la /dev/dri /dev/kfd
-
-# Check ROCm (in ROCm containers)
-rocm-smi
-
-# Check Vulkan (in Vulkan container)
-vulkaninfo --summary
-```
-
