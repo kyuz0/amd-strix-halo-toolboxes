@@ -1,10 +1,29 @@
 # amd-strix-halo-toolboxes
 
-This repository provides Fedora Rawhide-based containers for working with Ryzen AI MAX+ 395 **Strix Halo** chips with integrated GPU (gfx1151) and unified memory. The containers come pre-built with `llama.cpp` and all necessary GPU compute libraries.
+Fedora Rawhide-based containers for AMD Ryzen AI MAX+ 395 **Strix Halo** chips with integrated GPU (gfx1151) and unified memory. Pre-built with `llama.cpp` and GPU compute libraries.
 
-## TL;DR - Performance Summary
+## Table of Contents
 
-After extensive testing, **Vulkan is currently the most stable and performant option** for Strix Halo GPUs:
+- [1. Performance Summary](#1-performance-summary)
+- [2. Available Containers](#2-available-containers)
+- [3. Quick Start](#3-quick-start)
+  - [3.1 Prerequisites](#31-prerequisites)
+  - [3.2 Pull Pre-built Images](#32-pull-pre-built-images)
+  - [3.3 Create Toolboxes](#33-create-toolboxes)
+  - [3.4 Enter and Test](#34-enter-and-test)
+- [4. Performance Benchmarks](#4-performance-benchmarks)
+  - [4.1 Prompt Processing Results](#41-prompt-processing-pp512---tokenssecond)
+  - [4.2 Text Generation Results](#42-text-generation-tg128---tokenssecond)
+  - [4.3 Performance Analysis](#43-performance-analysis)
+- [5. Memory Planning](#5-memory-planning)
+  - [5.1 VRAM Estimation Tool](#51-the-gguf-vram-estimatorpy-utility)
+  - [5.2 Usage Examples](#52-practical-examples-planning-for-a-128gb-strix-halo-system)
+- [6. Building Locally](#6-building-containers-locally-optional)
+- [7. Host Configuration](#7-host-configuration)
+
+## 1. Performance Summary
+
+**Vulkan is currently the most stable and performant option** for Strix Halo GPUs:
 
 | Backend | Status | Notes |
 |---------|---------|-------|
@@ -12,7 +31,7 @@ After extensive testing, **Vulkan is currently the most stable and performant op
 | **ROCm 6.4.2** | ⚠️ Limited | Works ok, but extremely slow past 64GB memory allocations |
 | **ROCm 7.0 beta** | ❌ Unstable | Frequent crashes under heavy load (llama-bench), basic usage possible |
 
-## Available Containers
+## 2. Available Containers
 
 | Container | Backend | Status | Use Case |
 |-----------|---------|---------|----------|
@@ -22,16 +41,16 @@ After extensive testing, **Vulkan is currently the most stable and performant op
 
 All containers include up-to-date libraries from Fedora Rawhide, except ROCm 7.0 beta which uses [official AMD RPMs](https://repo.radeon.com/rocm/el9/7.0_beta/main).
 
-## Prerequisites
+## 3. Quick Start
+
+### 3.1 Prerequisites
 
 - [Podman](https://podman.io/) (or Docker with alias)
 - [Toolbox](https://containertoolbx.org/)
 - Linux kernel with AMD GPU (`amdgpu`) drivers
-- AMD Strix Halo GPU with proper host configuration (see below)
+- AMD Strix Halo GPU with proper host configuration (see [7. Host Configuration](#7-host-configuration))
 
-## Quick Start
-
-### 1. Pull Pre-built Images
+### 3.2 Pull Pre-built Images
 
 ```bash
 # Recommended: Vulkan (most stable)
@@ -42,7 +61,7 @@ podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.2
 podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7beta
 ```
 
-### 2. Create Toolboxes
+### 3.3 Create Toolboxes
 
 **For Vulkan (Recommended):**
 ```bash
@@ -78,7 +97,7 @@ toolbox create llama-rocm-7beta \
 
 > **Note:** The `--` separator passes the remaining flags to Podman/Docker for GPU access.
 
-### 3. Enter and Test
+### 3.4 Enter and Test
 
 **Test Vulkan container:**
 ```bash
@@ -94,11 +113,11 @@ llama-cli --list-devices
 rocm-smi
 ```
 
-## Performance Benchmarks
+## 4. Performance Benchmarks
 
 All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` with all layers offloaded to GPU.
 
-### Prompt Processing (pp512) - tokens/second
+### 4.1 Prompt Processing (pp512) - tokens/second
 
 | Model | Size | Params | Vulkan | ROCm 6.4.2 | ROCm 7 Beta | Winner |
 |-------|------|---------|---------|-------------|-------------|---------|
@@ -110,7 +129,7 @@ All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` w
 | **Qwen3 MoE 235B.A22B Q3_K** | 96.99 GiB | 235.09B | 59.12 ± 0.39 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
 | **Llama4 17Bx16E (Scout) Q8_0** | 106.65 GiB | 107.77B | 148.17 ± 2.99 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
 
-### Text Generation (tg128) - tokens/second
+### 4.2 Text Generation (tg128) - tokens/second
 
 | Model | Size | Params | Vulkan | ROCm 6.4.2 | ROCm 7 Beta | Winner |
 |-------|------|---------|---------|-------------|-------------|---------|
@@ -122,7 +141,7 @@ All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` w
 | **Qwen3 MoE 235B.A22B Q3_K** | 96.99 GiB | 235.09B | 15.97 ± 0.02 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
 | **Llama4 17Bx16E (Scout) Q8_0** | 106.65 GiB | 107.77B | 12.22 ± 0.01 | ⚠️ Too slow | ⚠️ Too slow | 🏆 **Vulkan only** |
 
-### Performance Summary
+### 4.3 Performance Analysis
 
 **🏆 Vulkan Advantages:**
 - Consistently stable across all model sizes
@@ -157,44 +176,26 @@ All benchmarks performed on HP Z2 Mini G1a with 128GB RAM, using `llama-bench` w
 - For large quantized models under 64GB, either backend performs similarly
 - Avoid ROCm 7.0 beta for production workloads
 
+## 5. Memory Planning
 
-## VRAM Planning with `gguf-vram-estimator.py`
+VRAM usage has three components: **Model Weights + Context Memory (KV Cache) + Overhead**. The `gguf-vram-estimator.py` tool helps you choose the right model quantization and context size to fit within 128GB.
 
-### Why Model File Size Isn't the Whole Story
+### 5.1 The `gguf-vram-estimator.py` Utility
 
-A model's VRAM footprint has three main components:
-
-1.  **Model Weights:** The static size of the model on disk.
-2.  **Context Memory (KV Cache):** A dynamic buffer that grows linearly with the number of tokens in your context. For every token processed, a Key/Value state is stored in VRAM. This is often the largest variable consumer of memory.
-3.  **Overhead:** A semi-fixed amount of memory for compute buffers, drivers, and other scratchpads. This can be 1-3 GiB or more.
-
-The total VRAM required is `Model Size + Context Memory + Overhead`. To run a model, you must have enough memory for all three.
-
-### The `gguf-vram-estimator.py` Utility
-
-To help plan your workload, this repository includes the `gguf-vram-estimator.py` utility. It inspects a GGUF file and calculates the total VRAM needed for different context lengths, allowing you to make informed decisions about which model quantization and context size will fit in your system's memory.
-
-#### How to Use
-
-The script is included in the container. Run it by pointing it at the first part of any GGUF model:
+Calculate total VRAM requirements for different context lengths:
 
 ```bash
-# Syntax
+# Basic usage
 gguf-vram-estimator.py <path-to-gguf-file> [options]
 ```
+
 **Key Options:**
-- `--contexts`: A space-separated list of context sizes to calculate (e.g., `--contexts 4096 16384`).
-- `--overhead`: A float value to set the estimated overhead in GiB (default: `2.0`).
+- `--contexts`: Space-separated list of context sizes (e.g., `--contexts 4096 16384`)
+- `--overhead`: Estimated overhead in GiB (default: `2.0`)
 
-### Practical Examples: Planning for a 128GB Strix Halo System
-
-The key to using a unified memory system is balancing model quality (quantization) against context length.
+### 5.2 Practical Examples: Planning for a 128GB Strix Halo System
 
 #### Scenario 1: High Quality, Short Context (Coding & Chat)
-
-You need the highest precision for tasks that don't require massive context windows.
-
-**Goal:** Run the highest quality `Llama-4-Scout` model (`Q8_0`) with a standard 8k-16k context.
 
 ```bash
 gguf-vram-estimator.py models/llama-4-scout-17b-16e/Q8_0/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003.gguf
@@ -216,10 +217,6 @@ Incl. Overhead: 2.00 GiB (for compute buffer, etc. adjustable via --overhead)
 
 #### Scenario 2: Massive Context, Lower Precision (RAG & Document Analysis)
 
-You need to process a huge amount of text and are willing to trade some precision for a massive context window.
-
-**Goal:** Run `Llama-4-Scout` with a 1,000,000 token context. This requires a much smaller model quantization (`Q4_K_XL`).
-
 ```bash
 gguf-vram-estimator.py models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf
 ```
@@ -239,8 +236,6 @@ Incl. Overhead: 2.00 GiB (for compute buffer, etc. adjustable via --overhead)
 
 #### Scenario 3: Fitting a Very Large Model
 
-**Goal:** Determine the maximum viable context for the huge `Qwen3-235B` model.
-
 ```bash
 gguf-vram-estimator.py models/qwen-3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf
 ```
@@ -259,12 +254,7 @@ Incl. Overhead: 2.00 GiB (for compute buffer, etc. adjustable via --overhead)
 ```
 **Analysis:** The base model takes **97 GiB**. You have approximately **30 GiB** of headroom. This allows for a very large context of **~131k tokens** before exceeding the system's 128GB capacity. Attempting the full 262k context would require `146 GiB` and fail.
 
-> **Key Takeaway:** This tool is essential for balancing **Model Quality (Quantization)** vs. **Context Length** to fit your specific task within your system's VRAM limits.
-
-
-## Building Containers Locally (Optional)
-
-If you prefer to build the containers yourself:
+## 6. Building Containers Locally (Optional)
 
 ```bash
 # Build all variants
@@ -293,18 +283,18 @@ toolbox create llama-rocm-local \
     --security-opt seccomp=unconfined
 ```
 
-## Host Configuration
+## 7. Host Configuration
 
 This should work on any Strix Halo device. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
 
-### My Test Configuration
+### Test Configuration
 | Component | Specification |
 |-----------|---------------|
 | **Test Machine** | HP Z2 Mini G1a |
 | **CPU** | Ryzen AI MAX+ 395 "Strix Halo" |
 | **System Memory** | 128 GB RAM |
 | **GPU Memory** | 512 MB allocated in BIOS |
-| **Host OS** | Fedora 42, kernel 6.15.6-200.fc42.x86_64 |
+| **Host OS** | Fedora 42, kernel 6.15.6-200.fc42.x86_86_64 |
 
 ### Kernel Parameters
 
