@@ -215,7 +215,7 @@ Incl. Overhead: 2.00 GiB (for compute buffer, etc. adjustable via --overhead)
 ```
 **Analysis:** The `Q8_0` model consumes **106.7 GiB**. A 16k context adds another **~1.9 GiB**, for a total of **~111 GiB**. This fits comfortably within a 128GB system.
 
-#### Scenario 2: Massive Context, Lower Precision (RAG & Document Analysis)
+#### Scenario 2: Large Context, Lower Precision (Long Document/Data/Code Analysis, Back-and-Forth Feedback)
 
 ```bash
 gguf-vram-estimator.py models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf
@@ -232,7 +232,7 @@ Incl. Overhead: 2.00 GiB (for compute buffer, etc. adjustable via --overhead)
         524,288 |       25.12 GiB |       84.87 GiB
       1,048,576 |       49.12 GiB |      108.87 GiB
 ```
-**Analysis:** To enable this, we use a `Q4_K_XL` model that is only **57.7 GiB**. The 1M token context adds a massive **49.1 GiB** of memory. The total, **~109 GiB**, is a tight but achievable fit on a 128GB system.
+**Analysis:** To enable this, we use the `Q4_K_XL` quantization of Llama-4-Scout that is only **57.7 GiB**. The 1M token context adds a massive **49.1 GiB** of memory. The total, **~109 GiB**, is a tight but achievable fit on a 128GB system.
 
 #### Scenario 3: Fitting a Very Large Model
 
