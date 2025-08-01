@@ -285,7 +285,7 @@ toolbox create llama-rocm-local \
 
 ## 7. Host Configuration
 
-This should work on any Strix Halo device. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
+This should work on any Strix Halo. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
 
 ### Test Configuration
 | Component | Specification |
@@ -296,7 +296,7 @@ This should work on any Strix Halo device. For a complete list of available hard
 | **GPU Memory** | 512 MB allocated in BIOS |
 | **Host OS** | Fedora 42, kernel 6.15.6-200.fc42.x86_86_64 |
 
-### Kernel Parameters
+### Kernel Parameters (tested on Fedora 42)
 
 Add these boot parameters to enable unified memory and optimal performance:
 
@@ -316,3 +316,9 @@ amd_iommu=off amdgpu.gttsize=131072 ttm.pages_limit=335544321
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 sudo reboot
 ```
+
+### Ubuntu 24.04
+
+Follow this guide by TechnigmaAI for a working configuration on Ubuntu 22.04:
+
+https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-(Ubuntu-24.04)
