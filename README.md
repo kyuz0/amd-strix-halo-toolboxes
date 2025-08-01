@@ -32,7 +32,7 @@ Fedora Rawhide-based containers for AMD Ryzen AI MAX+ 395 **Strix Halo** chips w
 | Backend | Status | Notes |
 |---------|---------|-------|
 | **Vulkan** | ✅ **Recommended** | Most stable, best performance across all model sizes |
-| **ROCm 6.4.2** | ⚠️ Limited | Works ok, but extremely slow past 64GB memory allocations |
+| **ROCm 6.4.2** | ⚠️ Limited | Works ok, but extremely slow past 64GB memory allocations [GitHub Issue #15018](https://github.com/ggml-org/llama.cpp/issues/15018) |
 | **ROCm 7.0 beta** | ❌ Unstable | Frequent crashes under heavy load (llama-bench), basic usage possible |
 
 ## 2. Available Containers
@@ -70,7 +70,8 @@ podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7beta
 **For Vulkan (Recommended):**
 ```bash
 toolbox create llama-vulkan \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan \[GitHub Issue #15018](https://github.com/ggml-org/llama.cpp/issues/15018)
+
   -- \
     --device /dev/dri \
     --group-add video \
@@ -291,15 +292,15 @@ toolbox create llama-rocm-local \
 
 This should work on any Strix Halo. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
 
-### 7.1 Test Configuration
+  ### 7.1 Test Configuration
 
-| Component | Specification |
-|-----------|---------------|
-| **Test Machine** | HP Z2 Mini G1a |
-| **CPU** | Ryzen AI MAX+ 395 "Strix Halo" |
-| **System Memory** | 128 GB RAM |
-| **GPU Memory** | 512 MB allocated in BIOS |
-| **Host OS** | Fedora 42, kernel 6.15.6-200.fc42.x86_86_64 |
+  | Component | Specification |
+  |-----------|---------------|
+  | **Test Machine** | HP Z2 Mini G1a |
+  | **CPU** | Ryzen AI MAX+ 395 "Strix Halo" |
+  | **System Memory** | 128 GB RAM |
+  | **GPU Memory** | 512 MB allocated in BIOS |
+  | **Host OS** | Fedora 42, kernel 6.15.6-200.fc42.x86_86_64 |
 
 ### 7.2 Kernel Parameters (tested on Fedora 42)
 
@@ -327,3 +328,5 @@ sudo reboot
 Follow this guide by TechnigmaAI for a working configuration on Ubuntu 22.04:
 
 https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-(Ubuntu-24.04)
+
+
