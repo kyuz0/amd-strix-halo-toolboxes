@@ -70,8 +70,7 @@ podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7beta
 **For Vulkan (Recommended):**
 ```bash
 toolbox create llama-vulkan \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan \[GitHub Issue #15018](https://github.com/ggml-org/llama.cpp/issues/15018)
-
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan \
   -- \
     --device /dev/dri \
     --group-add video \
