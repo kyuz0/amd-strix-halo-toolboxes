@@ -20,6 +20,10 @@ Fedora Rawhide-based containers for AMD Ryzen AI MAX+ 395 **Strix Halo** chips w
   - [5.2 Usage Examples](#52-practical-examples-planning-for-a-128gb-strix-halo-system)
 - [6. Building Locally](#6-building-containers-locally-optional)
 - [7. Host Configuration](#7-host-configuration)
+  - [7.1 Test Configuration](#71-test-configuration)
+  - [7.2 Kernel Parameters (tested on Fedora 42)](#72-kernel-parameters-tested-on-fedora-42)
+  - [7.3 Ubuntu 24.04](#73-ubuntu-2404)
+
 
 ## 1. Performance Summary
 
@@ -287,7 +291,8 @@ toolbox create llama-rocm-local \
 
 This should work on any Strix Halo. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
 
-### Test Configuration
+### 7.1 Test Configuration
+
 | Component | Specification |
 |-----------|---------------|
 | **Test Machine** | HP Z2 Mini G1a |
@@ -296,7 +301,7 @@ This should work on any Strix Halo. For a complete list of available hardware, s
 | **GPU Memory** | 512 MB allocated in BIOS |
 | **Host OS** | Fedora 42, kernel 6.15.6-200.fc42.x86_86_64 |
 
-### Kernel Parameters (tested on Fedora 42)
+### 7.2 Kernel Parameters (tested on Fedora 42)
 
 Add these boot parameters to enable unified memory and optimal performance:
 
@@ -317,7 +322,7 @@ sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 sudo reboot
 ```
 
-### Ubuntu 24.04
+### 7.3 Ubuntu 24.04
 
 Follow this guide by TechnigmaAI for a working configuration on Ubuntu 22.04:
 
