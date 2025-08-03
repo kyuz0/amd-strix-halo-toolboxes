@@ -10,20 +10,23 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 
 ## Table of Contents
 
-1. [Llama.cpp Compiled for Every Backend](#1-llamacpp-compiled-for-every-backend)
-   1.1 [Supported Container Images](#11-supported-container-images)
-2. [Quickest Usage Example](#2-quickest-usage-example)
-   2.1 [Creating the toolboxes with GPU access](#21-creating-the-toolboxes-with-gpu-access)
-   2.2 [Running models inside the toolboxes](#22-running-models-inside-the-toolboxes)
-3. [Performance Benchmarks (Key Results)](#3-performance-benchmarks-key-results)
-4. [Memory Planning & VRAM Estimator](#4-memory-planning--vram-estimator)
-5. [Building Containers Locally](#5-building-containers-locally)
-6. [Host Configuration](#6-host-configuration)
-   6.1 [Test Configuration](#61-test-configuration)
-   6.2 [Kernel Parameters (tested on Fedora 42)](#62-kernel-parameters-tested-on-fedora-42)
-   6.3 [Ubuntu 24.04](#63-ubuntu-2404)
-7. [More Documentation](#7-more-documentation)
+1. [Llama.cpp Compiled for Every Backend](#1-llamacpp-compiled-for-every-backend)  
+    1.1 [Supported Container Images](#11-supported-container-images)
+2. [Quickest Usage Example](#2-quickest-usage-example)  
+    2.1 [Creating the toolboxes with GPU access](#21-creating-the-toolboxes-with-gpu-access)  
+    2.2 [Running models inside the toolboxes](#22-running-models-inside-the-toolboxes)
+    2.3 [Downloading GGUF Models from HuggingFace](#23-downloading-gguf-models-from-huggingface)
+3. [Performance Benchmarks (Key Results)](#3-performance-benchmarks-key-results)  
+4. [Memory Planning & VRAM Estimator](#4-memory-planning--vram-estimator)  
+5. [Building Containers Locally](#5-building-containers-locally)  
+6. [Host Configuration](#6-host-configuration)  
+    6.1 [Test Configuration](#61-test-configuration)  
+    6.2 [Kernel Parameters (tested on Fedora 42)](#62-kernel-parameters-tested-on-fedora-42)  
+    6.3 [Ubuntu 24.04](#63-ubuntu-2404)
+7. [More Documentation](#7-more-documentation)  
 8. [References](#8-references)
+
+
 
 ## 1. Llama.cpp Compiled for Every Backend
 
@@ -96,6 +99,20 @@ Once inside, the following commands show how to run local LLMs:
 * `llama-cli --no-mmap --ngl 999 -fa -m <model>`
   *Runs inference on the specified model, with all layers on GPU and flash attention enabled (replace \*\* with your model path).*
 
+## 2.3 Downloading GGUF Models from HuggingFace
+
+Most Llama.cpp-compatible models are on [HuggingFace](https://huggingface.co/models?format=gguf). Filter for **GGUF** format, and try to pick Unsloth quantizations—they work great and are actively updated: https://huggingface.co/unsloth.
+
+Download using the Hugging Face CLI. For example, to get the first shard of Qwen3 Coder 30B BF16 (https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF):
+
+```bash
+HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF \
+  BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
+  --local-dir models/qwen3-coder-30B-A3B/
+```
+
+`HF_HUB_ENABLE_HF_TRANSFER=1` uses a Rust-based package that enables faster download (install from [Pypi](https://pypi.org/project/hf-transfer/)).
+
 ## 3. Performance Benchmarks (Key Results)
 
 Below are some results from real runs on Strix Halo hardware of `llama-bench`. For full tables and model-by-model breakdowns (including both prompt processing and token generation speeds), see docs/benchmarks.md.
@@ -116,9 +133,9 @@ Below are some results from real runs on Strix Halo hardware of `llama-bench`. F
 
 **Takeaways:**
 
-* **Vulkan AMDVLK** is the fastest—when it works. May crash on large or BF16 models.
+* **Vulkan AMDVLK** is the fastest, when it works. There's currently an issue with memory allocation that causes some models to fail loading ([GitHub Issue 15054](https://github.com/ggml-org/llama.cpp/issues/15054)). 
 * **Vulkan RADV** is the most stable and compatible (recommended for most usage).
-* **ROCm** is only superior on BF16 models, otherwise less stable and may crash or hang.
+* **ROCm** is typically only superior on BF16 models, otherwise less stable and may crash or hang.
 
 ## 4. Memory Planning & VRAM Estimator
 
