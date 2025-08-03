@@ -24,14 +24,14 @@ Each backend has its own subdirectory and Dockerfile in `toolboxes/`.
 
 ```sh
 cd toolboxes
-podman build -t llama-vulkan-radv Dockerfile.vulkan-radv
+podman build -t llama-vulkan-radv -f Dockerfile.vulkan-radv .
 ```
 
 **Example: Build the ROCm 6.4.2 toolbox image**
 
 ```sh
 cd ../rocm-6.4.2
-podman build -t llama-rocm-6.4.2 Dockerfile.rocm-6.4.2
+podman build -t llama-rocm-6.4.2 -f Dockerfile.rocm-6.4.2 .
 ```
 
 > You can use `docker build` if you prefer Docker.

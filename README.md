@@ -45,6 +45,8 @@ This project uses [Llama.cpp](https://github.com/ggerganov/llama.cpp), a high-pe
 | `rocm-7beta`    | ROCm 7.0 Beta (HIP) | Latest ROCm beta. No real improvement for Llama.cpp. Similar model limits to 6.4.2.   |
 | `rocm-7rc`      | ROCm 7.0 RC (HIP)   | Release candidate ROCm 7.0. Same behavior as above.                                   |
 
+You can also check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags.
+
 > *Each container is based on Fedora Rawhide and is built for maximum compatibility and performance on Strix Halo.*
 
 ---

@@ -4,9 +4,14 @@ FROM fedora:rawhide
 RUN dnf install -y \
       git vim \
       make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
-      vulkan-loader-devel mesa-vulkan-drivers \
-      radeontop glslc \
+      vulkan-loader-devel vulkaninfo mesa-vulkan-drivers \
+      radeontop glslc wget \
     && dnf clean all
+
+# Get AMDVLK drivers
+RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
+    https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm
+RUN dnf install -y /tmp/amdvlk-*.rpm
 
 WORKDIR /opt/llama.cpp
 
