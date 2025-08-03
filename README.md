@@ -66,7 +66,7 @@ To use Llama.cpp with hardware acceleration inside a toolbox container, you must
     -- --device /dev/dri --group-add video --security-opt seccomp=unconfined
   ```
 
-* **For ROCm:** You must expose both `/dev/dri` and `/dev/kfd` (and sometimes `/dev/hsa` for older hardware), and add the user to extra groups for compute access.
+* **For ROCm:** You must expose both `/dev/dri` and `/dev/kfd`, and add the user to extra groups for compute access.
 
   ```sh
   toolbox create llama-rocm-6.4.2 \
