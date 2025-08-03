@@ -21,7 +21,7 @@ This repo provides a tool, **`gguf-vram-estimator.py`**, which reads a `.gguf` m
 Make sure you have the estimator script (in `tools/`):
 
 ```sh
-python3 tools/gguf-vram-estimator.py <path-to-model.gguf> x`
+python3 tools/gguf-vram-estimator.py <path-to-model.gguf>
 ```
 
 * Supply one or more context lengths to get the corresponding VRAM footprint.
