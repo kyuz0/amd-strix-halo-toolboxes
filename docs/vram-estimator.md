@@ -21,7 +21,7 @@ This repo provides a tool, **`gguf-vram-estimator.py`**, which reads a `.gguf` m
 Make sure you have the estimator script (in `tools/`):
 
 ```sh
-python3 tools/gguf-vram-estimator.py <path-to-model.gguf>
+gguf-vram-estimator.py <path-to-model.gguf>
 ```
 
 * Supply one or more context lengths to get the corresponding VRAM footprint.
@@ -34,7 +34,7 @@ python3 tools/gguf-vram-estimator.py <path-to-model.gguf>
 ### 3.1 Llama-4-Scout 17B Q4\_K\_XL, up to 1M tokens
 
 ```
-$ python3 tools/gguf-vram-estimator.py models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf --contexts 4096 32768 1048576
+$ gguf-vram-estimator.py models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf --contexts 4096 32768 1048576
 
 --- Model 'Llama-4-Scout-17B-16E-Instruct' ---
 Max Context: 10,485,760 tokens
@@ -58,7 +58,7 @@ Incl. Overhead: 2.00 GiB
 ### 3.2 Qwen3-235B Q3\_K XL, high context
 
 ```
-$ python3 tools/gguf-vram-estimator.py models/qwen3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf --contexts 65536 131072 262144
+$ gguf-vram-estimator.py models/qwen3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf --contexts 65536 131072 262144
 
 --- Memory Footprint Estimation ---
    Context Size |  Context Memory | Est. Total VRAM
