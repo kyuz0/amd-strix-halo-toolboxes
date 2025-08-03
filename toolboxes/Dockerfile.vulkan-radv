@@ -1,7 +1,7 @@
 FROM fedora:rawhide
 
 # Install build tools, Vulkan headers/loader, and glslc
-RUN dnf install -y \
+RUN dnf install --refresh -y \
       git vim \
       make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
       vulkan-loader-devel vulkaninfo mesa-vulkan-drivers \
