@@ -117,7 +117,7 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 
 ## 3. Performance Benchmarks (Key Results)
 
-Below are some results from real runs on Strix Halo hardware of `llama-bench`. For full tables and model-by-model breakdowns (including both prompt processing and token generation speeds), see docs/benchmarks.md.
+Below are some results from real runs on Strix Halo hardware of `llama-bench`. For full tables and model-by-model breakdowns (including both prompt processing and token generation speeds), see [docs/benchmarks.md](docs/benchmarks.md).
 
 | Model                          | Vulkan (AMDVLK)  | Vulkan (RADV)    | ROCm 6.4.2       | ROCm 7.0 Beta    | ROCm 7.0 RC      | 🏆 Best PP    | 🏆 Best TG     |
 | ------------------------------ | ---------------- | ---------------- | ---------------- | ---------------- | ---------------- | ------------- | -------------- |
@@ -179,7 +179,7 @@ $ gguf-vram-estimator.py models/qwen3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-In
 For Qwen3-235B, **128GB RAM allows you to run with context up to \~130k tokens.**
 
 * The estimator lets you plan ahead and avoid out-of-memory errors when loading or using models.
-* For more examples and a breakdown of VRAM components, see docs/vram-estimator.md.
+* For more examples and a breakdown of VRAM components, see [docs/vram-estimator.md](docs/vram-estimator.md).
 
 ---
 
@@ -187,7 +187,7 @@ For Qwen3-235B, **128GB RAM allows you to run with context up to \~130k tokens.*
 
 Pre-built toolbox container images are published on Docker Hub for immediate use. If you wish to build the containers yourself (for example, to customize packages or rebuild with a different llama.cpp version), see:
 
-Full instructions: docs/building.md
+Full instructions: [docs/building.md](docs/building.md).
 
 ---
 
@@ -235,9 +235,9 @@ Follow this guide by TechnigmaAI for a working configuration on Ubuntu 24.04:
 
 ## 7. More Documentation
 
-* docs/benchmarks.md: Full benchmark logs, model list, parsed results
-* docs/vram-estimator.md: Memory planning, practical example runs
-* docs/building.md: Local build, toolbox customization, advanced use
+* [docs/benchmarks.md](docs/benchmarks.md): Full benchmark logs, model list, parsed results  
+* [docs/vram-estimator.md](docs/vram-estimator.md): Memory planning, practical example runs  
+* [docs/building.md](docs/building.md): Local build, toolbox customization, advanced use  
 
 ## 8. References
 
