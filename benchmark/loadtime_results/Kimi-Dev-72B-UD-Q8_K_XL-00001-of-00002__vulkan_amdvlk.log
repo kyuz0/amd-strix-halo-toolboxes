@@ -1,0 +1,123 @@
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 32768 | int dot: 1 | matrix cores: KHR_coopmat
+build: 6060 (9c35706b) with cc (GCC) 15.1.1 20250719 (Red Hat 15.1.1-5) for x86_64-redhat-linux
+main: llama backend init
+main: load the model and apply lora adapter, if any
+llama_model_load_from_file_impl: using device Vulkan0 (Radeon 8060S Graphics) - 85720 MiB free
+llama_model_loader: additional 1 GGUFs metadata loaded.
+llama_model_loader: loaded meta data with 39 key-value pairs and 963 tensors from /home/kyuz0/models/kimi-dev-72B-Q8_K_XL/UD-Q8_K_XL/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002.gguf (version GGUF V3 (latest))
+llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+llama_model_loader: - kv   0:                       general.architecture str              = qwen2
+llama_model_loader: - kv   1:                               general.type str              = model
+llama_model_loader: - kv   2:                               general.name str              = Kimi-Dev-72B
+llama_model_loader: - kv   3:                           general.basename str              = Kimi-Dev-72B
+llama_model_loader: - kv   4:                       general.quantized_by str              = Unsloth
+llama_model_loader: - kv   5:                         general.size_label str              = 72B
+llama_model_loader: - kv   6:                            general.license str              = mit
+llama_model_loader: - kv   7:                           general.repo_url str              = https://huggingface.co/unsloth
+llama_model_loader: - kv   8:                   general.base_model.count u32              = 1
+llama_model_loader: - kv   9:                  general.base_model.0.name str              = Kimi Dev 72B
+llama_model_loader: - kv  10:          general.base_model.0.organization str              = Moonshotai
+llama_model_loader: - kv  11:              general.base_model.0.repo_url str              = https://huggingface.co/moonshotai/Kim...
+llama_model_loader: - kv  12:                               general.tags arr[str,5]       = ["code", "unsloth", "swebench", "soft...
+llama_model_loader: - kv  13:                          qwen2.block_count u32              = 80
+llama_model_loader: - kv  14:                       qwen2.context_length u32              = 131072
+llama_model_loader: - kv  15:                     qwen2.embedding_length u32              = 8192
+llama_model_loader: - kv  16:                  qwen2.feed_forward_length u32              = 29568
+llama_model_loader: - kv  17:                 qwen2.attention.head_count u32              = 64
+llama_model_loader: - kv  18:              qwen2.attention.head_count_kv u32              = 8
+llama_model_loader: - kv  19:                       qwen2.rope.freq_base f32              = 1000000.000000
+llama_model_loader: - kv  20:     qwen2.attention.layer_norm_rms_epsilon f32              = 0.000001
+llama_model_loader: - kv  21:                       tokenizer.ggml.model str              = gpt2
+llama_model_loader: - kv  22:                         tokenizer.ggml.pre str              = qwen2
+llama_model_loader: - kv  23:                      tokenizer.ggml.tokens arr[str,152064]  = ["!", "\"", "#", "$", "%", "&", "'", ...
+llama_model_loader: - kv  24:                  tokenizer.ggml.token_type arr[i32,152064]  = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+llama_model_loader: - kv  25:                      tokenizer.ggml.merges arr[str,151387]  = ["Ġ Ġ", "ĠĠ ĠĠ", "i n", "Ġ t",...
+llama_model_loader: - kv  26:                tokenizer.ggml.eos_token_id u32              = 151645
+llama_model_loader: - kv  27:            tokenizer.ggml.padding_token_id u32              = 151654
+llama_model_loader: - kv  28:               tokenizer.ggml.add_bos_token bool             = false
+llama_model_loader: - kv  29:                    tokenizer.chat_template str              = {%- if tools %}\n    {{- '<|im_start|>...
+llama_model_loader: - kv  30:               general.quantization_version u32              = 2
+llama_model_loader: - kv  31:                          general.file_type u32              = 7
+llama_model_loader: - kv  32:                      quantize.imatrix.file str              = Kimi-Dev-72B-GGUF/imatrix_unsloth.dat
+llama_model_loader: - kv  33:                   quantize.imatrix.dataset str              = unsloth_calibration_Kimi-Dev-72B.txt
+llama_model_loader: - kv  34:             quantize.imatrix.entries_count u32              = 560
+llama_model_loader: - kv  35:              quantize.imatrix.chunks_count u32              = 685
+llama_model_loader: - kv  36:                                   split.no u16              = 0
+llama_model_loader: - kv  37:                        split.tensors.count i32              = 963
+llama_model_loader: - kv  38:                                split.count u16              = 2
+llama_model_loader: - type  f32:  401 tensors
+llama_model_loader: - type  f16:  107 tensors
+llama_model_loader: - type q8_0:  455 tensors
+print_info: file format = GGUF V3 (latest)
+print_info: file type   = Q8_0
+print_info: file size   = 78.21 GiB (9.24 BPW) 
+load: special tokens cache size = 22
+load: token to piece cache size = 0.9310 MB
+print_info: arch             = qwen2
+print_info: vocab_only       = 0
+print_info: n_ctx_train      = 131072
+print_info: n_embd           = 8192
+print_info: n_layer          = 80
+print_info: n_head           = 64
+print_info: n_head_kv        = 8
+print_info: n_rot            = 128
+print_info: n_swa            = 0
+print_info: is_swa_any       = 0
+print_info: n_embd_head_k    = 128
+print_info: n_embd_head_v    = 128
+print_info: n_gqa            = 8
+print_info: n_embd_k_gqa     = 1024
+print_info: n_embd_v_gqa     = 1024
+print_info: f_norm_eps       = 0.0e+00
+print_info: f_norm_rms_eps   = 1.0e-06
+print_info: f_clamp_kqv      = 0.0e+00
+print_info: f_max_alibi_bias = 0.0e+00
+print_info: f_logit_scale    = 0.0e+00
+print_info: f_attn_scale     = 0.0e+00
+print_info: n_ff             = 29568
+print_info: n_expert         = 0
+print_info: n_expert_used    = 0
+print_info: causal attn      = 1
+print_info: pooling type     = -1
+print_info: rope type        = 2
+print_info: rope scaling     = linear
+print_info: freq_base_train  = 1000000.0
+print_info: freq_scale_train = 1
+print_info: n_ctx_orig_yarn  = 131072
+print_info: rope_finetuned   = unknown
+print_info: model type       = 70B
+print_info: model params     = 72.71 B
+print_info: general.name     = Kimi-Dev-72B
+print_info: vocab type       = BPE
+print_info: n_vocab          = 152064
+print_info: n_merges         = 151387
+print_info: BOS token        = 11 ','
+print_info: EOS token        = 151645 '<|im_end|>'
+print_info: EOT token        = 151645 '<|im_end|>'
+print_info: PAD token        = 151654 '<|vision_pad|>'
+print_info: LF token         = 198 'Ċ'
+print_info: FIM PRE token    = 151659 '<|fim_prefix|>'
+print_info: FIM SUF token    = 151661 '<|fim_suffix|>'
+print_info: FIM MID token    = 151660 '<|fim_middle|>'
+print_info: FIM PAD token    = 151662 '<|fim_pad|>'
+print_info: FIM REP token    = 151663 '<|repo_name|>'
+print_info: FIM SEP token    = 151664 '<|file_sep|>'
+print_info: EOG token        = 151643 '<|endoftext|>'
+print_info: EOG token        = 151645 '<|im_end|>'
+print_info: EOG token        = 151662 '<|fim_pad|>'
+print_info: EOG token        = 151663 '<|repo_name|>'
+print_info: EOG token        = 151664 '<|file_sep|>'
+print_info: max token length = 256
+load_tensors: loading model tensors, this can take a while... (mmap = false)
+ggml_vulkan: Device memory allocation of size 2491416576 failed.
+ggml_vulkan: Requested buffer size exceeds device memory allocation limit: ErrorOutOfDeviceMemory
+alloc_tensor_range: failed to allocate Vulkan0 buffer of size 2491416576
+llama_model_load: error loading model: unable to allocate Vulkan0 buffer
+llama_model_load_from_file_impl: failed to load model
+common_init_from_params: failed to load model '/home/kyuz0/models/kimi-dev-72B-Q8_K_XL/UD-Q8_K_XL/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002.gguf'
+main: error: unable to load model
+    Elapsed #3: .334893088s
+    Run #3 status: 1
+    ✖ run #3 failed
+  → No successful runs

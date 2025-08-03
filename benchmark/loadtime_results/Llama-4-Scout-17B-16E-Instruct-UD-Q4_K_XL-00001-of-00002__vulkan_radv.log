@@ -1,0 +1,179 @@
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = Radeon 8060S Graphics (RADV GFX1151) (radv) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+build: 6040 (66625a59) with cc (GCC) 15.1.1 20250719 (Red Hat 15.1.1-5) for x86_64-redhat-linux
+main: llama backend init
+main: load the model and apply lora adapter, if any
+llama_model_load_from_file_impl: using device Vulkan0 (Radeon 8060S Graphics (RADV GFX1151)) - 87722 MiB free
+llama_model_loader: additional 1 GGUFs metadata loaded.
+llama_model_loader: loaded meta data with 51 key-value pairs and 628 tensors from /home/kyuz0/models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf (version GGUF V3 (latest))
+llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+llama_model_loader: - kv   0:                       general.architecture str              = llama4
+llama_model_loader: - kv   1:                               general.type str              = model
+llama_model_loader: - kv   2:                               general.name str              = Llama-4-Scout-17B-16E-Instruct
+llama_model_loader: - kv   3:                           general.finetune str              = 16E-Instruct
+llama_model_loader: - kv   4:                           general.basename str              = Llama-4-Scout-17B-16E-Instruct
+llama_model_loader: - kv   5:                       general.quantized_by str              = Unsloth
+llama_model_loader: - kv   6:                         general.size_label str              = 17B
+llama_model_loader: - kv   7:                            general.license str              = other
+llama_model_loader: - kv   8:                       general.license.name str              = llama4
+llama_model_loader: - kv   9:                           general.repo_url str              = https://huggingface.co/unsloth
+llama_model_loader: - kv  10:                   general.base_model.count u32              = 1
+llama_model_loader: - kv  11:                  general.base_model.0.name str              = Llama 4 Scout 17B 16E Instruct
+llama_model_loader: - kv  12:          general.base_model.0.organization str              = Meta Llama
+llama_model_loader: - kv  13:              general.base_model.0.repo_url str              = https://huggingface.co/meta-llama/Lla...
+llama_model_loader: - kv  14:                               general.tags arr[str,5]       = ["facebook", "meta", "pytorch", "llam...
+llama_model_loader: - kv  15:                          general.languages arr[str,12]      = ["ar", "de", "en", "es", "fr", "hi", ...
+llama_model_loader: - kv  16:                         llama4.block_count u32              = 48
+llama_model_loader: - kv  17:                      llama4.context_length u32              = 10485760
+llama_model_loader: - kv  18:                    llama4.embedding_length u32              = 5120
+llama_model_loader: - kv  19:                 llama4.feed_forward_length u32              = 16384
+llama_model_loader: - kv  20:                llama4.attention.head_count u32              = 40
+llama_model_loader: - kv  21:             llama4.attention.head_count_kv u32              = 8
+llama_model_loader: - kv  22:                      llama4.rope.freq_base f32              = 500000.000000
+llama_model_loader: - kv  23:    llama4.attention.layer_norm_rms_epsilon f32              = 0.000010
+llama_model_loader: - kv  24:                        llama4.expert_count u32              = 16
+llama_model_loader: - kv  25:                   llama4.expert_used_count u32              = 1
+llama_model_loader: - kv  26:                llama4.attention.key_length u32              = 128
+llama_model_loader: - kv  27:              llama4.attention.value_length u32              = 128
+llama_model_loader: - kv  28:                          llama4.vocab_size u32              = 202048
+llama_model_loader: - kv  29:                llama4.rope.dimension_count u32              = 128
+llama_model_loader: - kv  30:           llama4.interleave_moe_layer_step u32              = 1
+llama_model_loader: - kv  31:          llama4.expert_feed_forward_length u32              = 8192
+llama_model_loader: - kv  32:                       tokenizer.ggml.model str              = gpt2
+llama_model_loader: - kv  33:                         tokenizer.ggml.pre str              = llama4
+llama_model_loader: - kv  34:                      tokenizer.ggml.tokens arr[str,202048]  = ["À", "Á", "õ", "ö", "÷", "ø", ...
+llama_model_loader: - kv  35:                  tokenizer.ggml.token_type arr[i32,202048]  = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+llama_model_loader: - kv  36:                      tokenizer.ggml.merges arr[str,439802]  = ["Ġ Ġ", "Ġ ĠĠĠ", "ĠĠ ĠĠ", "...
+llama_model_loader: - kv  37:                tokenizer.ggml.bos_token_id u32              = 200000
+llama_model_loader: - kv  38:                tokenizer.ggml.eos_token_id u32              = 200008
+llama_model_loader: - kv  39:            tokenizer.ggml.padding_token_id u32              = 200018
+llama_model_loader: - kv  40:               tokenizer.ggml.add_bos_token bool             = true
+llama_model_loader: - kv  41:                    tokenizer.chat_template str              = {{- bos_token }}\n{%- if custom_tools ...
+llama_model_loader: - kv  42:               general.quantization_version u32              = 2
+llama_model_loader: - kv  43:                          general.file_type u32              = 15
+llama_model_loader: - kv  44:                      quantize.imatrix.file str              = Llama-4-Scout-17B-16E-Instruct-GGUF/i...
+llama_model_loader: - kv  45:                   quantize.imatrix.dataset str              = unsloth_calibration_Llama-4-Scout-17B...
+llama_model_loader: - kv  46:             quantize.imatrix.entries_count u32              = 528
+llama_model_loader: - kv  47:              quantize.imatrix.chunks_count u32              = 729
+llama_model_loader: - kv  48:                                   split.no u16              = 0
+llama_model_loader: - kv  49:                        split.tensors.count i32              = 628
+llama_model_loader: - kv  50:                                split.count u16              = 2
+llama_model_loader: - type  f32:  146 tensors
+llama_model_loader: - type q4_K:  421 tensors
+llama_model_loader: - type q5_K:   43 tensors
+llama_model_loader: - type q6_K:   18 tensors
+print_info: file format = GGUF V3 (latest)
+print_info: file type   = Q4_K - Medium
+print_info: file size   = 57.73 GiB (4.60 BPW) 
+load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+load: special tokens cache size = 1135
+load: token to piece cache size = 1.3873 MB
+print_info: arch             = llama4
+print_info: vocab_only       = 0
+print_info: n_ctx_train      = 10485760
+print_info: n_embd           = 5120
+print_info: n_layer          = 48
+print_info: n_head           = 40
+print_info: n_head_kv        = 8
+print_info: n_rot            = 128
+print_info: n_swa            = 8192
+print_info: is_swa_any       = 1
+print_info: n_embd_head_k    = 128
+print_info: n_embd_head_v    = 128
+print_info: n_gqa            = 5
+print_info: n_embd_k_gqa     = 1024
+print_info: n_embd_v_gqa     = 1024
+print_info: f_norm_eps       = 0.0e+00
+print_info: f_norm_rms_eps   = 1.0e-05
+print_info: f_clamp_kqv      = 0.0e+00
+print_info: f_max_alibi_bias = 0.0e+00
+print_info: f_logit_scale    = 0.0e+00
+print_info: f_attn_scale     = 0.0e+00
+print_info: n_ff             = 16384
+print_info: n_expert         = 16
+print_info: n_expert_used    = 1
+print_info: causal attn      = 1
+print_info: pooling type     = 0
+print_info: rope type        = 0
+print_info: rope scaling     = linear
+print_info: freq_base_train  = 500000.0
+print_info: freq_scale_train = 1
+print_info: n_ctx_orig_yarn  = 10485760
+print_info: rope_finetuned   = unknown
+print_info: model type       = 17Bx16E (Scout)
+print_info: model params     = 107.77 B
+print_info: general.name     = Llama-4-Scout-17B-16E-Instruct
+print_info: vocab type       = BPE
+print_info: n_vocab          = 202048
+print_info: n_merges         = 439802
+print_info: BOS token        = 200000 '<|begin_of_text|>'
+print_info: EOS token        = 200008 '<|eot|>'
+print_info: PAD token        = 200018 '<|finetune_right_pad|>'
+print_info: LF token         = 198 'Ċ'
+print_info: FIM PRE token    = 200002 '<|fim_prefix|>'
+print_info: FIM SUF token    = 200004 '<|fim_suffix|>'
+print_info: FIM MID token    = 200003 '<|fim_middle|>'
+print_info: EOG token        = 200001 '<|end_of_text|>'
+print_info: EOG token        = 200008 '<|eot|>'
+print_info: max token length = 192
+load_tensors: loading model tensors, this can take a while... (mmap = false)
+load_tensors: offloading 48 repeating layers to GPU
+load_tensors: offloading output layer to GPU
+load_tensors: offloaded 49/49 layers to GPU
+load_tensors:      Vulkan0 model buffer size = 58558.57 MiB
+load_tensors:          CPU model buffer size =   554.94 MiB
+....................................................................................................
+llama_context: constructing llama_context
+llama_context: non-unified KV cache requires ggml_set_rows() - forcing unified KV cache
+llama_context: n_seq_max     = 1
+llama_context: n_ctx         = 4096
+llama_context: n_ctx_per_seq = 4096
+llama_context: n_batch       = 2048
+llama_context: n_ubatch      = 512
+llama_context: causal_attn   = 1
+llama_context: flash_attn    = 1
+llama_context: kv_unified    = true
+llama_context: freq_base     = 500000.0
+llama_context: freq_scale    = 1
+llama_context: n_ctx_per_seq (4096) < n_ctx_train (10485760) -- the full capacity of the model will not be utilized
+llama_context: Vulkan_Host  output buffer size =     0.77 MiB
+llama_kv_cache_unified_iswa: creating non-SWA KV cache, size = 4096 cells
+llama_kv_cache_unified:    Vulkan0 KV buffer size =   192.00 MiB
+llama_kv_cache_unified: size =  192.00 MiB (  4096 cells,  12 layers,  1/ 1 seqs), K (f16):   96.00 MiB, V (f16):   96.00 MiB
+llama_kv_cache_unified: LLAMA_SET_ROWS=0, using old ggml_cpy() method for backwards compatibility
+llama_kv_cache_unified_iswa: creating     SWA KV cache, size = 4096 cells
+llama_kv_cache_unified:    Vulkan0 KV buffer size =   576.00 MiB
+llama_kv_cache_unified: size =  576.00 MiB (  4096 cells,  36 layers,  1/ 1 seqs), K (f16):  288.00 MiB, V (f16):  288.00 MiB
+llama_kv_cache_unified: LLAMA_SET_ROWS=0, using old ggml_cpy() method for backwards compatibility
+llama_context:    Vulkan0 compute buffer size =   440.63 MiB
+llama_context: Vulkan_Host compute buffer size =    26.02 MiB
+llama_context: graph nodes  = 2420
+llama_context: graph splits = 2
+common_init_from_params: added <|end_of_text|> logit bias = -inf
+common_init_from_params: added <|eot|> logit bias = -inf
+common_init_from_params: setting dry_penalty_last_n to ctx_size = 4096
+common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+main: llama threadpool init, n_threads = 16
+
+system_info: n_threads = 16 (n_threads_batch = 16) / 32 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+
+sampler seed: 2510811977
+sampler params: 
+	repeat_last_n = 64, repeat_penalty = 1.000, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = 4096
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.800
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000
+sampler chain: logits -> logit-bias -> penalties -> dry -> top-n-sigma -> top-k -> typical -> top-p -> min-p -> xtc -> temp-ext -> dist 
+generate: n_ctx = 4096, n_batch = 2048, n_predict = 1, n_keep = 1
+
+Hello (
+
+llama_perf_sampler_print:    sampling time =       0.09 ms /     3 runs   (    0.03 ms per token, 32608.70 tokens per second)
+llama_perf_context_print:        load time =   16387.21 ms
+llama_perf_context_print: prompt eval time =     291.47 ms /     2 tokens (  145.73 ms per token,     6.86 tokens per second)
+llama_perf_context_print:        eval time =       0.00 ms /     1 runs   (    0.00 ms per token,      inf tokens per second)
+llama_perf_context_print:       total time =     319.42 ms /     3 tokens
+llama_perf_context_print:    graphs reused =          0
+    Elapsed #3: 17.154124582s
+    Run #3 status: 0
+  → Avg over 3 runs: 20.045s

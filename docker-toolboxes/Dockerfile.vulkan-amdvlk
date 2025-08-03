@@ -1,0 +1,38 @@
+FROM fedora:rawhide
+
+# Install build tools, Vulkan headers/loader, and glslc
+RUN dnf install -y \
+      git vim \
+      make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
+      vulkan-loader-devel mesa-vulkan-drivers \
+      radeontop glslc wget \
+    && dnf clean all
+
+# Get AMDVLK drivers
+RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
+    https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm
+RUN dnf install -y /tmp/amdvlk-*.rpm
+
+WORKDIR /opt/llama.cpp
+
+# Clone llama.cpp
+RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
+
+# Build with Vulkan support
+RUN git clean -xdf \
+ && git pull \
+ && git submodule update --recursive \
+ && cmake -S . -B build -G Ninja \
+      -DGGML_VULKAN=ON \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/usr \
+      -DLLAMA_BUILD_TESTS=OFF \
+      -DLLAMA_BUILD_EXAMPLES=ON \
+      -DLLAMA_BUILD_SERVER=ON \
+ && cmake --build build --config Release \
+ && cmake --install build --config Release
+
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+CMD ["/bin/bash"]
