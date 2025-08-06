@@ -35,11 +35,13 @@ jobs:
         run: echo "BUILD_TS=$(date +%Y%m%dT%H%M%S)" >> $GITHUB_ENV
 
       - name: Build & push ${{ matrix.backend }}
+        # switch into toolboxes/ so that Dockerfile.* and gguf-vram-estimator.py are in context
+        working-directory: toolboxes
         run: |
           set -euo pipefail
 
           BACKEND="${{ matrix.backend }}"
-          DF="toolboxes/Dockerfile.${BACKEND}"
+          DF="Dockerfile.${BACKEND}"
           LOCAL_IMAGE="${LOCAL_PREFIX}-${BACKEND}"
           BUILD_TAG="${BACKEND}_${BUILD_TS}"
           IMMUTABLE_REF="${DOCKERHUB_REPO}:${BUILD_TAG}"
