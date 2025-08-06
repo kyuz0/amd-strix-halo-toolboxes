@@ -29,25 +29,23 @@ ENV ROCM_PATH=/opt/rocm-7.0 \
     CPATH=/opt/rocm-7.0/include \
     PKG_CONFIG_PATH=/opt/rocm-7.0/lib/pkgconfig
 
-# 5) (Optional) profile.d snippet for login & interactive shells
-RUN tee /etc/profile.d/rocm.sh << 'EOF'
-export ROCM_PATH=/opt/rocm-7.0
-export HIP_PLATFORM=amd
-export HIP_PATH=/opt/rocm-7.0
-export HIP_CLANG_PATH=/opt/rocm-7.0/llvm/bin
-export HIP_INCLUDE_PATH=/opt/rocm-7.0/include
-export HIP_LIB_PATH=/opt/rocm-7.0/lib
-export HIP_DEVICE_LIB_PATH=/opt/rocm-7.0/lib/llvm/amdgcn/bitcode
-
-export PATH="$ROCM_PATH/bin:$HIP_CLANG_PATH:$PATH"
-export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/llvm/lib"
-export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64"
-export CPATH="$HIP_INCLUDE_PATH"
-export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig"
-EOF
-
-RUN chmod +x /etc/profile.d/rocm.sh \
- && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
+# 5) profile.d snippet for login & interactive shells
+RUN printf '%s\n' \
+  'export ROCM_PATH=/opt/rocm-7.0' \
+  'export HIP_PLATFORM=amd' \
+  'export HIP_PATH=/opt/rocm-7.0' \
+  'export HIP_CLANG_PATH=/opt/rocm-7.0/llvm/bin' \
+  'export HIP_INCLUDE_PATH=/opt/rocm-7.0/include' \
+  'export HIP_LIB_PATH=/opt/rocm-7.0/lib' \
+  'export HIP_DEVICE_LIB_PATH=/opt/rocm-7.0/lib/llvm/amdgcn/bitcode' \
+  'export PATH="$ROCM_PATH/bin:$HIP_CLANG_PATH:$PATH"' \
+  'export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/llvm/lib"' \
+  'export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64"' \
+  'export CPATH="$HIP_INCLUDE_PATH"' \
+  'export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig"' \
+  > /etc/profile.d/rocm.sh \
+  && chmod +x /etc/profile.d/rocm.sh \
+  && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
 
 # 6) Clone llama.cpp
 WORKDIR /opt/llama.cpp
