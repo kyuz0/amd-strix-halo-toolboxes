@@ -48,8 +48,17 @@ jobs:
         backend: ${{ fromJson(needs.prepare.outputs.matrix_json) }}
 
     steps:
-      - name: Maximize build disk space
-        uses: crazy-max/ghaction-disk-space@v1
+      - name: Free up runner disk space
+        run: |
+          echo "Before cleanup:" && df -h /
+          sudo rm -rf \
+            /usr/share/dotnet \
+            /usr/local/lib/android \
+            /opt/ghc \
+            /opt/hostedtoolcache/CodeQL
+          docker system prune --all --force
+          docker builder prune --all --force
+          echo "After cleanup:" && df -h /
 
       - name: Check out repository
         uses: actions/checkout@v3
