@@ -1,0 +1,69 @@
+name: Build & Publish AMD Strix Halo Toolboxes (Params)
+
+# Only manual runs, with a "backends" input
+on:
+  workflow_dispatch:
+    inputs:
+      backends:
+        description: >
+          Comma-separated list of backends to build
+          (e.g. "rocm-7beta,rocm-7rc").
+          Use "all" to build everything.
+        required: false
+        default: all
+
+env:
+  DOCKERHUB_REPO: docker.io/kyuz0/amd-strix-halo-toolboxes
+  LOCAL_PREFIX: llama
+
+jobs:
+  build-and-push:
+    name: Build & push ${{ matrix.backend }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        backend: ${{ fromJson(
+          github.event.inputs.backends == 'all'
+            ? '["rocm-6.4.2","rocm-7beta","rocm-7rc","vulkan-amdvlk","vulkan-radv"]'
+            : format(
+                '[\"{0}\"]',
+                replace(github.event.inputs.backends, ',', '\",\"')
+              )
+        ) }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set build timestamp
+        run: echo "BUILD_TS=$(date +%Y%m%dT%H%M%S)" >> $GITHUB_ENV
+
+      - name: Build & push ${{ matrix.backend }}
+        working-directory: toolboxes
+        run: |
+          set -euo pipefail
+
+          B="${{ matrix.backend }}"
+          DF="Dockerfile.$B"
+          LI="${LOCAL_PREFIX}-$B"
+          TAG="${B}_${BUILD_TS}"
+          IMM_REF="${DOCKERHUB_REPO}:${TAG}"
+          CH_REF="${DOCKERHUB_REPO}:${B}"
+
+          echo "→ Building $DF"
+          docker build --no-cache -t "$LI" -f "$DF" .
+
+          echo "→ Pushing immutable → $IMM_REF"
+          docker tag "$LI" "$IMM_REF"
+          docker push "$IMM_REF"
+
+          echo "→ Updating channel → $CH_REF"
+          docker tag "$IMM_REF" "$CH_REF"
+          docker push "$CH_REF"
