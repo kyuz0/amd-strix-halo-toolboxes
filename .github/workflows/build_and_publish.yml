@@ -1,25 +1,51 @@
-# File: .github/workflows/build-and-publish.yml
-name: Build & Publish AMD Strix Halo Toolboxes
+name: Build & Publish AMD Strix Halo Toolboxes (Params)
 
 on:
   workflow_dispatch:
+    inputs:
+      backends:
+        description: >
+          Comma-separated backends to build (e.g. "rocm-7beta,rocm-7rc").
+          Use "all" to build everything.
+        required: false
+        default: all
 
 env:
   DOCKERHUB_REPO: docker.io/kyuz0/amd-strix-halo-toolboxes
   LOCAL_PREFIX: llama
 
 jobs:
+  # 1) Prepare a clean JSON array for the matrix
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix_json: ${{ steps.mk.outputs.matrix_json }}
+    steps:
+      - id: mk
+        shell: bash
+        run: |
+          # Input from the Run workflow form
+          IN='${{ inputs.backends }}'
+
+          if [[ "$IN" == "all" || -z "$IN" ]]; then
+            JSON='["rocm-6.4.2","rocm-7beta","rocm-7rc","vulkan-amdvlk","vulkan-radv"]'
+          else
+            # Remove spaces and build JSON array from comma list
+            IN_CLEAN=$(echo "$IN" | tr -d '[:space:]')
+            JSON='["'${IN_CLEAN//,/\",\"}'"]'
+          fi
+
+          echo "matrix_json=${JSON}" >> "$GITHUB_OUTPUT"
+          echo "Using matrix: ${JSON}"
+
+  # 2) Build each backend in parallel using the prepared matrix
   build-and-push:
+    needs: prepare
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        backend:
-          - rocm-6.4.2
-          - rocm-7beta
-          - rocm-7rc
-          - vulkan-amdvlk
-          - vulkan-radv
+        backend: ${{ fromJson(needs.prepare.outputs.matrix_json) }}
 
     steps:
       - name: Check out repository
@@ -36,22 +62,23 @@ jobs:
 
       - name: Build & push ${{ matrix.backend }}
         working-directory: toolboxes
+        shell: bash
         run: |
           set -euo pipefail
           B="${{ matrix.backend }}"
           DF="Dockerfile.$B"
           LI="${LOCAL_PREFIX}-$B"
           TAG="${B}_${BUILD_TS}"
-          IMM_REF="${DOCKERHUB_REPO}:$TAG"
-          CH_REF="${DOCKERHUB_REPO}:$B"
+          IMM="${DOCKERHUB_REPO}:${TAG}"
+          CHN="${DOCKERHUB_REPO}:${B}"
 
-          echo "→ Building $DF"
-          docker build --no-cache -t "$LI" -f "$DF" .
+          echo "→ Building ${DF}"
+          docker build --no-cache -t "${LI}" -f "${DF}" .
 
-          echo "→ Pushing immutable → $IMM_REF"
-          docker tag "$LI" "$IMM_REF"
-          docker push "$IMM_REF"
+          echo "→ Tag & push immutable → ${IMM}"
+          docker tag "${LI}" "${IMM}"
+          docker push "${IMM}"
 
-          echo "→ Updating channel → $CH_REF"
-          docker tag "$IMM_REF" "$CH_REF"
-          docker push "$CH_REF"
+          echo "→ Tag & push channel → ${CHN}"
+          docker tag "${IMM}" "${CHN}"
+          docker push "${CHN}"
