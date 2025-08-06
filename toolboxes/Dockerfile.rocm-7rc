@@ -45,6 +45,7 @@ export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64"
 export CPATH="$HIP_INCLUDE_PATH"
 export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig"
 EOF
+
 RUN chmod +x /etc/profile.d/rocm.sh \
  && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
 
