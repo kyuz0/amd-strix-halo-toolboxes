@@ -1,8 +1,14 @@
-# File: .github/workflows/build-and-push.yml
 name: Build & Push AMD Strix Halo Toolboxes
 
 on:
   workflow_dispatch:
+    inputs:
+      backends:
+        description: |
+          Comma-separated list of backends to build (e.g. "rocm-7beta,rocm-7rc").
+          Use "all" to build everything.
+        required: false
+        default: all
 
 env:
   DOCKERHUB_REPO: docker.io/kyuz0/amd-strix-halo-toolboxes
@@ -14,12 +20,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        backend:
-          - rocm-6.4.2
-          - rocm-7beta
-          - rocm-7rc
-          - vulkan-amdvlk
-          - vulkan-radv
+        # if inputs.backends == "all", expand to the full list
+        # otherwise split the comma list into an array
+        backend: ${{ fromJSON(
+          github.event.inputs.backends == 'all'
+            ? '["rocm-6.4.2","rocm-7beta","rocm-7rc","vulkan-amdvlk","vulkan-radv"]'
+            : format(
+                '[\"{}\"]',
+                replace(github.event.inputs.backends, ',', '\",\"')
+              )
+        ) }}
 
     steps:
       - name: Check out repository
@@ -35,7 +45,6 @@ jobs:
         run: echo "BUILD_TS=$(date +%Y%m%dT%H%M%S)" >> $GITHUB_ENV
 
       - name: Build & push ${{ matrix.backend }}
-        # switch into toolboxes/ so that Dockerfile.* and gguf-vram-estimator.py are in context
         working-directory: toolboxes
         run: |
           set -euo pipefail
