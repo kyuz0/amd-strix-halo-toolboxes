@@ -1,6 +1,6 @@
-# File: .github/workflows/build_and_publish.yml
 name: Build & Publish AMD Strix Halo Toolboxes
 
+# 🔒 Manual‐only trigger with a “backends” input
 on:
   workflow_dispatch:
     inputs:
@@ -8,7 +8,7 @@ on:
         description: >
           Comma-separated list of backends to build
           (e.g. "rocm-7beta,rocm-7rc").  
-          Use `all` to build everything.
+          Use "all" to build the full matrix.
         required: false
         default: all
 
@@ -18,6 +18,7 @@ env:
 
 jobs:
   build-and-push:
+    name: Build & Push ${{ matrix.backend }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -32,7 +33,8 @@ jobs:
         ) }}
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -40,28 +42,27 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set build timestamp
+      - name: Set timestamp
         run: echo "BUILD_TS=$(date +%Y%m%dT%H%M%S)" >> $GITHUB_ENV
 
       - name: Build & push ${{ matrix.backend }}
         working-directory: toolboxes
         run: |
           set -euo pipefail
-
           B="${{ matrix.backend }}"
           DF="Dockerfile.$B"
           LI="${LOCAL_PREFIX}-$B"
           TAG="${B}_${BUILD_TS}"
-          IMM="${DOCKERHUB_REPO}:$TAG"
-          CHAN="${DOCKERHUB_REPO}:$B"
+          IMM_REF="${DOCKERHUB_REPO}:$TAG"
+          CH_REF="${DOCKERHUB_REPO}:$B"
 
           echo "→ Building $DF"
           docker build --no-cache -t "$LI" -f "$DF" .
 
-          echo "→ Pushing immutable → $IMM"
-          docker tag "$LI" "$IMM"
-          docker push "$IMM"
+          echo "→ Pushing immutable → $IMM_REF"
+          docker tag "$LI" "$IMM_REF"
+          docker push "$IMM_REF"
 
-          echo "→ Updating channel → $CHAN"
-          docker tag "$IMM" "$CHAN"
-          docker push "$CHAN"
+          echo "→ Updating channel → $CH_REF"
+          docker tag "$IMM_REF" "$CH_REF"
+          docker push "$CH_REF"
