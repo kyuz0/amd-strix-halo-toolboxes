@@ -1,4 +1,4 @@
-name: Build & Publish AMD Strix Halo Toolboxes (Params)
+name: Build & Publish AMD Strix Halo Toolboxes
 
 on:
   workflow_dispatch:
@@ -48,6 +48,9 @@ jobs:
         backend: ${{ fromJson(needs.prepare.outputs.matrix_json) }}
 
     steps:
+      - name: Maximize build disk space
+        uses: crazy-max/ghaction-disk-space@v1
+
       - name: Check out repository
         uses: actions/checkout@v3
 
