@@ -1,0 +1,57 @@
+# File: .github/workflows/build-and-push.yml
+name: Build & Push AMD Strix Halo Toolboxes
+
+on:
+  workflow_dispatch:
+
+env:
+  DOCKERHUB_REPO: docker.io/kyuz0/amd-strix-halo-toolboxes
+  LOCAL_PREFIX: llama
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        backend:
+          - rocm-6.4.2
+          - rocm-7beta
+          - rocm-7rc
+          - vulkan-amdvlk
+          - vulkan-radv
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set build timestamp
+        run: echo "BUILD_TS=$(date +%Y%m%dT%H%M%S)" >> $GITHUB_ENV
+
+      - name: Build & push ${{ matrix.backend }}
+        run: |
+          set -euo pipefail
+
+          BACKEND="${{ matrix.backend }}"
+          DF="toolboxes/Dockerfile.${BACKEND}"
+          LOCAL_IMAGE="${LOCAL_PREFIX}-${BACKEND}"
+          BUILD_TAG="${BACKEND}_${BUILD_TS}"
+          IMMUTABLE_REF="${DOCKERHUB_REPO}:${BUILD_TAG}"
+          CHANNEL_REF="${DOCKERHUB_REPO}:${BACKEND}"
+
+          echo "→ Building ${DF}"
+          docker build --no-cache -t "${LOCAL_IMAGE}" -f "${DF}" .
+
+          echo "→ Tag & push immutable → ${IMMUTABLE_REF}"
+          docker tag "${LOCAL_IMAGE}" "${IMMUTABLE_REF}"
+          docker push "${IMMUTABLE_REF}"
+
+          echo "→ Tag & push channel → ${CHANNEL_REF}"
+          docker tag "${IMMUTABLE_REF}" "${CHANNEL_REF}"
+          docker push "${CHANNEL_REF}"
