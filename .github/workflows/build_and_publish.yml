@@ -1,16 +1,8 @@
+# File: .github/workflows/build-and-publish.yml
 name: Build & Publish AMD Strix Halo Toolboxes
 
-# 🔒 Manual‐only trigger with a “backends” input
 on:
   workflow_dispatch:
-    inputs:
-      backends:
-        description: >
-          Comma-separated list of backends to build
-          (e.g. "rocm-7beta,rocm-7rc").  
-          Use "all" to build the full matrix.
-        required: false
-        default: all
 
 env:
   DOCKERHUB_REPO: docker.io/kyuz0/amd-strix-halo-toolboxes
@@ -18,22 +10,19 @@ env:
 
 jobs:
   build-and-push:
-    name: Build & Push ${{ matrix.backend }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        backend: ${{ fromJson(
-          inputs.backends == 'all'
-            ? '["rocm-6.4.2","rocm-7beta","rocm-7rc","vulkan-amdvlk","vulkan-radv"]'
-            : format(
-                '[\"{0}\"]',
-                replace(inputs.backends, ',', '\",\"')
-              )
-        ) }}
+        backend:
+          - rocm-6.4.2
+          - rocm-7beta
+          - rocm-7rc
+          - vulkan-amdvlk
+          - vulkan-radv
 
     steps:
-      - name: Check out code
+      - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Log in to Docker Hub
@@ -42,7 +31,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Set timestamp
+      - name: Set build timestamp
         run: echo "BUILD_TS=$(date +%Y%m%dT%H%M%S)" >> $GITHUB_ENV
 
       - name: Build & push ${{ matrix.backend }}
