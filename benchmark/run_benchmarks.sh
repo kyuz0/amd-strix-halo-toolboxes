@@ -40,12 +40,18 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
     CMD="${CMDS[$ENV]}"
     OUT="$RESULTDIR/${MODEL_NAME}__${ENV}.log"
 
+    # skip if we already have a non-empty log
+    if [[ -s "$OUT" ]]; then
+      echo "⏩ Skipping [${ENV}] ${MODEL_NAME}, log already exists at $OUT"
+      continue
+    fi
+
     # build command array
     FULL_CMD=( $CMD -ngl 99 -mmp 0 -m "$MODEL_PATH" )
 
     printf "\n▶ [%s] %s\n" "$ENV" "$MODEL_NAME"
     printf "  → log: %s\n" "$OUT"
-    printf "  → cmd: %s\n\n" "${FULL_CMD[*]}"    # ← single‐line echo
+    printf "  → cmd: %s\n\n" "${FULL_CMD[*]}"
 
     # execute
     "${FULL_CMD[@]}" >"$OUT" 2>&1 || {
@@ -54,4 +60,3 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
     }
   done
 done
-
