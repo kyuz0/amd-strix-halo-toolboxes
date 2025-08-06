@@ -84,6 +84,15 @@ To use Llama.cpp with hardware acceleration inside a toolbox container, you must
 > * Extra groups (`video`, `render`, `sudo`) may be required for full access to GPU nodes and compute features, especially with ROCm.
 > * Use `--security-opt seccomp=unconfined` to avoid seccomp sandbox issues (needed for some GPU syscalls).
 
+#### 2.1.1 Updating boxes 
+
+If you want to make sure to get updated version of the toolboxes, always pull the new image and delete any existing box:
+
+```sh
+podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-amdvlk
+toolbox rm -f llama-vulkan-amdvlk
+```
+
 ### 2.2 Running models inside the toolboxes&#x20;
 
 Before running any commands, you must first enter your toolbox container shell using:
