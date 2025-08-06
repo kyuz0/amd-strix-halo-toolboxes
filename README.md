@@ -2,6 +2,10 @@
 
 This project provides pre-built containers (“toolboxes”) for running LLMs on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs. Toolbx is the standard developer container system in Fedora (and now works on Ubuntu, openSUSE, Arch, etc).
 
+## Watch the YouTube Video
+
+[![Watch the YouTube Video](https://img.youtube.com/vi/wCBLMXgk3No/maxresdefault.jpg)](https://youtu.be/wCBLMXgk3No)
+
 ## Why Toolbx?
 
 * Reproducible: never pollute your host system
@@ -144,15 +148,18 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 
 Below are some results from real runs on Strix Halo hardware of `llama-bench`. For full tables and model-by-model breakdowns (including both prompt processing and token generation speeds), see [docs/benchmarks.md](docs/benchmarks.md).
 
-| Model                          | Vulkan (AMDVLK)  | Vulkan (RADV)    | ROCm 6.4.2       | ROCm 7.0 Beta    | ROCm 7.0 RC      | 🏆 Best PP    | 🏆 Best TG     |
-| ------------------------------ | ---------------- | ---------------- | ---------------- | ---------------- | ---------------- | ------------- | -------------- |
-| **Gemma3 12B Q8\_0**           | 686 pp / 13.9 tg | 509 pp / 13.7 tg | 223 pp / 13.8 tg | 223 pp / 13.8 tg | 223 pp / 13.8 tg | **AMDVLK**    | **AMDVLK**     |
-| **Gemma3 27B BF16**            | ❌ Crash          | 135 pp / 4.0 tg  | 89 pp / 4.0 tg   | 82 pp / 4.0 tg   | 83 pp / 4.0 tg   | **RADV**      | **ROCm6.4.2**  |
-| **Llama-4-Scout 17B Q8\_0**    | 241 pp / 12.3 tg | 146 pp / 12.3 tg | ❌ Crash          | ❌ Crash          | ❌ Crash          | **AMDVLK**    | **AMDVLK**     |
-| **Llama-4-Scout 17B Q4\_K XL** | 209 pp / 20.1 tg | 133 pp / 20.0 tg | 133 pp / 17.3 tg | 134 pp / 17.3 tg | ❌ Crash          | **AMDVLK**    | **AMDVLK**     |
-| **Qwen3 MoE 30B BF16**         | 90 pp / 8.0 tg   | 71 pp / 7.3 tg   | 158 pp / 22.9 tg | 151 pp / 23.8 tg | 155 pp / 23.1 tg | **ROCm6.4.2** | **ROCm7 Beta** |
-| **Qwen3-235B Q3\_K XL**        | 99 pp / 15.7 tg  | 58 pp / 16.3 tg  | 69 pp / 13.5 tg  | ❌ Crash          | 75 pp / 13.6 tg  | **AMDVLK**    | **RADV**       |
-
+| Model | Vulkan (AMDVLK) | Vulkan (RADV) | ROCm 6.4.2 | ROCm 7.0 Beta | ROCm 7.0 RC | 🏆 Best PP | 🏆 Best TG |
+|---|---|---|---|---|---|---|---|
+| **Gemma3 12B Q8_0** | 683 pp / 13.8 tg | 509 pp / 13.7 tg | 223 pp / 13.8 tg | 223 pp / 13.8 tg | 223 pp / 13.8 tg | 🏆 **AMDVLK** | 🏆 **AMDVLK** |
+| **Gemma3 27B BF16** | ⚠️ Load Error | 135 pp / 4.0 tg | 89 pp / 4.0 tg | 82 pp / 4.0 tg | 83 pp / 4.0 tg | 🏆 **RADV** | 🏆 **ROCm6.4.2** |
+| **Llama-4-Scout 17B Q8_0** | 239 pp / 12.2 tg | 146 pp / 12.3 tg | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **Llama-4-Scout 17B Q4_K XL** | 209 pp / 20.1 tg | 133 pp / 20.0 tg | 133 pp / 17.3 tg | 134 pp / 17.4 tg | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **AMDVLK** |
+| **Qwen3 30B BF16** | 91 pp / 8.0 tg | 71 pp / 7.3 tg | 158 pp / 22.9 tg | 151 pp / 23.8 tg | 155 pp / 23.1 tg | 🏆 **ROCm6.4.2** | 🏆 **ROCm7 Beta** |
+| **Qwen3-235B Q3_K XL** | 100 pp / 15.7 tg | 58 pp / 16.3 tg | 69 pp / 13.5 tg | ⚠️ GPU Hang | 75 pp / 13.6 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **GLM-4.5-Air-UD-Q4_K_XL** | 200 pp / 22.8 tg | 128 pp / 22.9 tg | ⚠️ Runtime Error | ⚠️ GPU Hang | 129 pp / 19.6 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **GLM-4.5-Air-UD-Q6_K_XL** | 221 pp / 16.5 tg | 127 pp / 16.8 tg | 125 pp / 15.3 tg | ⚠️ GPU Hang | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **gpt-oss-120b-mxfp4** | 486 pp / 48.1 tg | 239 pp / 48.9 tg | 353 pp / 43.6 tg | ⚠️ GPU Hang | 351 pp / 44.6 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **gpt-oss-20b-mxfp4** | 1206 pp / 68.9 tg | 647 pp / 69.8 tg | 581 pp / 64.3 tg | 584 pp / 64.4 tg | 584 pp / 64.4 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
 
 * **pp = tokens/sec, prompt processing (pre-fill, max speed)**
 * **tg = tokens/sec, generation (interactive, single token at a time)**
