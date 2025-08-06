@@ -84,16 +84,32 @@ To use Llama.cpp with hardware acceleration inside a toolbox container, you must
 > * Extra groups (`video`, `render`, `sudo`) may be required for full access to GPU nodes and compute features, especially with ROCm.
 > * Use `--security-opt seccomp=unconfined` to avoid seccomp sandbox issues (needed for some GPU syscalls).
 
-#### 2.1.1 Updating boxes 
+Here’s how you can **integrate usage of the refresh script** into your README, following the concise, direct style of the original:
 
-If you want to make sure to get updated version of the toolboxes, always pull the new image and delete any existing box:
 
-```sh
-podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-amdvlk
-toolbox rm -f llama-vulkan-amdvlk
+### 2.1.1 Toolbox Refresh Script (Automatic Updates)
+
+To pull the latest container images and recreate toolboxes cleanly, use the provided script:
+
+#### 📦 `refresh-toolboxes.sh`
+
+```bash
+./refresh-toolboxes.sh all
 ```
 
-### 2.2 Running models inside the toolboxes&#x20;
+This will:
+
+1. Delete existing toolboxes (if any)
+2. Pull the latest images from DockerHub
+3. Recreate each toolbox with correct GPU access flags
+
+You can also refresh just one or more toolboxes:
+
+```bash
+./refreshtoolboxes.sh llama-vulkan-amdvlk llama-rocm-6.4.2
+```
+
+### 2.2 Running models inside the toolboxes
 
 Before running any commands, you must first enter your toolbox container shell using:
 
