@@ -27,7 +27,7 @@ EOF
 # Install build dependencies and tools
 RUN dnf install -y \
        make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
-       rocminfo radeontop rocm \
+       rocm \
        git vim \
     && dnf clean all
 
