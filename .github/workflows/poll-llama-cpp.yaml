@@ -1,0 +1,77 @@
+name: Poll llama.cpp and Trigger Docker Build
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  workflow_dispatch:
+
+jobs:
+  poll-and-trigger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (needed for artifact access)
+        uses: actions/checkout@v4
+
+      - name: Get latest commit from llama.cpp/main
+        id: fetch
+        run: |
+          echo "🔍 Fetching latest commit SHA from llama.cpp..."
+          LATEST_SHA=$(curl -s https://api.github.com/repos/ggml-org/llama.cpp/commits/main | jq -r .sha)
+          echo "✅ Latest SHA: $LATEST_SHA"
+          echo "latest_sha=$LATEST_SHA" >> $GITHUB_OUTPUT
+
+      - name: Download last known SHA artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: last-llama-sha
+        continue-on-error: true
+
+      - name: Read last known SHA
+        id: last
+        run: |
+          if [[ -f .last_commit_sha ]]; then
+            LAST_SHA=$(cat .last_commit_sha)
+            echo "📦 Found previous SHA: $LAST_SHA"
+            echo "last_sha=$LAST_SHA" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ No previous SHA found (first run or artifact missing)"
+            echo "last_sha=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Compare SHAs
+        id: compare
+        run: |
+          echo "🧮 Comparing SHAs..."
+          echo "Previous: ${{ steps.last.outputs.last_sha }}"
+          echo "Current:  ${{ steps.fetch.outputs.latest_sha }}"
+          if [[ "${{ steps.fetch.outputs.latest_sha }}" != "${{ steps.last.outputs.last_sha }}" ]]; then
+            echo "🔁 Detected new commit. Triggering build workflow."
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ No changes detected. Skipping trigger."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger Build & Publish Workflow
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🚀 Sending workflow_dispatch event to trigger Docker build..."
+          curl -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/build-publish-strix.yml/dispatches \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -d '{"ref":"main","inputs":{"backends":"all"}}'
+
+      - name: Save latest SHA to file
+        if: steps.compare.outputs.changed == 'true'
+        run: echo "${{ steps.fetch.outputs.latest_sha }}" > .last_commit_sha
+
+      - name: Upload updated SHA artifact
+        if: steps.compare.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: last-llama-sha
+          path: .last_commit_sha
+          retention-days: 2
