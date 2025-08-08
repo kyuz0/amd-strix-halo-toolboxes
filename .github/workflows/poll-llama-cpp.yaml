@@ -1,77 +1,105 @@
-name: Poll llama.cpp and Trigger Docker Build
+name: Poll llama.cpp & Trigger Build
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Every 30 minutes
+    - cron: '0 0,12 * * *'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
 
 jobs:
   poll-and-trigger:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout (needed for artifact access)
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Get latest commit from llama.cpp/main
-        id: fetch
+      - id: fetch
+        shell: bash
         run: |
-          echo "🔍 Fetching latest commit SHA from llama.cpp..."
-          LATEST_SHA=$(curl -s https://api.github.com/repos/ggml-org/llama.cpp/commits/main | jq -r .sha)
+          set -euo pipefail
+          REPO_URL="https://github.com/ggml-org/llama.cpp.git"
+          DEFAULT_REF=$(git ls-remote --symref "$REPO_URL" HEAD | awk '/^ref:/ {print $2}')
+          echo "📌 Default branch: ${DEFAULT_REF#refs/heads/}"
+          LATEST_SHA=$(git ls-remote "$REPO_URL" "$DEFAULT_REF" | cut -f1)
+          if [[ -z "$LATEST_SHA" ]]; then echo "❌ No SHA found"; exit 1; fi
           echo "✅ Latest SHA: $LATEST_SHA"
-          echo "latest_sha=$LATEST_SHA" >> $GITHUB_OUTPUT
+          echo "latest_sha=$LATEST_SHA" >> "$GITHUB_OUTPUT"
 
-      - name: Download last known SHA artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: last-llama-sha
-        continue-on-error: true
-
-      - name: Read last known SHA
-        id: last
+      - id: previous
+        shell: bash
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [[ -f .last_commit_sha ]]; then
-            LAST_SHA=$(cat .last_commit_sha)
-            echo "📦 Found previous SHA: $LAST_SHA"
-            echo "last_sha=$LAST_SHA" >> $GITHUB_OUTPUT
+          set -euo pipefail
+          echo "🔎 Checking for prior artifact 'last-llama-sha'…"
+          ART_ID=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${GH_REPO}/actions/artifacts?per_page=100" \
+            | jq -r '.artifacts | map(select(.name=="last-llama-sha" and .expired==false)) | sort_by(.created_at) | reverse | .[0].id // empty')
+          if [[ -n "$ART_ID" ]]; then
+            echo "📦 Found artifact id: $ART_ID (downloading)"
+            curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -L \
+              "https://api.github.com/repos/${GH_REPO}/actions/artifacts/${ART_ID}/zip" -o artifact.zip
+            unzip -l artifact.zip || true
+            unzip -p artifact.zip last_commit_sha > last_commit_sha || true
           else
-            echo "⚠️ No previous SHA found (first run or artifact missing)"
-            echo "last_sha=" >> $GITHUB_OUTPUT
+            echo "ℹ️ No prior artifact found"
+          fi
+          PREV_SHA=""
+          if [[ -f last_commit_sha ]]; then PREV_SHA=$(cat last_commit_sha); fi
+          echo "🕓 Previous SHA: $PREV_SHA"
+          echo "previous_sha=$PREV_SHA" >> "$GITHUB_OUTPUT"
+
+      - id: compare
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "🧮 Comparing SHAs…"
+          echo "prev: ${{ steps.previous.outputs.previous_sha }}"
+          echo "curr: ${{ steps.fetch.outputs.latest_sha }}"
+          if [[ "${{ steps.fetch.outputs.latest_sha }}" != "${{ steps.previous.outputs.previous_sha }}" ]]; then
+            echo "🔁 New commit detected"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "✅ No change"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Compare SHAs
-        id: compare
-        run: |
-          echo "🧮 Comparing SHAs..."
-          echo "Previous: ${{ steps.last.outputs.last_sha }}"
-          echo "Current:  ${{ steps.fetch.outputs.latest_sha }}"
-          if [[ "${{ steps.fetch.outputs.latest_sha }}" != "${{ steps.last.outputs.last_sha }}" ]]; then
-            echo "🔁 Detected new commit. Triggering build workflow."
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "✅ No changes detected. Skipping trigger."
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Trigger Build & Publish Workflow
+      - name: Trigger build_and_publish.yml on main
         if: steps.compare.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
-          echo "🚀 Sending workflow_dispatch event to trigger Docker build..."
-          curl -X POST https://api.github.com/repos/${{ github.repository }}/actions/workflows/build-publish-strix.yml/dispatches \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -d '{"ref":"main","inputs":{"backends":"all"}}'
+          set -euo pipefail
+          WF="build_and_publish.yml"
+          REF="main"
+          echo "🚀 Dispatching $WF on $REF…"
+          CODE=$(curl -s -o /tmp/resp -w "%{http_code}" \
+                 -X POST \
+                 -H "Accept: application/vnd.github+json" \
+                 -H "Authorization: Bearer $GH_TOKEN" \
+                 -d "{\"ref\":\"$REF\",\"inputs\":{\"backends\":\"all\"}}" \
+                 "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$WF/dispatches")
+          echo "HTTP $CODE"
+          if [[ "$CODE" != "204" ]]; then echo "Response:"; cat /tmp/resp; exit 1; fi
+          
 
-      - name: Save latest SHA to file
+      - name: Save new SHA
         if: steps.compare.outputs.changed == 'true'
-        run: echo "${{ steps.fetch.outputs.latest_sha }}" > .last_commit_sha
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf "%s" "${{ steps.fetch.outputs.latest_sha }}" > last_commit_sha
+          echo "💾 Saved $(wc -c < last_commit_sha) bytes to $(pwd)/last_commit_sha"
+          ls -la last_commit_sha
 
-      - name: Upload updated SHA artifact
+      - name: Upload last-SHA artifact
         if: steps.compare.outputs.changed == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: last-llama-sha
-          path: .last_commit_sha
-          retention-days: 2
+          path: last_commit_sha
+          retention-days: 7

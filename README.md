@@ -239,17 +239,19 @@ This should work on any Strix Halo. For a complete list of available hardware, s
 
 ### 6.2 Kernel Parameters (tested on Fedora 42)
 
-Add these boot parameters to enable unified memory and optimal performance:
+Add these these boot parameters to enable unified memory and optimal performance:
 
 ```
-amd_iommu=off amdgpu.gttsize=131072 ttm.pages_limit=335544321
-```
+amd_iommu=off amdgpu.gttsize=131072 ttm.pages_limit=33554432
 
-| Parameter                   | Purpose                                          |
-| --------------------------- | ------------------------------------------------ |
-| `amd_iommu=off`             | Disables IOMMU for lower latency                 |
-| `amdgpu.gttsize=131072`     | Enables unified GPU/system memory (up to 128 GB) |
-| `ttm.pages_limit=335544321` | Allows large pinned memory allocations           |
+```
+| Parameter                   | Purpose                                                                                  |
+| --------------------------- | ----------------------------------------------------------------------------------------- |
+| `amd_iommu=off`             | Disables IOMMU for lower latency                                                         |
+| `amdgpu.gttsize=131072`     | Enables unified GPU/system memory (up to 128 GiB); 131072 MiB ÷ 1024 = 128 GiB           |
+| `ttm.pages_limit=33554432`  | Allows large pinned memory allocations; 33554432 × 4 KiB = 134217728 KiB ÷ 1024² = 128 GiB |
+
+Source: https://www.reddit.com/r/LocalLLaMA/comments/1m9wcdc/comment/n5gf53d/?context=3&utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button.
 
 **Apply the changes:**
 
@@ -277,3 +279,4 @@ Follow this guide by TechnigmaAI for a working configuration on Ubuntu 24.04:
 * Most comprehesive repostiry of test builds for Strix Halo by lhl -> [https://github.com/lhl/strix-halo-testing/tree/main](https://github.com/lhl/strix-halo-testing/tree/main)
 * Ubuntu 24.04 configuration
   [https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-(Ubuntu-24.04)](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29)
+
