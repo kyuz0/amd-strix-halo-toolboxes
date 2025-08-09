@@ -92,9 +92,6 @@ To use Llama.cpp with hardware acceleration inside a toolbox container, you must
 > * Extra groups (`video`, `render`, `sudo`) may be required for full access to GPU nodes and compute features, especially with ROCm.
 > * Use `--security-opt seccomp=unconfined` to avoid seccomp sandbox issues (needed for some GPU syscalls).
 
-Here’s how you can **integrate usage of the refresh script** into your README, following the concise, direct style of the original:
-
-
 ### 2.1.1 Toolbox Refresh Script (Automatic Updates)
 
 To pull the latest container images and recreate toolboxes cleanly, use the provided script:
