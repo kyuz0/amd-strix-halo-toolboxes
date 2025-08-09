@@ -2,7 +2,7 @@ name: Poll llama.cpp & Trigger Build
 
 on:
   schedule:
-    - cron: '0 0,12 * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
