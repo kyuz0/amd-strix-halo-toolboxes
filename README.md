@@ -159,18 +159,18 @@ Representative LLMs were tested on **AMD Ryzen AI Max “Strix Halo”** across 
 
 PP = prompt processing (tokens/sec prefill), TG = token generation (tokens/sec interactive).
 
-| Model | Vulkan (AMDVLK) | Vulkan (RADV) | ROCm 6.4.2 | ROCm 6.4.2 + ROCWMMA | ROCm 7.0 Beta | ROCm 7.0 RC | 🏆 Best PP | 🏆 Best TG |
+| Model | 🏆 Best PP | 🏆 Best TG | Vulkan (AMDVLK) | Vulkan (RADV) | ROCm 6.4.2 | ROCm 6.4.2 + ROCWMMA | ROCm 7.0 Beta | ROCm 7.0 RC |
 |---|---|---|---|---|---|---|---|---|
-| **Gemma3 12B Q8_0** | 677 pp / 14.0 tg | 503 pp / 13.8 tg | 223 pp / 13.8 tg | 230 pp / 13.9 tg | 223 pp / 13.9 tg | 222 pp / 13.9 tg | 🏆 **AMDVLK** | 🏆 **AMDVLK** |
-| **Gemma3 27B BF16** | ⚠️ Load Error | 139 pp / 4.0 tg | 84 pp / 4.0 tg | 95 pp / 4.0 tg | 92 pp / 4.0 tg | 83 pp / 4.0 tg | 🏆 **RADV** | 🏆 **ROCm6.4.2+ROCWMMA** |
-| **Llama-4-Scout 17B Q8_0** | 260 pp / 12.2 tg | 172 pp / 12.3 tg | 135 pp / 11.6 tg | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **Llama-4-Scout 17B Q4_K XL** | 221 pp / 20.0 tg | 155 pp / 20.0 tg | 138 pp / 17.4 tg | ⚠️ GPU Hang | 139 pp / 17.6 tg | 124 pp / 17.6 tg | 🏆 **AMDVLK** | 🏆 **AMDVLK** |
-| **Qwen3 30B BF16** | 108 pp / 8.0 tg | 87 pp / 7.4 tg | 158 pp / 24.3 tg | 162 pp / 24.5 tg | 153 pp / 24.5 tg | 152 pp / 24.6 tg | 🏆 **ROCm6.4.2+ROCWMMA** | 🏆 **ROCm7 RC** |
-| **Qwen3-235B Q3_K XL** | 116 pp / 16.0 tg | 67 pp / 16.8 tg | 74 pp / 13.7 tg | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **GLM-4.5-Air-Q4_K_XL** | 202 pp / 22.8 tg | 133 pp / 23.3 tg | 130 pp / 19.4 tg | ⚠️ GPU Hang | ⚠️ GPU Hang | 130 pp / 20.1 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **GLM-4.5-Air-Q6_K_XL** | 225 pp / 16.5 tg | 132 pp / 17.0 tg | 125 pp / 15.3 tg | 114 pp / 15.5 tg | 121 pp / 15.5 tg | 124 pp / 15.5 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **gpt-oss-120b-mxfp4** | 546 pp / 48.1 tg | 255 pp / 49.0 tg | 353 pp / 44.1 tg | 408 pp / 45.0 tg | 355 pp / 45.0 tg | 353 pp / 45.1 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **gpt-oss-20b-mxfp4** | 1473 pp / 68.8 tg | 728 pp / 69.9 tg | 583 pp / 64.5 tg | 649 pp / 64.5 tg | 584 pp / 64.4 tg | 582 pp / 64.5 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **Gemma3 12B Q8_0** | 🏆 **AMDVLK** (FA off) | 🏆 **AMDVLK** (FA off) | 677 pp (FA off) / 14.0 tg (FA off) | 503 pp (FA off) / 13.8 tg (FA off) | 223 pp (FA off) / 13.8 tg (FA off) | 230 pp (FA on) / 13.9 tg (FA off) | 223 pp (FA off) / 13.9 tg (FA off) | 222 pp (FA off) / 13.9 tg (FA off) |
+| **Gemma3 27B BF16** | 🏆 **RADV** (FA on) | 🏆 **ROCm6.4.2+ROCWMMA** (FA off) | ⚠️ Load Error | 139 pp (FA on) / 4.0 tg (FA off) | 84 pp (FA on) / 4.0 tg (FA on) | 95 pp (FA on) / 4.0 tg (FA off) | 92 pp (FA off) / 4.0 tg (FA off) | 83 pp (FA on) / 4.0 tg (FA on) |
+| **Llama-4-Scout 17B Q8_0** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA off) | 260 pp (FA on) / 12.2 tg (FA off) | 172 pp (FA on) / 12.3 tg (FA off) | 135 pp (FA off) / 11.6 tg (FA off) | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error |
+| **Llama-4-Scout 17B Q4_K XL** | 🏆 **AMDVLK** (FA on) | 🏆 **AMDVLK** (FA off) | 221 pp (FA on) / 20.0 tg (FA off) | 155 pp (FA on) / 20.0 tg (FA off) | 138 pp (FA off) / 17.4 tg (FA off) | ⚠️ GPU Hang | 139 pp (FA off) / 17.6 tg (FA off) | 124 pp (FA on) / 17.6 tg (FA on) |
+| **Qwen3 30B BF16** | 🏆 **ROCm6.4.2+ROCWMMA** (FA on) | 🏆 **ROCm7 RC** (FA off) | 108 pp (FA on) / 8.0 tg (FA off) | 87 pp (FA on) / 7.4 tg (FA on) | 158 pp (FA off) / 24.3 tg (FA on) | 162 pp (FA on) / 24.5 tg (FA off) | 153 pp (FA off) / 24.5 tg (FA off) | 152 pp (FA off) / 24.6 tg (FA off) |
+| **Qwen3-235B Q3_K XL** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA on) | 116 pp (FA on) / 16.0 tg (FA off) | 67 pp (FA on) / 16.8 tg (FA on) | 74 pp (FA off) / 13.7 tg (FA off) | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error |
+| **GLM-4.5-Air-Q4_K_XL** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA on) | 202 pp (FA on) / 22.8 tg (FA on) | 133 pp (FA on) / 23.3 tg (FA on) | 130 pp (FA off) / 19.4 tg (FA off) | ⚠️ GPU Hang | ⚠️ GPU Hang | 130 pp (FA off) / 20.1 tg (FA on) |
+| **GLM-4.5-Air-Q6_K_XL** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA on) | 225 pp (FA on) / 16.5 tg (FA on) | 132 pp (FA on) / 17.0 tg (FA on) | 125 pp (FA off) / 15.3 tg (FA off) | 114 pp (FA off) / 15.5 tg (FA off) | 121 pp (FA off) / 15.5 tg (FA off) | 124 pp (FA off) / 15.5 tg (FA off) |
+| **gpt-oss-120b-mxfp4** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA off) | 546 pp (FA on) / 48.1 tg (FA off) | 255 pp (FA on) / 49.0 tg (FA off) | 353 pp (FA off) / 44.1 tg (FA off) | 408 pp (FA on) / 45.0 tg (FA off) | 355 pp (FA off) / 45.0 tg (FA off) | 353 pp (FA off) / 45.1 tg (FA off) |
+| **gpt-oss-20b-mxfp4** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA off) | 1473 pp (FA on) / 68.8 tg (FA off) | 728 pp (FA on) / 69.9 tg (FA off) | 583 pp (FA off) / 64.5 tg (FA off) | 649 pp (FA on) / 64.5 tg (FA off) | 584 pp (FA off) / 64.4 tg (FA off) | 582 pp (FA off) / 64.5 tg (FA off) |
 
 
 **Observations:**
