@@ -92,6 +92,75 @@
             align-items: center;
         }
 
+
+        .range-wrap {
+            position: relative;
+            height: 30px;
+        }
+
+        .range-wrap input[type="range"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            margin: 0;
+            background: transparent;
+            pointer-events: none;
+            appearance: none;
+        }
+
+        .range-wrap input[type="range"]::-webkit-slider-thumb {
+            pointer-events: auto;
+            appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid #fff;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .range-wrap input[type="range"]::-webkit-slider-thumb:hover {
+            background: #0451cc;
+            transform: scale(1.1);
+        }
+
+        .range-wrap input[type="range"]::-moz-range-thumb {
+            pointer-events: auto;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid #fff;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .range-wrap input[type="range"]::-moz-range-thumb:hover {
+            background: #0451cc;
+            transform: scale(1.1);
+        }
+
+        .range-track {
+            position: absolute;
+            top: 50%;
+            height: 6px;
+            width: 100%;
+            transform: translateY(-50%);
+            border-radius: 999px;
+            background: #e5e5e5;
+        }
+
+        .range-values {
+            margin-top: 4px;
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+
         input[type="range"] {
             width: 100%;
         }
@@ -311,13 +380,22 @@
         </div>
         <div>
             <label>Model params</label>
-            <div class="slider">
-                <input id="size" type="range" step="0.01" min="0" max="100" value="0" list="tickmarks">
-                <input id="sizeOut" type="number" step="0.01">
+
+            <div class="range-wrap" id="sizeRange">
+                <input type="range" id="sizeLo" step="1">
+                <input type="range" id="sizeHi" step="1">
+                <div class="range-track" id="sizeTrack"></div>
             </div>
-            <div class="ticks" id="tickLabels"></div>
-            <datalist id="tickmarks"></datalist>
+
+            <div class="ticks">
+                <span>4B</span><span>50B</span><span>96B</span><span>143B</span><span>189B</span><span>235B</span>
+            </div>
+
+            <div class="range-values">
+                <span id="sizeLoVal">4B</span> – <span id="sizeHiVal">235B</span>
+            </div>
         </div>
+
         <div>
             <label for="faMode">Flash Attention</label>
             <select id="faMode">
@@ -362,23 +440,26 @@
 
     <script>
         (async function () {
-            // dynamic tie threshold: within K sigmas of best, with a small absolute floor
-            const K_SIGMA = 1.0;     // 1σ; set 1.96 for ~95% CI
-            const MIN_TOL = 0.25;    // tokens/s floor if stds are tiny/missing
+            const K_SIGMA = 1.0;
+            const MIN_TOL = 0.25;
 
-            const res = await fetch('results.json'); const data = await res.json();
+            const res = await fetch('results.json');
+            const data = await res.json();
             const allRuns = data.runs || [];
             const perfRuns = allRuns.filter(r => r.test === 'pp512' || r.test === 'tg128');
 
             const metaLine = document.getElementById('meta-line');
             const search = document.getElementById('search');
             const quantSel = document.getElementById('quant');
-            const size = document.getElementById('size');
-            const sizeOut = document.getElementById('sizeOut');
-            const ticks = document.getElementById('tickmarks');
-            const tickLabels = document.getElementById('tickLabels');
             const colPicker = document.getElementById('columns');
             const faMode = document.getElementById('faMode');
+
+            // NEW dual slider elements
+            const sizeLo = document.getElementById('sizeLo');
+            const sizeHi = document.getElementById('sizeHi');
+            const sizeTrack = document.getElementById('sizeTrack');
+            const sizeLoVal = document.getElementById('sizeLoVal');
+            const sizeHiVal = document.getElementById('sizeHiVal');
 
             metaLine.textContent = `${data.meta?.os_kernel || ''} — llama.cpp ${(data.meta?.llamacpp_builds || []).map(b => b.hash).join(', ') || 'unknown'} — generated ${data.meta?.generated_at || ''}`;
 
@@ -392,7 +473,6 @@
                 if (!byModel[name].quant && r.quant) byModel[name].quant = r.quant;
                 if (byModel[name].sizeB == null) byModel[name].sizeB = (r.name_params_b ?? r.params_b);
             }
-            // include error-only logs so we can show ⚠️
             for (const r of allRuns) {
                 if (r.test || !r.error) continue;
                 const name = r.model_clean || r.model; if (!byModel[name]) continue;
@@ -420,39 +500,63 @@
             const quants = [...new Set(Object.values(byModel).map(m => (m.quant || 'Unknown').toUpperCase()))].sort();
             quants.forEach(q => { const o = document.createElement('option'); o.value = (q === 'UNKNOWN' ? '' : q); o.textContent = q; quantSel.appendChild(o); });
 
+            // --- Dual range slider setup ---
             const sizes = Object.values(byModel).map(m => m.sizeB).filter(v => typeof v === 'number').sort((a, b) => a - b);
-            const minB = sizes[0] ?? 0, maxB = sizes[sizes.length - 1] ?? 100;
-            size.min = String(minB); size.max = String(maxB); size.step = "0.01"; size.value = String(minB); sizeOut.value = String(minB);
-            const marks = 6; ticks.innerHTML = ''; tickLabels.innerHTML = '';
-            for (let i = 0; i < marks; i++) {
-                const v = (minB + (i * (maxB - minB) / (marks - 1)));
-                const opt = document.createElement('option'); opt.value = v.toFixed(2); ticks.appendChild(opt);
-                const lab = document.createElement('span'); lab.textContent = `${v.toFixed(0)}B`; tickLabels.appendChild(lab);
+            const MIN_B = sizes[0] ?? 0;
+            const MAX_B = sizes[sizes.length - 1] ?? 100;
+            [sizeLo, sizeHi].forEach(inp => { inp.min = MIN_B; inp.max = MAX_B; inp.step = 1; });
+            sizeLo.value = MIN_B;
+            sizeHi.value = MAX_B;
+            const filters = { sizeLo: MIN_B, sizeHi: MAX_B };
+
+            function fmtB(n) { return `${Number(n).toFixed(0)}B`; }
+            function clampRange() {
+                if (+sizeLo.value > +sizeHi.value) {
+                    const active = document.activeElement === sizeLo ? sizeLo : sizeHi;
+                    if (active === sizeLo) sizeHi.value = sizeLo.value;
+                    else sizeLo.value = sizeHi.value;
+                }
             }
+            function paintTrack() {
+                const a = (+sizeLo.value - MIN_B) / (MAX_B - MIN_B) * 100;
+                const b = (+sizeHi.value - MIN_B) / (MAX_B - MIN_B) * 100;
+                sizeTrack.style.background =
+                    `linear-gradient(to right,
+                #e5e5e5 ${a}%,
+                var(--accent) ${a}%,
+                var(--accent) ${b}%,
+                #e5e5e5 ${b}%)`;
+            }
+            function updateSizeUI(pushRender = true) {
+                clampRange();
+                sizeLoVal.textContent = fmtB(sizeLo.value);
+                sizeHiVal.textContent = fmtB(sizeHi.value);
+                filters.sizeLo = +sizeLo.value;
+                filters.sizeHi = +sizeHi.value;
+                paintTrack();
+                if (pushRender) render();
+            }
+            sizeLo.addEventListener('input', () => updateSizeUI(true));
+            sizeHi.addEventListener('input', () => updateSizeUI(true));
+            updateSizeUI(false);
 
-            const TOL = 1.00;
-
+            // --- Filters ---
             function matchesFilters(name) {
                 const q = (search.value || '').toLowerCase();
                 if (q && !name.toLowerCase().includes(q)) return false;
                 const info = byModel[name];
                 if (quantSel.value && (info.quant || '').toUpperCase() !== quantSel.value.toUpperCase()) return false;
-                if (info.sizeB != null && info.sizeB < parseFloat(size.value) - 1e-9) return false;
+                if (info.sizeB != null && (info.sizeB < filters.sizeLo || info.sizeB > filters.sizeHi)) return false;
                 return true;
             }
 
-            // remove quantization tokens from the title (we still show quant below)
             function cleanTitle(name, quant) {
                 const qTokens = ['BF16', 'F16', 'F32', 'FP16', 'MXFP2', 'MXFP4', 'MXFP8'];
                 if (quant) qTokens.push(quant.toUpperCase());
                 let t = name;
-                // common GGUF quant forms like Q4_K_M, Q8_0, Q6_K, Q3_K_S, etc.
                 t = t.replace(/[-_](Q\d+(?:_[A-Z0-9]+)*)/gi, '');
-                // BF16/F16/F32/MXFPx anywhere
                 t = t.replace(new RegExp(`[-_]?(${qTokens.join('|')})\\b`, 'gi'), '');
-                // drop "-UD"
                 t = t.replace(/-UD\b/gi, '');
-                // collapse leftover double separators
                 t = t.replace(/[-_]{2,}/g, '-')
                     .replace(/\s{2,}/g, ' ')
                     .replace(/[-_]+$/, '')
@@ -487,7 +591,6 @@
             }
 
             function winnersHTML(name, test, colDefs) {
-                // Collect (env, fa, mean, std) for visible columns
                 const vals = [];
                 for (const c of colDefs) {
                     const v = byModel[name][test][c.key];
@@ -501,26 +604,19 @@
                     }
                 }
                 if (!vals.length) return '<span class="muted">—</span>';
-
-                // Best backend by mean
                 let best = vals[0];
                 for (const v of vals) if (v.mean > best.mean) best = v;
-
-                // Tie rule: within max(MIN_TOL, K*sqrt(std_best^2 + std_i^2))
                 const winners = [];
                 for (const v of vals) {
                     const pooled = Math.sqrt((best.std || 0) ** 2 + (v.std || 0) ** 2);
                     const tol = Math.max(MIN_TOL, K_SIGMA * pooled);
                     if ((best.mean - v.mean) <= tol) winners.push(v);
                 }
-
-                // Render pills. If FA mode = both, show FA state on the pill.
                 if (faMode.value !== 'both') {
                     const envs = [...new Set(winners.map(w => w.env))];
                     return `<div class="winner-wrap">${envs.map(env =>
                         `<span class="winner-pill">🏆 ${env}</span>`).join('')}</div>`;
                 } else {
-                    // group by env and list FA(s) that tied
                     const byEnv = {};
                     for (const w of winners) (byEnv[w.env] ||= new Set()).add(w.fa);
                     return `<div class="winner-wrap">${Object.entries(byEnv).map(([env, fas]) => {
@@ -534,27 +630,21 @@
             function renderTable(prefix, test) {
                 const envSel = selectedEnvs(); const mode = faMode.value;
                 const colDefs = buildColDefs(envSel, mode);
-
                 const h = document.getElementById(`${prefix}-h`);
                 h.innerHTML = headerHTML(test, colDefs);
-
                 const tbody = document.querySelector(`#tbl-${prefix} tbody`);
                 tbody.innerHTML = '';
-
                 for (const name of models.filter(matchesFilters)) {
                     const tr = document.createElement('tr');
-
                     const tdM = document.createElement('td');
                     tdM.className = 'col-model';
                     const info = byModel[name];
                     tdM.innerHTML = `<div class="model-title">${cleanTitle(name, info.quant)}</div><div class="model-meta">${info.quant || '—'} · ${(info.sizeB ?? '—')}B</div>`;
                     tr.appendChild(tdM);
-
                     const tdW = document.createElement('td');
                     tdW.className = 'col-winner';
                     tdW.innerHTML = winnersHTML(name, test, colDefs);
                     tr.appendChild(tdW);
-
                     for (const c of colDefs) {
                         const td = document.createElement('td');
                         td.innerHTML = cellHTML(name, test, c.key);
@@ -569,15 +659,12 @@
                 renderTable('tg', 'tg128');
             }
 
-            // events
             [search, quantSel, faMode].forEach(el => el.addEventListener('input', render));
             colPicker.addEventListener('change', render);
-            size.addEventListener('input', e => { sizeOut.value = Number(e.target.value).toFixed(2); render(); });
-            sizeOut.addEventListener('input', e => { size.value = e.target.value; render(); });
-
             render();
         })();
     </script>
+
 </body>
 
 </html>
