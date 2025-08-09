@@ -38,25 +38,36 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
 
   for ENV in "${!CMDS[@]}"; do
     CMD="${CMDS[$ENV]}"
-    OUT="$RESULTDIR/${MODEL_NAME}__${ENV}.log"
 
-    # skip if we already have a non-empty log
-    if [[ -s "$OUT" ]]; then
-      echo "⏩ Skipping [${ENV}] ${MODEL_NAME}, log already exists at $OUT"
-      continue
-    fi
+    # run twice: baseline and with flash attention
+    for FA in 0 1; do
+      SUFFIX=""
+      EXTRA_ARGS=()
+      if (( FA == 1 )); then
+        SUFFIX="__fa1"
+        EXTRA_ARGS=( -fa 1 )
+      fi
 
-    # build command array
-    FULL_CMD=( $CMD -ngl 99 -mmp 0 -m "$MODEL_PATH" )
+      OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}.log"
 
-    printf "\n▶ [%s] %s\n" "$ENV" "$MODEL_NAME"
-    printf "  → log: %s\n" "$OUT"
-    printf "  → cmd: %s\n\n" "${FULL_CMD[*]}"
+      # skip if we already have a non-empty log
+      if [[ -s "$OUT" ]]; then
+        echo "⏩ Skipping [${ENV}] ${MODEL_NAME}${SUFFIX:+ ($SUFFIX)}, log already exists at $OUT"
+        continue
+      fi
 
-    # execute
-    "${FULL_CMD[@]}" >"$OUT" 2>&1 || {
-      echo "✖ ! [${ENV}] ${MODEL_NAME} failed (exit $?)" >>"$OUT"
-      echo "  * [${ENV}] ${MODEL_NAME} : FAILED"
-    }
+      # build command array
+      FULL_CMD=( $CMD -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" )
+
+      printf "\n▶ [%s] %s%s\n" "$ENV" "$MODEL_NAME" "${SUFFIX:+ $SUFFIX}"
+      printf "  → log: %s\n" "$OUT"
+      printf "  → cmd: %s\n\n" "${FULL_CMD[*]}"
+
+      # execute
+      "${FULL_CMD[@]}" >"$OUT" 2>&1 || {
+        echo "✖ ! [${ENV}] ${MODEL_NAME}${SUFFIX:+ $SUFFIX} failed (exit $?)" >>"$OUT"
+        echo "  * [${ENV}] ${MODEL_NAME}${SUFFIX:+ $SUFFIX} : FAILED"
+      }
+    done
   done
 done

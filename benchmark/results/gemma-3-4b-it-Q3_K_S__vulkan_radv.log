@@ -2,7 +2,7 @@ ggml_vulkan: Found 1 Vulkan devices:
 ggml_vulkan: 0 = Radeon 8060S Graphics (RADV GFX1151) (radv) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
 | model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
-| gemma3 4B Q3_K - Small         |   1.80 GiB |     3.88 B | Vulkan     |  99 |    0 |           pp512 |       1520.07 ± 5.39 |
-| gemma3 4B Q3_K - Small         |   1.80 GiB |     3.88 B | Vulkan     |  99 |    0 |           tg128 |         85.93 ± 0.09 |
+| gemma3 4B Q3_K - Small         |   1.80 GiB |     3.88 B | Vulkan     | 999 |    0 |           pp512 |       1527.75 ± 3.86 |
+| gemma3 4B Q3_K - Small         |   1.80 GiB |     3.88 B | Vulkan     | 999 |    0 |           tg128 |         85.54 ± 0.99 |
 
-build: 0d883154 (6101)
+build: cd6983d5 (6119)
