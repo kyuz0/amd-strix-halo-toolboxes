@@ -149,31 +149,39 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 `HF_HUB_ENABLE_HF_TRANSFER=1` uses a Rust-based package that enables faster download (install from [Pypi](https://pypi.org/project/hf-transfer/)).
 
 ## 3. Performance Benchmarks (Key Results)
+Got it — here’s the **concise, no-“we”** version, with the table embedded and pointing to deeper analysis.
 
-Below are some results from real runs on Strix Halo hardware of `llama-bench`. For full tables and model-by-model breakdowns (including both prompt processing and token generation speeds), see [docs/benchmarks.md](docs/benchmarks.md).
+---
 
-| Model | Vulkan (AMDVLK) | Vulkan (RADV) | ROCm 6.4.2 | ROCm 7.0 Beta | ROCm 7.0 RC | 🏆 Best PP | 🏆 Best TG |
-|---|---|---|---|---|---|---|---|
-| **Gemma3 12B Q8_0** | 683 pp / 13.8 tg | 509 pp / 13.7 tg | 223 pp / 13.8 tg | 223 pp / 13.8 tg | 223 pp / 13.8 tg | 🏆 **AMDVLK** | 🏆 **AMDVLK** |
-| **Gemma3 27B BF16** | ⚠️ Load Error | 135 pp / 4.0 tg | 89 pp / 4.0 tg | 82 pp / 4.0 tg | 83 pp / 4.0 tg | 🏆 **RADV** | 🏆 **ROCm6.4.2** |
-| **Llama-4-Scout 17B Q8_0** | 239 pp / 12.2 tg | 146 pp / 12.3 tg | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **Llama-4-Scout 17B Q4_K XL** | 209 pp / 20.1 tg | 133 pp / 20.0 tg | 133 pp / 17.3 tg | 134 pp / 17.4 tg | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **AMDVLK** |
-| **Qwen3 30B BF16** | 91 pp / 8.0 tg | 71 pp / 7.3 tg | 158 pp / 22.9 tg | 151 pp / 23.8 tg | 155 pp / 23.1 tg | 🏆 **ROCm6.4.2** | 🏆 **ROCm7 Beta** |
-| **Qwen3-235B Q3_K XL** | 100 pp / 15.7 tg | 58 pp / 16.3 tg | 69 pp / 13.5 tg | ⚠️ GPU Hang | 75 pp / 13.6 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **GLM-4.5-Air-UD-Q4_K_XL** | 200 pp / 22.8 tg | 128 pp / 22.9 tg | ⚠️ Runtime Error | ⚠️ GPU Hang | 129 pp / 19.6 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **GLM-4.5-Air-UD-Q6_K_XL** | 221 pp / 16.5 tg | 127 pp / 16.8 tg | 125 pp / 15.3 tg | ⚠️ GPU Hang | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **gpt-oss-120b-mxfp4** | 486 pp / 48.1 tg | 239 pp / 48.9 tg | 353 pp / 43.6 tg | ⚠️ GPU Hang | 351 pp / 44.6 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
-| **gpt-oss-20b-mxfp4** | 1206 pp / 68.9 tg | 647 pp / 69.8 tg | 581 pp / 64.3 tg | 584 pp / 64.4 tg | 584 pp / 64.4 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
+## 🔍 Key Findings from Benchmarks
 
-* **pp = tokens/sec, prompt processing (pre-fill, max speed)**
-* **tg = tokens/sec, generation (interactive, single token at a time)**
-* 🏆 denotes the winner
+Representative LLMs were tested on **AMD Ryzen AI Max “Strix Halo”** across all supported backends, using identical model builds in [Llama.cpp](https://github.com/ggerganov/llama.cpp).
 
-**Takeaways:**
+PP = prompt processing (tokens/sec prefill), TG = token generation (tokens/sec interactive).
 
-* **Vulkan AMDVLK** is the fastest, when it works. There's currently an issue with memory allocation that causes some models to fail loading ([GitHub Issue 15054](https://github.com/ggml-org/llama.cpp/issues/15054)). 
-* **Vulkan RADV** is the most stable and compatible (recommended for most usage).
-* **ROCm** is typically only superior on BF16 models, otherwise less stable and may crash or hang.
+| Model | Vulkan (AMDVLK) | Vulkan (RADV) | ROCm 6.4.2 | ROCm 6.4.2 + ROCWMMA | ROCm 7.0 Beta | ROCm 7.0 RC | 🏆 Best PP | 🏆 Best TG |
+|---|---|---|---|---|---|---|---|---|
+| **Gemma3 12B Q8_0** | 677 pp / 14.0 tg | 503 pp / 13.8 tg | 223 pp / 13.8 tg | 223 pp / 13.9 tg | 223 pp / 13.9 tg | 222 pp / 13.9 tg | 🏆 **AMDVLK** | — |
+| **Gemma3 27B BF16** | — | 136 pp / 4.0 tg | 84 pp / 4.0 tg | 93 pp / 4.0 tg | 92 pp / 4.0 tg | 56 pp / 3.1 tg | 🏆 **RADV** | — |
+| **Llama-4-Scout 17B Q8_0** | 258 pp / 12.2 tg | 169 pp / 12.3 tg | 135 pp / 11.6 tg | — | — | — | 🏆 **AMDVLK** | — |
+| **Llama-4-Scout 17B Q4_K XL** | 218 pp / 20.0 tg | 152 pp / 20.0 tg | 138 pp / 17.4 tg | — | 139 pp / 17.6 tg | 124 pp / 17.6 tg | 🏆 **AMDVLK** | — |
+| **Qwen3 30B BF16** | 107 pp / 8.0 tg | 86 pp / 7.4 tg | 158 pp / 23.9 tg | 158 pp / 24.5 tg | 153 pp / 24.5 tg | 152 pp / 24.6 tg | 🏆 **ROCm6.4.2+ROCWMMA** | — |
+| **Qwen3-235B Q3_K XL** | 114 pp / 16.0 tg | 65 pp / 16.6 tg | 74 pp / 13.7 tg | — | — | — | 🏆 **AMDVLK** | — |
+| **GLM-4.5-Air-Q4_K_XL** | 201 pp / 22.8 tg | 128 pp / 22.9 tg | 130 pp / 19.4 tg | — | — | 130 pp / 19.8 tg | 🏆 **AMDVLK** | — |
+| **GLM-4.5-Air-Q6_K_XL** | 223 pp / 16.5 tg | 127 pp / 16.8 tg | 125 pp / 15.3 tg | 114 pp / 15.5 tg | 121 pp / 15.5 tg | 124 pp / 15.5 tg | 🏆 **AMDVLK** | — |
+| **gpt-oss-120b-mxfp4** | 487 pp / 48.1 tg | 240 pp / 49.0 tg | 353 pp / 44.1 tg | 354 pp / 45.0 tg | 355 pp / 45.0 tg | 353 pp / 45.1 tg | 🏆 **AMDVLK** | — |
+| **gpt-oss-20b-mxfp4** | 1205 pp / 68.8 tg | 649 pp / 69.9 tg | 583 pp / 64.5 tg | 581 pp / 64.5 tg | 584 pp / 64.4 tg | 582 pp / 64.5 tg | 🏆 **AMDVLK** | — |
+
+
+**Observations:**
+
+* **AMDVLK (Vulkan)** delivers the highest prompt processing speeds for most models, but is limited by ≤2 GiB single-buffer allocation and may fail to load some models.
+* **RADV (Vulkan)** is the most stable and compatible backend; typically slower than AMDVLK in PP but often competitive in TG.
+* **ROCm 6.4.2 + ROCWMMA** excels in BF16 workloads and can outperform Vulkan in certain cases, though ROCm stability issues remain.
+* ROCm 7.0 Beta/RC show similar performance to 6.4.2 without consistent gains.
+
+📄 Full per-model analysis: [docs/benchmarks.md](docs/benchmarks.md)
+🌐 Interactive exploration: [Live Benchmark Viewer](https://your-live-results-url)
 
 ## 4. Memory Planning & VRAM Estimator
 
