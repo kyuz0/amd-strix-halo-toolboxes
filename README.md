@@ -41,15 +41,19 @@ This project uses [Llama.cpp](https://github.com/ggerganov/llama.cpp), a high-pe
 
 ### 1.1 Supported Container Images
 
-| Container Tag   | Backend/Stack       | Purpose / Notes                                                                       |
-| --------------- | ------------------- | ------------------------------------------------------------------------------------- |
-| `vulkan-amdvlk` | Vulkan (AMDVLK)     | Fastest backend—use if model loads. AMD Open Source driver. May fail on >40 GiB/BF16. |
-| `vulkan-radv`   | Vulkan (Mesa RADV)  | Most stable/compatible. Recommended for most users and all models.                    |
-| `rocm-6.4.2`    | ROCm 6.4.2 (HIP)    | Stable for smaller (<40 GiB) and BF16 models. Crashes on larger quantized models.     |
-| `rocm-7beta`    | ROCm 7.0 Beta (HIP) | Latest ROCm beta. No real improvement for Llama.cpp. Similar model limits to 6.4.2.   |
-| `rocm-7rc`      | ROCm 7.0 RC (HIP)   | Release candidate ROCm 7.0. Same behavior as above.                                   |
+| Container Tag        | Backend/Stack            | Purpose / Notes |
+| -------------------- | ------------------------ | --------------- |
+| `vulkan-amdvlk`      | Vulkan (AMDVLK)           | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
+| `vulkan-radv`        | Vulkan (Mesa RADV)        | Most stable and compatible. Recommended for most users and all models. |
+| `rocm-6.4.2`         | ROCm 6.4.2 (HIP)          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
+| `rocm-6.4.2-rocwaam` | ROCm 6.4.2 (HIP) + ROCWMMA | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
+| `rocm-7beta`         | ROCm 7.0 Beta (HIP)       | Latest ROCm beta. No real gain for Llama.cpp. Same model limits as 6.4.2. |
+| `rocm-7rc`           | ROCm 7.0 RC (HIP)         | Release candidate for ROCm 7.0. Same behavior as beta. |
 
-You can also check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags.
+
+You can also check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags.  
+
+> These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
 
 > *Each container is based on Fedora Rawhide and is built for maximum compatibility and performance on Strix Halo.*
 
