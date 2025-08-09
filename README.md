@@ -161,16 +161,16 @@ PP = prompt processing (tokens/sec prefill), TG = token generation (tokens/sec i
 
 | Model | Vulkan (AMDVLK) | Vulkan (RADV) | ROCm 6.4.2 | ROCm 6.4.2 + ROCWMMA | ROCm 7.0 Beta | ROCm 7.0 RC | 🏆 Best PP | 🏆 Best TG |
 |---|---|---|---|---|---|---|---|---|
-| **Gemma3 12B Q8_0** | 677 pp / 14.0 tg | 503 pp / 13.8 tg | 223 pp / 13.8 tg | 223 pp / 13.9 tg | 223 pp / 13.9 tg | 222 pp / 13.9 tg | 🏆 **AMDVLK** | — |
-| **Gemma3 27B BF16** | — | 136 pp / 4.0 tg | 84 pp / 4.0 tg | 93 pp / 4.0 tg | 92 pp / 4.0 tg | 56 pp / 3.1 tg | 🏆 **RADV** | — |
-| **Llama-4-Scout 17B Q8_0** | 258 pp / 12.2 tg | 169 pp / 12.3 tg | 135 pp / 11.6 tg | — | — | — | 🏆 **AMDVLK** | — |
-| **Llama-4-Scout 17B Q4_K XL** | 218 pp / 20.0 tg | 152 pp / 20.0 tg | 138 pp / 17.4 tg | — | 139 pp / 17.6 tg | 124 pp / 17.6 tg | 🏆 **AMDVLK** | — |
-| **Qwen3 30B BF16** | 107 pp / 8.0 tg | 86 pp / 7.4 tg | 158 pp / 23.9 tg | 158 pp / 24.5 tg | 153 pp / 24.5 tg | 152 pp / 24.6 tg | 🏆 **ROCm6.4.2+ROCWMMA** | — |
-| **Qwen3-235B Q3_K XL** | 114 pp / 16.0 tg | 65 pp / 16.6 tg | 74 pp / 13.7 tg | — | — | — | 🏆 **AMDVLK** | — |
-| **GLM-4.5-Air-Q4_K_XL** | 201 pp / 22.8 tg | 128 pp / 22.9 tg | 130 pp / 19.4 tg | — | — | 130 pp / 19.8 tg | 🏆 **AMDVLK** | — |
-| **GLM-4.5-Air-Q6_K_XL** | 223 pp / 16.5 tg | 127 pp / 16.8 tg | 125 pp / 15.3 tg | 114 pp / 15.5 tg | 121 pp / 15.5 tg | 124 pp / 15.5 tg | 🏆 **AMDVLK** | — |
-| **gpt-oss-120b-mxfp4** | 487 pp / 48.1 tg | 240 pp / 49.0 tg | 353 pp / 44.1 tg | 354 pp / 45.0 tg | 355 pp / 45.0 tg | 353 pp / 45.1 tg | 🏆 **AMDVLK** | — |
-| **gpt-oss-20b-mxfp4** | 1205 pp / 68.8 tg | 649 pp / 69.9 tg | 583 pp / 64.5 tg | 581 pp / 64.5 tg | 584 pp / 64.4 tg | 582 pp / 64.5 tg | 🏆 **AMDVLK** | — |
+| **Gemma3 12B Q8_0** | 677 pp / 14.0 tg | 503 pp / 13.8 tg | 223 pp / 13.8 tg | 230 pp / 13.9 tg | 223 pp / 13.9 tg | 222 pp / 13.9 tg | 🏆 **AMDVLK** | 🏆 **AMDVLK** |
+| **Gemma3 27B BF16** | ⚠️ Load Error | 139 pp / 4.0 tg | 84 pp / 4.0 tg | 95 pp / 4.0 tg | 92 pp / 4.0 tg | 83 pp / 4.0 tg | 🏆 **RADV** | 🏆 **ROCm6.4.2+ROCWMMA** |
+| **Llama-4-Scout 17B Q8_0** | 260 pp / 12.2 tg | 172 pp / 12.3 tg | 135 pp / 11.6 tg | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **Llama-4-Scout 17B Q4_K XL** | 221 pp / 20.0 tg | 155 pp / 20.0 tg | 138 pp / 17.4 tg | ⚠️ GPU Hang | 139 pp / 17.6 tg | 124 pp / 17.6 tg | 🏆 **AMDVLK** | 🏆 **AMDVLK** |
+| **Qwen3 30B BF16** | 108 pp / 8.0 tg | 87 pp / 7.4 tg | 158 pp / 24.3 tg | 162 pp / 24.5 tg | 153 pp / 24.5 tg | 152 pp / 24.6 tg | 🏆 **ROCm6.4.2+ROCWMMA** | 🏆 **ROCm7 RC** |
+| **Qwen3-235B Q3_K XL** | 116 pp / 16.0 tg | 67 pp / 16.8 tg | 74 pp / 13.7 tg | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **GLM-4.5-Air-Q4_K_XL** | 202 pp / 22.8 tg | 133 pp / 23.3 tg | 130 pp / 19.4 tg | ⚠️ GPU Hang | ⚠️ GPU Hang | 130 pp / 20.1 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **GLM-4.5-Air-Q6_K_XL** | 225 pp / 16.5 tg | 132 pp / 17.0 tg | 125 pp / 15.3 tg | 114 pp / 15.5 tg | 121 pp / 15.5 tg | 124 pp / 15.5 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **gpt-oss-120b-mxfp4** | 546 pp / 48.1 tg | 255 pp / 49.0 tg | 353 pp / 44.1 tg | 408 pp / 45.0 tg | 355 pp / 45.0 tg | 353 pp / 45.1 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
+| **gpt-oss-20b-mxfp4** | 1473 pp / 68.8 tg | 728 pp / 69.9 tg | 583 pp / 64.5 tg | 649 pp / 64.5 tg | 584 pp / 64.4 tg | 582 pp / 64.5 tg | 🏆 **AMDVLK** | 🏆 **RADV** |
 
 
 **Observations:**
