@@ -1,7 +1,11 @@
 # AMD Strix Halo — llama.cpp Toolboxes (Benchmarks)
 
 **Live results:** [https://kyuz0.github.io/amd-strix-halo-toolboxes/](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
-Filter by model name, size, and quantization; select backends with or without **Flash Attention (FA)**; compare pp512 and tg128 side-by-side; winners are computed with an error-aware tolerance rule.
+
+- Filter by model name, size, and quantization
+- Select backends with or without **Flash Attention (FA)**
+- Compare pp512 and tg128 side-by-side
+- Winners are computed with an error-aware tolerance rule.
 
 ---
 

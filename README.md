@@ -181,7 +181,7 @@ PP = prompt processing (tokens/sec prefill), TG = token generation (tokens/sec i
 * ROCm 7.0 Beta/RC show similar performance to 6.4.2 without consistent gains.
 
 📄 Full per-model analysis: [docs/benchmarks.md](docs/benchmarks.md)
-🌐 Interactive exploration: [Live Benchmark Viewer](https://your-live-results-url)
+🌐 Interactive exploration: [Live Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
 ## 4. Memory Planning & VRAM Estimator
 
