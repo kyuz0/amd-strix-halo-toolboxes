@@ -58,5 +58,12 @@ RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \
 COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
+# Ensure we are using hipblaslt
+RUN printf '%s\n' \
+  'export ROCBLAS_USE_HIPBLASLT=1' \
+  > /etc/profile.d/rocm.sh \
+  && chmod +x /etc/profile.d/rocm.sh \
+  && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
+
 # Default to interactive shell
 CMD ["/bin/bash"]
