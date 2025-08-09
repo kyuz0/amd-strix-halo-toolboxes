@@ -30,7 +30,7 @@ podman build --no-cache -t llama-vulkan-radv -f Dockerfile.vulkan-radv .
 **Example: Build the ROCm 6.4.2 toolbox image**
 
 ```sh
-cd ../rocm-6.4.2
+cd toolboxes
 podman build --no-cache -t llama-rocm-6.4.2 -f Dockerfile.rocm-6.4.2 .
 ```
 
