@@ -7,56 +7,55 @@
     <title>Strix Halo — Model ↔ Backend Comparator</title>
     <style>
         :root {
-            --bg: #0b0c0f;
-            --ink: #e6e7ea;
-            --muted: #a3a8b3;
-            --accent: #6ea8fe;
-            --card: #11141a;
-            --border: #202633;
-            --sticky: #0f1218;
-            --pill: #1b2230;
-            --roc: #b19cff33;
-            --roc-text: #e9e4ff;
-            --warn: #ffcc66;
-            --bad: #ff6b6b;
+            --bg: #ffffff;
+            --ink: #000000;
+            --muted: #555555;
+            --accent: #0645ad;
+            --card: #f9f9f9;
+            --border: #cccccc;
+            --sticky: #f4f4f4;
+            --pill: #e0e0e0;
+            --roc: #d3caff;
+            --roc-text: #000000;
+            --warn: #d88f00;
+            --bad: #d32f2f;
             --model-w: 300px;
             --winner-w: 220px;
-            /* wider winner column */
         }
 
         * {
-            box-sizing: border-box
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
             background: var(--bg);
             color: var(--ink);
-            font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter
+            font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter;
         }
 
         a {
             color: var(--accent);
-            text-decoration: none
+            text-decoration: none;
         }
 
         a:hover {
-            text-decoration: underline
+            text-decoration: underline;
         }
 
         header {
-            padding: 14px 20px 0
+            padding: 14px 20px 0;
         }
 
         header h1 {
             margin: 0 0 6px;
-            font-size: 22px
+            font-size: 22px;
         }
 
         header p {
             margin: 4px 0 12px;
             color: var(--muted);
-            font-size: 13px
+            font-size: 13px;
         }
 
         .controls {
@@ -64,37 +63,37 @@
             grid-template-columns: 1fr 160px 260px 180px;
             gap: 10px;
             align-items: end;
-            padding: 10px 20px
+            padding: 10px 20px;
         }
 
         label {
             display: block;
             font-size: 12px;
             color: var(--muted);
-            margin: 0 0 6px
+            margin: 0 0 6px;
         }
 
         input[type="text"],
         select,
         input[type="number"] {
             width: 100%;
-            background: #0d1117;
+            background: #fff;
             color: var(--ink);
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 8px 10px;
-            outline: none
+            outline: none;
         }
 
         .slider {
             display: grid;
             grid-template-columns: 1fr 90px;
             gap: 8px;
-            align-items: center
+            align-items: center;
         }
 
         input[type="range"] {
-            width: 100%
+            width: 100%;
         }
 
         .ticks {
@@ -102,32 +101,33 @@
             justify-content: space-between;
             color: var(--muted);
             font-size: 11px;
-            margin-top: 2px
+            margin-top: 2px;
         }
 
         .cols {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            padding: 0 20px 8px
+            padding: 0 20px 8px;
         }
 
         .colbox {
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 8px 10px;
-            min-width: 220px
+            min-width: 220px;
+            background: var(--card);
         }
 
         .colbox label {
             display: flex;
             gap: 8px;
             align-items: center;
-            margin: 0
+            margin: 0;
         }
 
         .colbox input {
-            transform: translateY(1px)
+            transform: translateY(1px);
         }
 
         .badge {
@@ -136,88 +136,87 @@
             border-radius: 999px;
             background: var(--pill);
             font-size: 11px;
-            margin-left: 6px
+            margin-left: 6px;
         }
 
         .roc {
             background: var(--roc);
             color: var(--roc-text);
-            border: 1px solid #b19cff55
+            border: 1px solid #b19cff55;
         }
 
         .meta {
             padding: 0 20px 14px;
             color: var(--muted);
-            font-size: 12px
+            font-size: 12px;
         }
 
         .section {
-            padding: 6px 20px 0
+            padding: 6px 20px 0;
         }
 
         .section h2 {
             margin: 6px 0 8px;
             font-size: 16px;
-            color: #cfd3da;
-            font-weight: 600
+            color: var(--ink);
+            font-weight: 600;
         }
 
         .tablewrap {
             margin: 0 0 16px;
-            border-top: 1px solid var(--border)
+            border-top: 1px solid var(--border);
         }
 
         .scroller {
             overflow-x: auto;
-            overflow-y: hidden
+            overflow-y: hidden;
         }
 
         .scroller::-webkit-scrollbar {
-            height: 10px
+            height: 10px;
         }
 
         .scroller::-webkit-scrollbar-thumb {
-            background: #2a3140;
-            border-radius: 8px
+            background: var(--border);
+            border-radius: 8px;
         }
 
         table {
             width: max-content;
             min-width: 100vw;
             border-collapse: separate;
-            border-spacing: 0
+            border-spacing: 0;
         }
 
         thead th {
             position: sticky;
             top: 0;
             background: var(--card);
-            z-index: 2
+            z-index: 2;
         }
 
         th,
         td {
             padding: 10px 12px;
             border-bottom: 1px solid var(--border);
-            vertical-align: top
+            vertical-align: top;
         }
 
         th {
-            white-space: nowrap
+            white-space: nowrap;
         }
 
         td {
-            white-space: normal
+            white-space: normal;
         }
 
-        /* sticky cols */
         .col-model {
             position: sticky;
             left: 0;
             background: var(--sticky);
             z-index: 3;
             max-width: var(--model-w);
-            width: var(--model-w)
+            width: var(--model-w);
         }
 
         .col-winner {
@@ -226,44 +225,43 @@
             background: var(--sticky);
             z-index: 3;
             max-width: var(--winner-w);
-            width: var(--winner-w)
+            width: var(--winner-w);
         }
 
         .model-title {
             font-weight: 600;
             word-wrap: break-word;
-            overflow-wrap: anywhere
+            overflow-wrap: anywhere;
         }
 
         .model-meta {
             color: var(--muted);
             font-size: 12px;
-            margin-top: 2px
+            margin-top: 2px;
         }
 
-        /* centered value cells */
         .cell {
             min-width: 120px;
-            text-align: center
+            text-align: center;
         }
 
         .tps {
             display: block;
-            text-align: center
+            text-align: center;
         }
 
         .std {
             color: var(--muted);
             font-size: 12px;
-            text-align: center
+            text-align: center;
         }
 
         .warn {
-            color: var(--warn)
+            color: var(--warn);
         }
 
         .err {
-            color: var(--bad)
+            color: var(--bad);
         }
 
         .winner-pill {
@@ -272,20 +270,20 @@
             border-radius: 999px;
             padding: 2px 8px;
             margin: 4px 4px 4px 0;
-            font-size: 12px
+            font-size: 12px;
         }
 
-        /* a bit more vertical margin */
         .winner-wrap {
             display: flex;
-            flex-wrap: wrap
+            flex-wrap: wrap;
         }
 
         .env-sub {
             color: var(--muted);
-            font-size: 12px
+            font-size: 12px;
         }
     </style>
+
 </head>
 
 <body>
@@ -312,7 +310,7 @@
             </select>
         </div>
         <div>
-            <label>Model size (B from name)</label>
+            <label>Model params</label>
             <div class="slider">
                 <input id="size" type="range" step="0.01" min="0" max="100" value="0" list="tickmarks">
                 <input id="sizeOut" type="number" step="0.01">
@@ -331,7 +329,8 @@
     </div>
 
     <div class="cols" id="columns"></div>
-    <div class="meta">Winner = every selected backend within the best’s uncertainty range, combining ± errors from both results.</div>
+    <div class="meta">Winner = every selected backend within the best’s uncertainty range, combining ± errors from both
+        results.</div>
 
     <div class="section">
         <h2>Prompt Processing (pp512) — tokens/second</h2>

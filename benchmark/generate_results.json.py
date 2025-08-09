@@ -3,7 +3,7 @@ import re, glob, os, json, time
 from pathlib import Path
 
 RESULTS_DIR = "results"
-OUT_JSON = "results.json"
+OUT_JSON = "../docs/results.json"
 
 # --- Regexes ---------------------------------------------------------------
 
@@ -23,12 +23,10 @@ GENERIC_ERR= re.compile(r"error:|exit \d+|runtime error|⚠️\s*Runtime Error",
 TS_RE      = re.compile(r"([\d.]+)\s*±\s*([\d.]+)")
 
 # Quantization from model name
-QUANT_RE = re.compile(r"(Q\d+_[A-Z_]+|BF16|F16|F32|mxfp\d+)", re.IGNORECASE)
+QUANT_RE = re.compile(r"(Q\d+_[A-Z0-9_]+|BF16|F16|F32|mxfp\d+)", re.IGNORECASE)
 
-# Params like "235.09 B" from the table
-PARAMS_RE = re.compile(r"([\d.]+)\s*B", re.IGNORECASE)
-# File size like "96.99 GiB" from the table
-GIB_RE = re.compile(r"([\d.]+)\s*GiB", re.IGNORECASE)
+PARAMS_RE = re.compile(r"([\d.,]+)\s*B", re.IGNORECASE)
+GIB_RE    = re.compile(r"([\d.,]+)\s*GiB", re.IGNORECASE)
 
 # "30B", "235B" from model name
 NAME_B_RE = re.compile(r"(\d+(?:\.\d+)?)B")
@@ -187,18 +185,22 @@ for path in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.log"))):
         file_size_gib = None
         if "params" in r:
             pm = PARAMS_RE.search(r["params"])
-            if pm: params_b = coerce_float(pm.group(1))
+            if pm:
+                params_b = coerce_float(pm.group(1).replace(",", ""))
         if "size" in r:
             sm = GIB_RE.search(r["size"])
-            if sm: file_size_gib = coerce_float(sm.group(1))
+            if sm:
+                file_size_gib = coerce_float(sm.group(1).replace(",", ""))
+
+        # quant from model name (unchanged)
+        quant = extract_quant(model_clean)
+
+        # name_params_b: prefer table value; else fall back to B in model name
+        name_params_b = params_b if params_b is not None else b_from_name(model_clean)
 
         backend = r.get("backend")
         ngl = r.get("ngl")
         mmap = r.get("mmap")
-
-        # quant from model name
-        quant = extract_quant(model_clean)
-        name_params_b = b_from_name(model_clean)
 
         run = {
             "model": model_raw,
