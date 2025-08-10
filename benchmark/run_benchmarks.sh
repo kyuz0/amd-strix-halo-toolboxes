@@ -27,8 +27,10 @@ echo
 
 declare -A CMDS=(
   [rocm6_4_2]="toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench"
+  [rocm6_4_2-rocwmma]="toolbox run -c llama-rocm-6.4.2-rocwmma -- /usr/local/bin/llama-bench"
   [rocm7_beta]="toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench"
   [rocm7_rc]="toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench"
+  [rocm7_rc-rocwmma]="toolbox run -c llama-rocm-7rc-rocwmma -- /usr/local/bin/llama-bench"
   [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
   [vulkan_radv]="toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench"
 )
@@ -39,35 +41,52 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
   for ENV in "${!CMDS[@]}"; do
     CMD="${CMDS[$ENV]}"
 
-    # run twice: baseline and with flash attention
-    for FA in 0 1; do
-      SUFFIX=""
-      EXTRA_ARGS=()
-      if (( FA == 1 )); then
-        SUFFIX="__fa1"
-        EXTRA_ARGS=( -fa 1 )
+    # For ROCm 7 envs, run default + HIPBLASLT=0 variants; others: default only
+    if [[ "$ENV" == rocm7_* ]]; then
+      HBLT_MODES=( default off )
+    else
+      HBLT_MODES=( default )
+    fi
+
+    for MODE in "${HBLT_MODES[@]}"; do
+      BASE_SUFFIX=""
+      CMD_EFFECTIVE="$CMD"
+      if [[ "$MODE" == off ]]; then
+        BASE_SUFFIX="__hblt0"
+        # inject env inside the container invocation: after the "--"
+        CMD_EFFECTIVE="${CMD_EFFECTIVE/-- /-- env ROCBLAS_USE_HIPBLASLT=0 }"
       fi
 
-      OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}.log"
+      # run twice: baseline and with flash attention
+      for FA in 0 1; do
+        SUFFIX="$BASE_SUFFIX"
+        EXTRA_ARGS=()
+        if (( FA == 1 )); then
+          SUFFIX="${SUFFIX}__fa1"
+          EXTRA_ARGS=( -fa 1 )
+        fi
 
-      # skip if we already have a non-empty log
-      if [[ -s "$OUT" ]]; then
-        echo "⏩ Skipping [${ENV}] ${MODEL_NAME}${SUFFIX:+ ($SUFFIX)}, log already exists at $OUT"
-        continue
-      fi
+        OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}.log"
 
-      # build command array
-      FULL_CMD=( $CMD -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" )
+        # skip if we already have a non-empty log
+        if [[ -s "$OUT" ]]; then
+          echo "⏩ Skipping [${ENV}] ${MODEL_NAME}${SUFFIX:+ ($SUFFIX)}, log already exists at $OUT"
+          continue
+        fi
 
-      printf "\n▶ [%s] %s%s\n" "$ENV" "$MODEL_NAME" "${SUFFIX:+ $SUFFIX}"
-      printf "  → log: %s\n" "$OUT"
-      printf "  → cmd: %s\n\n" "${FULL_CMD[*]}"
+        # build command array
+        FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" )
 
-      # execute
-      "${FULL_CMD[@]}" >"$OUT" 2>&1 || {
-        echo "✖ ! [${ENV}] ${MODEL_NAME}${SUFFIX:+ $SUFFIX} failed (exit $?)" >>"$OUT"
-        echo "  * [${ENV}] ${MODEL_NAME}${SUFFIX:+ $SUFFIX} : FAILED"
-      }
+        printf "\n▶ [%s] %s%s\n" "$ENV" "$MODEL_NAME" "${SUFFIX:+ $SUFFIX}"
+        printf "  → log: %s\n" "$OUT"
+        printf "  → cmd: %s\n\n" "${FULL_CMD[*]}"
+
+        # execute
+        "${FULL_CMD[@]}" >"$OUT" 2>&1 || {
+          echo "✖ ! [${ENV}] ${MODEL_NAME}${SUFFIX:+ $SUFFIX} failed (exit $?)" >>"$OUT"
+          echo "  * [${ENV}] ${MODEL_NAME}${SUFFIX:+ $SUFFIX} : FAILED"
+        }
+      done
     done
   done
 done

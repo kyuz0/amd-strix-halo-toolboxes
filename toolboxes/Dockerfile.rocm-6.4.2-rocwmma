@@ -1,0 +1,45 @@
+FROM fedora:rawhide
+
+# Install build dependencies and tools
+RUN dnf install -y \
+       make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
+       rocminfo radeontop 'rocm-*' 'rocblas-*' 'hipblas' 'hipblas-*' \
+       git vim rsync \
+    && dnf clean all
+
+
+WORKDIR /opt/
+RUN git clone -b release/rocm-rel-7.0 https://github.com/ROCm/rocWMMA.git
+RUN sudo mkdir -p /usr/include/rocwmma
+RUN sudo rsync -a rocWMMA/library/include/rocwmma/ /usr/include/rocwmma/
+
+# Set up working directory
+WORKDIR /opt/llama.cpp
+
+# Clone llama.cpp repository (with submodules)
+RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
+
+# Build llama.cpp with HIP support
+RUN git clean -xdf \
+    && git pull \
+    && git submodule update --recursive \
+    && \
+    # Configure and compile with HIP toolchain
+    HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
+      cmake -S . -B build \
+            -DGGML_HIP=ON \
+            -DAMDGPU_TARGETS=gfx1151 \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DLLAMA_HIP_UMA=ON \
+            -DGGML_HIP_ROCWMMA_FATTN=ON \
+    && cmake --build build --config Release -- -j$(nproc) \
+    && cmake --install build --config Release
+
+RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
+ && ldconfig
+
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# Default to interactive shell
+CMD ["/bin/bash"]

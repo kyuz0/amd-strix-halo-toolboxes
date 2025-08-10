@@ -1,3 +1,4 @@
+# Source: https://github.com/lhl/strix-halo-testing/blob/main/llm-bench/build-rocwmma.sh
 git clone https://github.com/ROCm/rocWMMA
 cd rocWMMA
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Strix Halo — Model ↔ Backend Comparator</title>
+    <title>AMD Ryzen AI MAX+ 395 "Strix Halo" — Llama.cpp Backend Performance Comparison</title>
     <style>
         :root {
             --bg: #ffffff;
@@ -357,7 +357,7 @@
 
 <body>
     <header>
-        <h1>Strix Halo — llama.cpp Backend Comparator</h1>
+        <h1>AMD Ryzen AI MAX+ 395 "Strix Halo" — Llama.cpp Backend Performance Comparison</h1>
         <p class="muted">
             Compare model throughput across backends (pp512 & tg128).
             Repo: <a href="https://github.com/kyuz0/amd-strix-halo-toolboxes" target="_blank"
@@ -400,8 +400,8 @@
             <label for="faMode">Flash Attention</label>
             <select id="faMode">
                 <option value="off">FA off</option>
-                <option value="on">FA on</option> <!-- default ON -->
-                <option value="both" selected>Both</option>
+                <option value="on" selected>FA on</option> <!-- default ON -->
+                <option value="both">Both</option>
             </select>
         </div>
     </div>
@@ -485,12 +485,14 @@
             const envs = [...new Set(allRuns.map(r => r.env))].sort();
             function envBox(env) {
                 const roc = env.includes('rocwmma');
+                const hipBLASTt_off = env.includes('hblt0');
                 const id = `env_${env.replace(/[^a-z0-9_-]/gi, '_')}`;
                 return `
       <div class="colbox">
         <label for="${id}">
-          <input id="${id}" type="checkbox" data-env="${env}" ${/vulkan_amdvlk|vulkan_radv|rocm6_4_2/.test(env) ? 'checked' : ''}>
-          <span><strong>${env}</strong>${roc ? '<span class="badge roc">rocWMMA</span>' : ''}</span>
+         <input id="${id}" type="checkbox" data-env="${env}"
+            ${/(vulkan_amdvlk|vulkan_radv|rocm6_4_2|rocm7_rc-rocwmma)(?![-\w])/.test(env.trim()) ? 'checked' : ''}>
+          <span><strong>${env}</strong>${roc ? '<span class="badge roc">rocWMMA</span>' : ''}</span></strong>${hipBLASTt_off ? '<span class="badge roc">hipBLASTt OFF</span>' : ''}</span>
         </label>
       </div>`;
             }
@@ -501,41 +503,67 @@
             quants.forEach(q => { const o = document.createElement('option'); o.value = (q === 'UNKNOWN' ? '' : q); o.textContent = q; quantSel.appendChild(o); });
 
             // --- Dual range slider setup ---
-            const sizes = Object.values(byModel).map(m => m.sizeB).filter(v => typeof v === 'number').sort((a, b) => a - b);
-            const MIN_B = sizes[0] ?? 0;
-            const MAX_B = sizes[sizes.length - 1] ?? 100;
-            [sizeLo, sizeHi].forEach(inp => { inp.min = MIN_B; inp.max = MAX_B; inp.step = 1; });
+            const sizes = Object.values(byModel)
+                .map(m => m.sizeB)
+                .filter(v => typeof v === 'number')
+                .sort((a, b) => a - b);
+
+            // force clean integer min/max
+            const MIN_B = Math.floor(sizes[0] ?? 0);
+            const MAX_B = Math.ceil(sizes[sizes.length - 1] ?? 100);
+
+            [sizeLo, sizeHi].forEach(inp => {
+                inp.min = MIN_B;
+                inp.max = MAX_B;
+                inp.step = 1; // integers only
+            });
+
             sizeLo.value = MIN_B;
             sizeHi.value = MAX_B;
+
             const filters = { sizeLo: MIN_B, sizeHi: MAX_B };
 
-            function fmtB(n) { return `${Number(n).toFixed(0)}B`; }
+            function fmtB(n) {
+                return `${Number(n).toFixed(0)}B`;
+            }
+
             function clampRange() {
                 if (+sizeLo.value > +sizeHi.value) {
-                    const active = document.activeElement === sizeLo ? sizeLo : sizeHi;
-                    if (active === sizeLo) sizeHi.value = sizeLo.value;
-                    else sizeLo.value = sizeHi.value;
+                    if (document.activeElement === sizeLo) {
+                        sizeHi.value = sizeLo.value;
+                    } else {
+                        sizeLo.value = sizeHi.value;
+                    }
                 }
             }
+
             function paintTrack() {
                 const a = (+sizeLo.value - MIN_B) / (MAX_B - MIN_B) * 100;
                 const b = (+sizeHi.value - MIN_B) / (MAX_B - MIN_B) * 100;
-                sizeTrack.style.background =
-                    `linear-gradient(to right,
-                #e5e5e5 ${a}%,
-                var(--accent) ${a}%,
-                var(--accent) ${b}%,
-                #e5e5e5 ${b}%)`;
+                sizeTrack.style.background = `
+        linear-gradient(to right,
+            #e5e5e5 ${a}%,
+            var(--accent) ${a}%,
+            var(--accent) ${b}%,
+            #e5e5e5 ${b}%)`;
             }
+
             function updateSizeUI(pushRender = true) {
                 clampRange();
+
+                // Fix rounding: snap to min/max if slider is at extremes
+                if (Math.abs(sizeLo.value - MIN_B) < 0.0001) sizeLo.value = MIN_B;
+                if (Math.abs(sizeHi.value - MAX_B) < 0.0001) sizeHi.value = MAX_B;
+
                 sizeLoVal.textContent = fmtB(sizeLo.value);
                 sizeHiVal.textContent = fmtB(sizeHi.value);
                 filters.sizeLo = +sizeLo.value;
                 filters.sizeHi = +sizeHi.value;
+
                 paintTrack();
                 if (pushRender) render();
             }
+
             sizeLo.addEventListener('input', () => updateSizeUI(true));
             sizeHi.addEventListener('input', () => updateSizeUI(true));
             updateSizeUI(false);
@@ -544,9 +572,11 @@
             function matchesFilters(name) {
                 const q = (search.value || '').toLowerCase();
                 if (q && !name.toLowerCase().includes(q)) return false;
+
                 const info = byModel[name];
                 if (quantSel.value && (info.quant || '').toUpperCase() !== quantSel.value.toUpperCase()) return false;
-                if (info.sizeB != null && (info.sizeB < filters.sizeLo || info.sizeB > filters.sizeHi)) return false;
+
+                if (info.sizeB != null && (info.sizeB < filters.sizeLo - 1e-9 || info.sizeB > filters.sizeHi + 1e-9)) return false;
                 return true;
             }
 

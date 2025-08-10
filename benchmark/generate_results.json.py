@@ -41,12 +41,18 @@ def clean_model_name(raw):
     return base
 
 def parse_env_and_fa(basename):
-    # pattern: <model>__<env>[__fa1]
+    # pattern: <model>__<env>[__fa1][__hblt0]
     parts = basename.split("__")
     if len(parts) < 2:
         return None, False
+
     env = parts[1]
-    fa = (len(parts) > 2 and parts[2].lower() == "fa1")
+    # scan any extra suffix segments
+    suffixes = {p.lower() for p in parts[2:]}
+    fa = ("fa1" in suffixes)
+    if "hblt0" in suffixes:
+        env = f"{env}-hblt0"
+
     return env, fa
 
 def env_base_and_variant(env):

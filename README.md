@@ -41,17 +41,19 @@ This project uses [Llama.cpp](https://github.com/ggerganov/llama.cpp), a high-pe
 
 ### 1.1 Supported Container Images
 
+You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags.  
+
 | Container Tag        | Backend/Stack            | Purpose / Notes |
 | -------------------- | ------------------------ | --------------- |
 | `vulkan-amdvlk`      | Vulkan (AMDVLK)           | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv`        | Vulkan (Mesa RADV)        | Most stable and compatible. Recommended for most users and all models. |
 | `rocm-6.4.2`         | ROCm 6.4.2 (HIP)          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
-| `rocm-6.4.2-rocwaam` | ROCm 6.4.2 (HIP) + ROCWMMA | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
-| `rocm-7beta`         | ROCm 7.0 Beta (HIP)       | Latest ROCm beta. No real gain for Llama.cpp. Same model limits as 6.4.2. |
-| `rocm-7rc`           | ROCm 7.0 RC (HIP)         | Release candidate for ROCm 7.0. Same behavior as beta. |
+| `rocm-6.4.2-rocwmma` | ROCm 6.4.2 (HIP) + ROCWMMA | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
+| `rocm-7beta`         | ROCm 7.0 Beta (HIP) + hipBLASLt*      | Latest ROCm beta. No real gain for Llama.cpp. Same model limits as 6.4.2. |
+| `rocm-7rc`           | ROCm 7.0 RC (HIP) + hipBLASLt*         | Release candidate for ROCm 7.0. Same behavior as beta. |
+| `rocm-7rc-rocwmma`   | ROCm 7.0 RC (HIP) + ROCWMMA + hipBLASLt*       | Release candidate for ROCm 7.0, with hipBLASLt and ROCWMMA for improved flash attention on RDNA3+/CDNA |
 
-
-You can also check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags.  
+* All ROCm 7 toolboxes now export `ROCBLAS_USE_HIPBLASLT=1` as this currently results in better perfromance and stability.
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
 
@@ -146,39 +148,42 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 `HF_HUB_ENABLE_HF_TRANSFER=1` uses a Rust-based package that enables faster download (install from [Pypi](https://pypi.org/project/hf-transfer/)).
 
 ## 3. Performance Benchmarks (Key Results)
-Got it — here’s the **concise, no-“we”** version, with the table embedded and pointing to deeper analysis.
 
----
+Benchmarks were run on **AMD Ryzen AI Max “Strix Halo”** across all supported backends, testing both **prompt processing (PP)** and **token generation (TG)** throughput.
+Reported values were analysed using error margins (mean ± σ). Backends whose ranges overlapped were treated as statistical ties rather than hard wins.
 
-## 🔍 Key Findings from Benchmarks
-
-Representative LLMs were tested on **AMD Ryzen AI Max “Strix Halo”** across all supported backends, using identical model builds in [Llama.cpp](https://github.com/ggerganov/llama.cpp).
-
-PP = prompt processing (tokens/sec prefill), TG = token generation (tokens/sec interactive).
-
-| Model | 🏆 Best PP | 🏆 Best TG | Vulkan (AMDVLK) | Vulkan (RADV) | ROCm 6.4.2 | ROCm 6.4.2 + ROCWMMA | ROCm 7.0 Beta | ROCm 7.0 RC |
-|---|---|---|---|---|---|---|---|---|
-| **Gemma3 12B Q8_0** | 🏆 **AMDVLK** (FA off) | 🏆 **AMDVLK** (FA off) | 677 pp (FA off) / 14.0 tg (FA off) | 503 pp (FA off) / 13.8 tg (FA off) | 223 pp (FA off) / 13.8 tg (FA off) | 230 pp (FA on) / 13.9 tg (FA off) | 223 pp (FA off) / 13.9 tg (FA off) | 222 pp (FA off) / 13.9 tg (FA off) |
-| **Gemma3 27B BF16** | 🏆 **RADV** (FA on) | 🏆 **ROCm6.4.2+ROCWMMA** (FA off) | ⚠️ Load Error | 139 pp (FA on) / 4.0 tg (FA off) | 84 pp (FA on) / 4.0 tg (FA on) | 95 pp (FA on) / 4.0 tg (FA off) | 92 pp (FA off) / 4.0 tg (FA off) | 83 pp (FA on) / 4.0 tg (FA on) |
-| **Llama-4-Scout 17B Q8_0** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA off) | 260 pp (FA on) / 12.2 tg (FA off) | 172 pp (FA on) / 12.3 tg (FA off) | 135 pp (FA off) / 11.6 tg (FA off) | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error |
-| **Llama-4-Scout 17B Q4_K XL** | 🏆 **AMDVLK** (FA on) | 🏆 **AMDVLK** (FA off) | 221 pp (FA on) / 20.0 tg (FA off) | 155 pp (FA on) / 20.0 tg (FA off) | 138 pp (FA off) / 17.4 tg (FA off) | ⚠️ GPU Hang | 139 pp (FA off) / 17.6 tg (FA off) | 124 pp (FA on) / 17.6 tg (FA on) |
-| **Qwen3 30B BF16** | 🏆 **ROCm6.4.2+ROCWMMA** (FA on) | 🏆 **ROCm7 RC** (FA off) | 108 pp (FA on) / 8.0 tg (FA off) | 87 pp (FA on) / 7.4 tg (FA on) | 158 pp (FA off) / 24.3 tg (FA on) | 162 pp (FA on) / 24.5 tg (FA off) | 153 pp (FA off) / 24.5 tg (FA off) | 152 pp (FA off) / 24.6 tg (FA off) |
-| **Qwen3-235B Q3_K XL** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA on) | 116 pp (FA on) / 16.0 tg (FA off) | 67 pp (FA on) / 16.8 tg (FA on) | 74 pp (FA off) / 13.7 tg (FA off) | ⚠️ GPU Hang | ⚠️ GPU Hang | ⚠️ Runtime Error |
-| **GLM-4.5-Air-Q4_K_XL** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA on) | 202 pp (FA on) / 22.8 tg (FA on) | 133 pp (FA on) / 23.3 tg (FA on) | 130 pp (FA off) / 19.4 tg (FA off) | ⚠️ GPU Hang | ⚠️ GPU Hang | 130 pp (FA off) / 20.1 tg (FA on) |
-| **GLM-4.5-Air-Q6_K_XL** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA on) | 225 pp (FA on) / 16.5 tg (FA on) | 132 pp (FA on) / 17.0 tg (FA on) | 125 pp (FA off) / 15.3 tg (FA off) | 114 pp (FA off) / 15.5 tg (FA off) | 121 pp (FA off) / 15.5 tg (FA off) | 124 pp (FA off) / 15.5 tg (FA off) |
-| **gpt-oss-120b-mxfp4** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA off) | 546 pp (FA on) / 48.1 tg (FA off) | 255 pp (FA on) / 49.0 tg (FA off) | 353 pp (FA off) / 44.1 tg (FA off) | 408 pp (FA on) / 45.0 tg (FA off) | 355 pp (FA off) / 45.0 tg (FA off) | 353 pp (FA off) / 45.1 tg (FA off) |
-| **gpt-oss-20b-mxfp4** | 🏆 **AMDVLK** (FA on) | 🏆 **RADV** (FA off) | 1473 pp (FA on) / 68.8 tg (FA off) | 728 pp (FA on) / 69.9 tg (FA off) | 583 pp (FA off) / 64.5 tg (FA off) | 649 pp (FA on) / 64.5 tg (FA off) | 584 pp (FA off) / 64.4 tg (FA off) | 582 pp (FA off) / 64.5 tg (FA off) |
+🌐 Interactive exploration of the latest benchmark runs: [Interactie Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
 
-**Observations:**
+| Workload Focus                                    | 🏆 Recommended Backend/Config       | Win + Tie Count¹ | Typical Runner-Up                  | Stability Notes                                                                       |
+| ------------------------------------------------- | ----------------------------------- | ---------------: | ---------------------------------- | ------------------------------------------------------------------------------------- |
+| **Prompt processing** (pp512, Flash Attention ON) | **ROCm 7 RC + ROCWMMA + hipBLASLt** |               15 | Vulkan AMDVLK (4)                  | 0% errors in tests                                                                    |
+| **Token generation** (tg128, Flash Attention ON)  | **Vulkan RADV**                     |               13 | Vulkan AMDVLK (1)                  | 0% errors in tests                                                                    |
+| **Balanced workloads**                            | **Vulkan AMDVLK**                   |                — | RADV / ROCm 7 RC+ROCWMMA+hipBLASLt | Fast PP & decent TG; \~5.6 % load failure rate due to ≤ 2 GiB single-allocation limit |
+| **BF16 models**                                   | **ROCm 7 RC + ROCWMMA + hipBLASLt** |                — | ROCm 6.4.2 + ROCWMMA               | Best PP & TG among ROCm backends; stable with Flash Attention ON                      |
 
-* **AMDVLK (Vulkan)** delivers the highest prompt processing speeds for most models, but is limited by ≤2 GiB single-buffer allocation and may fail to load some models.
-* **RADV (Vulkan)** is the most stable and compatible backend; typically slower than AMDVLK in PP but often competitive in TG.
-* **ROCm 6.4.2 + ROCWMMA** excels in BF16 workloads and can outperform Vulkan in certain cases, though ROCm stability issues remain.
-* ROCm 7.0 Beta/RC show similar performance to 6.4.2 without consistent gains.
+¹ Counts show number of times the backend placed 1st (alone or tied) across tested models/quantisations.
+
+
+### Key take-aways
+
+* **ROCm 7 RC + ROCWMMA + hipBLASLt + Flash Attention ON**
+  * Fastest prompt processing in the vast majority of tests (15/22 wins or ties).
+  * Best ROCm option for BF16 models.
+  * Zero recorded errors with Flash Attention ON.
+
+* **Vulkan RADV**
+  * Best token generation throughput (13/15 wins or ties).
+  * Most stable and broadly compatible backend overall.
+
+* **Vulkan AMDVLK**
+
+  * Competitive in both PP and TG; benefits from margin-aware tie handling.
+  * Limited by ≤ 2 GiB single buffer allocation, which can block some model architectures.
+  * Other ROCm variants (beta, hblt0, 6.4.2 w/o ROCWMMA)
+  * Inconsistent performance and/or higher error rates; best suited for experimental use.
 
 📄 Full per-model analysis: [docs/benchmarks.md](docs/benchmarks.md)
-🌐 Interactive exploration: [Live Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
 ## 4. Memory Planning & VRAM Estimator
 

@@ -2,5 +2,5 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-Memory access fault by GPU node-1 (Agent handle: 0x2314b7b0) on address 0x7f38249a9000. Reason: Page not present or supervisor privilege.
+:0:rocdevice.cpp            :3675: 454572762136 us:  Callback: Queue 0x7fb3f1400000 aborting with error : HSA_STATUS_ERROR_EXCEPTION: An HSAIL operation resulted in a hardware exception. code: 0x1016
 ✖ ! [rocm7_beta] Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002 __fa1 failed (exit 134)

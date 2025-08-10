@@ -1,4 +1,4 @@
-Found 18 model(s) to bench:
+Found 19 model(s) to bench:
   • /mnt/models/gemma-3/BF16/gemma-3-27b-it-BF16-00001-of-00002.gguf
   • /mnt/models/gemma-3/gemma-3-12b-it-UD-Q8_K_XL.gguf
   • /mnt/models/gemma-3/gemma-3-4b-it-Q3_K_S.gguf
@@ -16,6 +16,7 @@ Found 18 model(s) to bench:
   • /mnt/models/llama-4-scout-17b-16e/Q8_0/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003.gguf
   • /mnt/models/qwen-3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf
   • /mnt/models/qwen-3-30B-A3B/BF16/Qwen3-30B-A3B-BF16-00001-of-00002.gguf
+  • /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf
   • /mnt/models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf
 
 
@@ -75,11 +76,20 @@ Found 18 model(s) to bench:
   → log: results/gemma-3-27b-it-BF16-00001-of-00002__rocm6_4_2.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/BF16/gemma-3-27b-it-BF16-00001-of-00002.gguf
 
-  * [rocm6_4_2] gemma-3-27b-it-BF16-00001-of-00002 : FAILED
 
 ▶ [rocm6_4_2] gemma-3-27b-it-BF16-00001-of-00002 __fa1
   → log: results/gemma-3-27b-it-BF16-00001-of-00002__rocm6_4_2__fa1.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/BF16/gemma-3-27b-it-BF16-00001-of-00002.gguf -fa 1
+
+
+▶ [rocm7_rc-rocwaam] gemma-3-27b-it-BF16-00001-of-00002
+  → log: results/gemma-3-27b-it-BF16-00001-of-00002__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/BF16/gemma-3-27b-it-BF16-00001-of-00002.gguf
+
+
+▶ [rocm7_rc-rocwaam] gemma-3-27b-it-BF16-00001-of-00002 __fa1
+  → log: results/gemma-3-27b-it-BF16-00001-of-00002__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/BF16/gemma-3-27b-it-BF16-00001-of-00002.gguf -fa 1
 
 
 ▶ [rocm7_rc] gemma-3-12b-it-UD-Q8_K_XL
@@ -142,6 +152,16 @@ Found 18 model(s) to bench:
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/gemma-3-12b-it-UD-Q8_K_XL.gguf -fa 1
 
 
+▶ [rocm7_rc-rocwaam] gemma-3-12b-it-UD-Q8_K_XL
+  → log: results/gemma-3-12b-it-UD-Q8_K_XL__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/gemma-3-12b-it-UD-Q8_K_XL.gguf
+
+
+▶ [rocm7_rc-rocwaam] gemma-3-12b-it-UD-Q8_K_XL __fa1
+  → log: results/gemma-3-12b-it-UD-Q8_K_XL__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/gemma-3-12b-it-UD-Q8_K_XL.gguf -fa 1
+
+
 ▶ [rocm7_rc] gemma-3-4b-it-Q3_K_S
   → log: results/gemma-3-4b-it-Q3_K_S__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/gemma-3-4b-it-Q3_K_S.gguf
@@ -202,6 +222,16 @@ Found 18 model(s) to bench:
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/gemma-3-4b-it-Q3_K_S.gguf -fa 1
 
 
+▶ [rocm7_rc-rocwaam] gemma-3-4b-it-Q3_K_S
+  → log: results/gemma-3-4b-it-Q3_K_S__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/gemma-3-4b-it-Q3_K_S.gguf
+
+
+▶ [rocm7_rc-rocwaam] gemma-3-4b-it-Q3_K_S __fa1
+  → log: results/gemma-3-4b-it-Q3_K_S__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gemma-3/gemma-3-4b-it-Q3_K_S.gguf -fa 1
+
+
 ▶ [rocm7_rc] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002
   → log: results/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q4_K_XL/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002.gguf
@@ -216,13 +246,11 @@ Found 18 model(s) to bench:
   → log: results/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__rocm7_beta.log
   → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q4_K_XL/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002.gguf
 
-  * [rocm7_beta] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002 : FAILED
 
 ▶ [rocm7_beta] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002 __fa1
   → log: results/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__rocm7_beta__fa1.log
   → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q4_K_XL/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002.gguf -fa 1
 
-  * [rocm7_beta] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002 __fa1 : FAILED
 
 ▶ [rocm6_4_2-rocwmma] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002
   → log: results/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__rocm6_4_2-rocwmma.log
@@ -234,7 +262,6 @@ Found 18 model(s) to bench:
   → log: results/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__rocm6_4_2-rocwmma__fa1.log
   → cmd: toolbox run -c llama-rocm-6.4.2-rocwmma -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q4_K_XL/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002.gguf -fa 1
 
-  * [rocm6_4_2-rocwmma] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002 __fa1 : FAILED
 
 ▶ [vulkan_radv] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002
   → log: results/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__vulkan_radv.log
@@ -267,6 +294,16 @@ Found 18 model(s) to bench:
 
   * [rocm6_4_2] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002 __fa1 : FAILED
 
+▶ [rocm7_rc-rocwaam] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002
+  → log: results/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q4_K_XL/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002.gguf
+
+
+▶ [rocm7_rc-rocwaam] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002 __fa1
+  → log: results/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q4_K_XL/GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002.gguf -fa 1
+
+
 ▶ [rocm7_rc] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003
   → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q6_K_XL/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003.gguf
@@ -276,7 +313,6 @@ Found 18 model(s) to bench:
   → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm7_rc__fa1.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q6_K_XL/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003.gguf -fa 1
 
-  * [rocm7_rc] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003 __fa1 : FAILED
 
 ▶ [rocm7_beta] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003
   → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm7_beta.log
@@ -287,12 +323,12 @@ Found 18 model(s) to bench:
   → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm7_beta__fa1.log
   → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q6_K_XL/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003.gguf -fa 1
 
-  * [rocm7_beta] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003 __fa1 : FAILED
 
 ▶ [rocm6_4_2-rocwmma] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003
   → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm6_4_2-rocwmma.log
   → cmd: toolbox run -c llama-rocm-6.4.2-rocwmma -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q6_K_XL/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003.gguf
 
+  * [rocm6_4_2-rocwmma] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003 : FAILED
 
 ▶ [rocm6_4_2-rocwmma] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003 __fa1
   → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm6_4_2-rocwmma__fa1.log
@@ -329,7 +365,16 @@ Found 18 model(s) to bench:
   → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm6_4_2__fa1.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q6_K_XL/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003.gguf -fa 1
 
-  * [rocm6_4_2] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003 __fa1 : FAILED
+
+▶ [rocm7_rc-rocwaam] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003
+  → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q6_K_XL/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003.gguf
+
+
+▶ [rocm7_rc-rocwaam] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003 __fa1
+  → log: results/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/GLM-4.5-Air/UD-Q6_K_XL/GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003.gguf -fa 1
+
 
 ▶ [rocm7_rc] gpt-oss-120b-F16
   → log: results/gpt-oss-120b-F16__rocm7_rc.log
@@ -355,6 +400,7 @@ Found 18 model(s) to bench:
   → log: results/gpt-oss-120b-F16__rocm6_4_2-rocwmma.log
   → cmd: toolbox run -c llama-rocm-6.4.2-rocwmma -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-F16.gguf
 
+  * [rocm6_4_2-rocwmma] gpt-oss-120b-F16 : FAILED
 
 ▶ [rocm6_4_2-rocwmma] gpt-oss-120b-F16 __fa1
   → log: results/gpt-oss-120b-F16__rocm6_4_2-rocwmma__fa1.log
@@ -391,6 +437,16 @@ Found 18 model(s) to bench:
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-F16.gguf -fa 1
 
 
+▶ [rocm7_rc-rocwaam] gpt-oss-120b-F16
+  → log: results/gpt-oss-120b-F16__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-F16.gguf
+
+
+▶ [rocm7_rc-rocwaam] gpt-oss-120b-F16 __fa1
+  → log: results/gpt-oss-120b-F16__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-F16.gguf -fa 1
+
+
 ▶ [rocm7_rc] gpt-oss-120b-mxfp4-00001-of-00003
   → log: results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-mxfp4-00001-of-00003.gguf
@@ -400,7 +456,6 @@ Found 18 model(s) to bench:
   → log: results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7_rc__fa1.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-mxfp4-00001-of-00003.gguf -fa 1
 
-  * [rocm7_rc] gpt-oss-120b-mxfp4-00001-of-00003 __fa1 : FAILED
 
 ▶ [rocm7_beta] gpt-oss-120b-mxfp4-00001-of-00003
   → log: results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7_beta.log
@@ -446,10 +501,21 @@ Found 18 model(s) to bench:
   → log: results/gpt-oss-120b-mxfp4-00001-of-00003__rocm6_4_2.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-mxfp4-00001-of-00003.gguf
 
+  * [rocm6_4_2] gpt-oss-120b-mxfp4-00001-of-00003 : FAILED
 
 ▶ [rocm6_4_2] gpt-oss-120b-mxfp4-00001-of-00003 __fa1
   → log: results/gpt-oss-120b-mxfp4-00001-of-00003__rocm6_4_2__fa1.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-mxfp4-00001-of-00003.gguf -fa 1
+
+
+▶ [rocm7_rc-rocwaam] gpt-oss-120b-mxfp4-00001-of-00003
+  → log: results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-mxfp4-00001-of-00003.gguf
+
+
+▶ [rocm7_rc-rocwaam] gpt-oss-120b-mxfp4-00001-of-00003 __fa1
+  → log: results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-120b/gpt-oss-120b-mxfp4-00001-of-00003.gguf -fa 1
 
 
 ▶ [rocm7_rc] gpt-oss-20b-F32
@@ -512,6 +578,16 @@ Found 18 model(s) to bench:
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-20b/gpt-oss-20b-F32.gguf -fa 1
 
 
+▶ [rocm7_rc-rocwaam] gpt-oss-20b-F32
+  → log: results/gpt-oss-20b-F32__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-20b/gpt-oss-20b-F32.gguf
+
+
+▶ [rocm7_rc-rocwaam] gpt-oss-20b-F32 __fa1
+  → log: results/gpt-oss-20b-F32__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-20b/gpt-oss-20b-F32.gguf -fa 1
+
+
 ▶ [rocm7_rc] gpt-oss-20b-mxfp4
   → log: results/gpt-oss-20b-mxfp4__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf
@@ -572,6 +648,16 @@ Found 18 model(s) to bench:
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf -fa 1
 
 
+▶ [rocm7_rc-rocwaam] gpt-oss-20b-mxfp4
+  → log: results/gpt-oss-20b-mxfp4__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf
+
+
+▶ [rocm7_rc-rocwaam] gpt-oss-20b-mxfp4 __fa1
+  → log: results/gpt-oss-20b-mxfp4__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf -fa 1
+
+
 ▶ [rocm7_rc] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002
   → log: results/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/kimi-dev-72B-Q8_K_XL/UD-Q8_K_XL/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002.gguf
@@ -581,12 +667,12 @@ Found 18 model(s) to bench:
   → log: results/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002__rocm7_rc__fa1.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/kimi-dev-72B-Q8_K_XL/UD-Q8_K_XL/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002.gguf -fa 1
 
+  * [rocm7_rc] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002 __fa1 : FAILED
 
 ▶ [rocm7_beta] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002
   → log: results/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002__rocm7_beta.log
   → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/kimi-dev-72B-Q8_K_XL/UD-Q8_K_XL/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002.gguf
 
-  * [rocm7_beta] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002 : FAILED
 
 ▶ [rocm7_beta] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002 __fa1
   → log: results/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002__rocm7_beta__fa1.log
@@ -598,7 +684,6 @@ Found 18 model(s) to bench:
   → log: results/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002__rocm6_4_2-rocwmma.log
   → cmd: toolbox run -c llama-rocm-6.4.2-rocwmma -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/kimi-dev-72B-Q8_K_XL/UD-Q8_K_XL/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002.gguf
 
-  * [rocm6_4_2-rocwmma] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002 : FAILED
 
 ▶ [rocm6_4_2-rocwmma] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002 __fa1
   → log: results/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002__rocm6_4_2-rocwmma__fa1.log
@@ -640,11 +725,20 @@ Found 18 model(s) to bench:
 
   * [rocm6_4_2] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002 __fa1 : FAILED
 
+▶ [rocm7_rc-rocwaam] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002
+  → log: results/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/kimi-dev-72B-Q8_K_XL/UD-Q8_K_XL/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002.gguf
+
+
+▶ [rocm7_rc-rocwaam] Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002 __fa1
+  → log: results/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/kimi-dev-72B-Q8_K_XL/UD-Q8_K_XL/Kimi-Dev-72B-UD-Q8_K_XL-00001-of-00002.gguf -fa 1
+
+
 ▶ [rocm7_rc] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002
   → log: results/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-3.3-70B-Instruct/UD-Q8_K_XL/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002.gguf
 
-  * [rocm7_rc] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002 : FAILED
 
 ▶ [rocm7_rc] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002 __fa1
   → log: results/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc__fa1.log
@@ -656,7 +750,6 @@ Found 18 model(s) to bench:
   → log: results/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_beta.log
   → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-3.3-70B-Instruct/UD-Q8_K_XL/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002.gguf
 
-  * [rocm7_beta] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002 : FAILED
 
 ▶ [rocm7_beta] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002 __fa1
   → log: results/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_beta__fa1.log
@@ -704,6 +797,16 @@ Found 18 model(s) to bench:
 ▶ [rocm6_4_2] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002 __fa1
   → log: results/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_2__fa1.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-3.3-70B-Instruct/UD-Q8_K_XL/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002.gguf -fa 1
+
+
+▶ [rocm7_rc-rocwaam] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002
+  → log: results/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-3.3-70B-Instruct/UD-Q8_K_XL/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002.gguf
+
+
+▶ [rocm7_rc-rocwaam] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002 __fa1
+  → log: results/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-3.3-70B-Instruct/UD-Q8_K_XL/Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002.gguf -fa 1
 
 
 ▶ [rocm7_rc] llama3.3-70.6B-Q4_K_M
@@ -766,16 +869,26 @@ Found 18 model(s) to bench:
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-3.3-Q4_K_M/llama3.3-70.6B-Q4_K_M.gguf -fa 1
 
 
+▶ [rocm7_rc-rocwaam] llama3.3-70.6B-Q4_K_M
+  → log: results/llama3.3-70.6B-Q4_K_M__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-3.3-Q4_K_M/llama3.3-70.6B-Q4_K_M.gguf
+
+
+▶ [rocm7_rc-rocwaam] llama3.3-70.6B-Q4_K_M __fa1
+  → log: results/llama3.3-70.6B-Q4_K_M__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-3.3-Q4_K_M/llama3.3-70.6B-Q4_K_M.gguf -fa 1
+
+
 ▶ [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002
   → log: results/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf
 
-  * [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002 : FAILED
 
 ▶ [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002 __fa1
   → log: results/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002__rocm7_rc__fa1.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf -fa 1
 
+  * [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002 __fa1 : FAILED
 
 ▶ [rocm7_beta] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002
   → log: results/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002__rocm7_beta.log
@@ -828,7 +941,17 @@ Found 18 model(s) to bench:
   → log: results/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002__rocm6_4_2__fa1.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf -fa 1
 
-  * [rocm6_4_2] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002 __fa1 : FAILED
+
+▶ [rocm7_rc-rocwaam] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002
+  → log: results/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf
+
+  * [rocm7_rc-rocwaam] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002 : FAILED
+
+▶ [rocm7_rc-rocwaam] Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002 __fa1
+  → log: results/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q4_K_XL/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf -fa 1
+
 
 ▶ [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002
   → log: results/Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002__rocm7_rc.log
@@ -839,7 +962,6 @@ Found 18 model(s) to bench:
   → log: results/Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002__rocm7_rc__fa1.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q6_K/Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002.gguf -fa 1
 
-  * [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002 __fa1 : FAILED
 
 ▶ [rocm7_beta] Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002
   → log: results/Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002__rocm7_beta.log
@@ -896,11 +1018,20 @@ Found 18 model(s) to bench:
 
   * [rocm6_4_2] Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002 __fa1 : FAILED
 
+▶ [rocm7_rc-rocwaam] Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002
+  → log: results/Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q6_K/Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002.gguf
+
+
+▶ [rocm7_rc-rocwaam] Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002 __fa1
+  → log: results/Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q6_K/Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002.gguf -fa 1
+
+
 ▶ [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003
   → log: results/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q8_0/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003.gguf
 
-  * [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003 : FAILED
 
 ▶ [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003 __fa1
   → log: results/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003__rocm7_rc__fa1.log
@@ -912,7 +1043,6 @@ Found 18 model(s) to bench:
   → log: results/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003__rocm7_beta.log
   → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q8_0/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003.gguf
 
-  * [rocm7_beta] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003 : FAILED
 
 ▶ [rocm7_beta] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003 __fa1
   → log: results/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003__rocm7_beta__fa1.log
@@ -963,17 +1093,25 @@ Found 18 model(s) to bench:
 
   * [rocm6_4_2] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003 __fa1 : FAILED
 
+▶ [rocm7_rc-rocwaam] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003
+  → log: results/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q8_0/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003.gguf
+
+
+▶ [rocm7_rc-rocwaam] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003 __fa1
+  → log: results/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/llama-4-scout-17b-16e/Q8_0/Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003.gguf -fa 1
+
+
 ▶ [rocm7_rc] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003
   → log: results/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf
 
-  * [rocm7_rc] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003 : FAILED
 
 ▶ [rocm7_rc] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003 __fa1
   → log: results/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003__rocm7_rc__fa1.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf -fa 1
 
-  * [rocm7_rc] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003 __fa1 : FAILED
 
 ▶ [rocm7_beta] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003
   → log: results/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003__rocm7_beta.log
@@ -1028,7 +1166,16 @@ Found 18 model(s) to bench:
   → log: results/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003__rocm6_4_2__fa1.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf -fa 1
 
-  * [rocm6_4_2] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003 __fa1 : FAILED
+
+▶ [rocm7_rc-rocwaam] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003
+  → log: results/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf
+
+
+▶ [rocm7_rc-rocwaam] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003 __fa1
+  → log: results/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003.gguf -fa 1
+
 
 ▶ [rocm7_rc] Qwen3-30B-A3B-BF16-00001-of-00002
   → log: results/Qwen3-30B-A3B-BF16-00001-of-00002__rocm7_rc.log
@@ -1039,6 +1186,7 @@ Found 18 model(s) to bench:
   → log: results/Qwen3-30B-A3B-BF16-00001-of-00002__rocm7_rc__fa1.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/BF16/Qwen3-30B-A3B-BF16-00001-of-00002.gguf -fa 1
 
+  * [rocm7_rc] Qwen3-30B-A3B-BF16-00001-of-00002 __fa1 : FAILED
 
 ▶ [rocm7_beta] Qwen3-30B-A3B-BF16-00001-of-00002
   → log: results/Qwen3-30B-A3B-BF16-00001-of-00002__rocm7_beta.log
@@ -1049,6 +1197,7 @@ Found 18 model(s) to bench:
   → log: results/Qwen3-30B-A3B-BF16-00001-of-00002__rocm7_beta__fa1.log
   → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/BF16/Qwen3-30B-A3B-BF16-00001-of-00002.gguf -fa 1
 
+  * [rocm7_beta] Qwen3-30B-A3B-BF16-00001-of-00002 __fa1 : FAILED
 
 ▶ [rocm6_4_2-rocwmma] Qwen3-30B-A3B-BF16-00001-of-00002
   → log: results/Qwen3-30B-A3B-BF16-00001-of-00002__rocm6_4_2-rocwmma.log
@@ -1090,6 +1239,86 @@ Found 18 model(s) to bench:
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/BF16/Qwen3-30B-A3B-BF16-00001-of-00002.gguf -fa 1
 
 
+▶ [rocm7_rc-rocwaam] Qwen3-30B-A3B-BF16-00001-of-00002
+  → log: results/Qwen3-30B-A3B-BF16-00001-of-00002__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/BF16/Qwen3-30B-A3B-BF16-00001-of-00002.gguf
+
+
+▶ [rocm7_rc-rocwaam] Qwen3-30B-A3B-BF16-00001-of-00002 __fa1
+  → log: results/Qwen3-30B-A3B-BF16-00001-of-00002__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/BF16/Qwen3-30B-A3B-BF16-00001-of-00002.gguf -fa 1
+
+
+▶ [rocm7_rc] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm7_rc.log
+  → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf
+
+
+▶ [rocm7_rc] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL __fa1
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm7_rc__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf -fa 1
+
+
+▶ [rocm7_beta] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm7_beta.log
+  → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf
+
+
+▶ [rocm7_beta] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL __fa1
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm7_beta__fa1.log
+  → cmd: toolbox run -c llama-rocm-7beta -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf -fa 1
+
+
+▶ [rocm6_4_2-rocwmma] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm6_4_2-rocwmma.log
+  → cmd: toolbox run -c llama-rocm-6.4.2-rocwmma -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf
+
+
+▶ [rocm6_4_2-rocwmma] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL __fa1
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm6_4_2-rocwmma__fa1.log
+  → cmd: toolbox run -c llama-rocm-6.4.2-rocwmma -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf -fa 1
+
+
+▶ [vulkan_radv] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__vulkan_radv.log
+  → cmd: toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf
+
+
+▶ [vulkan_radv] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL __fa1
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__vulkan_radv__fa1.log
+  → cmd: toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf -fa 1
+
+
+▶ [vulkan_amdvlk] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__vulkan_amdvlk.log
+  → cmd: toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf
+
+
+▶ [vulkan_amdvlk] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL __fa1
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__vulkan_amdvlk__fa1.log
+  → cmd: toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf -fa 1
+
+
+▶ [rocm6_4_2] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm6_4_2.log
+  → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf
+
+
+▶ [rocm6_4_2] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL __fa1
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm6_4_2__fa1.log
+  → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf -fa 1
+
+
+▶ [rocm7_rc-rocwaam] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf
+
+
+▶ [rocm7_rc-rocwaam] Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL __fa1
+  → log: results/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen-3-30B-A3B/Qwen3-30B-A3B-Instruct-2507-UD-Q6_K_XL.gguf -fa 1
+
+
 ▶ [rocm7_rc] Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002
   → log: results/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002__rocm7_rc.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf
@@ -1099,7 +1328,6 @@ Found 18 model(s) to bench:
   → log: results/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002__rocm7_rc__fa1.log
   → cmd: toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf -fa 1
 
-  * [rocm7_rc] Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002 __fa1 : FAILED
 
 ▶ [rocm7_beta] Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002
   → log: results/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002__rocm7_beta.log
@@ -1150,4 +1378,15 @@ Found 18 model(s) to bench:
 ▶ [rocm6_4_2] Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002 __fa1
   → log: results/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002__rocm6_4_2__fa1.log
   → cmd: toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf -fa 1
+
+  * [rocm6_4_2] Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002 __fa1 : FAILED
+
+▶ [rocm7_rc-rocwaam] Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002
+  → log: results/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002__rocm7_rc-rocwaam.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf
+
+
+▶ [rocm7_rc-rocwaam] Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002 __fa1
+  → log: results/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002__rocm7_rc-rocwaam__fa1.log
+  → cmd: toolbox run -c llama-rocm-7rc-rocwaam -- /usr/local/bin/llama-bench -ngl 999 -mmp 0 -m /mnt/models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf -fa 1
 

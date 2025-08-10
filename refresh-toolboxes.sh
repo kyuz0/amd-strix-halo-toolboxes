@@ -8,10 +8,10 @@ declare -A TOOLBOXES
 TOOLBOXES["llama-vulkan-amdvlk"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-amdvlk --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-vulkan-radv"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-6.4.2"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.2 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
-TOOLBOXES["llama-rocm-6.4.2-rocwaam"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.2-rocwaam --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-6.4.2-rocwmma"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.2-rocwmma --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-7beta"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7beta --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-7rc"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7rc --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
-TOOLBOXES["llama-rocm-7rc-rocwaam"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7rc-rocwaam --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7rc-rocwmma"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7rc-rocwmma --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 
 function usage() {
   echo "Usage: $0 [all|toolbox-name1 toolbox-name2 ...]"

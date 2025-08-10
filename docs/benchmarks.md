@@ -1,39 +1,44 @@
 # AMD Strix Halo — llama.cpp Toolboxes (Benchmarks)
 
-**Live results:** [https://kyuz0.github.io/amd-strix-halo-toolboxes/](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
+**Interactive results:** [https://kyuz0.github.io/amd-strix-halo-toolboxes/](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
-- Filter by model name, size, and quantization
-- Select backends with or without **Flash Attention (FA)**
-- Compare pp512 and tg128 side-by-side
-- Winners are computed with an error-aware tolerance rule.
+* Filter by model name, size, and quantization
+* Select backends with or without **Flash Attention**
+* Compare pp512 and tg128 side-by-side
+* Winners are computed using an **error-aware tolerance rule** — if two results overlap within their ± error margins, both are counted as winners.
 
 ---
 
 ## Benchmark methodology
 
-* **pp512** — prompt processing throughput (tokens/sec)
-* **tg128** — text generation throughput (tokens/sec)
-* Each backend tested twice:
+* **pp512** — prompt processing throughput (tokens/sec, prefill)
+* **tg128** — token generation throughput (tokens/sec, interactive)
+* Each backend tested twice per model:
 
-  * FA off: `-fa 0`
-  * FA on:  `-fa 1`
-* Winners determined per model using pooled ± error from both results; multiple winners are possible.
+  * **Flash Attention OFF:** `-fa 0`
+  * **Flash Attention ON:**  `-fa 1`
+* Winners are determined per model using pooled ± error from all relevant runs; multiple winners are possible.
+* All runs were built from the same `llama.cpp` commit for consistency.
 
-Tested backends:
+**Tested backends:**
 
 * Vulkan RADV
 * Vulkan AMDVLK
 * ROCm 6.4.2
-* ROCm 6.4.2 + rocWMMA
-* ROCm 7.x (beta / rc)
+* ROCm 6.4.2 + ROCWMMA
+* ROCm 7.x (beta / RC)
+* ROCm 7.x + ROCWMMA + hipBLASLt
 
-All runs built from the same llama.cpp commit.
+**Note on ROCm 7 hipBLASLt:**
+All ROCm 7 toolboxes ship with **hipBLASLt enabled by default** (`ROCBLAS_USE_HIPBLASLT=1`) because it improves performance and stability in most cases.
+However, the benchmark script also includes runs with **hipBLASLt disabled** (`-hblt0`) so we can measure the impact directly.
 
 ---
 
 ## Running benchmarks
 
 Place `.gguf` models in `models/` (for sharded models, include only the first shard: `*-00001-of-*.gguf`).
+
 Run:
 
 ```bash
@@ -60,66 +65,60 @@ python benchmark/summarize_results.py
 
 ---
 
-## Summary of current dataset
+## Summary of current dataset (margin-aware, Flash Attention ON)
 
-### pp512 (prompt processing)
+### Prompt Processing (pp512)
 
-* **Vulkan AMDVLK** leads in average throughput and most frequent wins.
+* **ROCm 7 RC + ROCWMMA + hipBLASLt** dominates — **15 wins/ties** out of 22 models.
+* **Vulkan AMDVLK** is second most frequent winner (**4 wins/ties**) but can’t load certain architectures due to the ≤ 2 GiB single-buffer limit.
+* **Vulkan RADV** rarely wins in PP but is highly stable.
 
-  * Winner count: AMDVLK (FA on) – 11 models; AMDVLK (FA off) – 3 models.
-  * Average t/s: AMDVLK (FA off) – 422.46; AMDVLK (FA on) – 388.68.
-* **Vulkan RADV** is competitive and shows wins on multiple models.
+### Token Generation (tg128)
 
-  * Winner count: RADV (FA on) – 3 models.
-  * Average t/s: RADV (FA on) – 279.95; RADV (FA off) – 273.54.
-* **ROCm 6.4.2 + rocWMMA** is strong in some cases.
-
-  * Winner count: 2 models (FA on).
-  * Average t/s: rocWMMA (FA on) – 335.44.
-* ROCm 7.x variants trail in pp512 averages.
-
-**Conclusion:** AMDVLK is generally fastest for prompt processing. RADV is close on certain models and is less prone to instability. ROCm+rocWMMA can match or exceed in select cases but is inconsistent.
+* **Vulkan RADV** leads — **13 wins/ties** out of 15 possible.
+* **Vulkan AMDVLK** is a strong second, usually just behind RADV in TG.
+* **ROCm 7 RC + ROCWMMA + hipBLASLt** generally lags in TG but still posts competitive results for some models.
 
 ---
 
-### tg128 (text generation)
+### Placement counts (margin-aware, Flash Attention ON)
 
-* **Vulkan RADV** shows the most frequent wins.
+**Prompt Processing (pp512)**
 
-  * Winner count: RADV (FA off) – 6 models; RADV (FA on) – 5 models.
-  * Average t/s: RADV (FA off) – 23.73; RADV (FA on) – 23.45.
-* **Vulkan AMDVLK** wins in some cases but is less dominant than in pp512.
+| Backend                         |    1st | 2nd | 3rd |
+| ------------------------------- | -----: | --: | --: |
+| ROCm 7 RC + ROCWMMA + hipBLASLt | **15** |   2 |   1 |
+| Vulkan AMDVLK                   |      4 |   5 |   1 |
+| Vulkan RADV                     |      0 |   2 |   2 |
 
-  * Winner count: AMDVLK (FA off) – 4 models.
-  * Average t/s: AMDVLK (FA off) – 25.91; AMDVLK (FA on) – 23.85.
-* **ROCm 6.4.2 + rocWMMA** achieves the highest average t/s.
+**Token Generation (tg128)**
 
-  * Average t/s: rocWMMA (FA on) – 32.51; rocWMMA (FA off) – 31.96.
-* ROCm 7.x and ROCm 6.4.2 also appear among winners in several models.
-
-**Conclusion:** RADV is the most consistent for text generation wins. ROCm+rocWMMA delivers the highest averages but with potential stability issues. AMDVLK is competitive but not consistently ahead.
+| Backend                         |    1st | 2nd | 3rd |
+| ------------------------------- | -----: | --: | --: |
+| Vulkan RADV                     | **13** |   1 |   1 |
+| Vulkan AMDVLK                   |      1 |  10 |   1 |
+| ROCm 7 RC + ROCWMMA + hipBLASLt |      1 |   1 |   6 |
 
 ---
 
-## Flash Attention (FA)
+## Flash Attention
 
-FA effects vary:
-
-* In pp512 averages, AMDVLK performs better without FA.
-* In tg128, the effect depends on backend and model.
-  FA should be treated as a per-model tuning parameter rather than enabled or disabled globally.
+* **ROCm 7 RC + ROCWMMA + hipBLASLt** benefits noticeably from Flash Attention ON in prompt processing, with no stability penalties recorded.
+* **Vulkan AMDVLK** and **Vulkan RADV** show mixed changes — some models improve with FA, others slow down slightly.
+* FA should be enabled or disabled **per model/backend** based on measured performance.
 
 ---
 
 ## Recommendations
 
-* **Stability priority:** Vulkan RADV.
-* **Maximum pp512 throughput:** Vulkan AMDVLK, validate per model.
-* **High tg128 averages:** ROCm 6.4.2 + rocWMMA, test stability.
-* **FA setting:** Evaluate per model/backend using side-by-side comparison.
+* **Fastest prompt processing:** ROCm 7 RC + ROCWMMA + hipBLASLt (Flash Attention ON)
+* **Fastest token generation:** Vulkan RADV (Flash Attention ON)
+* **Balanced performance:** Vulkan AMDVLK (fast PP & decent TG, but ≤ 2 GiB buffer limit)
+* **BF16 models:** ROCm 7 RC + ROCWMMA + hipBLASLt (best ROCm PP/TG combo, stable with FA ON)
+* **Maximum stability:** Vulkan RADV
 
 ---
 
 ## Winner calculation
 
-A backend is a winner if its mean throughput is within the best backend’s pooled ± error margin for that model and test type.
+A backend is counted as a winner if its mean throughput is within the best backend’s pooled ± error margin for that model/test type. This ensures results within measurement noise are treated as ties, not false losses.

@@ -2,6 +2,7 @@
 
 # apply-rocwmma-fix.sh - Apply rocWMMA compatibility fixes to llama.cpp
 # Usage: ./apply-rocwmma-fix.sh <path-to-llama.cpp-directory>
+# Source: https://github.com/lhl/strix-halo-testing/blob/main/llm-bench/apply-rocwmma-fix.sh
 
 set -euo pipefail
 
