@@ -48,11 +48,11 @@ RUN printf '%s\n' \
   && chmod +x /etc/profile.d/rocm.sh \
   && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
 
-# Install ROCWAAM
+# Install rocwmma
 WORKDIR /opt/
-COPY ./build-rocwaam.sh .
-RUN chmod +x build-rocwaam.sh
-RUN ./build-rocwaam.sh
+COPY ./build-rocwmma.sh .
+RUN chmod +x build-rocwmma.sh
+RUN ./build-rocwmma.sh
 
 # 6) Clone llama.cpp
 WORKDIR /opt/llama.cpp
@@ -60,7 +60,7 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
  && git clean -xdf \
  && git submodule update --recursive
 
-# Apply PAtch for ROCWAAM
+# Apply PAtch for rocwmma
 COPY ./apply-rocwmma-fix.sh /opt
 RUN chmod +x /opt/apply-rocwmma-fix.sh
 RUN /opt/apply-rocwmma-fix.sh /opt/llama.cpp
