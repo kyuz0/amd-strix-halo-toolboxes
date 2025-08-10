@@ -1,0 +1,85 @@
+name: Prune Old Toolbox Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      backends:
+        description: Comma-separated backends to prune (e.g. "rocm-7beta,rocm-7rc") or "all"
+        default: all
+      keep:
+        description: Number of latest tags to keep
+        default: "3"
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    env:
+      NS: kyuz0
+      REPO: amd-strix-halo-toolboxes
+    steps:
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Login to Docker Hub API (JWT)
+        id: login
+        env:
+          DH_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          DH_PASS: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          TOKEN=$(curl -s -H "Content-Type: application/json" \
+            -d "{\"username\":\"${DH_USER}\",\"password\":\"${DH_PASS}\"}" \
+            https://hub.docker.com/v2/users/login/ | jq -r .token)
+          if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
+            echo "Failed to get Docker Hub JWT"; exit 1
+          fi
+          echo "token=${TOKEN}" >> "$GITHUB_OUTPUT"
+
+      - name: Determine backend list
+        id: mk
+        shell: bash
+        run: |
+          IN='${{ github.event.inputs.backends }}'
+          if [[ "$IN" == "all" || -z "$IN" ]]; then
+            JSON='["rocm-6.4.2","rocm-6.4.2-rocwmma","rocm-7beta","rocm-7rc","rocm-7rc-rocwmma","vulkan-amdvlk","vulkan-radv"]'
+          else
+            IN_CLEAN=$(echo "$IN" | tr -d '[:space:]')
+            JSON='["'${IN_CLEAN//,/\",\"}'"]'
+          fi
+          echo "list=${JSON}" >> "$GITHUB_OUTPUT"
+
+      - name: Prune old tags
+        env:
+          TOKEN: ${{ steps.login.outputs.token }}
+          KEEP: ${{ github.event.inputs.keep }}
+        run: |
+          BACKENDS='${{ steps.mk.outputs.list }}'
+          mapfile -t ARR < <(jq -r '.[]' <<< "$BACKENDS")
+          base_url="https://hub.docker.com/v2/repositories/${NS}/${REPO}/tags"
+          auth_hdr="Authorization: JWT ${TOKEN}"
+
+          for B in "${ARR[@]}"; do
+            echo ""
+            echo "=== Backend: ${B} (keeping latest ${KEEP}) ==="
+            next="${base_url}?page_size=100&ordering=last_updated&name=${B}_"
+            tags=()
+            while [[ -n "$next" && "$next" != "null" ]]; do
+              resp=$(curl -s -H "$auth_hdr" "$next")
+              page_tags=($(jq -r '.results[].name' <<< "$resp" | grep -E "^${B}_" || true))
+              tags+=("${page_tags[@]}")
+              next=$(jq -r '.next' <<< "$resp")
+            done
+            total=${#tags[@]}
+            echo "Found ${total} immutable tag(s) for ${B}."
+            if (( total <= KEEP )); then
+              echo "Nothing to delete."
+              continue
+            fi
+            to_delete=("${tags[@]:KEEP}")
+            for t in "${to_delete[@]}"; do
+              echo "Deleting tag ${t}..."
+              curl -s -X DELETE -H "$auth_hdr" \
+                "https://hub.docker.com/v2/repositories/${NS}/${REPO}/tags/${t}/" \
+                -o /dev/null -w "%{http_code}\n" | grep -Eq "^(202|204)$" \
+                && echo "✔ Deleted" || echo "✖ Failed"
+            done
+          done
