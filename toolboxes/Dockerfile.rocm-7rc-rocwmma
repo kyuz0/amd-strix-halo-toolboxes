@@ -9,7 +9,7 @@ RUN dnf install -y \
 # 2) Download ROCm nightly tarball
 WORKDIR /tmp
 RUN curl -L -o therock.tar.gz \
-      https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-windows-gfx1151-7.0.0rc20250810.tar.gz
+      https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux-gfx1151-7.0.0rc20250810.tar.gz
 
 # 3) Extract into /opt/rocm-7.0
 RUN mkdir -p /opt/rocm-7.0 \
@@ -48,11 +48,11 @@ RUN printf '%s\n' \
   && chmod +x /etc/profile.d/rocm.sh \
   && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
 
-# Install rocwmma
+# Install ROCWAAM
 WORKDIR /opt/
-COPY ./build-rocwmma.sh .
-RUN chmod +x build-rocwmma.sh
-RUN ./build-rocwmma.sh
+COPY ./build-rocwaam.sh .
+RUN chmod +x build-rocwaam.sh
+RUN ./build-rocwaam.sh
 
 # 6) Clone llama.cpp
 WORKDIR /opt/llama.cpp
@@ -60,7 +60,7 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
  && git clean -xdf \
  && git submodule update --recursive
 
-# Apply PAtch for rocwmma
+# Apply PAtch for ROCWAAM
 COPY ./apply-rocwmma-fix.sh /opt
 RUN chmod +x /opt/apply-rocwmma-fix.sh
 RUN /opt/apply-rocwmma-fix.sh /opt/llama.cpp
