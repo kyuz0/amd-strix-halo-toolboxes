@@ -130,7 +130,7 @@ Once inside, the following commands show how to run local LLMs:
 
 * `llama-cli --list-devices`
   *Lists available GPU devices for Llama.cpp.*
-* `llama-cli --no-mmap --ngl 999 -fa -m <model>`
+* `llama-cli --no-mmap -ngl 999 -fa -m <model>`
   *Runs inference on the specified model, with all layers on GPU and flash attention enabled (replace \*\* with your model path).*
 
 ## 2.3 Downloading GGUF Models from HuggingFace
