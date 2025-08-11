@@ -9,7 +9,7 @@ RUN dnf install -y \
 # 2) Download ROCm nightly tarball
 WORKDIR /tmp
 RUN curl -L -o therock.tar.gz \
-      https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux-gfx1151-7.0.0rc20250810.tar.gz
+      https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux-gfx1151-7.0.0rc20250811.tar.gz
 
 # 3) Extract into /opt/rocm-7.0
 RUN mkdir -p /opt/rocm-7.0 \
