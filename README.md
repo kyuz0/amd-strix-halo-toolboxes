@@ -49,11 +49,13 @@ You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-st
 | `vulkan-radv`        | Vulkan (Mesa RADV)        | Most stable and compatible. Recommended for most users and all models. |
 | `rocm-6.4.2`         | ROCm 6.4.2 (HIP)          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
 | `rocm-6.4.2-rocwmma` | ROCm 6.4.2 (HIP) + ROCWMMA | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
+| `rocm-6.4.3`         | ROCm 6.4.3 (HIP) + hipBLASLt*          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
+| `rocm-6.4.3-rocwmma` | ROCm 6.4.3 (HIP) + ROCWMMA + hipBLASLt*  | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
 | `rocm-7beta`         | ROCm 7.0 Beta (HIP) + hipBLASLt*      | Latest ROCm beta. No real gain for Llama.cpp. Same model limits as 6.4.2. |
 | `rocm-7rc`           | ROCm 7.0 RC (HIP) + hipBLASLt*         | Release candidate for ROCm 7.0. Same behavior as beta. |
 | `rocm-7rc-rocwmma`   | ROCm 7.0 RC (HIP) + ROCWMMA + hipBLASLt*       | Release candidate for ROCm 7.0, with hipBLASLt and ROCWMMA for improved flash attention on RDNA3+/CDNA |
 
-* All ROCm 7 toolboxes now export `ROCBLAS_USE_HIPBLASLT=1` as this currently results in better perfromance and stability.
+\* All these toolboxes now export `ROCBLAS_USE_HIPBLASLT=1` as this currently results in better perfromance and stability in *MOST* cases.
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
 

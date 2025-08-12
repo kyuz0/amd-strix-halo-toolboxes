@@ -45,6 +45,12 @@ RUN git clean -xdf \
 RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
  && ldconfig
 
+RUN printf '%s\n' \
+  'export ROCBLAS_USE_HIPBLASLT=1' \
+  > /etc/profile.d/rocm.sh \
+  && chmod +x /etc/profile.d/rocm.sh \
+  && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
+
 COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
