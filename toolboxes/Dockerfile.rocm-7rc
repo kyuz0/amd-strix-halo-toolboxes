@@ -53,7 +53,6 @@ RUN cmake -S . -B build \
           -DAMDGPU_TARGETS=gfx1151 \
           -DCMAKE_BUILD_TYPE=Release \
           -DLLAMA_HIP_UMA=ON \
-          -DGGML_HIP_ROCWMMA_FATTN=ON \
  && cmake --build build --config Release -- -j$(nproc) \
  && cmake --install build --config Release
 
