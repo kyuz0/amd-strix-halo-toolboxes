@@ -46,6 +46,7 @@ RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
   && microdnf clean all && rm -rf /var/cache/dnf/*
 
 # copy
+COPY --from=builder /usr/ /usr/
 COPY --from=builder /usr/local/ /usr/local/
 
 # ld

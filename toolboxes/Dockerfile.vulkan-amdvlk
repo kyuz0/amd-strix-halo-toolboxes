@@ -58,6 +58,7 @@ RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
  && rm -f /tmp/amdvlk-*.rpm
 
 # copy
+COPY --from=builder /usr/ /usr/
 COPY --from=builder /usr/local/ /usr/local/
 
 # ld
