@@ -15,11 +15,22 @@ REPO
 EOF
 
 # deps
-RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
-       make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
-       rocm rocminfo radeontop \
-       git vim sudo rsync \
-    && dnf clean all && rm -rf /var/cache/dnf/*
+RUN dnf -y --nodocs --setopt=install_weak_deps=False \
+    --exclude='*sdk*' --exclude='*samples*' --exclude='*-doc*' --exclude='*-docs*' \
+    install \
+      make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
+      rocm-llvm rocm-device-libs hip-runtime-amd hip-devel \
+      rocblas rocblas-devel hipblas hipblas-devel \
+      rocminfo radeontop \
+      git-core vim sudo rsync \
+ && dnf clean all && rm -rf /var/cache/dnf/*
+
+# rocm env
+ENV ROCM_PATH=/opt/rocm \
+    HIP_PATH=/opt/rocm \
+    HIP_CLANG_PATH=/opt/rocm/llvm/bin \
+    HIP_DEVICE_LIB_PATH=/opt/rocm/amdgcn/bitcode \
+    PATH=/opt/rocm/bin:/opt/rocm/llvm/bin:$PATH
 
 # rocWMMA
 WORKDIR /opt
@@ -35,13 +46,16 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 RUN git clean -xdf \
  && git pull \
  && git submodule update --recursive \
- && HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
-    cmake -S . -B build \
+ && cmake -S . -B build \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \
       -DCMAKE_BUILD_TYPE=Release \
       -DLLAMA_HIP_UMA=ON \
       -DGGML_HIP_ROCWMMA_FATTN=ON \
+      -DROCM_PATH=/opt/rocm \
+      -DHIP_PATH=/opt/rocm \
+      -DHIP_PLATFORM=amd \
+      -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm" \
  && cmake --build build --config Release -- -j$(nproc) \
  && cmake --install build --config Release
 
@@ -71,14 +85,16 @@ REPO
 EOF
 
 # runtime deps
-RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
+    --exclude='*sdk*' --exclude='*samples*' --exclude='*-doc*' --exclude='*-docs*' \
+    install \
       bash ca-certificates libatomic libstdc++ libgcc \
-      rocm rocminfo radeontop \
-  && microdnf clean all && rm -rf /var/cache/dnf/*
+      hip-runtime-amd rocblas hipblas \
+      rocminfo radeontop \
+ && microdnf clean all && rm -rf /var/cache/dnf/*
 
 # copy
 COPY --from=builder /usr/local/ /usr/local/
-COPY --from=builder /usr/include/rocwmma /usr/include/rocwmma
 
 # ld
 RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
@@ -99,3 +115,4 @@ RUN printf '%s\n' \
 
 # shell
 CMD ["/bin/bash"]
+
