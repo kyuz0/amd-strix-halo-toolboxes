@@ -88,7 +88,7 @@ EOF
 RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
     --exclude='*sdk*' --exclude='*samples*' --exclude='*-doc*' --exclude='*-docs*' \
     install \
-      bash ca-certificates libatomic libstdc++ libgcc \
+      bash ca-certificates libatomic libstdc++ libgcc libgomp sudo \
       hip-runtime-amd rocblas hipblas \
       rocminfo radeontop \
  && microdnf clean all && rm -rf /var/cache/dnf/*
