@@ -1,24 +1,25 @@
-FROM fedora:rawhide
+# build stage
+FROM registry.fedoraproject.org/fedora:rawhide AS builder
 
-# Install build tools, Vulkan headers/loader, and glslc
-RUN dnf install --refresh -y \
+# deps
+RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
       git vim \
       make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
       vulkan-loader-devel vulkaninfo mesa-vulkan-drivers \
       radeontop glslc wget \
-    && dnf clean all
+    && dnf clean all && rm -rf /var/cache/dnf/*
 
-# Get AMDVLK drivers
+# amdvlk
 RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
-    https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm
-RUN dnf install -y /tmp/amdvlk-*.rpm
+    https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm \
+ && dnf -y install /tmp/amdvlk-*.rpm \
+ && rm -f /tmp/amdvlk-*.rpm
 
+# llama.cpp
 WORKDIR /opt/llama.cpp
-
-# Clone llama.cpp
 RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 
-# Build with Vulkan support
+# build
 RUN git clean -xdf \
  && git pull \
  && git submodule update --recursive \
@@ -32,10 +33,43 @@ RUN git clean -xdf \
  && cmake --build build --config Release \
  && cmake --install build --config Release
 
+# libs
 RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
  && ldconfig
 
+# helper
 COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
+
+# runtime stage
+FROM registry.fedoraproject.org/fedora-minimal:rawhide
+
+# runtime deps
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
+      bash ca-certificates libatomic libstdc++ libgcc \
+      vulkan-loader vulkan-loader-devel vulkaninfo mesa-vulkan-drivers radeontop \
+  && microdnf clean all && rm -rf /var/cache/dnf/*
+
+# amdvlk
+RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
+    https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm \
+ && microdnf -y install /tmp/amdvlk-*.rpm \
+ && rm -f /tmp/amdvlk-*.rpm
+
+# copy
+COPY --from=builder /usr/local/ /usr/local/
+
+# ld
+RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
+ && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+ && ldconfig \
+ && cp -n /usr/local/lib/libllama*.so* /usr/lib64/ 2>/dev/null || true \
+ && ldconfig
+
+# helper
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# shell
 CMD ["/bin/bash"]
