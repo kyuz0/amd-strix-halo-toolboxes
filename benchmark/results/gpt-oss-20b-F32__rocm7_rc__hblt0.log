@@ -4,7 +4,7 @@ ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
 | model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
-| gpt-oss ?B BF16                |  38.97 GiB |    20.91 B | ROCm       |  99 |    0 |           pp512 |        321.80 ± 6.18 |
-| gpt-oss ?B BF16                |  38.97 GiB |    20.91 B | ROCm       |  99 |    0 |           tg128 |         26.83 ± 0.01 |
+| gpt-oss ?B BF16                |  38.97 GiB |    20.91 B | ROCm       |  99 |    0 |           pp512 |      1220.02 ± 12.30 |
+| gpt-oss ?B BF16                |  38.97 GiB |    20.91 B | ROCm       |  99 |    0 |           tg128 |         27.17 ± 0.00 |
 
-build: 79c1160b (6123)
+build: de219279 (6181)

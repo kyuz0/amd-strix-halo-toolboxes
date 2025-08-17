@@ -235,7 +235,7 @@ for path in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.log"))):
 # Meta
 meta = {
     "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-    "os_kernel": "Fedora 42 — Linux fedora 6.16.0-264.vanilla.fc42.x86_64 (2025-07-28)",
+    "os_kernel": "Fedora 42 — Linux 6.15.9-201.fc42.x86_64 (Sat Aug  2 11:37:34 UTC 2025)",
     "llamacpp_builds": [{"hash": h, "number": n} for (h, n) in sorted(builds)],
     "environments": sorted(envs),
     "notes": "pp512 = prompt processing; tg128 = text generation; t/s = tokens/second",

@@ -363,6 +363,7 @@
             Repo: <a href="https://github.com/kyuz0/amd-strix-halo-toolboxes" target="_blank"
                 rel="noreferrer">kyuz0/amd-strix-halo-toolboxes</a>
         </p>
+        <p class="muted">Platform: Framework Desktop, 128GB Unified RAM (accelerator-performance tuned profile)</p>
         <p id="meta-line">Loading meta…</p>
     </header>
 
@@ -491,7 +492,7 @@
       <div class="colbox">
         <label for="${id}">
          <input id="${id}" type="checkbox" data-env="${env}"
-            ${/(vulkan_amdvlk|vulkan_radv|rocm6_4_2|rocm7_rc-rocwmma)(?![-\w])/.test(env.trim()) ? 'checked' : ''}>
+            ${/(vulkan_amdvlk|vulkan_radv|rocm6_4_3-rocwmma|rocm7_rc-rocwmma)(?![-\w])/.test(env.trim()) ? 'checked' : ''}>
           <span><strong>${env}</strong>${roc ? '<span class="badge roc">rocWMMA</span>' : ''}</span></strong>${hipBLASTt_off ? '<span class="badge roc">hipBLASTt OFF</span>' : ''}</span>
         </label>
       </div>`;

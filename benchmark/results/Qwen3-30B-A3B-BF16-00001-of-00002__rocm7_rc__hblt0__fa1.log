@@ -2,9 +2,5 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
-| qwen3moe 30B.A3B BF16          |  56.89 GiB |    30.53 B | ROCm       |  99 |  1 |    0 |           pp512 |        137.06 ± 2.00 |
-| qwen3moe 30B.A3B BF16          |  56.89 GiB |    30.53 B | ROCm       |  99 |  1 |    0 |           tg128 |         24.32 ± 0.01 |
-
-build: 79c1160b (6123)
+Memory access fault by GPU node-1 (Agent handle: 0x1f121ea0) on address 0x7fd78e16f000. Reason: Page not present or supervisor privilege.
+✖ ! [rocm7_rc] Qwen3-30B-A3B-BF16-00001-of-00002 __hblt0__fa1 failed (exit 134)

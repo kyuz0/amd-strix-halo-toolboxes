@@ -4,5 +4,5 @@ ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16:
 | ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
 ggml_vulkan: Device memory allocation of size 2819260416 failed.
 ggml_vulkan: Requested buffer size exceeds device memory allocation limit: ErrorOutOfDeviceMemory
-main: error: failed to load model '/mnt/models/gemma-3/BF16/gemma-3-27b-it-BF16-00001-of-00002.gguf'
+main: error: failed to load model '/home/kyuz0/models/gemma-3/BF16/gemma-3-27b-it-BF16-00001-of-00002.gguf'
 ✖ ! [vulkan_amdvlk] gemma-3-27b-it-BF16-00001-of-00002 __fa1 failed (exit 1)
