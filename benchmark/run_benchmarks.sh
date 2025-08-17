@@ -26,8 +26,6 @@ done
 echo
 
 declare -A CMDS=(
-  [rocm6_4_2]="toolbox run -c llama-rocm-6.4.2 -- /usr/local/bin/llama-bench"
-  [rocm6_4_2-rocwmma]="toolbox run -c llama-rocm-6.4.2-rocwmma -- /usr/local/bin/llama-bench"
   [rocm6_4_3]="toolbox run -c llama-rocm-6.4.3 -- /usr/local/bin/llama-bench"
   [rocm6_4_3-rocwmma]="toolbox run -c llama-rocm-6.4.3-rocwmma -- /usr/local/bin/llama-bench"
   [rocm7_rc]="toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench"

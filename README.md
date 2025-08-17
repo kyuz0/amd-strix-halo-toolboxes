@@ -47,18 +47,16 @@ You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-st
 | -------------------- | ------------------------ | --------------- |
 | `vulkan-amdvlk`      | Vulkan (AMDVLK)           | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv`        | Vulkan (Mesa RADV)        | Most stable and compatible. Recommended for most users and all models. |
-| `rocm-6.4.2`         | ROCm 6.4.2 (HIP)          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
-| `rocm-6.4.2-rocwmma` | ROCm 6.4.2 (HIP) + ROCWMMA | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
 | `rocm-6.4.3`         | ROCm 6.4.3 (HIP) + hipBLASLt*          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
 | `rocm-6.4.3-rocwmma` | ROCm 6.4.3 (HIP) + ROCWMMA + hipBLASLt*  | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
-| `rocm-7rc`           | ROCm 7.0 RC (HIP) + hipBLASLt*         | Release candidate for ROCm 7.0. Same behavior as beta. |
+| `rocm-7rc`           | ROCm 7.0 RC (HIP) + hipBLASLt*         | Release candidate for ROCm 7.0. |
 | `rocm-7rc-rocwmma`   | ROCm 7.0 RC (HIP) + ROCWMMA + hipBLASLt*       | Release candidate for ROCm 7.0, with hipBLASLt and ROCWMMA for improved flash attention on RDNA3+/CDNA |
 
 \* All these toolboxes now export `ROCBLAS_USE_HIPBLASLT=1` as this currently results in better perfromance and stability in *MOST* cases.
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
 
-> *Each container is based on Fedora Rawhide and is built for maximum compatibility and performance on Strix Halo.*
+> *rocm-6.4.2* and *rocm-7beta* coontainers have been retired in favour of *rocm-6.4.3* and *rocm_7rc*.
 
 ---
 
@@ -80,8 +78,8 @@ To use Llama.cpp with hardware acceleration inside a toolbox container, you must
 * **For ROCm:** You must expose both `/dev/dri` and `/dev/kfd`, and add the user to extra groups for compute access.
 
   ```sh
-  toolbox create llama-rocm-6.4.2 \
-    --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.2 \
+  toolbox create llama-rocm-6.4.3-rocwmma \
+    --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.3-rocwmma \
     -- --device /dev/dri --device /dev/kfd \
     --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
   ```
@@ -114,7 +112,7 @@ This will:
 You can also refresh just one or more toolboxes:
 
 ```bash
-./refreshtoolboxes.sh llama-vulkan-amdvlk llama-rocm-6.4.2
+./refreshtoolboxes.sh llama-vulkan-radv llama-rocm-6.4.3-rocwmma
 ```
 
 ### 2.2 Running models inside the toolboxes
@@ -150,39 +148,38 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 
 ## 3. Performance Benchmarks (Key Results)
 
-Benchmarks were run on **AMD Ryzen AI Max “Strix Halo”** across all supported backends, testing both **prompt processing (PP)** and **token generation (TG)** throughput.
-Reported values were analysed using error margins (mean ± σ). Backends whose ranges overlapped were treated as statistical ties rather than hard wins.
-
 🌐 Interactive exploration of the latest benchmark runs: [Interactie Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
+Benchmarks were analysed with **error-aware ties** (mean ± σ). If two backends overlap within margins, they are treated as a tie. All placement counts below use **Flash Attention ON**.
 
-| Workload Focus                                    | 🏆 Recommended Backend/Config       | Win + Tie Count¹ | Typical Runner-Up                  | Stability Notes                                                                       |
-| ------------------------------------------------- | ----------------------------------- | ---------------: | ---------------------------------- | ------------------------------------------------------------------------------------- |
-| **Prompt processing** (pp512, Flash Attention ON) | **ROCm 7 RC + ROCWMMA + hipBLASLt** |               15 | Vulkan AMDVLK (4)                  | 0% errors in tests                                                                    |
-| **Token generation** (tg128, Flash Attention ON)  | **Vulkan RADV**                     |               13 | Vulkan AMDVLK (1)                  | 0% errors in tests                                                                    |
-| **Balanced workloads**                            | **Vulkan AMDVLK**                   |                — | RADV / ROCm 7 RC+ROCWMMA+hipBLASLt | Fast PP & decent TG; \~5.6 % load failure rate due to ≤ 2 GiB single-allocation limit |
-| **BF16 models**                                   | **ROCm 7 RC + ROCWMMA + hipBLASLt** |                — | ROCm 6.4.2 + ROCWMMA               | Best PP & TG among ROCm backends; stable with Flash Attention ON                      |
+**Prompt Processing (pp512)**
+| Backend | 1st | 2nd | 3rd |
+| --- | ---: | ---: | ---: |
+| ROCm 6.4.3 + ROCWMMA (hipBLASLt) | 9 | 5 | 0 |
+| ROCm 7 RC + ROCWMMA (hipBLASLt OFF) | 3 | 3 | 8 |
+| Vulkan AMDVLK | 3 | 0 | 2 |
+| ROCm 7 RC + ROCWMMA + hipBLASLt | 1 | 8 | 4 |
+| ROCm 6.4.3 + ROCWMMA (hipBLASLt OFF) | 0 | 0 | 1 |
+| Vulkan RADV | 0 | 0 | 1 |
 
-¹ Counts show number of times the backend placed 1st (alone or tied) across tested models/quantisations.
+**Token Generation (tg128)**
+| Backend | 1st | 2nd | 3rd |
+| --- | ---: | ---: | ---: |
+| Vulkan RADV | 13 | 0 | 0 |
+| ROCm 6.4.3 (hipBLASLt) | 3 | 0 | 1 |
+| ROCm 6.4.3 + ROCWMMA (hipBLASLt) | 1 | 4 | 3 |
+| ROCm 6.4.3 + ROCWMMA (hipBLASLt OFF) | 1 | 2 | 4 |
+| ROCm 6.4.3 (hipBLASLt OFF) | 1 | 1 | 1 |
+| ROCm 7 RC (hipBLASLt OFF) | 1 | 1 | 1 |
+| ROCm 7 RC + ROCWMMA (hipBLASLt OFF) | 1 | 1 | 1 |
+| ROCm 7 RC (hipBLASLt) | 1 | 0 | 4 |
+| Vulkan AMDVLK | 0 | 10 | 0 |
+| ROCm 7 RC + ROCWMMA + hipBLASLt | 0 | 1 | 2 |
 
-
-### Key take-aways
-
-* **ROCm 7 RC + ROCWMMA + hipBLASLt + Flash Attention ON**
-  * Fastest prompt processing in the vast majority of tests (15/22 wins or ties).
-  * Best ROCm option for BF16 models.
-  * Zero recorded errors with Flash Attention ON.
-
-* **Vulkan RADV**
-  * Best token generation throughput (13/15 wins or ties).
-  * Most stable and broadly compatible backend overall.
-
-* **Vulkan AMDVLK**
-
-  * Competitive in both PP and TG; benefits from margin-aware tie handling.
-  * Limited by ≤ 2 GiB single buffer allocation, which can block some model architectures.
-  * Other ROCm variants (beta, hblt0, 6.4.2 w/o ROCWMMA)
-  * Inconsistent performance and/or higher error rates; best suited for experimental use.
+### Summary & Recommendations
+- **Fastest prompt processing:** ROCm 6.4.3 + ROCWMMA (hipBLASLt) (most 1st-place finishes).
+- **Fastest token generation:** Vulkan RADV (most 1st-place finishes).
+- **Balanced choice:** ROCm 6.4.3 + ROCWMMA (hipBLASLt) (consistently near the top across PP/TG).
 
 📄 Full per-model analysis: [docs/benchmarks.md](docs/benchmarks.md)
 
