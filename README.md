@@ -155,24 +155,24 @@ Benchmarks were analysed with **error-aware ties** (mean ± σ). If two backends
 **Prompt Processing (pp512)**
 | Backend | 1st | 2nd | 3rd |
 | --- | ---: | ---: | ---: |
-| ROCm 6.4.3 + ROCWMMA (hipBLASLt) | 9 | 5 | 0 |
+| ROCm 6.4.3 + ROCWMMA (hipBLASLt) | 9 | 6 | 0 |
+| Vulkan AMDVLK | 4 | 0 | 2 |
 | ROCm 7 RC + ROCWMMA (hipBLASLt OFF) | 3 | 3 | 8 |
-| Vulkan AMDVLK | 3 | 0 | 2 |
-| ROCm 7 RC + ROCWMMA + hipBLASLt | 1 | 8 | 4 |
+| ROCm 7 RC + ROCWMMA + hipBLASLt | 1 | 8 | 5 |
 | ROCm 6.4.3 + ROCWMMA (hipBLASLt OFF) | 0 | 0 | 1 |
 | Vulkan RADV | 0 | 0 | 1 |
 
 **Token Generation (tg128)**
 | Backend | 1st | 2nd | 3rd |
 | --- | ---: | ---: | ---: |
-| Vulkan RADV | 13 | 0 | 0 |
+| Vulkan RADV | 14 | 0 | 0 |
 | ROCm 6.4.3 (hipBLASLt) | 3 | 0 | 1 |
 | ROCm 6.4.3 + ROCWMMA (hipBLASLt) | 1 | 4 | 3 |
 | ROCm 6.4.3 + ROCWMMA (hipBLASLt OFF) | 1 | 2 | 4 |
 | ROCm 6.4.3 (hipBLASLt OFF) | 1 | 1 | 1 |
-| ROCm 7 RC (hipBLASLt OFF) | 1 | 1 | 1 |
+| ROCm 7 RC (hipBLASLt) | 1 | 1 | 4 |
+| ROCm 7 RC (hipBLASLt OFF) | 1 | 1 | 2 |
 | ROCm 7 RC + ROCWMMA (hipBLASLt OFF) | 1 | 1 | 1 |
-| ROCm 7 RC (hipBLASLt) | 1 | 0 | 4 |
 | Vulkan AMDVLK | 0 | 10 | 0 |
 | ROCm 7 RC + ROCWMMA + hipBLASLt | 0 | 1 | 2 |
 
@@ -180,6 +180,8 @@ Benchmarks were analysed with **error-aware ties** (mean ± σ). If two backends
 - **Fastest prompt processing:** ROCm 6.4.3 + ROCWMMA (hipBLASLt) (most 1st-place finishes).
 - **Fastest token generation:** Vulkan RADV (most 1st-place finishes).
 - **Balanced choice:** ROCm 6.4.3 + ROCWMMA (hipBLASLt) (consistently near the top across PP/TG).
+
+> **Note (ROCm 7):** Toolboxes enable **hipBLASLt** by default. The benchmark suite also runs **hipBLASLt OFF** variants to show its impact.
 
 📄 Full per-model analysis: [docs/benchmarks.md](docs/benchmarks.md)
 
