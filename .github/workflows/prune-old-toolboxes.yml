@@ -9,6 +9,10 @@ on:
       keep:
         description: Number of latest tags to keep
         default: "3"
+  workflow_run:
+    workflows: ["Build & Publish AMD Strix Halo Toolboxes"]
+    types: [completed]   # runs after success/failure/cancel
+    branches: [main]     
 
 jobs:
   prune:
