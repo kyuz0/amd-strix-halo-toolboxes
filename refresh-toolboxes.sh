@@ -65,8 +65,29 @@ for name in "${SELECTED_TOOLBOXES[@]}"; do
   echo "⬇️ Pulling latest image: $image"
   podman pull "$image"
 
+  # Identify current image ID/digest for this tag
+  new_id="$(podman image inspect --format '{{.Id}}' "$image" 2>/dev/null || true)"
+  new_digest="$(podman image inspect --format '{{.Digest}}' "$image" 2>/dev/null || true)"
+
   echo "📦 Recreating toolbox: $name"
   toolbox create "$name" --image "$image" -- $options
+
+  # --- Cleanup: keep only the most recent image for this tag ---
+  repo="${image%:*}"
+  tag="${image##*:}"
+
+  # Remove any other local images still carrying this exact tag but not the newest digest
+  while read -r id ref dig; do
+    [[ "$id" != "$new_id" ]] && podman image rm -f "$id" >/dev/null 2>&1 || true
+  done < <(podman images --digests --format '{{.ID}} {{.Repository}}:{{.Tag}} {{.Digest}}' \
+           | awk -v ref="$image" -v ndig="$new_digest" '$2==ref && $3!=ndig')
+
+  # Remove dangling images from this repository (typically prior pulls of this tag)
+  while read -r id; do
+    podman image rm -f "$id" >/dev/null 2>&1 || true
+  done < <(podman images --format '{{.ID}} {{.Repository}}:{{.Tag}}' \
+           | awk -v r="$repo" '$2==r":<none>" {print $1}')
+  # --- end cleanup ---
 
   echo "✅ $name refreshed"
   echo
