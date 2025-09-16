@@ -6,9 +6,18 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
        radeontop git vim patch curl ninja-build tar xz \
     && dnf clean all && rm -rf /var/cache/dnf/*
 
+# find & fetch the latest Linux 7.0.0rc tarball (gfx1151)
 WORKDIR /tmp
-RUN curl -L -o therock.tar.gz \
-      https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux-gfx1151-7.0.0rc20250915.tar.gz
+ARG ROCM_RC_VER=7.0.0rc
+ARG GFX=gfx1151
+RUN set -euo pipefail; \
+    BASE="https://therock-nightly-tarball.s3.amazonaws.com"; \
+    PREFIX="therock-dist-linux-${GFX}-${ROCM_RC_VER}"; \
+    KEY="$(curl -s "${BASE}?list-type=2&prefix=${PREFIX}" \
+      | grep -o "therock-dist-linux-${GFX}-${ROCM_RC_VER}[0-9]\{8\}\.tar\.gz" \
+      | sort | tail -n1)"; \
+    echo "Latest tarball: ${KEY}"; \
+    curl -L --fail -o therock.tar.gz "${BASE}/${KEY}"
 RUN mkdir -p /opt/rocm-7.0 \
  && tar xzf therock.tar.gz -C /opt/rocm-7.0 --strip-components=1
 
