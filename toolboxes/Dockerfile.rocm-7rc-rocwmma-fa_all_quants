@@ -8,7 +8,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
 
 WORKDIR /tmp
 RUN curl -L -o therock.tar.gz \
-      https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux-gfx1151-7.0.0rc20250811.tar.gz
+      https://therock-nightly-tarball.s3.amazonaws.com/therock-dist-linux-gfx1151-7.0.0rc20250915.tar.gz
 RUN mkdir -p /opt/rocm-7.0 \
  && tar xzf therock.tar.gz -C /opt/rocm-7.0 --strip-components=1
 
