@@ -4,7 +4,7 @@ ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
 | model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
-| gpt-oss ?B BF16                |  38.97 GiB |    20.91 B | ROCm       |  99 |  1 |    0 |           pp512 |        350.18 ± 5.10 |
-| gpt-oss ?B BF16                |  38.97 GiB |    20.91 B | ROCm       |  99 |  1 |    0 |           tg128 |         27.09 ± 0.00 |
+| gpt-oss 20B BF16               |  38.97 GiB |    20.91 B | ROCm       |  99 |  1 |    0 |           pp512 |        342.77 ± 3.39 |
+| gpt-oss 20B BF16               |  38.97 GiB |    20.91 B | ROCm       |  99 |  1 |    0 |           tg128 |         27.00 ± 0.00 |
 
-build: 1fe00296 (6182)
+build: f1fbffb5 (6486)

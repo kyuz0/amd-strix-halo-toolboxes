@@ -7,9 +7,5 @@ This message will be only be displayed once, unless the ROCBLAS_VERBOSE_HIPBLASL
 
 rocBLAS warning: hipBlasLT failed, falling back to tensile. 
 This message will be only be displayed once, unless the ROCBLAS_VERBOSE_TENSILE_ERROR environment variable is set.
-| model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
-| llama 70B Q8_0                 |  75.65 GiB |    70.55 B | ROCm       |  99 |    0 |           pp512 |         98.02 ± 0.18 |
-| llama 70B Q8_0                 |  75.65 GiB |    70.55 B | ROCm       |  99 |    0 |           tg128 |          2.77 ± 0.00 |
-
-build: 1fe00296 (6182)
+HW Exception by GPU node-1 (Agent handle: 0x284c3340) reason :GPU Hang
+✖ ! [rocm6_4_3-rocwmma] Llama-3.3-70B-Instruct-UD-Q8_K_XL-00001-of-00002 failed (exit 134)

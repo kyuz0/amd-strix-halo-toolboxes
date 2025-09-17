@@ -7,5 +7,9 @@ This message will be only be displayed once, unless the ROCBLAS_VERBOSE_HIPBLASL
 
 rocBLAS warning: hipBlasLT failed, falling back to tensile. 
 This message will be only be displayed once, unless the ROCBLAS_VERBOSE_TENSILE_ERROR environment variable is set.
-Memory access fault by GPU node-1 (Agent handle: 0x1a840340) on address 0x7f3babb56000. Reason: Page not present or supervisor privilege.
-✖ ! [rocm6_4_3-rocwmma] Llama-4-Scout-17B-16E-Instruct-Q6_K-00001-of-00002 failed (exit 134)
+| model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
+| llama4 17Bx16E (Scout) Q6_K    |  82.35 GiB |   107.77 B | ROCm       |  99 |    0 |           pp512 |        265.76 ± 0.95 |
+| llama4 17Bx16E (Scout) Q6_K    |  82.35 GiB |   107.77 B | ROCm       |  99 |    0 |           tg128 |         14.69 ± 0.00 |
+
+build: f1fbffb5 (6486)

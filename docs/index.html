@@ -214,6 +214,13 @@
             border: 1px solid #b19cff55;
         }
 
+        .faall {
+            background: #cfe9ff;
+            /* light blue chip */
+            color: #000000;
+            border: 1px solid #9bc9ff55;
+        }
+
         .meta {
             padding: 0 20px 14px;
             color: var(--muted);
@@ -249,6 +256,21 @@
             background: var(--border);
             border-radius: 8px;
         }
+
+        .scroller-top {
+            overflow-x: auto;
+            overflow-y: hidden;
+            height: 12px;
+            /* slim */
+            margin: 0 0 6px;
+            /* a little gap above the table */
+        }
+
+        .scroller-top .scroller-spacer {
+            height: 1px;
+            /* tiny content so the bar renders */
+        }
+
 
         table {
             width: max-content;
@@ -415,28 +437,36 @@
         <h2>Prompt Processing (pp512) — tokens/second</h2>
     </div>
     <section class="tablewrap">
-        <div class="scroller">
+        <div class="scroller scroller-top" data-for="pp">
+            <div class="scroller-spacer"></div>
+        </div>
+        <div class="scroller" id="scroller-pp">
             <table id="tbl-pp">
                 <thead>
-                    <tr id="pp-h"></tr>
+                    <tr></tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
+
     </section>
 
     <div class="section">
         <h2>Text Generation (tg128) — tokens/second</h2>
     </div>
     <section class="tablewrap">
-        <div class="scroller">
+        <div class="scroller scroller-top" data-for="tg">
+            <div class="scroller-spacer"></div>
+        </div>
+        <div class="scroller" id="scroller-tg">
             <table id="tbl-tg">
                 <thead>
-                    <tr id="tg-h"></tr>
+                    <tr></tr>
                 </thead>
                 <tbody></tbody>
             </table>
         </div>
+
     </section>
 
     <script>
@@ -487,16 +517,23 @@
             function envBox(env) {
                 const roc = env.includes('rocwmma');
                 const hipBLASTt_off = env.includes('hblt0');
+                const fa_all_quants = env.includes('fa_all_quants');
                 const id = `env_${env.replace(/[^a-z0-9_-]/gi, '_')}`;
                 return `
-      <div class="colbox">
-        <label for="${id}">
-         <input id="${id}" type="checkbox" data-env="${env}"
-            ${/(vulkan_amdvlk|vulkan_radv|rocm6_4_3-rocwmma|rocm7_rc-rocwmma)(?![-\w])/.test(env.trim()) ? 'checked' : ''}>
-          <span><strong>${env}</strong>${roc ? '<span class="badge roc">rocWMMA</span>' : ''}</span></strong>${hipBLASTt_off ? '<span class="badge roc">hipBLASTt OFF</span>' : ''}</span>
-        </label>
-      </div>`;
+                <div class="colbox">
+                <label for="${id}">
+                <input id="${id}" type="checkbox" data-env="${env}"
+                    ${/(vulkan_amdvlk|vulkan_radv|rocm6_4_3-rocwmma|rocm7_rc-rocwmma)(?![-\w])/.test(env.trim()) ? 'checked' : ''}>
+                    <span>
+                    <strong>${env}</strong>
+                    ${roc ? '<span class="badge roc">rocWMMA</span>' : ''}
+                    ${fa_all_quants ? '<span class="badge faall">FA all quants</span>' : ''}
+                    ${hipBLASTt_off ? '<span class="badge roc">hipBLASTt OFF</span>' : ''}
+                    </span>
+                </label>
+                </div>`;
             }
+
             colPicker.innerHTML = envs.map(envBox).join('');
             const selectedEnvs = () => [...colPicker.querySelectorAll('input[type="checkbox"]')].filter(i => i.checked).map(i => i.dataset.env);
 
@@ -568,6 +605,42 @@
             sizeLo.addEventListener('input', () => updateSizeUI(true));
             sizeHi.addEventListener('input', () => updateSizeUI(true));
             updateSizeUI(false);
+
+            function setupScrollSync(prefix) {
+                const top = document.querySelector(`.scroller-top[data-for="${prefix}"]`);
+                const bottom = document.getElementById(`scroller-${prefix}`);
+                const spacer = top.querySelector('.scroller-spacer');
+                if (!top || !bottom || !spacer) return () => { };
+
+                function syncWidth() {
+
+                    // Match the table’s full scrollable width
+                    spacer.style.width = bottom.scrollWidth + 'px';
+                    // Keep positions aligned after rerender
+                    top.scrollLeft = bottom.scrollLeft;
+                }
+
+                // Two-way sync
+                let lock = false;
+                top.addEventListener('scroll', () => {
+                    if (lock) return; lock = true;
+                    bottom.scrollLeft = top.scrollLeft;
+                    lock = false;
+                });
+                bottom.addEventListener('scroll', () => {
+                    if (lock) return; lock = true;
+                    top.scrollLeft = bottom.scrollLeft;
+                    lock = false;
+                });
+
+                // Resize/refresh on content changes
+                const ro = new ResizeObserver(syncWidth);
+                ro.observe(bottom);
+                syncWidth();
+
+                // Return a refresher for manual calls after rerender
+                return syncWidth;
+            }
 
             // --- Filters ---
             function matchesFilters(name) {
@@ -661,7 +734,8 @@
             function renderTable(prefix, test) {
                 const envSel = selectedEnvs(); const mode = faMode.value;
                 const colDefs = buildColDefs(envSel, mode);
-                const h = document.getElementById(`${prefix}-h`);
+                const h = document.querySelector(`#tbl-${prefix} thead tr`) || document.getElementById(`${prefix}-h`);
+                if (!h) return; // nothing to render into; bail safely
                 h.innerHTML = headerHTML(test, colDefs);
                 const tbody = document.querySelector(`#tbl-${prefix} tbody`);
                 tbody.innerHTML = '';
@@ -684,15 +758,21 @@
                     tbody.appendChild(tr);
                 }
             }
-
+            let refreshScrollPP = null, refreshScrollTG = null;
             function render() {
                 renderTable('pp', 'pp512');
                 renderTable('tg', 'tg128');
+                // Update top scrollbar widths after content changes
+                if (typeof refreshScrollPP === 'function') refreshScrollPP();
+                if (typeof refreshScrollTG === 'function') refreshScrollTG();
             }
 
             [search, quantSel, faMode].forEach(el => el.addEventListener('input', render));
             colPicker.addEventListener('change', render);
             render();
+
+            refreshScrollPP = setupScrollSync('pp');
+            refreshScrollTG = setupScrollSync('tg');
         })();
     </script>
 

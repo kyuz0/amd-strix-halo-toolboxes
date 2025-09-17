@@ -1,0 +1,10 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
+| gemma3 12B Q8_0                |  13.40 GiB |    11.77 B | ROCm       |  99 |  1 |    0 |           pp512 |        797.91 ± 0.87 |
+| gemma3 12B Q8_0                |  13.40 GiB |    11.77 B | ROCm       |  99 |  1 |    0 |           tg128 |         13.88 ± 0.00 |
+
+build: f1fbffb5 (6486)

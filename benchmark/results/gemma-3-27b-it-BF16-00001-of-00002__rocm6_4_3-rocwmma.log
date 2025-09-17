@@ -9,7 +9,7 @@ rocBLAS warning: hipBlasLT failed, falling back to tensile.
 This message will be only be displayed once, unless the ROCBLAS_VERBOSE_TENSILE_ERROR environment variable is set.
 | model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
-| gemma3 27B BF16                |  50.31 GiB |    27.01 B | ROCm       |  99 |    0 |           pp512 |        395.28 ± 0.22 |
-| gemma3 27B BF16                |  50.31 GiB |    27.01 B | ROCm       |  99 |    0 |           tg128 |          3.96 ± 0.00 |
+| gemma3 27B BF16                |  50.31 GiB |    27.01 B | ROCm       |  99 |    0 |           pp512 |        413.72 ± 0.86 |
+| gemma3 27B BF16                |  50.31 GiB |    27.01 B | ROCm       |  99 |    0 |           tg128 |          4.09 ± 0.00 |
 
-build: 1fe00296 (6182)
+build: f1fbffb5 (6486)

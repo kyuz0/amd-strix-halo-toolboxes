@@ -2,5 +2,5 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-Memory access fault by GPU node-1 (Agent handle: 0x1aa83ec0) on address 0x7f9f1e96f000. Reason: Page not present or supervisor privilege.
+HW Exception by GPU node-1 (Agent handle: 0x231e9180) reason :GPU Hang
 ✖ ! [rocm7_rc] Llama-4-Scout-17B-16E-Instruct-Q8_0-00001-of-00003 __hblt0__fa1 failed (exit 134)

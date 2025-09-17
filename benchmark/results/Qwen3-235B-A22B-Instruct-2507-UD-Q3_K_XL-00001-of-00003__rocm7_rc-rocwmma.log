@@ -2,5 +2,9 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-Memory access fault by GPU node-1 (Agent handle: 0x3c89ef80) on address 0x7f777640a000. Reason: Page not present or supervisor privilege.
-✖ ! [rocm7_rc-rocwmma] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003 failed (exit 134)
+| model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |    0 |           pp512 |        132.60 ± 0.56 |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |    0 |           tg128 |         14.33 ± 0.02 |
+
+build: f1fbffb5 (6486)

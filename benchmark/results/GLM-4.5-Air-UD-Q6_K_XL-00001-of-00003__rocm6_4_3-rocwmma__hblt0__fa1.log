@@ -2,5 +2,5 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-HW Exception by GPU node-1 (Agent handle: 0x35263340) reason :GPU Hang
+Memory access fault by GPU node-1 (Agent handle: 0x400a9340) on address 0x7ef17b435000. Reason: Page not present or supervisor privilege.
 ✖ ! [rocm6_4_3-rocwmma] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003 __hblt0__fa1 failed (exit 134)

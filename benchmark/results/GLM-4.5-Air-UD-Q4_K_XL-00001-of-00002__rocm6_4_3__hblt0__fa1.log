@@ -2,5 +2,9 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-Memory access fault by GPU node-1 (Agent handle: 0x37c5d340) on address 0x7f2e3516f000. Reason: Page not present or supervisor privilege.
-✖ ! [rocm6_4_3] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002 __hblt0__fa1 failed (exit 134)
+| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
+| glm4moe 106B.A12B Q4_K - Medium |  68.01 GiB |   110.47 B | ROCm       |  99 |  1 |    0 |           pp512 |        140.67 ± 0.26 |
+| glm4moe 106B.A12B Q4_K - Medium |  68.01 GiB |   110.47 B | ROCm       |  99 |  1 |    0 |           tg128 |         20.67 ± 0.00 |
+
+build: f1fbffb5 (6486)

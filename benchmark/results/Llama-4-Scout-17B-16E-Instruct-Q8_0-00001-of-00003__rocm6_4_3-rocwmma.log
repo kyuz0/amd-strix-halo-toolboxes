@@ -9,7 +9,7 @@ rocBLAS warning: hipBlasLT failed, falling back to tensile.
 This message will be only be displayed once, unless the ROCBLAS_VERBOSE_TENSILE_ERROR environment variable is set.
 | model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
-| llama4 17Bx16E (Scout) Q8_0    | 106.65 GiB |   107.77 B | ROCm       |  99 |    0 |           pp512 |        270.35 ± 3.39 |
-| llama4 17Bx16E (Scout) Q8_0    | 106.65 GiB |   107.77 B | ROCm       |  99 |    0 |           tg128 |         11.78 ± 0.03 |
+| llama4 17Bx16E (Scout) Q8_0    | 106.65 GiB |   107.77 B | ROCm       |  99 |    0 |           pp512 |       264.44 ± 24.69 |
+| llama4 17Bx16E (Scout) Q8_0    | 106.65 GiB |   107.77 B | ROCm       |  99 |    0 |           tg128 |         11.88 ± 0.05 |
 
-build: 1fe00296 (6182)
+build: f1fbffb5 (6486)

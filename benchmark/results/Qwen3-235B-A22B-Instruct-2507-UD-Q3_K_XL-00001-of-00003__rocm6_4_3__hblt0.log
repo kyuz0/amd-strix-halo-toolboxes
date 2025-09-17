@@ -2,5 +2,9 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-HW Exception by GPU node-1 (Agent handle: 0x1990d340) reason :GPU Hang
-✖ ! [rocm6_4_3] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003 __hblt0 failed (exit 134)
+| model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |    0 |           pp512 |         74.17 ± 0.11 |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |    0 |           tg128 |         14.27 ± 0.01 |
+
+build: f1fbffb5 (6486)

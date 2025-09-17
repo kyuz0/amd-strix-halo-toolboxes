@@ -9,7 +9,7 @@ rocBLAS warning: hipBlasLT failed, falling back to tensile.
 This message will be only be displayed once, unless the ROCBLAS_VERBOSE_TENSILE_ERROR environment variable is set.
 | model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
-| qwen3moe 30B.A3B Q6_K          |  24.53 GiB |    30.53 B | ROCm       |  99 |    0 |           pp512 |       562.86 ± 10.14 |
-| qwen3moe 30B.A3B Q6_K          |  24.53 GiB |    30.53 B | ROCm       |  99 |    0 |           tg128 |         50.74 ± 0.01 |
+| qwen3moe 30B.A3B Q6_K          |  24.53 GiB |    30.53 B | ROCm       |  99 |    0 |           pp512 |        543.05 ± 4.56 |
+| qwen3moe 30B.A3B Q6_K          |  24.53 GiB |    30.53 B | ROCm       |  99 |    0 |           tg128 |         53.14 ± 0.01 |
 
-build: 1fe00296 (6182)
+build: f1fbffb5 (6486)

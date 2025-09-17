@@ -2,6 +2,9 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-:0:rocdevice.cpp            :3675: 29915649820 us:  Callback: Queue 0x7f500c700000 aborting with error : HSA_STATUS_ERROR_EXCEPTION: An HSAIL operation resulted in a hardware exception. code: 0x1016
-Memory access fault by GPU node-1 (Agent handle: 0x2aad9ec0) on address 0x7f37c576f000. Reason: Page not present or supervisor privilege.
-✖ ! [rocm7_rc] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003 __fa1 failed (exit 134)
+| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |  1 |    0 |           pp512 |        145.01 ± 0.84 |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |  1 |    0 |           tg128 |         14.36 ± 0.02 |
+
+build: f1fbffb5 (6486)
