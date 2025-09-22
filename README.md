@@ -4,7 +4,7 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 
 ## Watch the YouTube Video
 
-[![Watch the YouTube Video](https://img.youtube.com/vi/jeBqYNWRLEc/maxresdefault.jpg)](https://youtu.be/jeBqYNWRLEc)
+[![Watch the YouTube Video](https://img.youtube.com/vi/wCBLMXgk3No/maxresdefault.jpg)](https://youtu.be/wCBLMXgk3No)  
 
 ## Why Toolbx?
 
