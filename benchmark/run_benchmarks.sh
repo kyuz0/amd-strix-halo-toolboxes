@@ -26,8 +26,8 @@ done
 echo
 
 declare -A CMDS=(
-  [rocm6_4_3]="toolbox run -c llama-rocm-6.4.3 -- /usr/local/bin/llama-bench"
-  [rocm6_4_3-rocwmma]="toolbox run -c llama-rocm-6.4.3-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
+  [rocm6_4_4-rocwmma]="toolbox run -c llama-rocm-6.4.4-rocwmma -- /usr/local/bin/llama-bench"
   [rocm7_rc]="toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench"
   [rocm7_rc-rocwmma]="toolbox run -c llama-rocm-7rc-rocwmma -- /usr/local/bin/llama-bench"
   [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
@@ -40,8 +40,8 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
   for ENV in "${!CMDS[@]}"; do
     CMD="${CMDS[$ENV]}"
 
-    # For ROCm 6.4.3 and 7 envs, run default + HIPBLASLT=0 variants; others: default only
-    if [[ "$ENV" == rocm7_* || "$ENV" == rocm6_4_3* ]]; then
+    # For ROCm 6.4.4 and 7 envs, run default + HIPBLASLT=0 variants; others: default only
+    if [[ "$ENV" == rocm7_* || "$ENV" == rocm6_4_4* ]]; then
       HBLT_MODES=( default off )
     else
       HBLT_MODES=( default )
