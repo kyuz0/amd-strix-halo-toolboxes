@@ -12,6 +12,12 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 * Seamless: shares your home and GPU devices, works like a native shell
 * Flexible: easy to switch between Vulkan (open/closed drivers) and ROCm
 
+
+## 🚨 Updates — 2025-09-28
+
+- Released **ROCm 6.4.4** toolboxes. 
+- **ROCm-6.4.4+ROCWMMA** is the currently recommended one for most use-cases, but always check the benchmakrs to find the backend that performs better with your model architecture and quantization of choice -> [Performance Benchmarks (Key Results)](#3-performance-benchmarks-key-results) 
+
 ## Table of Contents
 
 1. [Llama.cpp Compiled for Every Backend](#1-llamacpp-compiled-for-every-backend)  
@@ -30,9 +36,6 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 7. [More Documentation](#7-more-documentation)  
 8. [References](#8-references)
 
-## 🚨 Updates — 2025-09-28
-
-Released ROCm 6.4.4 toolboxes. ROCm-6.4.4+ROCWMMA is the currently recommenede one for most use-cases, but always check the benchmakrs to find the backend that performs better with your model architecture and quantization of choice -> [Performance Benchmarks (Key Results)](#3-performance-benchmarks-key-results) 
 
 ## 1. Llama.cpp Compiled for Every Backend
 
