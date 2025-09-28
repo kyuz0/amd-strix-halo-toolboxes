@@ -523,7 +523,7 @@
                 <div class="colbox">
                 <label for="${id}">
                 <input id="${id}" type="checkbox" data-env="${env}"
-                    ${/(vulkan_amdvlk|vulkan_radv|rocm6_4_3-rocwmma|rocm7_rc-rocwmma)(?![-\w])/.test(env.trim()) ? 'checked' : ''}>
+                    ${/(vulkan_amdvlk|vulkan_radv|rocm6_4_4-rocwmma|rocm7_rc-rocwmma)(?![-\w])/.test(env.trim()) ? 'checked' : ''}>
                     <span>
                     <strong>${env}</strong>
                     ${roc ? '<span class="badge roc">rocWMMA</span>' : ''}

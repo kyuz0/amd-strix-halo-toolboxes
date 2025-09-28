@@ -41,7 +41,7 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
     CMD="${CMDS[$ENV]}"
 
     # For ROCm 6.4.4 and 7 envs, run default + HIPBLASLT=0 variants; others: default only
-    if [[ "$ENV" == rocm7_* || "$ENV" == rocm6_4_4* ]]; then
+    if [[ "$ENV" == rocm7_* || "$ENV" == rocm6_4_* ]]; then
       HBLT_MODES=( default off )
     else
       HBLT_MODES=( default )

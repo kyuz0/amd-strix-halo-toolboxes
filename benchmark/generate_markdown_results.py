@@ -23,11 +23,11 @@ ENV_LABEL: Dict[str, str] = {
     "rocm7_rc-hblt0": "ROCm 7 RC (hipBLASLt OFF)",
     "rocm7_rc-rocwmma-hblt0": "ROCm 7 RC + ROCWMMA (hipBLASLt OFF)",
 
-    # ROCm 6.4.3
-    "rocm6_4_3": "ROCm 6.4.3 (hipBLASLt)",
-    "rocm6_4_3-hblt0": "ROCm 6.4.3 (hipBLASLt OFF)",
-    "rocm6_4_3-rocwmma": "ROCm 6.4.3 + ROCWMMA (hipBLASLt)",
-    "rocm6_4_3-rocwmma-hblt0": "ROCm 6.4.3 + ROCWMMA (hipBLASLt OFF)",
+    # ROCm 6.4.4
+    "rocm6_4_4": "ROCm 6.4.4 (hipBLASLt)",
+    "rocm6_4_4-hblt0": "ROCm 6.4.4 (hipBLASLt OFF)",
+    "rocm6_4_4-rocwmma": "ROCm 6.4.4 + ROCWMMA (hipBLASLt)",
+    "rocm6_4_4-rocwmma-hblt0": "ROCm 6.4.4 + ROCWMMA (hipBLASLt OFF)",
 
     # Vulkan
     "vulkan_amdvlk": "Vulkan AMDVLK",
@@ -461,17 +461,17 @@ def build_benchmarks_doc(
         lines.append(md_row([ENV_LABEL.get(env, env), fmt_eff(row_pp), fmt_eff(row_tg)]))
     lines.append("")
 
-    # ROCWMMA effect — check both ROCm 7 and 6.4.3 families if present
+    # ROCWMMA effect — check both ROCm 7 and 6.4.4 families if present
     lines.append("### Impact of ROCWMMA")
     rocwmma_pairs = []
     if "rocm7_rc-rocwmma" in envs and "rocm7_rc" in envs:
         rocwmma_pairs.append(("rocm7_rc-rocwmma", "rocm7_rc", "ROCm 7 RC (hipBLASLt)"))
     if "rocm7_rc-rocwmma-hblt0" in envs and "rocm7_rc-hblt0" in envs:
         rocwmma_pairs.append(("rocm7_rc-rocwmma-hblt0", "rocm7_rc-hblt0", "ROCm 7 RC (hipBLASLt OFF)"))
-    if "rocm6_4_3-rocwmma" in envs and "rocm6_4_3" in envs:
-        rocwmma_pairs.append(("rocm6_4_3-rocwmma", "rocm6_4_3", "ROCm 6.4.3 (hipBLASLt)"))
-    if "rocm6_4_3-rocwmma-hblt0" in envs and "rocm6_4_3-hblt0" in envs:
-        rocwmma_pairs.append(("rocm6_4_3-rocwmma-hblt0", "rocm6_4_3-hblt0", "ROCm 6.4.3 (hipBLASLt OFF)"))
+    if "rocm6_4_4-rocwmma" in envs and "rocm6_4_4" in envs:
+        rocwmma_pairs.append(("rocm6_4_4-rocwmma", "rocm6_4_4", "ROCm 6.4.4 (hipBLASLt)"))
+    if "rocm6_4_4-rocwmma-hblt0" in envs and "rocm6_4_4-hblt0" in envs:
+        rocwmma_pairs.append(("rocm6_4_4-rocwmma-hblt0", "rocm6_4_4-hblt0", "ROCm 6.4.4 (hipBLASLt OFF)"))
 
     rocwmma_rows = rocwmma_effect(runs, rocwmma_pairs, TESTS)
     lines.append(md_row(["Context", "Test", "Compared Envs", "Pairs", "Median Δ%"]))
@@ -480,17 +480,17 @@ def build_benchmarks_doc(
         lines.append(md_row([label, test, f"{ENV_LABEL.get(env_on, env_on)} vs {ENV_LABEL.get(env_off, env_off)}", str(n), f"{delta}%"]))
     lines.append("")
 
-    # hipBLASLt effect — for both ROCm 7 and 6.4.3 families
+    # hipBLASLt effect — for both ROCm 7 and 6.4.4 families
     lines.append("### Impact of hipBLASLt")
     hip_pairs = []
     if "rocm7_rc" in envs and "rocm7_rc-hblt0" in envs:
         hip_pairs.append(("rocm7_rc", "rocm7_rc-hblt0", "ROCm 7 RC (no ROCWMMA)"))
     if "rocm7_rc-rocwmma" in envs and "rocm7_rc-rocwmma-hblt0" in envs:
         hip_pairs.append(("rocm7_rc-rocwmma", "rocm7_rc-rocwmma-hblt0", "ROCm 7 RC + ROCWMMA"))
-    if "rocm6_4_3" in envs and "rocm6_4_3-hblt0" in envs:
-        hip_pairs.append(("rocm6_4_3", "rocm6_4_3-hblt0", "ROCm 6.4.3 (no ROCWMMA)"))
-    if "rocm6_4_3-rocwmma" in envs and "rocm6_4_3-rocwmma-hblt0" in envs:
-        hip_pairs.append(("rocm6_4_3-rocwmma", "rocm6_4_3-rocwmma-hblt0", "ROCm 6.4.3 + ROCWMMA"))
+    if "rocm6_4_4" in envs and "rocm6_4_4-hblt0" in envs:
+        hip_pairs.append(("rocm6_4_4", "rocm6_4_4-hblt0", "ROCm 6.4.4 (no ROCWMMA)"))
+    if "rocm6_4_4-rocwmma" in envs and "rocm6_4_4-rocwmma-hblt0" in envs:
+        hip_pairs.append(("rocm6_4_4-rocwmma", "rocm6_4_4-rocwmma-hblt0", "ROCm 6.4.4 + ROCWMMA"))
 
     hip_rows = hipblaslt_effect(runs, hip_pairs, TESTS)
     lines.append(md_row(["Context", "Test", "Compared Envs", "Pairs", "Median Δ%"]))

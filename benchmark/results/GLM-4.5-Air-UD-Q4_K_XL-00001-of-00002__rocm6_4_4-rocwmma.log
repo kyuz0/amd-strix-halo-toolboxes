@@ -1,0 +1,15 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+rocBLAS error: No hipBLASLt solution found
+This message will be only be displayed once, unless the ROCBLAS_VERBOSE_HIPBLASLT_ERROR environment variable is set.
+
+rocBLAS warning: hipBlasLT failed, falling back to tensile. 
+This message will be only be displayed once, unless the ROCBLAS_VERBOSE_TENSILE_ERROR environment variable is set.
+| model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
+| glm4moe 106B.A12B Q4_K - Medium |  68.01 GiB |   110.47 B | ROCm       |  99 |    0 |           pp512 |        128.18 ± 0.37 |
+| glm4moe 106B.A12B Q4_K - Medium |  68.01 GiB |   110.47 B | ROCm       |  99 |    0 |           tg128 |         20.51 ± 0.00 |
+
+build: 4807e8f9 (6609)

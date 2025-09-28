@@ -30,7 +30,9 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 7. [More Documentation](#7-more-documentation)  
 8. [References](#8-references)
 
+## 🚨 Updates — 2025-09-28
 
+Released ROCm 6.4.4 toolboxes. ROCm-6.4.4+ROCWMMA is the currently recommenede one for most use-cases, but always check the benchmakrs to find the backend that performs better with your model architecture and quantization of choice -> [Performance Benchmarks (Key Results)](#3-performance-benchmarks-key-results) 
 
 ## 1. Llama.cpp Compiled for Every Backend
 
@@ -47,8 +49,8 @@ You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-st
 | -------------------- | ------------------------ | --------------- |
 | `vulkan-amdvlk`      | Vulkan (AMDVLK)           | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv`        | Vulkan (Mesa RADV)        | Most stable and compatible. Recommended for most users and all models. |
-| `rocm-6.4.3`         | ROCm 6.4.3 (HIP) + hipBLASLt*          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
-| `rocm-6.4.3-rocwmma` | ROCm 6.4.3 (HIP) + ROCWMMA + hipBLASLt*  | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
+| `rocm-6.4.4`         | ROCm 6.4.4 (HIP) + hipBLASLt*          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
+| `rocm-6.4.4-rocwmma` | ROCm 6.4.4 (HIP) + ROCWMMA + hipBLASLt*  | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
 | `rocm-7rc`           | ROCm 7.0 RC (HIP) + hipBLASLt*         | Release candidate for ROCm 7.0. |
 | `rocm-7rc-rocwmma`   | ROCm 7.0 RC (HIP) + ROCWMMA + hipBLASLt*       | Release candidate for ROCm 7.0, with hipBLASLt and ROCWMMA for improved flash attention on RDNA3+/CDNA |
 
@@ -56,7 +58,7 @@ You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-st
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
 
-> *rocm-6.4.2* and *rocm-7beta* coontainers have been retired in favour of *rocm-6.4.3* and *rocm_7rc*.
+> *rocm-6.4.2*, *rocm-6.4.3* and *rocm-7beta* coontainers have been retired in favour of *rocm-6.4.4* and *rocm_7rc*.
 
 ---
 
@@ -78,7 +80,7 @@ To use Llama.cpp with hardware acceleration inside a toolbox container, you must
 * **For ROCm:** You must expose both `/dev/dri` and `/dev/kfd`, and add the user to extra groups for compute access.
 
   ```sh
-  toolbox create llama-rocm-6.4.3-rocwmma \
+  toolbox create llama-rocm-6.4.4-rocwmma \
     --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.3-rocwmma \
     -- --device /dev/dri --device /dev/kfd \
     --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
@@ -166,33 +168,36 @@ Benchmarks were analysed with **error-aware ties** (mean ± σ). If two backends
 **Prompt Processing (pp512)**
 | Backend | 1st | 2nd | 3rd |
 | --- | ---: | ---: | ---: |
-| ROCm 6.4.3 + ROCWMMA (hipBLASLt) | 9 | 6 | 0 |
-| Vulkan AMDVLK | 4 | 0 | 2 |
-| ROCm 7 RC + ROCWMMA (hipBLASLt OFF) | 3 | 3 | 8 |
-| ROCm 7 RC + ROCWMMA + hipBLASLt | 1 | 8 | 5 |
-| ROCm 6.4.3 + ROCWMMA (hipBLASLt OFF) | 0 | 0 | 1 |
-| Vulkan RADV | 0 | 0 | 1 |
+| ROCm 6.4.4 (hipBLASLt) | 6 | 2 | 2 |
+| Vulkan AMDVLK | 6 | 1 | 0 |
+| ROCm 6.4.4 (hipBLASLt OFF) | 3 | 2 | 3 |
+| Vulkan RADV | 1 | 2 | 0 |
+| ROCm 7 RC (hipBLASLt) | 1 | 1 | 1 |
+| ROCm 6.4.4 + ROCWMMA (hipBLASLt OFF) | 0 | 5 | 4 |
+| ROCm 6.4.4 + ROCWMMA (hipBLASLt) | 0 | 4 | 2 |
+| ROCm 7 RC (hipBLASLt OFF) | 0 | 0 | 2 |
+| ROCm 7 RC + ROCWMMA + hipBLASLt | 0 | 0 | 3 |
 
 **Token Generation (tg128)**
 | Backend | 1st | 2nd | 3rd |
 | --- | ---: | ---: | ---: |
-| Vulkan RADV | 14 | 0 | 0 |
-| ROCm 6.4.3 (hipBLASLt) | 3 | 0 | 1 |
-| ROCm 6.4.3 + ROCWMMA (hipBLASLt) | 1 | 4 | 3 |
-| ROCm 6.4.3 + ROCWMMA (hipBLASLt OFF) | 1 | 2 | 4 |
-| ROCm 6.4.3 (hipBLASLt OFF) | 1 | 1 | 1 |
-| ROCm 7 RC (hipBLASLt) | 1 | 1 | 4 |
-| ROCm 7 RC (hipBLASLt OFF) | 1 | 1 | 2 |
-| ROCm 7 RC + ROCWMMA (hipBLASLt OFF) | 1 | 1 | 1 |
-| Vulkan AMDVLK | 0 | 10 | 0 |
-| ROCm 7 RC + ROCWMMA + hipBLASLt | 0 | 1 | 2 |
+| Vulkan RADV | 10 | 1 | 2 |
+| Vulkan AMDVLK | 3 | 10 | 0 |
+| ROCm 6.4.4 + ROCWMMA (hipBLASLt OFF) | 2 | 3 | 7 |
+| ROCm 6.4.4 (hipBLASLt) | 1 | 4 | 3 |
+| ROCm 6.4.4 (hipBLASLt OFF) | 1 | 3 | 5 |
+| ROCm 6.4.4 + ROCWMMA (hipBLASLt) | 1 | 2 | 6 |
+| ROCm 7 RC (hipBLASLt) | 1 | 0 | 1 |
+| ROCm 7 RC (hipBLASLt OFF) | 0 | 1 | 1 |
+| ROCm 7 RC + ROCWMMA + hipBLASLt | 0 | 1 | 1 |
+| ROCm 7 RC + ROCWMMA (hipBLASLt OFF) | 0 | 1 | 1 |
 
 ### Summary & Recommendations
-- **Fastest prompt processing:** ROCm 6.4.3 + ROCWMMA (hipBLASLt) (most 1st-place finishes).
+- **Fastest prompt processing:** Vulkan AMDVLK, ROCm 6.4.4 (hipBLASLt) (most 1st-place finishes).
 - **Fastest token generation:** Vulkan RADV (most 1st-place finishes).
-- **Balanced choice:** ROCm 6.4.3 + ROCWMMA (hipBLASLt) (consistently near the top across PP/TG).
+- **Balanced choice:** Vulkan AMDVLK (consistently near the top across PP/TG).
 
-> **Note (ROCm 7):** Toolboxes enable **hipBLASLt** by default. The benchmark suite also runs **hipBLASLt OFF** variants to show its impact.
+> **Note (ROCm):** ROCm toolboxes enable **hipBLASLt** by default, as in *most* cases this performs better. The benchmark suite also runs **hipBLASLt OFF** variants to show its impact.
 
 📄 Full per-model analysis: [docs/benchmarks.md](docs/benchmarks.md)
 
