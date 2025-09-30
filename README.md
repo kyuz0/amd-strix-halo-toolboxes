@@ -84,7 +84,7 @@ To use Llama.cpp with hardware acceleration inside a toolbox container, you must
 
   ```sh
   toolbox create llama-rocm-6.4.4-rocwmma \
-    --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.3-rocwmma \
+    --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4-rocwmma \
     -- --device /dev/dri --device /dev/kfd \
     --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
   ```
