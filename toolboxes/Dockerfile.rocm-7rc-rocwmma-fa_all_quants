@@ -1,9 +1,9 @@
 # build
-FROM registry.fedoraproject.org/fedora:rawhide AS builder
+FROM registry.fedoraproject.org/fedora:43 AS builder
 
 RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
        make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
-       radeontop git vim patch curl ninja-build tar xz \
+       radeontop git vim patch curl ninja-build tar xz libatomic \
     && dnf clean all && rm -rf /var/cache/dnf/*
 
 # find & fetch the latest Linux 7.0.0rc tarball (gfx1151)
@@ -34,28 +34,12 @@ ENV ROCM_PATH=/opt/rocm-7.0 \
     CPATH=/opt/rocm-7.0/include \
     PKG_CONFIG_PATH=/opt/rocm-7.0/lib/pkgconfig
 
-RUN printf '%s\n' \
-  'export ROCM_PATH=/opt/rocm-7.0' \
-  'export HIP_PLATFORM=amd' \
-  'export HIP_PATH=/opt/rocm-7.0' \
-  'export HIP_CLANG_PATH=/opt/rocm-7.0/llvm/bin' \
-  'export HIP_INCLUDE_PATH=/opt/rocm-7.0/include' \
-  'export HIP_LIB_PATH=/opt/rocm-7.0/lib' \
-  'export HIP_DEVICE_LIB_PATH=/opt/rocm-7.0/lib/llvm/amdgcn/bitcode' \
-  'export PATH="$ROCM_PATH/bin:$HIP_CLANG_PATH:$PATH"' \
-  'export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/llvm/lib"' \
-  'export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64"' \
-  'export CPATH="$HIP_INCLUDE_PATH"' \
-  'export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig"' \
-  'export ROCBLAS_USE_HIPBLASLT=1' \
-  > /etc/profile.d/rocm.sh \
-  && chmod +x /etc/profile.d/rocm.sh \
-  && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
-
+# add rocWMMA
 WORKDIR /opt
 COPY ./build-rocwmma.sh .
 RUN chmod +x build-rocwmma.sh && ./build-rocwmma.sh
 
+# build llama.cpp
 WORKDIR /opt/llama.cpp
 RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
  && git clean -xdf \
@@ -67,7 +51,6 @@ RUN cmake -S . -B build \
           -DGGML_HIP=ON \
           -DAMDGPU_TARGETS=gfx1151 \
           -DCMAKE_BUILD_TYPE=Release \
-          -DLLAMA_HIP_UMA=ON \
           -DGGML_HIP_ROCWMMA_FATTN=ON \
           -DGGML_CUDA_FA_ALL_QUANTS=ON \
  && cmake --build build --config Release -- -j$(nproc) \
@@ -80,11 +63,11 @@ RUN find /opt/rocm-7.0 -type f -name '*.a' -delete \
  && rm -rf /opt/llama.cpp
 
 # runtime
-FROM registry.fedoraproject.org/fedora-minimal:rawhide
+FROM registry.fedoraproject.org/fedora-toolbox:43
 
-RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
-      bash ca-certificates libatomic libstdc++ libgcc radeontop vim \
-  && microdnf clean all && rm -rf /var/cache/dnf/*
+RUN dnf -y --nodocs --setopt=install_weak_deps=0 install \
+      libatomic radeontop \
+  && dnf clean all && rm -rf /var/cache/dnf/*
 
 COPY --from=builder /opt/rocm-7.0 /opt/rocm-7.0
 COPY --from=builder /usr/local/ /usr/local/
@@ -103,29 +86,11 @@ ENV ROCM_PATH=/opt/rocm-7.0 \
     LD_LIBRARY_PATH=/opt/rocm-7.0/lib:/opt/rocm-7.0/lib64:/opt/rocm-7.0/llvm/lib \
     LIBRARY_PATH=/opt/rocm-7.0/lib:/opt/rocm-7.0/lib64 \
     CPATH=/opt/rocm-7.0/include \
-    PKG_CONFIG_PATH=/opt/rocm-7.0/lib/pkgconfig
-
-RUN printf '%s\n' \
-  'export ROCM_PATH=/opt/rocm-7.0' \
-  'export HIP_PLATFORM=amd' \
-  'export HIP_PATH=/opt/rocm-7.0' \
-  'export HIP_CLANG_PATH=/opt/rocm-7.0/llvm/bin' \
-  'export HIP_INCLUDE_PATH=/opt/rocm-7.0/include' \
-  'export HIP_LIB_PATH=/opt/rocm-7.0/lib' \
-  'export HIP_DEVICE_LIB_PATH=/opt/rocm-7.0/lib/llvm/amdgcn/bitcode' \
-  'export PATH="$ROCM_PATH/bin:$HIP_CLANG_PATH:$PATH"' \
-  'export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/llvm/lib"' \
-  'export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64"' \
-  'export CPATH="$HIP_INCLUDE_PATH"' \
-  'export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig"' \
-  'export ROCBLAS_USE_HIPBLASLT=1' \
-  > /etc/profile.d/rocm.sh \
-  && chmod +x /etc/profile.d/rocm.sh \
-  && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
+    PKG_CONFIG_PATH=/opt/rocm-7.0/lib/pkgconfig \
+    GGML_CUDA_ENABLE_UNIFIED_MEMORY=ON
 
 # make /usr/local libs visible without touching env
 RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
  && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
  && ldconfig
 
-CMD ["/bin/bash"]
