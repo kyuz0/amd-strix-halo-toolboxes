@@ -313,3 +313,92 @@ Follow this guide by TechnigmaAI for a working configuration on Ubuntu 24.04:
 * Ubuntu 24.04 configuration
   [https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-(Ubuntu-24.04)](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29)
 
+# New Containers:
+## dev toolbox
+2 generic Container files can be use to build toolbox with all env needed to build
+and run programe with hip + blas.
+- For release rocm:
+
+```sh
+# build toolbox:
+git clone 
+cd toolboxes
+podman build -t <image-name> -f Containerfile.rocm-dev \
+   [--build-arg ROCM_VER=<version>] \
+   [--build-arg ROCMWMMA=ON] \
+
+# <version>:  6.4.4 , 7.0.1 , 7.0.2 (default 7.0.2)
+```
+
+- For TheRock:
+
+```sh
+# build toolbox:
+cd toolboxes
+podman build -t <image-name> -f Containerfile.therock-dev \
+   [--build-arg ROCM_RC_VER=<version>]
+
+# <version>:  6.4.0rc, 6.5.0rc, 7.0.0rc, 7.9.0rc (default 7.9.0rc)
+```
+
+usage:
+
+```sh
+# init toolbox:
+toolbox create --image <image-name> <container-name>
+# enter toolbox
+toolbox enter <container-name>
+# you can clone git repos, and build app with rocm/hip
+```
+
+## llama.cpp server
+2 generic Containerfile, can be use to build llama.cpp server app.
+
+- For release rocm:
+
+```sh
+# build
+podman build -t <image-name> -f Containerfile.rocm-llamacpp \
+   [--build-arg ROCM_VER=<version>] \
+   [--build-arg ROCBLAS_USE_HIPBLASLT={0,1}] \
+   [--build-arg ROCMWMMA=ON] \
+   [--build-arg FA_ALL_QUANTS=ON]
+
+# <version>:  6.4.4 , 7.0.1 , 7.0.2 (default 7.0.2)
+
+# run
+podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host \
+  -v <~/models_local_path>:/models \
+  <image-name> \
+  -m /models/openai_gpt-oss-120b/MXFP4.gguf \
+  [<llama-server args:>] \ 
+  [--ctx-size 0] [--batch-size 8192] 
+```
+
+- For TheRock:
+
+```sh
+# build
+podman build -t <image-name> -f Containerfile.therock-llamacpp \
+   [--build-arg ROCM_RC_VER=<version>] \
+   [--build-arg ROCBLAS_USE_HIPBLASLT={0,1}] \
+   [--build-arg ROCMWMMA=ON] \
+   [--build-arg FA_ALL_QUANTS=ON]
+   
+# <version>:  7.0.0rc 7.9.0rc (default 7.9.0rc)
+# run
+podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host \
+  -v <~/models_local_path>:/models \
+  <image-name> -m /models/openai_gpt-oss-120b/MXFP4.gguf \
+  [--ctx-size 0] [--batch-size 8192] [... llama.cpp args]
+```
+
+some args are pre-define, non need to add it can be change if you add it as run args:
+
+```sh
+- ubatch=2048
+- flash_attn=false
+- mmap=disable
+- gpu_layer_offload=999
+- GGML_CUDA_ENABLE_UNIFIED_MEMORY=ON  => no need for gtt config/change, it is not used
+```

@@ -1,0 +1,89 @@
+# build: 
+# - podman build -t rocm-toolbox:6.4.4 -f Containerfile.rocm-dev --build-arg ROCM_VER=6.4.4 --build-arg ROCMWMMA_DEVEL=ON
+# - podman build -t rocm-toolbox:7.0.1 -f Containerfile.rocm-dev --build-arg ROCM_VER=7.0.1
+# - podman build -t rocm-toolbox:7.0.2 -f Containerfile.rocm-dev --build-arg ROCM_VER=7.0.2
+# run:
+# - toolbox create --image rocm-toolbox:6.4.4 rocm-devel-6.4.4
+# - toolbox create --image rocm-toolbox:7.0.1 rocm-devel-7.0.1
+# - toolbox create --image rocm-toolbox:7.0.2 rocm-devel-7.0.2
+FROM registry.fedoraproject.org/fedora-toolbox:43
+
+ARG ROCM_VER=7.0.1
+ARG ROCMWMMA_DEVEL
+ARG GFX=gfx1151
+
+RUN dnf -y upgrade --refresh
+
+# rocm repo
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[ROCm-${ROCM_VER}]
+name=ROCm-${ROCM_VER}
+baseurl=https://repo.radeon.com/rocm/el9/${ROCM_VER}/main
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
+REPO
+EOF
+
+# install rocm + blas and anythong needed to build llama.cpp
+RUN dnf -y --nodocs --setopt=install_weak_deps=False \
+    install \
+      make gcc-c++ cmake libcurl-devel ninja-build tar xz git-lfs patch radeontop \
+      rocm-llvm${ROCM_VER} rocm-device-libs${ROCM_VER} rocm-cmake${ROCM_VER} rocm-openmp-sdk${ROCM_VER} \
+      hipcc${ROCM_VER} hip-runtime-amd${ROCM_VER} hip-devel${ROCM_VER} \
+      rocblas${ROCM_VER} rocblas-devel${ROCM_VER} \
+      hipblas${ROCM_VER} hipblas-devel${ROCM_VER} \
+      rocminfo${ROCM_VER} \
+ && dnf clean all && rm -rf /var/cache/dnf/*
+
+# rocm env
+ENV ROCM_PATH=/opt/rocm \
+     HIP_PATH=/opt/rocm \
+     HIP_PLATFORM=amd \
+     HIP_INCLUDE_PATH=/opt/rocm/include \
+     HIP_LIB_PATH=/opt/rocm/lib \
+	 HIP_CLANG_PATH=/opt/rocm/llvm/bin \
+     HIP_DEVICE_LIB_PATH=/opt/rocm/amdgcn/bitcode \
+     PATH=/opt/rocm/bin:$PATH \
+     LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+     LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+     CPATH=/opt/rocm/include \
+     PKG_CONFIG_PATH=/opt/rocm/lib/pkgconfig \
+     GPU_TARGETS=${GFX} \
+     AMDGPU_TARGETS=${GFX} \
+     GGML_CUDA_ENABLE_UNIFIED_MEMORY=ON
+
+# add rocWMMA:
+#  - from rpm release
+RUN if [[ -z "$ROCMWMMA_DEVEL" ]] ; then \
+    dnf -y --nodocs --setopt=install_weak_deps=False install rocwmma-devel${ROCM_VER} \
+ && dnf clean all \
+ && rm -rf /var/cache/dnf/* ; \
+fi
+
+#  - latest from github: (6.4.4 and other did not support gfx1151.)
+RUN if [[ -n "$ROCMWMMA_DEVEL" ]] ; then \
+    cd /opt \
+ && git clone https://github.com/ROCm/rocWMMA.git \
+ && mkdir build \
+ && CC=/opt/rocm/bin/amdclang CXX=/opt/rocm/bin/amdclang++ cmake -B build /opt/rocWMMA -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/rocm -DROCWMMA_BUILD_TESTS=OFF -DROCWMMA_BUILD_SAMPLES=OFF -DGPU_TARGETS="${GFX}" \
+ && cmake --build build -j$(nproc) \
+ && sudo cmake --install build \
+ && rm -rf rocWMMA \
+ && rm -rf build; \
+fi
+# Note: if you want to build the test add/replace with that
+# && sudo dnf -y --nodocs --setopt=install_weak_deps=False install rocm-smi-lib6.4.4 rocm-smi-devel \
+# && rm -rf build; mkdir build; CC=/opt/rocm/bin/amdclang CXX=/opt/rocm/bin/amdclang++ cmake -B build . -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/rocm -DROCWMMA_BUILD_BENCHMARK_TESTS=ON -DROCWMMA_BUILD_SAMPLES=OFF -DGPU_TARGETS="${GFX}" \
+
+# add vram estimator
+COPY gguf-vram-estimator.py /usr/local/bin/
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# make /usr/local libs visible without touching env
+RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
+ && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+ && ldconfig
+
