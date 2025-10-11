@@ -3,7 +3,7 @@ FROM registry.fedoraproject.org/fedora:rawhide AS builder
 
 RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
        make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
-       radeontop git vim patch curl ninja-build tar xz \
+       radeontop git vim patch curl ninja-build tar xz aria2c \
     && dnf clean all && rm -rf /var/cache/dnf/*
 
 # find & fetch the latest Linux 7.x.x rc tarball (gfx1151)
@@ -17,7 +17,7 @@ RUN set -euo pipefail; \
       | grep -o "therock-dist-linux-${GFX}-${ROCM_MAJOR_VER}\.[0-9]\+\.[0-9]\+rc[0-9]\{8\}\.tar\.gz" \
       | sort | tail -n1)"; \
     echo "Latest tarball: ${KEY}"; \
-    curl -L --fail -o therock.tar.gz "${BASE}/${KEY}"
+    aria2c -x 16 -s 16 -j 16 --file-allocation=none "${BASE}/${KEY}" -o therock.tar.gz
 RUN mkdir -p /opt/rocm-7.0 \
  && tar xzf therock.tar.gz -C /opt/rocm-7.0 --strip-components=1
 
