@@ -1,11 +1,11 @@
 # build stage
 FROM registry.fedoraproject.org/fedora:rawhide AS builder
 
-# rocm 6.4.6 repo
+# rocm 6.4.4 repo
 RUN <<'EOF'
 tee /etc/yum.repos.d/rocm.repo <<REPO
-[ROCm-6.4.6]
-name=ROCm6.4.6
+[ROCm-6.4.4]
+name=ROCm6.4.4
 baseurl=https://repo.radeon.com/rocm/el9/6.4.4/main
 enabled=1
 priority=50
@@ -18,9 +18,9 @@ EOF
 RUN dnf -y --nodocs --setopt=install_weak_deps=False \
     --exclude='*sdk*' --exclude='*samples*' --exclude='*-doc*' --exclude='*-docs*' \
     install \
-      make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
+      make gcc cmake lld clang clang-devel compiler-rt libcurl-devel ninja-build \
       rocm-llvm rocm-device-libs hip-runtime-amd hip-devel \
-      rocblas rocblas-devel hipblas hipblas-devel \
+      rocblas rocblas-devel hipblas hipblas-devel rocm-cmake libomp-devel libomp \
       rocminfo radeontop \
       git-core vim sudo rsync \
  && dnf clean all && rm -rf /var/cache/dnf/*
@@ -32,20 +32,26 @@ ENV ROCM_PATH=/opt/rocm \
     HIP_DEVICE_LIB_PATH=/opt/rocm/amdgcn/bitcode \
     PATH=/opt/rocm/bin:/opt/rocm/llvm/bin:$PATH
 
-# rocWMMA
+# rocWMMA 
 WORKDIR /opt
-RUN git clone -b release/rocm-rel-7.1 https://github.com/ROCm/rocWMMA.git
-RUN sudo mkdir -p /usr/include/rocwmma
-RUN sudo cp -r rocWMMA/library/include/rocwmma /usr/include/
+COPY ./build-rocwmma.sh .
+RUN chmod +x build-rocwmma.sh && ./build-rocwmma.sh
 
 # llama.cpp
 WORKDIR /opt/llama.cpp
 RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 
+# Apply # rocWMMA patch
+COPY ./apply-rocwmma-fix.sh /opt/apply-rocwmma-fix.sh
+RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.cpp
+
 # build
 RUN git clean -xdf \
  && git pull \
  && git submodule update --recursive \
+ && echo -e '#ifndef HIP_HAS_SHFL_SYNC_FUNCS\n#define HIP_HAS_SHFL_SYNC_FUNCS\n#ifndef __shfl_sync\n#define __shfl_sync(mask,var,srcLane,width) __shfl(var,srcLane,width)\n#endif\n#ifndef __shfl_xor_sync\n#define __shfl_xor_sync(mask,var,laneMask,width) __shfl_xor(var,laneMask,width)\n#endif\n#ifndef __shfl_up_sync\n#define __shfl_up_sync(mask,var,delta,width) __shfl_up(var,delta,width)\n#endif\n#endif\n' \
+    | cat - /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh > /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh.tmp \
+ && mv /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh.tmp /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh \
  && cmake -S . -B build \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \

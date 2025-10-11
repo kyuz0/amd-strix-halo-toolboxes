@@ -151,3 +151,5 @@ echo ""
 echo "Backup files were created with .backup extension in case you need to revert."
 echo ""
 echo "Done! Your llama.cpp checkout now supports rocWMMA builds."
+
+
