@@ -34,7 +34,7 @@ ENV ROCM_PATH=/opt/rocm \
 
 # rocWMMA
 WORKDIR /opt
-RUN git clone -b release/rocm-rel-7.0 https://github.com/ROCm/rocWMMA.git
+RUN git clone -b release/rocm-rel-7.1 https://github.com/ROCm/rocWMMA.git
 RUN sudo mkdir -p /usr/include/rocwmma
 RUN sudo cp -r rocWMMA/library/include/rocwmma /usr/include/
 
