@@ -4,7 +4,7 @@ ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
 | model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
-| llama4 17Bx16E (Scout) Q8_0    | 106.65 GiB |   107.77 B | ROCm       |  99 |  1 |    0 |           pp512 |        260.83 ± 5.18 |
-| llama4 17Bx16E (Scout) Q8_0    | 106.65 GiB |   107.77 B | ROCm       |  99 |  1 |    0 |           tg128 |         11.82 ± 0.20 |
+| llama4 17Bx16E (Scout) Q8_0    | 106.65 GiB |   107.77 B | ROCm       |  99 |  1 |    0 |           pp512 |        257.00 ± 4.08 |
+| llama4 17Bx16E (Scout) Q8_0    | 106.65 GiB |   107.77 B | ROCm       |  99 |  1 |    0 |           tg128 |         11.76 ± 0.51 |
 
-build: f1fbffb5 (6486)
+build: a3cb0474 (6735)

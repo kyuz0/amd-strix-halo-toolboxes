@@ -9,7 +9,7 @@ rocBLAS warning: hipBlasLT failed, falling back to tensile.
 This message will be only be displayed once, unless the ROCBLAS_VERBOSE_TENSILE_ERROR environment variable is set.
 | model                          |       size |     params | backend    | ngl | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | ---: | --------------: | -------------------: |
-| gpt-oss 20B BF16               |  38.97 GiB |    20.91 B | ROCm       |  99 |    0 |           pp512 |       1253.42 ± 6.47 |
-| gpt-oss 20B BF16               |  38.97 GiB |    20.91 B | ROCm       |  99 |    0 |           tg128 |         27.29 ± 0.00 |
+| gpt-oss 20B BF16               |  38.97 GiB |    20.91 B | ROCm       |  99 |    0 |           pp512 |      1230.17 ± 12.16 |
+| gpt-oss 20B BF16               |  38.97 GiB |    20.91 B | ROCm       |  99 |    0 |           tg128 |         27.22 ± 0.00 |
 
-build: 4807e8f9 (6609)
+build: 11f0af55 (6736)
