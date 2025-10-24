@@ -1,0 +1,71 @@
+# build:
+# - podman build -t therock-toolbox:7.0rc -f Containerfile.therock-dev --build-arg ROCM_RC_VER=7.0.0rc
+# - podman build -t therock-toolbox:7.9rc -f Containerfile.therock-dev --build-arg ROCM_RC_VER=7.9.0rc
+# run:
+# - toolbox create --image therock-toolbox:7.0rc therock-devel-7.0rc
+# - toolbox create --image therock-toolbox:7.9rc therock-devel-7.9rc
+
+FROM registry.fedoraproject.org/fedora-toolbox:43
+
+#RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
+#       make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
+#       radeontop git patch curl ninja-build tar xz libatomic \
+#    && dnf clean all && rm -rf /var/cache/dnf/*
+
+RUN dnf -y --nodocs --setopt=install_weak_deps=False \
+    install \
+      curl tar xz git-lfs patch \
+      make gcc-c++ cmake libcurl-devel ninja-build radeontop libatomic \
+ && dnf clean all && rm -rf /var/cache/dnf/*
+
+# find & fetch the latest Linux M.N.0rc tarball (gfx1151)
+WORKDIR /tmp
+#ARG ROCM_RC_VER=6.4.0rc
+#ARG ROCM_RC_VER=6.5.0rc
+#ARG ROCM_RC_VER=7.0.0rc
+ARG ROCM_RC_VER=7.9.0rc
+
+ARG GFX=gfx1151
+
+RUN set -euo pipefail; \
+    BASE="https://therock-nightly-tarball.s3.amazonaws.com"; \
+    PREFIX="therock-dist-linux-${GFX}-${ROCM_RC_VER}"; \
+    KEY="$(curl -s "${BASE}?list-type=2&prefix=${PREFIX}" \
+      | grep -o "therock-dist-linux-${GFX}-${ROCM_RC_VER}[0-9]\{8\}\.tar\.gz" \
+      | sort | tail -n1)"; \
+    echo "Latest tarball: ${KEY}"; \
+    curl -L --fail -o therock.tar.gz "${BASE}/${KEY}"
+RUN mkdir -p /opt/rocm \
+ && tar xzf therock.tar.gz -C /opt/rocm --strip-components=1
+
+ENV ROCM_PATH=/opt/rocm \
+    HIP_PLATFORM=amd \
+    HIP_PATH=/opt/rocm \
+    HIP_CLANG_PATH=/opt/rocm/llvm/bin \
+    HIP_INCLUDE_PATH=/opt/rocm/include \
+    HIP_LIB_PATH=/opt/rocm/lib \
+    HIP_DEVICE_LIB_PATH=/opt/rocm/lib/llvm/amdgcn/bitcode \
+    PATH=/opt/rocm/bin:/opt/rocm/llvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64:/opt/rocm/llvm/lib \
+    LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+    CPATH=/opt/rocm/include \
+    PKG_CONFIG_PATH=/opt/rocm/lib/pkgconfig \
+    GGML_CUDA_ENABLE_UNIFIED_MEMORY=ON
+
+# add rocWMMA (latest always for now)
+RUN cd /opt \
+ && git clone https://github.com/ROCm/rocWMMA \
+ && mkdir build; CC=$ROCM_PATH/llvm/bin/amdclang CXX=$ROCM_PATH/llvm/bin/amdclang++ cmake -B build rocWMMA -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$ROCM_PATH -DROCWMMA_BUILD_TESTS=OFF -DROCWMMA_BUILD_SAMPLES=OFF -DGPU_TARGETS="gfx1151" \
+ && cmake --build build -j$(nproc) \
+ && sudo cmake --install build \
+ && rm -rf rocWMMA \
+ && rm -rf build
+
+COPY gguf-vram-estimator.py /usr/local/bin/
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# make /usr/local libs visible without touching env
+RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
+ && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+ && ldconfig
+
