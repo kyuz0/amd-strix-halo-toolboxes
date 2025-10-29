@@ -58,17 +58,11 @@ COPY ./build-rocwmma.sh .
 RUN chmod +x build-rocwmma.sh && ./build-rocwmma.sh
 
 WORKDIR /opt/llama.cpp
-RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
+RUN git clone --recursive -b rocm-wmma-tune https://github.com/lhl/llama.cpp.git . \
  && git clean -xdf \
  && git submodule update --recursive
 COPY ./apply-rocwmma-fix.sh /opt/apply-rocwmma-fix.sh
 RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.cpp
-
-# Download and apply the PR 16827 patch
-RUN aria2c -x 16 -s 16 -j 16 --file-allocation=none \
-      "https://github.com/ggml-org/llama.cpp/pull/16827.patch?full_index=1" \
-      -o 16827.patch
-RUN git apply 16827.patch
 
 RUN cmake -S . -B build \
           -DGGML_HIP=ON \
