@@ -72,12 +72,6 @@ RUN cmake -S . -B build \
  && cmake --build build --config Release -- -j$(nproc) \
  && cmake --install build --config Release
 
-# keep bin; drop headers/docs/static libs; drop source tree
-RUN find /opt/rocm-7.0 -type f -name '*.a' -delete \
- && rm -rf /opt/rocm-7.0/include /opt/rocm-7.0/share \
-           /opt/rocm-7.0/llvm/include /opt/rocm-7.0/llvm/share \
- && rm -rf /opt/llama.cpp
-
 # runtime
 FROM registry.fedoraproject.org/fedora-minimal:rawhide
 
