@@ -87,6 +87,7 @@ RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
 
 COPY --from=builder /opt/rocm-7.0 /opt/rocm-7.0
 COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
 
 COPY gguf-vram-estimator.py /usr/local/bin/
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
