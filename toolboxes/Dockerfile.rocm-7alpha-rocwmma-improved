@@ -58,7 +58,7 @@ COPY ./build-rocwmma.sh .
 RUN chmod +x build-rocwmma.sh && ./build-rocwmma.sh
 
 WORKDIR /opt/llama.cpp
-RUN git clone --recursive -b rocm-wmma-tune https://github.com/lhl/llama.cpp.git . \
+RUN git clone --recursive https://github.com/hjc4869/llama.cpp.git . \
  && git clean -xdf \
  && git submodule update --recursive
 COPY ./apply-rocwmma-fix.sh /opt/apply-rocwmma-fix.sh
