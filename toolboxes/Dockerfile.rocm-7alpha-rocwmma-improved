@@ -68,16 +68,10 @@ RUN cmake -S . -B build \
           -DGGML_HIP=ON \
           -DAMDGPU_TARGETS=gfx1151 \
           -DCMAKE_BUILD_TYPE=Release \
-          -DLLAMA_HIP_UMA=ON \
+          -DGGML_RPC=ON \
           -DGGML_HIP_ROCWMMA_FATTN=ON \
  && cmake --build build --config Release -- -j$(nproc) \
  && cmake --install build --config Release
-
-# keep bin; drop headers/docs/static libs; drop source tree
-RUN find /opt/rocm-7.0 -type f -name '*.a' -delete \
- && rm -rf /opt/rocm-7.0/include /opt/rocm-7.0/share \
-           /opt/rocm-7.0/llvm/include /opt/rocm-7.0/llvm/share \
- && rm -rf /opt/llama.cpp
 
 # runtime
 FROM registry.fedoraproject.org/fedora-minimal:rawhide
@@ -88,6 +82,7 @@ RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
 
 COPY --from=builder /opt/rocm-7.0 /opt/rocm-7.0
 COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
 
 COPY gguf-vram-estimator.py /usr/local/bin/
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
