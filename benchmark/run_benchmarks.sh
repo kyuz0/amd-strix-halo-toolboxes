@@ -86,7 +86,7 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
         fi
 
         # build command array
-        FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" -d 512,32768 -r 1 )
+        FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" -d 512,32768 -r 3 )
 
         printf "\n▶ [%s] %s%s\n" "$ENV" "$MODEL_NAME" "${SUFFIX:+ $SUFFIX}"
         printf "  → log: %s\n" "$OUT"
