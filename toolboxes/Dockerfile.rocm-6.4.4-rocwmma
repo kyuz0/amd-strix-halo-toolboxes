@@ -49,9 +49,8 @@ RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.c
 RUN git clean -xdf \
  && git pull \
  && git submodule update --recursive \
- && echo -e '#ifndef HIP_HAS_SHFL_SYNC_FUNCS\n#define HIP_HAS_SHFL_SYNC_FUNCS\n#ifndef __shfl_sync\n#define __shfl_sync(mask,var,srcLane,width) __shfl(var,srcLane,width)\n#endif\n#ifndef __shfl_xor_sync\n#define __shfl_xor_sync(mask,var,laneMask,width) __shfl_xor(var,laneMask,width)\n#endif\n#ifndef __shfl_up_sync\n#define __shfl_up_sync(mask,var,delta,width) __shfl_up(var,delta,width)\n#endif\n#endif\n' \
-    | cat - /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh > /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh.tmp \
- && mv /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh.tmp /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh \
+ && bash -lc 'f=/opt/llama.cpp/ggml/src/ggml-cuda/mmid.cu; \
+              grep -q "vendors/hip.h" "$f" || sed -i '\''1i #include "vendors/hip.h"'\'' "$f"' \
  && cmake -S . -B build \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \
@@ -62,8 +61,9 @@ RUN git clean -xdf \
       -DHIP_PATH=/opt/rocm \
       -DHIP_PLATFORM=amd \
       -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm" \
- && cmake --build build --config Release -- -j$(nproc) \
+ && cmake --build build --config Release -- -j"$(nproc)" \
  && cmake --install build --config Release
+
 
 # libs
 RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
