@@ -41,33 +41,15 @@ RUN chmod +x build-rocwmma.sh && ./build-rocwmma.sh
 WORKDIR /opt/llama.cpp
 RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 
+# overwrite upstream header with our local fixed version
+COPY ggml/src/ggml-cuda/hip_shfl_fix.h /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h
+
 # Apply # rocWMMA patch
 COPY ./apply-rocwmma-fix.sh /opt/apply-rocwmma-fix.sh
 RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.cpp
 
-# build
+# Build
 RUN set -euo pipefail \
- && git clean -xdf \
- && git pull \
- && git submodule update --recursive \
- && cat > /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h <<'EOF'
-#ifndef HIP_SHFL_FIX_H
-#define HIP_SHFL_FIX_H
-#ifdef __HIP_PLATFORM_AMD__
-  #ifndef __shfl_sync
-    #define __shfl_sync(mask,var,srcLane,width) __shfl((var),(srcLane),(width))
-  #endif
-  #ifndef __shfl_up_sync
-    #define __shfl_up_sync(mask,var,delta,width) __shfl_up((var),(delta),(width))
-  #endif
-  #ifndef __shfl_xor_sync
-    #define __shfl_xor_sync(mask,var,laneMask,width) __shfl_xor((var),(laneMask),(width))
-  #endif
-#endif
-#endif
-EOF
- # remove any old inline hack you had in mma.cuh (safe if absent)
- && sed -i '/HIP_HAS_SHFL_SYNC_FUNCS/,+20d' /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh || true \
  && cmake -S . -B build \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \
@@ -77,10 +59,9 @@ EOF
       -DROCM_PATH=/opt/rocm \
       -DHIP_PATH=/opt/rocm \
       -DHIP_PLATFORM=amd \
-      -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm -include /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h -Wno-macro-redefined" \
+      -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm -include ggml/src/ggml-cuda/hip_shfl_fix.h -Wno-macro-redefined" \
  && cmake --build build --config Release -- -j"$(nproc)" \
  && cmake --install build --config Release
-
 
 # libs
 RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
