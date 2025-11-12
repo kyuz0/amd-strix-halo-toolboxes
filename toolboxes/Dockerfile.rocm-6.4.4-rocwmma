@@ -49,23 +49,26 @@ RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.c
 RUN git clean -xdf \
  && git pull \
  && git submodule update --recursive \
+ && rm -f /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh.tmp \
  && cat > /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h <<'EOF'
 #ifndef HIP_SHFL_FIX_H
 #define HIP_SHFL_FIX_H
-#include "common.cuh"
-#ifndef __shfl_sync
-#define __shfl_sync(mask,var,srcLane,width) __shfl(var,srcLane,width)
-#endif
-#ifndef __shfl_up_sync
-#define __shfl_up_sync(mask,var,delta,width) __shfl_up(var,delta,width)
-#endif
-#ifndef __shfl_xor_sync
-#define __shfl_xor_sync(mask,var,laneMask,width) __shfl_xor(var,laneMask,width)
+// Keep vendor shims if present, add only what’s missing.
+#ifdef __HIP_PLATFORM_AMD__
+  #ifndef __shfl_sync
+    #define __shfl_sync(mask,var,srcLane,width) __shfl((var),(srcLane),(width))
+  #endif
+  #ifndef __shfl_up_sync
+    #define __shfl_up_sync(mask,var,delta,width) __shfl_up((var),(delta),(width))
+  #endif
+  #ifndef __shfl_xor_sync
+    #define __shfl_xor_sync(mask,var,laneMask,width) __shfl_xor((var),(laneMask),(width))
+  #endif
 #endif
 #endif
 EOF
- && bash -lc 'f=/opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh; \
-              grep -q "hip_shfl_fix.h" "$f" || sed -i '\''1i #include "hip_shfl_fix.h"'\'' "$f"' \
+ && f=/opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh; \
+    grep -q 'hip_shfl_fix.h' "$f" || sed -i '1i #include "hip_shfl_fix.h"' "$f" \
  && cmake -S . -B build \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \
@@ -78,6 +81,7 @@ EOF
       -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm" \
  && cmake --build build --config Release -- -j"$(nproc)" \
  && cmake --install build --config Release
+
 
 # libs
 RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
