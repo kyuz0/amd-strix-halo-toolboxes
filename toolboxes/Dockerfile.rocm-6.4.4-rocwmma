@@ -60,7 +60,7 @@ RUN set -euo pipefail \
       -DHIP_PATH=/opt/rocm \
       -DHIP_PLATFORM=amd \
       -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm -include /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h -Wno-macro-redefined" \
- && cmake --build build --config Release -- -j\"$(nproc)\" \
+ && cmake --build build --config Release -- -j$(nproc) \
  && cmake --install build --config Release
 
 
