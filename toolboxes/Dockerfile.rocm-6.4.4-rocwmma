@@ -49,11 +49,9 @@ RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.c
 RUN git clean -xdf \
  && git pull \
  && git submodule update --recursive \
- && rm -f /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh.tmp \
  && cat > /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h <<'EOF'
 #ifndef HIP_SHFL_FIX_H
 #define HIP_SHFL_FIX_H
-// Keep vendor shims if present, add only what’s missing.
 #ifdef __HIP_PLATFORM_AMD__
   #ifndef __shfl_sync
     #define __shfl_sync(mask,var,srcLane,width) __shfl((var),(srcLane),(width))
@@ -67,8 +65,8 @@ RUN git clean -xdf \
 #endif
 #endif
 EOF
- && f=/opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh; \
-    grep -q 'hip_shfl_fix.h' "$f" || sed -i '1i #include "hip_shfl_fix.h"' "$f" \
+ && f=/opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh \
+ && grep -q 'hip_shfl_fix.h' "$f" || sed -i '1i #include "hip_shfl_fix.h"' "$f" \
  && cmake -S . -B build \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \
