@@ -1,0 +1,158 @@
+# build:
+# - podman build -t therock-serve:7.0rc      -f Containerfile.therock-llamacpp --build-arg ROCM_RC_VER=7.0.0rc
+# - podman build -t therock-serve:7.9rc      -f Containerfile.therock-llamacpp --build-arg ROCM_RC_VER=7.9.0rc
+# - podman build -t therock-serve:7.0rc-wmma -f Containerfile.therock-llamacpp --build-arg ROCM_RC_VER=7.0.0rc --build-arg ROCMWMMA=ON
+# - podman build -t therock-serve:7.9rc-wmma -f Containerfile.therock-llamacpp --build-arg ROCM_RC_VER=7.9.0rc --build-arg ROCMWMMA=ON
+# - podman build -t therock-serve:7.10a-wmma -f Containerfile.therock-llamacpp --build-arg ROCM_RC_VER=7.10.0a --build-arg ROCMWMMA=ON
+#  [--build-arg ROCMWMMA=ON]
+#  [--build-arg FA_ALL_QUANTS=ON]
+#  [--build-arg ROCBLAS_USE_HIPBLASLT=0]
+#  [--build-arg FORCE_MMQ=true]
+# run:
+# podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM/openai_gpt-oss-120b/MXFP4.gguf:/models/default.gguf therock-serve:7.9rc  --ctx-size 0 --batch-size 8192
+
+#ARG ROCM_RC_VER=6.4.0rc
+#ARG ROCM_RC_VER=6.5.0rc
+#ARG ROCM_RC_VER=7.0.0rc
+ARG ROCM_RC_VER=7.9.0rc
+#ARG ROCM_RC_VER=7.10.0a
+
+# build OPT:
+ARG ROCMWMMA=OFF
+ARG FA_ALL_QUANTS=OFF
+ARG ROCBLAS_USE_HIPBLASLT=1
+ARG GFX_ARCH=gfx1151
+ARG FORCE_MMQ=false
+
+FROM registry.fedoraproject.org/fedora:43 AS builder
+
+RUN dnf -y --nodocs --setopt=install_weak_deps=False \
+    install \
+      curl tar xz git-lfs patch \
+      make gcc-c++ cmake libcurl-devel ninja-build radeontop libatomic \
+      diff tree \
+ && dnf clean all && rm -rf /var/cache/dnf/*
+
+# find & fetch the latest Linux ${ROCM_RC_VER} tarball (gfx1151)
+WORKDIR /tmp
+ARG ROCM_RC_VER
+
+# build OPT:
+ARG ROCMWMMA
+ARG FA_ALL_QUANTS
+ARG GFX_ARCH
+ARG FORCE_MMQ
+
+RUN set -euo pipefail; \
+    BASE="https://therock-nightly-tarball.s3.amazonaws.com"; \
+    PREFIX="therock-dist-linux-${GFX_ARCH}-${ROCM_RC_VER}"; \
+    KEY="$(curl -s "${BASE}?list-type=2&prefix=${PREFIX}" \
+      | grep -o "therock-dist-linux-${GFX_ARCH}-${ROCM_RC_VER}[0-9]\{8\}\.tar\.gz" \
+      | sort | tail -n1)"; \
+    echo "Latest tarball: ${KEY}"; \
+    curl -L --fail -o therock.tar.gz "${BASE}/${KEY}"
+
+RUN mkdir -p /opt/rocm \
+ && tar xzf therock.tar.gz -C /opt/rocm --strip-components=1
+
+ENV ROCM_PATH=/opt/rocm \
+    HIP_PLATFORM=amd \
+    HIP_PATH=/opt/rocm \
+    HIP_CLANG_PATH=/opt/rocm/llvm/bin \
+    HIP_INCLUDE_PATH=/opt/rocm/include \
+    HIP_LIB_PATH=/opt/rocm/lib \
+    HIP_DEVICE_LIB_PATH=/opt/rocm/lib/llvm/amdgcn/bitcode \
+    PATH=/opt/rocm/bin:/opt/rocm/llvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64:/opt/rocm/llvm/lib \
+    LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+    CPATH=/opt/rocm/include \
+    PKG_CONFIG_PATH=/opt/rocm/lib/pkgconfig
+
+# add rocWMMA (latest always for now)
+WORKDIR /tmp/rocWMMA
+RUN git clone https://github.com/ROCm/rocWMMA . \
+ && CC=$ROCM_PATH/llvm/bin/amdclang CXX=$ROCM_PATH/llvm/bin/amdclang++ cmake -B build -S . -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$ROCM_PATH -DROCWMMA_BUILD_TESTS=OFF -DROCWMMA_BUILD_SAMPLES=OFF -DGPU_TARGETS="${GFX_ARCH}" \
+ && cmake --build build -j$(nproc) \
+ && sudo cmake --install build
+
+# build llama.cpp
+WORKDIR /tmp/llama.cpp
+RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
+ && git clean -xdf \
+ && git submodule update --recursive
+
+#  - patch  (@ faire avec un vrai patch?)
+COPY ./apply-rocwmma-fix2.sh /tmp/apply-rocwmma-fix.sh
+RUN chmod +x /tmp/apply-rocwmma-fix.sh && /tmp/apply-rocwmma-fix.sh /tmp/llama.cpp
+
+RUN cmake -S . -B build \
+          -DCMAKE_INSTALL_PREFIX="/opt/llama.cpp" \
+          -DGGML_HIP=ON \
+          -DAMDGPU_TARGETS=${GFX_ARCH} \
+          -DGGML_HIP_ROCWMMA_FATTN=${ROCMWMMA} \
+          -DGGML_CUDA_FA_ALL_QUANTS=${FA_ALL_QUANTS} \
+          -DGGML_CUDA_FORCE_MMQ=${FORCE_MMQ} \
+          -DCMAKE_BUILD_TYPE=Release \
+ && cmake --build build --config Release -- -j$(nproc) \
+ && cmake --install build --config Release
+
+# target minimal? llama-server llama-cli llama-bench 
+
+# keep bin; drop headers/docs/static libs; drop source tree
+RUN find /opt/rocm -type f -name '*.a' -delete \
+ && rm -rf /opt/rocm/include /opt/rocm/share \
+           /opt/rocm/llvm/include /opt/rocm/llvm/share \
+ && tree /opt/llama.cpp
+
+# runtime
+#  ->  select: toolbox or minimal.
+FROM registry.fedoraproject.org/fedora-minimal:43
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
+      bash ca-certificates libatomic libstdc++ libgcc radeontop \
+  && microdnf clean all && rm -rf /var/cache/dnf/*
+
+#FROM registry.fedoraproject.org/fedora-toolbox:43
+#RUN dnf -y --nodocs --setopt=install_weak_deps=0 install \
+#      libatomic radeontop \
+#  && dnf clean all && rm -rf /var/cache/dnf/*
+
+#COPY gguf-vram-estimator.py /usr/local/bin/
+#RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+ARG ROCBLAS_USE_HIPBLASLT
+
+COPY --from=builder /opt/rocm      /opt/rocm
+COPY --from=builder /opt/llama.cpp /opt/llama.cpp
+
+ENV ROCM_PATH=/opt/rocm \
+    HIP_PLATFORM=amd \
+    HIP_PATH=/opt/rocm \
+    HIP_CLANG_PATH=/opt/rocm/llvm/bin \
+    HIP_INCLUDE_PATH=/opt/rocm/include \
+    HIP_LIB_PATH=/opt/rocm/lib \
+    HIP_DEVICE_LIB_PATH=/opt/rocm/lib/llvm/amdgcn/bitcode \
+    PATH=/opt/rocm/bin:/opt/rocm/llvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64:/opt/rocm/llvm/lib \
+    LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+    CPATH=/opt/rocm/include \
+    PKG_CONFIG_PATH=/opt/rocm/lib/pkgconfig
+
+# make /usr/local libs visible without touching env
+RUN echo "/opt/llama.cpp/lib64" >> /etc/ld.so.conf.d/local.conf \
+ && ldconfig
+
+# llama-server config: 
+# => https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
+
+# default run option:
+ENV GGML_CUDA_ENABLE_UNIFIED_MEMORY=ON \
+    ROCBLAS_USE_HIPBLASLT=${ROCBLAS_USE_HIPBLASLT} \
+    LLAMA_ARG_UBATCH=2048 \
+    LLAMA_ARG_FLASH_ATTN=1\
+    LLAMA_ARG_NO_MMAP=1 \
+    LLAMA_ARG_N_GPU_LAYERS=999 \
+    LLAMA_ARG_MODEL=/models/default.gguf
+
+# default run llama-server
+ENTRYPOINT ["/opt/llama.cpp/bin/llama-server"]
+CMD ["--no-warmup"]

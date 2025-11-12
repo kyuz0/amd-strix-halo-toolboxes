@@ -1,0 +1,157 @@
+# build:
+# + podman build -t rocm-serve:6.4.4 -f Containerfile.rocm-llamacpp --build-arg ROCM_VER=6.4.4 --build-arg ROCBLAS_USE_HIPBLASLT=0
+# + podman build -t rocm-serve:7.0.1 -f Containerfile.rocm-llamacpp --build-arg ROCM_VER=7.0.1
+# + podman build -t rocm-serve:7.0.2 -f Containerfile.rocm-llamacpp --build-arg ROCM_VER=7.0.2
+# + podman build -t rocm-serve:6.4.4-wmma -f Containerfile.rocm-llamacpp --build-arg ROCM_VER=6.4.4 --build-arg ROCMWMMA=ON
+# + podman build -t rocm-serve:7.0.1-wmma -f Containerfile.rocm-llamacpp --build-arg ROCM_VER=7.0.1 --build-arg ROCMWMMA=ON
+# + podman build -t rocm-serve:7.0.2-wmma -f Containerfile.rocm-llamacpp --build-arg ROCM_VER=7.0.2 --build-arg ROCMWMMA=ON
+#  [--build-arg ROCMWMMA=ON]
+#  [--build-arg FA_ALL_QUANTS=ON]
+# run:
+# podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM/openai_gpt-oss-120b/MXFP4.gguf:/models/default.gguf rocm-serve:6.4.4 --ctx-size 0 --batch-size 8192
+# podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models rocm-serve:6.4.4 --ctx-size 0 --batch-size 8192 -m /models/openai_gpt-oss-120b/MXFP4.gguf
+# 
+
+# version from el9
+#ARG ROCM_VER=6.4.4
+#ARG ROCM_VER=7.0.1
+ARG ROCM_VER=7.0.2
+
+# build OPT:
+ARG ROCMWMMA=OFF
+ARG FA_ALL_QUANTS=OFF
+ARG ROCBLAS_USE_HIPBLASLT=1
+ARG GFX_ARCH=gfx1151
+
+FROM registry.fedoraproject.org/fedora:43 AS builder
+
+RUN dnf -y upgrade --refresh
+
+ARG ROCM_VER
+ARG ROCMWMMA
+ARG FA_ALL_QUANTS
+ARG ROCBLAS_USE_HIPBLASLT
+ARG GFX_ARCH
+
+# rocm repo
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[ROCm-${ROCM_VER}]
+name=ROCm-${ROCM_VER}
+baseurl=https://repo.radeon.com/rocm/el9/${ROCM_VER}/main
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
+REPO
+EOF
+
+RUN dnf -y --nodocs --setopt=install_weak_deps=False \
+    install \
+      make gcc-c++ cmake libcurl-devel ninja-build tar xz git-lfs patch radeontop \
+      rocm-llvm${ROCM_VER} rocm-device-libs${ROCM_VER} rocm-cmake${ROCM_VER} rocm-openmp-sdk${ROCM_VER} \
+      hipcc${ROCM_VER} hip-runtime-amd${ROCM_VER} hip-devel${ROCM_VER} \
+      rocblas${ROCM_VER} rocblas-devel${ROCM_VER} \
+      hipblas${ROCM_VER} hipblas-devel${ROCM_VER} \
+      rocminfo${ROCM_VER} \
+      diff tree \
+ && dnf clean all && rm -rf /var/cache/dnf/*
+
+# find & fetch the latest Linux ${ROCM_RC_VER} tarball (gfx1151)
+WORKDIR /tmp
+
+ENV ROCM_PATH=/opt/rocm \
+    HIP_PATH=/opt/rocm \
+    HIP_PLATFORM=amd \
+    HIP_INCLUDE_PATH=/opt/rocm/include \
+    HIP_LIB_PATH=/opt/rocm/lib \
+    HIP_CLANG_PATH=/opt/rocm/llvm/bin \
+    HIP_DEVICE_LIB_PATH=/opt/rocm/amdgcn/bitcode \
+    PATH=/opt/rocm/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+    LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+    CPATH=/opt/rocm/include \
+    PKG_CONFIG_PATH=/opt/rocm/lib/pkgconfig
+
+# add rocWMMA (latest always for now)
+WORKDIR /tmp/rocWMMA
+RUN git clone https://github.com/ROCm/rocWMMA . \
+ && CC=$ROCM_PATH/llvm/bin/amdclang CXX=$ROCM_PATH/llvm/bin/amdclang++ cmake -B build -S . -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$ROCM_PATH -DROCWMMA_BUILD_TESTS=OFF -DROCWMMA_BUILD_SAMPLES=OFF -DGPU_TARGETS="${GFX_ARCH}" \
+ && cmake --build build -j$(nproc) \
+ && sudo cmake --install build
+
+# build llama.cpp
+WORKDIR /tmp/llama.cpp
+RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
+ && git clean -xdf \
+ && git submodule update --recursive
+
+#  - patch  (@ faire avec un vrai patch?)
+COPY ./apply-rocwmma-fix2.sh /tmp/apply-rocwmma-fix.sh
+#COPY ./hip.h /tmp/llama.cpp/ggml/src/ggml-cuda/vendors/hip.h
+RUN chmod +x /tmp/apply-rocwmma-fix.sh && /tmp/apply-rocwmma-fix.sh /tmp/llama.cpp
+
+# target minimal? llama-server llama-cli llama-bench / all
+RUN cmake -S . -B build \
+          -DCMAKE_INSTALL_PREFIX="/opt/llama.cpp" \
+          -DGGML_HIP=ON \
+          -DAMDGPU_TARGETS=${GFX_ARCH} \
+          -DGGML_HIP_ROCWMMA_FATTN=${ROCMWMMA} \
+          -DGGML_CUDA_FA_ALL_QUANTS=${FA_ALL_QUANTS} \
+          -DCMAKE_BUILD_TYPE=Release \
+ && cmake --build build --config Release -- -j$(nproc) \
+ && cmake --install build --config Release
+
+# runtime
+#  ->  select: toolbox or minimal.
+FROM registry.fedoraproject.org/fedora-minimal:43
+
+ARG ROCM_VER
+ARG ROCBLAS_USE_HIPBLASLT
+
+# rocm repo
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[ROCm-${ROCM_VER}]
+name=ROCm-${ROCM_VER}
+baseurl=https://repo.radeon.com/rocm/el9/${ROCM_VER}/main
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
+REPO
+EOF
+
+# elfutils-libelf
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
+      bash ca-certificates libatomic libstdc++ libgomp libgcc \
+      elfutils-libelf \
+      hip-runtime-amd rocblas hipblas \
+  && microdnf clean all && rm -rf /var/cache/dnf/*
+
+COPY --from=builder /opt/llama.cpp /opt/llama.cpp
+
+# make /usr/local libs visible without touching env
+RUN echo "/opt/llama.cpp/lib64" >> /etc/ld.so.conf.d/local.conf \
+ && ldconfig
+
+# llama-server config: 
+# => https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
+
+# default run option:
+ENV GGML_CUDA_ENABLE_UNIFIED_MEMORY=ON \
+    ROCBLAS_USE_HIPBLASLT=${ROCBLAS_USE_HIPBLASLT} \
+    LLAMA_ARG_UBATCH=2048 \
+    LLAMA_ARG_FLASH_ATTN=1\
+    LLAMA_ARG_NO_MMAP=1 \
+    LLAMA_ARG_N_GPU_LAYERS=999 \
+    LLAMA_ARG_MODEL=/models/default.gguf
+
+#  TODO: HIPBLASLt tuning? 
+#  - https://rocm.docs.amd.com/projects/hipBLASLt/en/latest/how-to/how-to-use-hipblaslt-offline-tuning.html
+#  => HIPBLASLT_TUNING_OVERRIDE_FILE=tuning.txt
+# TODO: get weight model and create tuning for this sizes and N[1..ubatch]
+
+# default run llama-server
+ENTRYPOINT ["/opt/llama.cpp/bin/llama-server"]
+CMD ["--no-warmup"]
