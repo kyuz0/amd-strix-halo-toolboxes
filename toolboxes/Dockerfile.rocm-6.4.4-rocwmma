@@ -49,7 +49,7 @@ RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.c
 RUN git clean -xdf \
  && git pull \
  && git submodule update --recursive \
- && bash -lc 'f=/opt/llama.cpp/ggml/src/ggml-cuda/mmid.cu; \
+ && bash -lc 'f=/opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh; \
               grep -q "vendors/hip.h" "$f" || sed -i '\''1i #include "vendors/hip.h"'\'' "$f"' \
  && cmake -S . -B build \
       -DGGML_HIP=ON \
@@ -63,6 +63,7 @@ RUN git clean -xdf \
       -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm" \
  && cmake --build build --config Release -- -j"$(nproc)" \
  && cmake --install build --config Release
+
 
 
 # libs
