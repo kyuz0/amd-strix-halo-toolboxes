@@ -46,7 +46,8 @@ COPY ./apply-rocwmma-fix.sh /opt/apply-rocwmma-fix.sh
 RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.cpp
 
 # build
-RUN git clean -xdf \
+RUN set -euo pipefail \
+ && git clean -xdf \
  && git pull \
  && git submodule update --recursive \
  && cat > /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h <<'EOF'
@@ -65,8 +66,8 @@ RUN git clean -xdf \
 #endif
 #endif
 EOF
- && f=/opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh \
- && grep -q 'hip_shfl_fix.h' "$f" || sed -i '1i #include "hip_shfl_fix.h"' "$f" \
+ # remove any old inline hack you had in mma.cuh (safe if absent)
+ && sed -i '/HIP_HAS_SHFL_SYNC_FUNCS/,+20d' /opt/llama.cpp/ggml/src/ggml-cuda/mma.cuh || true \
  && cmake -S . -B build \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \
@@ -76,7 +77,7 @@ EOF
       -DROCM_PATH=/opt/rocm \
       -DHIP_PATH=/opt/rocm \
       -DHIP_PLATFORM=amd \
-      -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm" \
+      -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm -include /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h -Wno-macro-redefined" \
  && cmake --build build --config Release -- -j"$(nproc)" \
  && cmake --install build --config Release
 
