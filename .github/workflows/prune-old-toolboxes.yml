@@ -44,7 +44,7 @@ jobs:
         run: |
           IN='${{ github.event.inputs.backends }}'
           if [[ "$IN" == "all" || -z "$IN" ]]; then
-            JSON='["rocm-6.4.2","rocm-6.4.2-rocwmma","rocm-6.4.3","rocm-6.4.3-rocwmma","rocm-6.4.4-rocwmma","rocm-7beta","rocm-7alpha","rocm-7alpha-rocwmma","rocm-7rc","rocm-7rc-rocwmma","rocm-7rc-rocwmma-fa_all_quants","vulkan-amdvlk","vulkan-radv"]'
+            JSON='["rocm-6.4.2","rocm-6.4.2-rocwmma","rocm-6.4.3","rocm-6.4.3-rocwmma","rocm-6.4.4-rocwmma","rocm-7beta","rocm-7alpha","rocm-7alpha-rocwmma","rocm-7alpha-rocwmma-improved","rocm-7rc","rocm-7rc-rocwmma","rocm-7rc-rocwmma-fa_all_quants","vulkan-amdvlk","vulkan-radv"]'
           else
             IN_CLEAN=$(echo "$IN" | tr -d '[:space:]')
             JSON='["'${IN_CLEAN//,/\",\"}'"]'
