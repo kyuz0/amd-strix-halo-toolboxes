@@ -28,6 +28,11 @@ echo
 declare -A CMDS=(
   [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
   [rocm6_4_4-rocwmma]="toolbox run -c llama-rocm-6.4.4-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm7.1]="toolbox run -c llama-rocm-7.1 -- /usr/local/bin/llama-bench"
+  [rocm7.1-rocwmma]="toolbox run -c llama-rocm-7.1-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm-7alpha-rocwmma-improved]="toolbox run -c llama-rocm-7alpha-rocwmma-improved -- /usr/local/bin/llama-bench"
+  [rocm-7alpha]="toolbox run -c llama-rocm-7alpha -- /usr/local/bin/llama-bench"
+  [rocm-7alpha-rocwmma]="toolbox run -c llama-rocm-7alpha-rocwmma -- /usr/local/bin/llama-bench"  
   [rocm7_rc]="toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench"
   [rocm7_rc-rocwmma]="toolbox run -c llama-rocm-7rc-rocwmma -- /usr/local/bin/llama-bench"
   [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
@@ -41,7 +46,7 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
     CMD="${CMDS[$ENV]}"
 
     # For ROCm 6.4.4 and 7 envs, run default + HIPBLASLT=0 variants; others: default only
-    if [[ "$ENV" == rocm7_* || "$ENV" == rocm6_4_* ]]; then
+    if [[ "$ENV" == rocm7* || "$ENV" == rocm6_4_* ]]; then
       HBLT_MODES=( default off )
     else
       HBLT_MODES=( default )
@@ -65,6 +70,13 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
           EXTRA_ARGS=( -fa 1 )
         fi
 
+        # tune ubatch-size for backend
+        if [[ "$ENV" == *vulkan* ]]; then
+          EXTRA_ARGS+=( -ub 512 )
+        else
+          EXTRA_ARGS+=( -ub 2048 )
+        fi
+
         OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}.log"
 
         # skip if we already have a non-empty log
@@ -74,7 +86,7 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
         fi
 
         # build command array
-        FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" )
+        FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" -d 512,32768 -r 1 )
 
         printf "\n▶ [%s] %s%s\n" "$ENV" "$MODEL_NAME" "${SUFFIX:+ $SUFFIX}"
         printf "  → log: %s\n" "$OUT"
