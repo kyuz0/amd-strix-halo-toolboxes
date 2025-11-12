@@ -6,7 +6,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
        radeontop git vim patch curl ninja-build tar xz aria2c \
     && dnf clean all && rm -rf /var/cache/dnf/*
 
-# find & fetch the latest Linux 7.x.x rc tarball (gfx1151)
+# find & fetch the latest Linux 7.x.x tarball (gfx1151)
 WORKDIR /tmp
 ARG ROCM_MAJOR_VER=7
 ARG GFX=gfx1151
@@ -14,8 +14,9 @@ RUN set -euo pipefail; \
     BASE="https://therock-nightly-tarball.s3.amazonaws.com"; \
     PREFIX="therock-dist-linux-${GFX}-${ROCM_MAJOR_VER}"; \
     KEY="$(curl -s "${BASE}?list-type=2&prefix=${PREFIX}" \
-      | grep -o "therock-dist-linux-${GFX}-${ROCM_MAJOR_VER}\.[0-9]\+\.[0-9]\+rc[0-9]\{8\}\.tar\.gz" \
-      | sort | tail -n1)"; \
+      | tr '<' '\n' \
+      | grep -o "therock-dist-linux-${GFX}-${ROCM_MAJOR_VER}\..*\.tar\.gz" \
+      | sort -V | tail -n1)"; \
     echo "Latest tarball: ${KEY}"; \
     aria2c -x 16 -s 16 -j 16 --file-allocation=none "${BASE}/${KEY}" -o therock.tar.gz
 RUN mkdir -p /opt/rocm-7.0 \
@@ -52,30 +53,24 @@ RUN printf '%s\n' \
   && chmod +x /etc/profile.d/rocm.sh \
   && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
 
-WORKDIR /opt
-COPY ./build-rocwmma.sh .
-RUN chmod +x build-rocwmma.sh && ./build-rocwmma.sh
-
 WORKDIR /opt/llama.cpp
 RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
  && git clean -xdf \
- && git submodule update --recursive \
- && git config user.email "builder@localhost" \
- && git config user.name "Container Builder" \
- && git fetch origin pull/15405/head:pr-15405 \
- && git merge --no-edit pr-15405
-
-COPY ./apply-rocwmma-fix.sh /opt/apply-rocwmma-fix.sh
-RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.cpp
+ && git submodule update --recursive
 
 RUN cmake -S . -B build \
           -DGGML_HIP=ON \
           -DAMDGPU_TARGETS=gfx1151 \
           -DCMAKE_BUILD_TYPE=Release \
-          -DGGML_RPC=ON \
-          -DGGML_HIP_ROCWMMA_FATTN=ON \
+          -DLLAMA_HIP_UMA=ON \
  && cmake --build build --config Release -- -j$(nproc) \
  && cmake --install build --config Release
+
+# keep bin; drop headers/docs/static libs; drop source tree
+RUN find /opt/rocm-7.0 -type f -name '*.a' -delete \
+ && rm -rf /opt/rocm-7.0/include /opt/rocm-7.0/share \
+           /opt/rocm-7.0/llvm/include /opt/rocm-7.0/llvm/share \
+ && rm -rf /opt/llama.cpp
 
 # runtime
 FROM registry.fedoraproject.org/fedora-minimal:rawhide
@@ -86,7 +81,6 @@ RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
 
 COPY --from=builder /opt/rocm-7.0 /opt/rocm-7.0
 COPY --from=builder /usr/local/ /usr/local/
-COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
 
 COPY gguf-vram-estimator.py /usr/local/bin/
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py

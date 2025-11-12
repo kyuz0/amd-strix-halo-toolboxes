@@ -9,8 +9,13 @@ TOOLBOXES["llama-vulkan-amdvlk"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulka
 TOOLBOXES["llama-vulkan-radv"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-6.4.4"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-6.4.4-rocwmma"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4-rocwmma --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7.1"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7.1-rocwmma"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1-rocwmma --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-7rc"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7rc --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-7rc-rocwmma"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7rc-rocwmma --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7alpha"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7alpha --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7alpha-rocwmma"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7alpha-rocwmma --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7alpha-rocwmma-improved"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7alpha-rocwmma-improved --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 
 function usage() {
   echo "Usage: $0 [all|toolbox-name1 toolbox-name2 ...]"

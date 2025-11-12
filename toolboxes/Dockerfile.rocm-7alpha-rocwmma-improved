@@ -6,7 +6,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
        radeontop git vim patch curl ninja-build tar xz aria2c \
     && dnf clean all && rm -rf /var/cache/dnf/*
 
-# find & fetch the latest Linux 7.x.x rc tarball (gfx1151)
+# find & fetch the latest Linux 7.x.x tarball (gfx1151)
 WORKDIR /tmp
 ARG ROCM_MAJOR_VER=7
 ARG GFX=gfx1151
@@ -14,8 +14,9 @@ RUN set -euo pipefail; \
     BASE="https://therock-nightly-tarball.s3.amazonaws.com"; \
     PREFIX="therock-dist-linux-${GFX}-${ROCM_MAJOR_VER}"; \
     KEY="$(curl -s "${BASE}?list-type=2&prefix=${PREFIX}" \
-      | grep -o "therock-dist-linux-${GFX}-${ROCM_MAJOR_VER}\.[0-9]\+\.[0-9]\+rc[0-9]\{8\}\.tar\.gz" \
-      | sort | tail -n1)"; \
+      | tr '<' '\n' \
+      | grep -o "therock-dist-linux-${GFX}-${ROCM_MAJOR_VER}\..*\.tar\.gz" \
+      | sort -V | tail -n1)"; \
     echo "Latest tarball: ${KEY}"; \
     aria2c -x 16 -s 16 -j 16 --file-allocation=none "${BASE}/${KEY}" -o therock.tar.gz
 RUN mkdir -p /opt/rocm-7.0 \
@@ -57,14 +58,9 @@ COPY ./build-rocwmma.sh .
 RUN chmod +x build-rocwmma.sh && ./build-rocwmma.sh
 
 WORKDIR /opt/llama.cpp
-RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
+RUN git clone --recursive https://github.com/hjc4869/llama.cpp.git . \
  && git clean -xdf \
- && git submodule update --recursive \
- && git config user.email "builder@localhost" \
- && git config user.name "Container Builder" \
- && git fetch origin pull/15405/head:pr-15405 \
- && git merge --no-edit pr-15405
-
+ && git submodule update --recursive
 COPY ./apply-rocwmma-fix.sh /opt/apply-rocwmma-fix.sh
 RUN chmod +x /opt/apply-rocwmma-fix.sh && /opt/apply-rocwmma-fix.sh /opt/llama.cpp
 
