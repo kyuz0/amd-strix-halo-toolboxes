@@ -2,9 +2,9 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
-| llama4 17Bx16E (Scout) Q6_K    |  82.35 GiB |   107.77 B | ROCm       |  99 |  1 |    0 |           pp512 |        288.92 ± 3.51 |
-| llama4 17Bx16E (Scout) Q6_K    |  82.35 GiB |   107.77 B | ROCm       |  99 |  1 |    0 |           tg128 |         14.81 ± 0.00 |
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| llama4 17Bx16E (Scout) Q6_K    |  82.35 GiB |   107.77 B | ROCm       |  99 |     2048 |  1 |    0 |           pp512 |        292.59 ± 1.05 |
+| llama4 17Bx16E (Scout) Q6_K    |  82.35 GiB |   107.77 B | ROCm       |  99 |     2048 |  1 |    0 |           tg128 |         15.16 ± 0.01 |
 
-build: a3cb0474 (6735)
+build: bca95ca51 (7036)

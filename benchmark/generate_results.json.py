@@ -34,26 +34,45 @@ NAME_B_RE = re.compile(r"(\d+(?:\.\d+)?)B")
 # Shard suffix in filenames
 SHARD_RE = re.compile(r"-000\d+-of-000\d+", re.IGNORECASE)
 
+# Long-context suffix in filenames (e.g., __longctx32768)
+LONGCTX_RE = re.compile(r"longctx(\d+)", re.IGNORECASE)
+
 # --- Helpers ---------------------------------------------------------------
 
 def clean_model_name(raw):
     base = SHARD_RE.sub("", raw)
     return base
 
-def parse_env_and_fa(basename):
-    # pattern: <model>__<env>[__fa1][__hblt0]
+def parse_env_flags(basename):
+    """
+    pattern: <model>__<env>[__fa1][__hblt0][__longctx32768]
+    Returns (env, fa, context_tag, context_tokens)
+    """
     parts = basename.split("__")
     if len(parts) < 2:
-        return None, False
+        return None, False, "default", None
 
     env = parts[1]
-    # scan any extra suffix segments
-    suffixes = {p.lower() for p in parts[2:]}
-    fa = ("fa1" in suffixes)
-    if "hblt0" in suffixes:
-        env = f"{env}-hblt0"
+    fa = False
+    context_tag = "default"
+    context_tokens = None
 
-    return env, fa
+    for raw_suffix in parts[2:]:
+        suffix = raw_suffix.lower()
+        if suffix == "fa1":
+            fa = True
+        elif suffix == "hblt0":
+            env = f"{env}-hblt0"
+        elif suffix.startswith("longctx"):
+            context_tag = suffix
+            m = LONGCTX_RE.search(suffix)
+            if m:
+                try:
+                    context_tokens = int(m.group(1))
+                except ValueError:
+                    context_tokens = None
+
+    return env, fa, context_tag, context_tokens
 
 def env_base_and_variant(env):
     # e.g. "rocm6_4_2-rocwmma" -> ("rocm6_4_2", "rocwmma")
@@ -135,8 +154,9 @@ for path in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.log"))):
         continue
 
     model_raw, _rest = base.split("__", 1)
-    env, fa_from_name = parse_env_and_fa(base)
-    envs.add(env)
+    env, fa_from_name, context_tag, context_tokens = parse_env_flags(base)
+    if env:
+        envs.add(env)
 
     model_clean = clean_model_name(model_raw)
 
@@ -215,6 +235,8 @@ for path in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.log"))):
             "env_base": env_base,
             "env_variant": env_variant,         # e.g. "rocwmma"
             "fa": bool(fa_enabled),
+            "context": context_tag or "default",
+            "context_tokens": context_tokens,
             "test": test,                       # "pp512" | "tg128" | None (if error)
             "tps_mean": tps_mean,
             "tps_std": tps_std,
