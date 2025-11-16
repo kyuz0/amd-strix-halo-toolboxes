@@ -21,11 +21,6 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 
 # build
 RUN git clean -xdf \
- && git config user.email "builder@localhost" \
- && git config user.name "Container Builder" \
- && git pull \
- && git fetch origin pull/15405/head:pr-15405 \
- && git merge --no-edit pr-15405 \
  && git submodule update --recursive \
  && cmake -S . -B build -G Ninja \
       -DGGML_VULKAN=ON \
