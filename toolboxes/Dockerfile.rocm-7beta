@@ -37,13 +37,18 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 
 # build
 RUN git clean -xdf \
+ && git config user.email "builder@localhost" \
+ && git config user.name "Container Builder" \
  && git pull \
+ && git fetch origin pull/15405/head:pr-15405 \
+ && git merge --no-edit pr-15405 \
  && git submodule update --recursive \
  && HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
     cmake -S . -B build \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \
       -DCMAKE_BUILD_TYPE=Release \
+      -DGGML_RPC=ON \
       -DLLAMA_HIP_UMA=ON \
  && cmake --build build --config Release -- -j$(nproc) \
  && cmake --install build --config Release

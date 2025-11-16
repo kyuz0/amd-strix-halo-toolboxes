@@ -41,6 +41,14 @@ RUN chmod +x build-rocwmma.sh && ./build-rocwmma.sh
 WORKDIR /opt/llama.cpp
 RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 
+RUN git clean -xdf \
+ && git config user.email "builder@localhost" \
+ && git config user.name "Container Builder" \
+ && git pull \
+ && git fetch origin pull/15405/head:pr-15405 \
+ && git merge --no-edit pr-15405 \
+ && git submodule update --recursive
+
 # overwrite upstream header with our local fixed version
 COPY ggml/src/ggml-cuda/hip_shfl_fix.h /opt/llama.cpp/ggml/src/ggml-cuda/hip_shfl_fix.h
 
@@ -54,6 +62,7 @@ RUN set -euo pipefail \
       -DGGML_HIP=ON \
       -DAMDGPU_TARGETS=gfx1151 \
       -DCMAKE_BUILD_TYPE=Release \
+      -DGGML_RPC=ON \
       -DLLAMA_HIP_UMA=ON \
       -DGGML_HIP_ROCWMMA_FATTN=ON \
       -DROCM_PATH=/opt/rocm \
@@ -120,4 +129,3 @@ RUN printf '%s\n' \
 
 # shell
 CMD ["/bin/bash"]
-
