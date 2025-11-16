@@ -1,5 +1,5 @@
 # build stage
-FROM registry.fedoraproject.org/fedora:rawhide AS builder
+FROM registry.fedoraproject.org/fedora:43 AS builder
 
 # rocm 6.4.4 repo
 RUN <<'EOF'
@@ -78,7 +78,7 @@ RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
 
 # runtime stage
-FROM registry.fedoraproject.org/fedora-minimal:rawhide
+FROM registry.fedoraproject.org/fedora-minimal:43
 
 # rocm 6.4.3 repo
 RUN <<'EOF'
