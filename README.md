@@ -2,16 +2,88 @@
 
 This project provides pre-built containers (“toolboxes”) for running LLMs on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs. Toolbx is the standard developer container system in Fedora (and now works on Ubuntu, openSUSE, Arch, etc).
 
+## Quick Answers (Read This First)
+
+Start here for the fastest reference commands. Detailed context lives in [Section 2](#2-quickest-usage-example).
+
+### How do I get a toolbox up and running?
+
+**Command — Create Vulkan (RADV) toolbox**
+
+```sh
+toolbox create llama-vulkan-radv \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv \
+  -- --device /dev/dri --group-add video --security-opt seccomp=unconfined
+```
+
+**Command — Create ROCm toolbox (6.4.4/7.1/7rc/7alpha)**
+
+```sh
+toolbox create llama-rocm-7.1-rocwmma \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1-rocwmma \
+  -- --device /dev/dri --device /dev/kfd \
+  --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
+```
+
+**Command — Enter the toolbox shell**
+
+```sh
+toolbox enter llama-vulkan-radv
+```
+
+**Command — List detected GPUs (inside the toolbox)**
+
+```sh
+llama-cli --list-devices
+```
+
+### How do I download weights for a model?
+
+**Command — Download a GGUF shard from Hugging Face**
+
+```bash
+HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF \
+  BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
+  --local-dir models/qwen3-coder-30B-A3B/
+```
+
+`HF_HUB_ENABLE_HF_TRANSFER=1` turns on the Rust-based accelerated downloader (`pip install hf-transfer`).
+
+### How do I run llama-server (and llama-cli) with a model?
+
+Flash attention and no-memory-map **must** be enabled or Strix Halo will crawl/crash. `llama-server` uses `-fa 1 --no-mmap`; `llama-cli` uses `-fa 1 --no-mmap`.
+
+**Command — Run llama-server with flash attention + no-mmap**
+
+```sh
+llama-server -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
+  -c 8192 -ngl 999 -fa 1 --no-mmap
+```
+
+**Command — Run llama-cli with the same essentials**
+
+```sh
+llama-cli --no-mmap -ngl 999 -fa 1 -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
+  -p "Write a Strix Halo toolkit haiku."
+```
+
+### How do I keep the toolboxes updated?
+
+**Command — Refresh every toolbox**
+
+```bash
+./refresh-toolboxes.sh all
+```
+
+**Command — Refresh specific toolboxes**
+
+```bash
+./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.1-rocwmma
+```
+
 ## Watch the YouTube Video
 
 [![Watch the YouTube Video](https://img.youtube.com/vi/wCBLMXgk3No/maxresdefault.jpg)](https://youtu.be/wCBLMXgk3No)  
-
-## Why Toolbx?
-
-* Reproducible: never pollute your host system
-* Seamless: shares your home and GPU devices, works like a native shell
-* Flexible: easy to switch between Vulkan (open/closed drivers) and ROCm
-
 
 ## 🚨 Updates — 2025-09-28
 
@@ -20,6 +92,7 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 
 ## Table of Contents
 
+- [Quick Answers (Read This First)](#quick-answers-read-this-first)
 1. [Llama.cpp Compiled for Every Backend](#1-llamacpp-compiled-for-every-backend)  
     1.1 [Supported Container Images](#11-supported-container-images)
 2. [Quickest Usage Example](#2-quickest-usage-example)  
@@ -48,20 +121,25 @@ This project uses [Llama.cpp](https://github.com/ggerganov/llama.cpp), a high-pe
 
 You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags.  
 
-| Container Tag        | Backend/Stack            | Purpose / Notes |
-| -------------------- | ------------------------ | --------------- |
-| `vulkan-amdvlk`      | Vulkan (AMDVLK)           | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
-| `vulkan-radv`        | Vulkan (Mesa RADV)        | Most stable and compatible. Recommended for most users and all models. |
-| `rocm-6.4.4`         | ROCm 6.4.4 (HIP) + hipBLASLt*          | Latest stable ROCm. Great for BF16 models. Occasional crashes possible. |
-| `rocm-6.4.4-rocwmma` | ROCm 6.4.4 (HIP) + ROCWMMA + hipBLASLt*  | ROCm with ROCWMMA enabled for improved flash attention on RDNA3+/CDNA. |
-| `rocm-7rc`           | ROCm 7.0 RC (HIP) + hipBLASLt*         | Release candidate for ROCm 7.0. |
-| `rocm-7rc-rocwmma`   | ROCm 7.0 RC (HIP) + ROCWMMA + hipBLASLt*       | Release candidate for ROCm 7.0, with hipBLASLt and ROCWMMA for improved flash attention on RDNA3+/CDNA |
+| Container Tag                  | Backend/Stack                          | Purpose / Notes |
+| ------------------------------ | -------------------------------------- | --------------- |
+| `vulkan-amdvlk`                | Vulkan (AMDVLK)                        | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
+| `vulkan-radv`                  | Vulkan (Mesa RADV)                     | Most stable and compatible. Recommended for most users and all models. |
+| `rocm-6.4.4`                   | ROCm 6.4.4 (HIP) + hipBLASLt*          | Latest 6.4 LTS build. Great for BF16 models. Occasional crashes possible. |
+| `rocm-6.4.4-rocwmma`           | ROCm 6.4.4 + ROCWMMA + hipBLASLt*      | 6.4.4 with ROCWMMA enabled for better flash attention on RDNA3+/CDNA. |
+| `rocm-7.1`                     | ROCm 7.1 GA (HIP) + hipBLASLt*         | Current GA release for ROCm 7.x; improved scheduler and hipBLASLt kernels. |
+| `rocm-7.1-rocwmma`             | ROCm 7.1 GA + ROCWMMA + hipBLASLt*     | 7.1 with ROCWMMA for maximum flash-attention throughput. |
+| `rocm-7rc`                     | ROCm 7.0 RC (HIP) + hipBLASLt*         | Release candidate for ROCm 7.0. Good for regression testing. |
+| `rocm-7rc-rocwmma`             | ROCm 7.0 RC + ROCWMMA + hipBLASLt*     | RC build with ROCWMMA—useful for early flash-attention validation. |
+| `rocm-7alpha`                  | ROCm 7 RC Alpha (“7rc-alpha”) + hipBLASLt* | Experimental ROCm 7 preview with bleeding-edge patches. |
+| `rocm-7alpha-rocwmma`          | ROCm 7 RC Alpha + ROCWMMA + hipBLASLt* | Same alpha stack with ROCWMMA tuned for flash attention. |
+| `rocm-7alpha-rocwmma-improved` | ROCm 7 RC Alpha + ROCWMMA (improved) + hipBLASLt* | Alpha stack plus extra ROCWMMA fixes; fastest but most experimental option. |
 
-\* All these toolboxes now export `ROCBLAS_USE_HIPBLASLT=1` as this currently results in better perfromance and stability in *MOST* cases.
+\* All these toolboxes now export `ROCBLAS_USE_HIPBLASLT=1` because it delivers better performance and stability in *most* cases.
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
-
-> *rocm-6.4.2*, *rocm-6.4.3* and *rocm-7beta* coontainers have been retired in favour of *rocm-6.4.4* and *rocm_7rc*.
+>
+> Legacy images `rocm-6.4.2` and `rocm-6.4.3` are still on Docker Hub for reproducibility but are intentionally excluded from the active list above. Prefer `rocm-6.4.4+` or any `rocm-7.x` tag unless you must bisect an old regression. (The `rocm-7beta` images share the same status.)
 
 ---
 
@@ -69,27 +147,28 @@ You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-st
 
 ### 2.1 Creating the toolboxes with GPU access
 
-To use Llama.cpp with hardware acceleration inside a toolbox container, you must expose the GPU devices from your host. The exact flags and devices depend on the backend:
+To use Llama.cpp with hardware acceleration inside a toolbox container, you must expose the right GPU device nodes from your host. The exact flags depend on the backend.
 
-* **For Vulkan (RADV/AMDVLK):** Only `/dev/dri` is required.
-  *Add the user to the video group for access to GPU devices.*
+#### Command — Create Vulkan (RADV/AMDVLK) toolbox
 
-  ```sh
-  toolbox create llama-vulkan-radv \
-    --image docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv \
-    -- --device /dev/dri --group-add video --security-opt seccomp=unconfined
-  ```
+```sh
+toolbox create llama-vulkan-radv \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv \
+  -- --device /dev/dri --group-add video --security-opt seccomp=unconfined
+```
 
-* **For ROCm:** You must expose both `/dev/dri` and `/dev/kfd`, and add the user to extra groups for compute access.
+*Only `/dev/dri` is required for Vulkan. Make sure your user is in the `video` group.*
 
-  ```sh
-  toolbox create llama-rocm-6.4.4-rocwmma \
-    --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4-rocwmma \
-    -- --device /dev/dri --device /dev/kfd \
-    --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
-  ```
+#### Command — Create ROCm toolbox (swap the tag for 6.4.4, 7.1, 7rc, 7alpha…)
 
-*Swap in the image/tag for the backend you want to use.*
+```sh
+toolbox create llama-rocm-7.1-rocwmma \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1-rocwmma \
+  -- --device /dev/dri --device /dev/kfd \
+  --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
+```
+
+*ROCm needs both `/dev/dri` and `/dev/kfd`, plus the `video`, `render`, and sometimes `sudo` groups for full compute access. Swap `rocm-7.1-rocwmma` for any other active ROCm tag (6.4.4, 7rc, 7alpha, etc.).*
 
 > **Note:**
 >
@@ -128,31 +207,57 @@ This will:
 You can also refresh just one or more toolboxes:
 
 ```bash
-./refreshtoolboxes.sh llama-vulkan-radv llama-rocm-6.4.3-rocwmma
+./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.1-rocwmma
 ```
 
 ### 2.2 Running models inside the toolboxes
 
-Before running any commands, you must first enter your toolbox container shell using:
+#### Command — Enter the toolbox shell
 
 ```sh
 toolbox enter llama-vulkan-radv
 ```
 
-*This will drop you into a shell inside the toolbox, using your regular user account. The container shares your host home directory—so anything in your home is directly accessible (take care: your files are exposed and writable inside the toolbox!).*
+*This drops you into a shell inside the toolbox using your regular user account. The container shares your host home directory—anything in `$HOME` is accessible and writable inside the toolbox, so treat it like your host shell.*
 
-Once inside, the following commands show how to run local LLMs:
+#### Command — Confirm Llama.cpp sees your GPU
 
-* `llama-cli --list-devices`
-  *Lists available GPU devices for Llama.cpp.*
-* `llama-cli --no-mmap -ngl 999 -fa 1 -m <model>`
-  *Runs inference on the specified model, with all layers on GPU and flash attention enabled (replace \*\* with your model path).*
+```sh
+llama-cli --list-devices
+```
+
+Run this inside the toolbox to verify RADV/AMDVLK/ROCm devices are visible before loading a multi-gigabyte model.
+
+> ⚠️ Always pass **flash attention** and **no-memory-map** flags when running on Strix Halo. `llama-server` and `llama-cli` both expect `-fa 1 --no-mmap`. Skipping either tanks performance or triggers kernel crashes because of the giant unified memory aperture.
+
+#### Command — Run llama-cli with flash attention + no-mmap
+
+```sh
+llama-cli --no-mmap -ngl 999 -fa 1 \
+  -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
+  -p "Write a Strix Halo toolkit haiku."
+```
+
+- `-ngl 999` forces every layer onto the GPU.  
+- `-fa 1` turns on flash attention; omit it and throughput collapses.  
+- `--no-mmap` keeps allocations in unified memory rather than trying to memory-map multi-gigabyte files.
+
+#### Command — Run llama-server with flash attention + no-mmap
+
+```sh
+llama-server -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
+  -c 8192 -ngl 999 -fa 1 --no-mmap
+```
+
+Adjust `-c` for context length and never drop `-fa 1 --no-mmap`.
 
 ## 2.3 Downloading GGUF Models from HuggingFace
 
 Most Llama.cpp-compatible models are on [HuggingFace](https://huggingface.co/models?format=gguf). Filter for **GGUF** format, and try to pick Unsloth quantizations—they work great and are actively updated: https://huggingface.co/unsloth.
 
 Download using the Hugging Face CLI. For example, to get the first shard of Qwen3 Coder 30B BF16 (https://huggingface.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF):
+
+#### Command — Download a GGUF shard with `huggingface-cli`
 
 ```bash
 HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF \
@@ -312,4 +417,3 @@ Follow this guide by TechnigmaAI for a working configuration on Ubuntu 24.04:
 * Most comprehesive repostiry of test builds for Strix Halo by lhl -> [https://github.com/lhl/strix-halo-testing/tree/main](https://github.com/lhl/strix-halo-testing/tree/main)
 * Ubuntu 24.04 configuration
   [https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-(Ubuntu-24.04)](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29)
-
