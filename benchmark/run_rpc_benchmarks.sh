@@ -8,9 +8,9 @@ SCRIPT_DIR="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 RESULTDIR="${RESULTDIR:-$SCRIPT_DIR/results-rpc}"
 mkdir -p "$RESULTDIR"
 
-REMOTE_HOST="${REMOTE_HOST:-user@192.168.2.2}"
+REMOTE_HOST="${REMOTE_HOST:-10.0.0.1}"
 REMOTE_PORT="${REMOTE_PORT:-22}"
-RPC_ADDR="${RPC_ADDR:-192.168.2.2}"   # address the local host uses to reach the RPC server
+RPC_ADDR="${RPC_ADDR:-10.0.0.1}"   # address the local host uses to reach the RPC server
 RPC_PORT="${RPC_PORT:-50052}"
 LLAMA_BENCH_BIN="${LLAMA_BENCH_BIN:-llama-bench}"
 
