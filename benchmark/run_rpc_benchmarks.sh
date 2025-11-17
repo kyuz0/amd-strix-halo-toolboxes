@@ -16,7 +16,7 @@ LLAMA_BENCH_BIN="${LLAMA_BENCH_BIN:-llama-bench}"
 
 # Explicit list of models to test - edit as needed.
 MODELS=(
-  "models/GLM-4.6-UD-Q4_K_XL-00001-of-00005.gguf"
+  "/mnt/storage/MiniMax-M2-GGUF/UD-Q6_K_XL/MiniMax-M2-UD-Q6_K_XL-00001-of-00004.gguf"
 )
 
 if (( ${#MODELS[@]} == 0 )); then
@@ -55,6 +55,7 @@ ENVIRONMENTS=(
 
 CURRENT_REMOTE_PID=""
 CURRENT_REMOTE_ENV=""
+RESOLVED_MODELS=()
 
 cleanup_remote() {
   if [[ -n "${CURRENT_REMOTE_PID:-}" && -n "${CURRENT_REMOTE_ENV:-}" ]]; then
@@ -62,6 +63,29 @@ cleanup_remote() {
   fi
 }
 trap cleanup_remote EXIT
+
+resolve_model_path() {
+  local raw="$1"
+  local expanded="$raw"
+
+  if [[ "$expanded" == ~* ]]; then
+    expanded="${expanded/#\~/$HOME}"
+  fi
+
+  local -a candidates=("$expanded")
+  if [[ "$expanded" != /* ]]; then
+    candidates+=("$SCRIPT_DIR/$expanded")
+  fi
+
+  for candidate in "${candidates[@]}"; do
+    if [[ -f "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  return 1
+}
 
 get_hblt_modes() {
   local env="$1"
@@ -73,19 +97,25 @@ get_hblt_modes() {
 }
 
 ensure_models_exist() {
-  local available=0
+  RESOLVED_MODELS=()
   for m in "${MODELS[@]}"; do
-    if [[ -f "$m" ]]; then
-      ((available++))
+    local resolved
+    if resolved="$(resolve_model_path "$m")"; then
+      RESOLVED_MODELS+=("$resolved")
     else
       echo "[WARN] Missing model file: $m" >&2
     fi
   done
 
-  if (( available == 0 )); then
+  if (( ${#RESOLVED_MODELS[@]} == 0 )); then
     echo "[ERROR] None of the listed models exist - adjust MODELS array." >&2
     exit 1
   fi
+
+  echo "Models to bench:"
+  for resolved in "${RESOLVED_MODELS[@]}"; do
+    echo "  - $resolved"
+  done
 }
 
 start_remote_rpc() {
@@ -229,9 +259,9 @@ run_all() {
         continue
       fi
 
-      for model in "${MODELS[@]}"; do
-        run_llama_bench_rpc "$model" "$env" "$suffix"
-      done
+    for model in "${RESOLVED_MODELS[@]}"; do
+      run_llama_bench_rpc "$model" "$env" "$suffix"
+    done
 
       stop_remote_rpc "$env" "$remote_pid" || true
       CURRENT_REMOTE_PID=""
