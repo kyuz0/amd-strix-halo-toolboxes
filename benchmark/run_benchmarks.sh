@@ -39,26 +39,33 @@ declare -A CMDS=(
   [vulkan_radv]="toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench"
 )
 
+get_hblt_modes() {
+  local env="$1"
+  if [[ "$env" == rocm* ]]; then
+    printf '%s\n' default off
+  else
+    printf '%s\n' default
+  fi
+}
+
 for MODEL_PATH in "${MODEL_PATHS[@]}"; do
   MODEL_NAME="$(basename "$MODEL_PATH" .gguf)"
 
   for ENV in "${!CMDS[@]}"; do
     CMD="${CMDS[$ENV]}"
-
-    # For ROCm 6.4.4 and 7 envs, run default + HIPBLASLT=0 variants; others: default only
-    if [[ "$ENV" == rocm7* || "$ENV" == rocm6_4_* ]]; then
-      HBLT_MODES=( default off )
-    else
-      HBLT_MODES=( default )
-    fi
+    mapfile -t HBLT_MODES < <(get_hblt_modes "$ENV")
 
     for MODE in "${HBLT_MODES[@]}"; do
       BASE_SUFFIX=""
       CMD_EFFECTIVE="$CMD"
-      if [[ "$MODE" == off ]]; then
-        BASE_SUFFIX="__hblt0"
-        # inject env inside the container invocation: after the "--"
-        CMD_EFFECTIVE="${CMD_EFFECTIVE/-- /-- env ROCBLAS_USE_HIPBLASLT=0 }"
+
+      if [[ "$ENV" == rocm* ]]; then
+        if [[ "$MODE" == off ]]; then
+          BASE_SUFFIX="__hblt0"
+          CMD_EFFECTIVE="${CMD_EFFECTIVE/-- /-- env ROCBLAS_USE_HIPBLASLT=0 }"
+        else
+          CMD_EFFECTIVE="${CMD_EFFECTIVE/-- /-- env ROCBLAS_USE_HIPBLASLT=1 }"
+        fi
       fi
 
       # run twice: baseline and with flash attention
