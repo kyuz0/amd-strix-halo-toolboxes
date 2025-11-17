@@ -1,7 +1,7 @@
 # build stage
 FROM registry.fedoraproject.org/fedora:43 AS builder
 # Toggle llama.cpp PR 15405 (RPC perf for large models)
-ARG APPLY_LLAMA_PR_15405=0
+ARG APPLY_LLAMA_PR_15405=1
 
 # deps
 RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
