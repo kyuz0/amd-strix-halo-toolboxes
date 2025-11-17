@@ -132,6 +132,22 @@ ensure_models_exist() {
   done
 }
 
+has_pending_runs() {
+  local env="$1"
+  local suffix="$2"
+
+  for model_path in "${RESOLVED_MODELS[@]}"; do
+    local model_name
+    model_name="$(basename "${model_path}" .gguf)"
+    local log_file="$RESULTDIR/${model_name}__${env}${suffix}__rpc.log"
+    if [[ ! -s "$log_file" ]]; then
+      return 0  # still work to do
+    fi
+  done
+
+  return 1  # all logs already exist
+}
+
 start_remote_rpc() {
   local env="$1"
   local image="$2"
@@ -270,6 +286,11 @@ run_all() {
 
       echo
       echo "==== ${env}${suffix} -> ${image} ===="
+
+      if ! has_pending_runs "$env" "$suffix"; then
+        echo "[SKIP] ${env}${suffix} already has logs for all models - moving on."
+        continue
+      fi
 
       CURRENT_REMOTE_ENV="${env}${suffix}"
       local remote_pid
