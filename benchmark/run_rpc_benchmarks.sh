@@ -13,7 +13,6 @@ REMOTE_PORT="${REMOTE_PORT:-22}"
 REMOTE_HOSTNAME="${REMOTE_TARGET#*@}"
 RPC_HOST="${RPC_HOST:-$REMOTE_HOSTNAME}"   # address the local host uses to reach the RPC server
 RPC_PORT="${RPC_PORT:-50052}"
-LLAMA_BENCH_BIN="${LLAMA_BENCH_BIN:-llama-bench}"
 
 # Explicit list of models to test - edit as needed.
 MODELS=(
@@ -38,6 +37,20 @@ declare -A TOOLBOX_IMAGES=(
   [rocm7_alpha-rocwmma-improved]="llama-rocm-7alpha-rocwmma-improved"
   [vulkan_amdvlk]="llama-vulkan-amdvlk"
   [vulkan_radv]="llama-vulkan-radv"
+)
+
+declare -A CLIENT_CMDS=(
+  [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
+  [rocm6_4_4-rocwmma]="toolbox run -c llama-rocm-6.4.4-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm7_1]="toolbox run -c llama-rocm-7.1 -- /usr/local/bin/llama-bench"
+  [rocm7_1-rocwmma]="toolbox run -c llama-rocm-7.1-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm7_rc]="toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench"
+  [rocm7_rc-rocwmma]="toolbox run -c llama-rocm-7rc-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm7_alpha]="toolbox run -c llama-rocm-7alpha -- /usr/local/bin/llama-bench"
+  [rocm7_alpha-rocwmma]="toolbox run -c llama-rocm-7alpha-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm7_alpha-rocwmma-improved]="toolbox run -c llama-rocm-7alpha-rocwmma-improved -- /usr/local/bin/llama-bench"
+  [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
+  [vulkan_radv]="toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench"
 )
 
 ENVIRONMENTS=(
@@ -185,6 +198,7 @@ run_llama_bench_rpc() {
   local model_name
   model_name="$(basename "${model_path}" .gguf)"
   local log_file="$RESULTDIR/${model_name}__${env}${suffix}__rpc.log"
+  local client_cmd="${CLIENT_CMDS[$env]:-}"
 
   if [[ ! -f "$model_path" ]]; then
     echo "[SKIP] ${model_path} does not exist."
@@ -196,14 +210,23 @@ run_llama_bench_rpc() {
     return
   fi
 
+  if [[ -z "$client_cmd" ]]; then
+    echo "[WARN] No client llama-bench command defined for ${env} - skipping."
+    return
+  fi
+
   kill_local_llamabench
 
   echo
   echo "> [${env}${suffix}] ${model_name}"
   echo "  -> log: ${log_file}"
 
+  local -a client_cmd_ary
+  # shellcheck disable=SC2206 # intentional word splitting
+  client_cmd_ary=( $client_cmd )
+
   local -a cmd=(
-    "$LLAMA_BENCH_BIN"
+    "${client_cmd_ary[@]}"
     -mmp 0
     -m "$model_path"
     -fa 1
