@@ -195,6 +195,7 @@ run_llama_bench_rpc() {
   local model_path="$1"
   local env="$2"
   local suffix="$3"
+  local mode="$4"
   local model_name
   model_name="$(basename "${model_path}" .gguf)"
   local log_file="$RESULTDIR/${model_name}__${env}${suffix}__rpc.log"
@@ -213,6 +214,14 @@ run_llama_bench_rpc() {
   if [[ -z "$client_cmd" ]]; then
     echo "[WARN] No client llama-bench command defined for ${env} - skipping."
     return
+  fi
+
+  if [[ "$env" == rocm* ]]; then
+    if [[ "$mode" == off ]]; then
+      client_cmd="${client_cmd/-- /-- env ROCBLAS_USE_HIPBLASLT=0 }"
+    else
+      client_cmd="${client_cmd/-- /-- env ROCBLAS_USE_HIPBLASLT=1 }"
+    fi
   fi
 
   kill_local_llamabench
@@ -283,9 +292,9 @@ run_all() {
         continue
       fi
 
-    for model in "${RESOLVED_MODELS[@]}"; do
-      run_llama_bench_rpc "$model" "$env" "$suffix"
-    done
+      for model in "${RESOLVED_MODELS[@]}"; do
+        run_llama_bench_rpc "$model" "$env" "$suffix" "$mode"
+      done
 
       stop_remote_rpc "$env" "$remote_pid" || true
       CURRENT_REMOTE_PID=""
