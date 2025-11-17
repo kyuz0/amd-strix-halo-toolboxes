@@ -68,6 +68,7 @@ RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
 # copy
 COPY --from=builder /usr/ /usr/
 COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
 
 # ld
 RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \

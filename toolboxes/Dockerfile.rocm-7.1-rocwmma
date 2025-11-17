@@ -107,6 +107,7 @@ RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
 
 # copy
 COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
 
 # ld
 RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
