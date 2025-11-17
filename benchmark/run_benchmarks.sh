@@ -69,7 +69,7 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
       fi
 
       # run twice: baseline and with flash attention
-      for FA in 0 1; do
+      for FA in 1; do
         SUFFIX="$BASE_SUFFIX"
         EXTRA_ARGS=()
         if (( FA == 1 )); then
@@ -84,26 +84,34 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
           EXTRA_ARGS+=( -ub 2048 )
         fi
 
-        OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}.log"
+        for CTX in default longctx32768; do
+          CTX_SUFFIX=""
+          CTX_ARGS=()
+          if [[ "$CTX" == longctx32768 ]]; then
+            CTX_SUFFIX="__longctx32768"
+            # shellcheck disable=SC2206 # intentional word splitting into array
+            CTX_ARGS=( -p 2048 -n 32 -d 32768 )
+          fi
 
-        # skip if we already have a non-empty log
-        if [[ -s "$OUT" ]]; then
-          echo "⏩ Skipping [${ENV}] ${MODEL_NAME}${SUFFIX:+ ($SUFFIX)}, log already exists at $OUT"
-          continue
-        fi
+          OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}${CTX_SUFFIX}.log"
 
-        # build command array
-        FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" -d 512,32768 -r 3 )
+          if [[ -s "$OUT" ]]; then
+            echo "⏩ Skipping [${ENV}] ${MODEL_NAME}${SUFFIX}${CTX_SUFFIX:+ ($CTX_SUFFIX)}, log already exists at $OUT"
+            continue
+          fi
 
-        printf "\n▶ [%s] %s%s\n" "$ENV" "$MODEL_NAME" "${SUFFIX:+ $SUFFIX}"
-        printf "  → log: %s\n" "$OUT"
-        printf "  → cmd: %s\n\n" "${FULL_CMD[*]}"
+          FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" "${CTX_ARGS[@]}" -r 3 )
 
-        # execute
-        "${FULL_CMD[@]}" >"$OUT" 2>&1 || {
-          echo "✖ ! [${ENV}] ${MODEL_NAME}${SUFFIX:+ $SUFFIX} failed (exit $?)" >>"$OUT"
-          echo "  * [${ENV}] ${MODEL_NAME}${SUFFIX:+ $SUFFIX} : FAILED"
-        }
+          printf "\n▶ [%s] %s%s%s\n" "$ENV" "$MODEL_NAME" "${SUFFIX:+ $SUFFIX}" "${CTX_SUFFIX:+ $CTX_SUFFIX}"
+          printf "  → log: %s\n" "$OUT"
+          printf "  → cmd: %s\n\n" "${FULL_CMD[*]}"
+
+          if ! "${FULL_CMD[@]}" >"$OUT" 2>&1; then
+            status=$?
+            echo "✖ ! [${ENV}] ${MODEL_NAME}${SUFFIX}${CTX_SUFFIX:+ $CTX_SUFFIX} failed (exit ${status})" >>"$OUT"
+            echo "  * [${ENV}] ${MODEL_NAME}${SUFFIX}${CTX_SUFFIX:+ $CTX_SUFFIX} : FAILED"
+          fi
+        done
       done
     done
   done
