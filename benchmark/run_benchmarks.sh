@@ -91,13 +91,17 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
           fi
 
           OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}${CTX_SUFFIX}.log"
+          CTX_REPS=3
+          if [[ "$CTX" == longctx32768 ]]; then
+            CTX_REPS=1
+          fi
 
           if [[ -s "$OUT" ]]; then
             echo "⏩ Skipping [${ENV}] ${MODEL_NAME}${SUFFIX}${CTX_SUFFIX:+ ($CTX_SUFFIX)}, log already exists at $OUT"
             continue
           fi
 
-          FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" "${CTX_ARGS[@]}" -r 3 )
+          FULL_CMD=( $CMD_EFFECTIVE -ngl 99 -mmp 0 -m "$MODEL_PATH" "${EXTRA_ARGS[@]}" "${CTX_ARGS[@]}" -r "$CTX_REPS" )
 
           printf "\n▶ [%s] %s%s%s\n" "$ENV" "$MODEL_NAME" "${SUFFIX:+ $SUFFIX}" "${CTX_SUFFIX:+ $CTX_SUFFIX}"
           printf "  → log: %s\n" "$OUT"
