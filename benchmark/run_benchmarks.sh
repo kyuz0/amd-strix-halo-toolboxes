@@ -77,20 +77,17 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
           EXTRA_ARGS=( -fa 1 )
         fi
 
-        # tune ubatch-size for backend
-        if [[ "$ENV" == *vulkan* ]]; then
-          EXTRA_ARGS+=( -ub 512 )
-        else
-          EXTRA_ARGS+=( -ub 2048 )
-        fi
-
         for CTX in default longctx32768; do
           CTX_SUFFIX=""
           CTX_ARGS=()
           if [[ "$CTX" == longctx32768 ]]; then
             CTX_SUFFIX="__longctx32768"
-            # shellcheck disable=SC2206 # intentional word splitting into array
             CTX_ARGS=( -p 2048 -n 32 -d 32768 )
+            if [[ "$ENV" == *vulkan* ]]; then
+              CTX_ARGS+=( -ub 512 )
+            else
+              CTX_ARGS+=( -ub 2048 )
+            fi
           fi
 
           OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}${CTX_SUFFIX}.log"
