@@ -1,0 +1,28 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+/opt/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:89: ROCm error
+/usr/local/lib64/libggml-base.so.0(+0x3565) [0x7f1a5d310565]
+/usr/local/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7f1a5d31092b]
+/usr/local/lib64/libggml-base.so.0(ggml_abort+0x11f) [0x7f1a5d310aaf]
+/usr/local/lib64/libggml-hip.so.0(+0x28bcf12) [0x7f1a5fc89f12]
+/usr/local/lib64/libggml-hip.so.0(+0x28ce0d7) [0x7f1a5fc9b0d7]
+/usr/local/lib64/libggml-hip.so.0(+0x28cccd1) [0x7f1a5fc99cd1]
+/usr/local/lib64/libggml-hip.so.0(+0x28cb92c) [0x7f1a5fc9892c]
+/usr/local/lib64/libggml-hip.so.0(+0x28c645a) [0x7f1a5fc9345a]
+/usr/local/lib64/libggml-hip.so.0(+0x28c2f0a) [0x7f1a5fc8ff0a]
+/usr/local/lib64/libggml-hip.so.0(+0x28c1fcf) [0x7f1a5fc8efcf]
+/usr/local/lib64/libggml-base.so.0(ggml_backend_sched_graph_compute_async+0x7f3) [0x7f1a5d32ade3]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context13graph_computeEP11ggml_cgraphb+0xa0) [0x7f1a6035d650]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context14process_ubatchERK12llama_ubatch14llm_graph_typeP22llama_memory_context_iR11ggml_status+0xe2) [0x7f1a6035f2e2]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context6decodeERK11llama_batch+0x3bf) [0x7f1a603641bf]
+/usr/local/lib64/libllama.so.0(llama_decode+0xe) [0x7f1a6036500e]
+/usr/local/bin/llama-bench() [0x40a3db]
+/usr/local/bin/llama-bench() [0x407edc]
+/lib64/libc.so.6(+0x35b5) [0x7f1a5cca65b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7f1a5cca6668]
+/usr/local/bin/llama-bench() [0x409255]
+✖ ! [rocm-7alpha] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__hblt0__fa1 __longctx32768 failed (exit 0)

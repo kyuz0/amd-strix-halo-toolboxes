@@ -25,6 +25,7 @@ const state = {
 
 document.addEventListener("DOMContentLoaded", async () => {
     cacheUI();
+    setupModals();
     try {
         const res = await fetch("results.json");
         const data = await res.json();
@@ -53,7 +54,60 @@ function cacheUI() {
         stats: document.getElementById("stats-line"),
         resetBtn: document.getElementById("reset-layout"),
         tables: document.getElementById("tables"),
+        hipblasModalOpen: document.getElementById("hipblas-modal-open"),
+        hipblasModal: document.getElementById("hipblas-modal"),
+        hipblasModalClose: document.getElementById("hipblas-modal-close"),
+        rpcModalOpen: document.getElementById("rpc-modal-open"),
+        rpcModal: document.getElementById("rpc-modal"),
+        rpcModalClose: document.getElementById("rpc-modal-close"),
+        rocwmmaModalOpen: document.getElementById("rocwmma-modal-open"),
+        rocwmmaModal: document.getElementById("rocwmma-modal"),
+        rocwmmaModalClose: document.getElementById("rocwmma-modal-close"),
+        rocwmmaImprModalOpen: document.getElementById("rocwmma-impr-modal-open"),
+        rocwmmaImprModal: document.getElementById("rocwmma-impr-modal"),
+        rocwmmaImprModalClose: document.getElementById("rocwmma-impr-modal-close"),
     };
+}
+
+function setupModals() {
+    const modalConfigs = [
+        {
+            open: state.ui.hipblasModalOpen,
+            modal: state.ui.hipblasModal,
+            close: state.ui.hipblasModalClose,
+        },
+        {
+            open: state.ui.rpcModalOpen,
+            modal: state.ui.rpcModal,
+            close: state.ui.rpcModalClose,
+        },
+        {
+            open: state.ui.rocwmmaModalOpen,
+            modal: state.ui.rocwmmaModal,
+            close: state.ui.rocwmmaModalClose,
+        },
+        {
+            open: state.ui.rocwmmaImprModalOpen,
+            modal: state.ui.rocwmmaImprModal,
+            close: state.ui.rocwmmaImprModalClose,
+        },
+    ];
+
+    modalConfigs.forEach(({ open, modal, close }) => {
+        if (!open || !modal) return;
+        const openModal = () => modal.classList.remove("hidden");
+        const closeModal = () => modal.classList.add("hidden");
+        open.addEventListener("click", openModal);
+        close?.addEventListener("click", closeModal);
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
+        });
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+                closeModal();
+            }
+        });
+    });
 }
 
 function prepareData(runs) {
@@ -132,6 +186,7 @@ function ensureModel(testEntry, modelName, run) {
             quant: (run.quant || "Unknown").toUpperCase(),
             sizeB: run.name_params_b ?? run.params_b ?? null,
             backends: {},
+            isRpc: Boolean(run.rpc),
             search_blob: [modelName, run.quant, run.env, run.test]
                 .filter(Boolean)
                 .map((s) => s.toString().toLowerCase())
@@ -146,6 +201,12 @@ function ensureModel(testEntry, modelName, run) {
     if (typeof row.sizeB === "number") {
         state.sizeStats.min = Math.min(state.sizeStats.min, row.sizeB);
         state.sizeStats.max = Math.max(state.sizeStats.max, row.sizeB);
+    }
+    if (run.rpc) {
+        row.isRpc = true;
+        if (!row.search_blob.includes("rpc")) {
+            row.search_blob = `${row.search_blob} rpc`;
+        }
     }
     return row;
 }
@@ -259,6 +320,8 @@ function renderBackendList() {
             const pill = document.createElement("span");
             pill.className = "tag";
             pill.textContent = tag;
+            const safeTag = tag.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+            pill.classList.add(`tag-${safeTag}`);
             label.appendChild(pill);
         });
 
@@ -393,7 +456,24 @@ function buildSingleTable(models, backendList) {
         const tr = document.createElement("tr");
         const tdModel = document.createElement("td");
         tdModel.className = "model";
-        tdModel.innerHTML = `<div>${model.model}</div><div class="meta">${model.quant} · ${formatSize(model.sizeB)}</div>`;
+        const head = document.createElement("div");
+        head.className = "model-head";
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "model-name";
+        nameSpan.textContent = model.model;
+        head.appendChild(nameSpan);
+        if (model.isRpc) {
+            const pill = document.createElement("span");
+            pill.className = "model-pill model-pill-rpc";
+            pill.title = "Run executed via llama.cpp RPC across two servers";
+            pill.textContent = "RPC · dual server";
+            head.appendChild(pill);
+        }
+        tdModel.appendChild(head);
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = `${model.quant} · ${formatSize(model.sizeB)}`;
+        tdModel.appendChild(meta);
 
         const actionWrap = document.createElement("div");
         actionWrap.className = "row-actions";
@@ -586,14 +666,14 @@ function backendValue(entry, direction) {
 }
 
 function splitEnvName(env) {
-    const parts = env.split(/-(?=rocwmma|improved|hblt0)/g);
-    if (parts.length === 1) return { base: env, tags: [] };
-    const base = parts[0];
-    const tags = env
-        .slice(base.length)
-        .split("-")
-        .filter(Boolean)
-        .map((t) => t.toUpperCase());
+    const canonical = env.replace(/_/g, ".");
+    const tagRegex = /-(rocwmma-improved|rocwmma|improved|hblt0)/gi;
+    const tags = [];
+    let match;
+    while ((match = tagRegex.exec(canonical)) !== null) {
+        tags.push(match[1].toLowerCase());
+    }
+    const base = canonical.replace(tagRegex, "");
     return { base, tags };
 }
 

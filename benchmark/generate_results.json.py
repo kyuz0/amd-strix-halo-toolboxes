@@ -2,7 +2,10 @@
 import re, glob, os, json, time
 from pathlib import Path
 
-RESULTS_DIR = "results"
+RESULT_SOURCES = [
+    ("results", False),       # regular single-node runs
+    ("results-rpc", True),    # distributed RPC runs across two servers
+]
 OUT_JSON = "../docs/results.json"
 
 # --- Regexes ---------------------------------------------------------------
@@ -39,23 +42,39 @@ LONGCTX_RE = re.compile(r"longctx(\d+)", re.IGNORECASE)
 
 # --- Helpers ---------------------------------------------------------------
 
+ENV_CANON = {
+    "rocm7_1": "rocm7.1",
+}
+
 def clean_model_name(raw):
     base = SHARD_RE.sub("", raw)
     return base
 
+def canonicalize_env(env):
+    if not env:
+        return env
+    for raw, canon in ENV_CANON.items():
+        prefix = f"{raw}-"
+        if env == raw:
+            return canon
+        if env.startswith(prefix):
+            return canon + env[len(raw):]
+    return env
+
 def parse_env_flags(basename):
     """
-    pattern: <model>__<env>[__fa1][__hblt0][__longctx32768]
-    Returns (env, fa, context_tag, context_tokens)
+    pattern: <model>__<env>[__fa1][__hblt0][__longctx32768][__rpc]
+    Returns (env, fa, context_tag, context_tokens, rpc_flag)
     """
     parts = basename.split("__")
     if len(parts) < 2:
-        return None, False, "default", None
+        return None, False, "default", None, False
 
     env = parts[1]
     fa = False
     context_tag = "default"
     context_tokens = None
+    rpc_flag = False
 
     for raw_suffix in parts[2:]:
         suffix = raw_suffix.lower()
@@ -71,8 +90,10 @@ def parse_env_flags(basename):
                     context_tokens = int(m.group(1))
                 except ValueError:
                     context_tokens = None
+        elif suffix == "rpc":
+            rpc_flag = True
 
-    return env, fa, context_tag, context_tokens
+    return env, fa, context_tag, context_tokens, rpc_flag
 
 def env_base_and_variant(env):
     # e.g. "rocm6_4_2-rocwmma" -> ("rocm6_4_2", "rocwmma")
@@ -148,111 +169,115 @@ runs = []
 builds = set()
 envs  = set()
 
-for path in sorted(glob.glob(os.path.join(RESULTS_DIR, "*.log"))):
-    base = os.path.basename(path).rsplit(".log", 1)[0]
-    if "__" not in base:
-        continue
+for results_dir, is_rpc_source in RESULT_SOURCES:
+    glob_pattern = os.path.join(results_dir, "*.log")
+    for path in sorted(glob.glob(glob_pattern)):
+        base = os.path.basename(path).rsplit(".log", 1)[0]
+        if "__" not in base:
+            continue
 
-    model_raw, _rest = base.split("__", 1)
-    env, fa_from_name, context_tag, context_tokens = parse_env_flags(base)
-    if env:
-        envs.add(env)
+        model_raw, _rest = base.split("__", 1)
+        env, fa_from_name, context_tag, context_tokens, rpc_flag = parse_env_flags(base)
+        env = canonicalize_env(env)
+        if env:
+            envs.add(env)
 
-    model_clean = clean_model_name(model_raw)
+        model_clean = clean_model_name(model_raw)
 
-    with open(path, errors="ignore") as f:
-        text = f.read()
+        with open(path, errors="ignore") as f:
+            text = f.read()
 
-    # build info (take the last match in file if many)
-    build_hash, build_num = None, None
-    for m in BUILD_RE.finditer(text):
-        build_hash, build_num = m.group(1), m.group(2)
-    if build_hash:
-        builds.add((build_hash, build_num))
+        # build info (take the last match in file if many)
+        build_hash, build_num = None, None
+        for m in BUILD_RE.finditer(text):
+            build_hash, build_num = m.group(1), m.group(2)
+        if build_hash:
+            builds.add((build_hash, build_num))
 
-    # detect error (if there is no valid table rows)
-    table_rows = parse_table(text)
+        # detect error (if there is no valid table rows)
+        table_rows = parse_table(text)
 
-    # If table rows exist, we’ll still mark errors only if no perf found
-    has_pp = any(r.get("test","").lower()=="pp512" for r in table_rows)
-    has_tg = any(r.get("test","").lower()=="tg128" for r in table_rows)
-    error, etype = (False, None)
-    if not (has_pp or has_tg):
-        error, etype = detect_error(text)
+        # If table rows exist, we’ll still mark errors only if no perf found
+        has_pp = any(r.get("test","").lower()=="pp512" for r in table_rows)
+        has_tg = any(r.get("test","").lower()=="tg128" for r in table_rows)
+        error, etype = (False, None)
+        if not (has_pp or has_tg):
+            error, etype = detect_error(text)
 
-    # Determine FA flag:
-    #   prefer explicit column "fa" if present, else fallback to filename "__fa1"
-    fa_in_table = None
-    for r in table_rows:
-        if "fa" in r:
-            try:
-                fa_in_table = int(r["fa"]) == 1
-            except:
-                fa_in_table = None
-            break
-    fa_enabled = fa_in_table if fa_in_table is not None else fa_from_name
+        # Determine FA flag:
+        #   prefer explicit column "fa" if present, else fallback to filename "__fa1"
+        fa_in_table = None
+        for r in table_rows:
+            if "fa" in r:
+                try:
+                    fa_in_table = int(r["fa"]) == 1
+                except:
+                    fa_in_table = None
+                break
+        fa_enabled = fa_in_table if fa_in_table is not None else fa_from_name
 
-    # Normalize env base / variant (e.g., rocwmma)
-    env_base, env_variant = env_base_and_variant(env)
+        # Normalize env base / variant (e.g., rocwmma)
+        env_base, env_variant = env_base_and_variant(env)
 
-    # Emit one run per row (pp512 / tg128)
-    for r in table_rows or [{}]:
-        test = r.get("test", "").lower() if table_rows else None
-        tps_mean, tps_std = None, None
-        if table_rows:
-            ts_field = r.get("t/s", "")
-            m = TS_RE.search(ts_field)
-            if m:
-                tps_mean = coerce_float(m.group(1))
-                tps_std  = coerce_float(m.group(2))
+        # Emit one run per row (pp512 / tg128)
+        for r in table_rows or [{}]:
+            test = r.get("test", "").lower() if table_rows else None
+            tps_mean, tps_std = None, None
+            if table_rows:
+                ts_field = r.get("t/s", "")
+                m = TS_RE.search(ts_field)
+                if m:
+                    tps_mean = coerce_float(m.group(1))
+                    tps_std  = coerce_float(m.group(2))
 
-        # parse numeric helpers from row (if present)
-        params_b = None
-        file_size_gib = None
-        if "params" in r:
-            pm = PARAMS_RE.search(r["params"])
-            if pm:
-                params_b = coerce_float(pm.group(1).replace(",", ""))
-        if "size" in r:
-            sm = GIB_RE.search(r["size"])
-            if sm:
-                file_size_gib = coerce_float(sm.group(1).replace(",", ""))
+            # parse numeric helpers from row (if present)
+            params_b = None
+            file_size_gib = None
+            if "params" in r:
+                pm = PARAMS_RE.search(r["params"])
+                if pm:
+                    params_b = coerce_float(pm.group(1).replace(",", ""))
+            if "size" in r:
+                sm = GIB_RE.search(r["size"])
+                if sm:
+                    file_size_gib = coerce_float(sm.group(1).replace(",", ""))
 
-        # quant from model name (unchanged)
-        quant = extract_quant(model_clean)
+            # quant from model name (unchanged)
+            quant = extract_quant(model_clean)
 
-        # name_params_b: prefer table value; else fall back to B in model name
-        name_params_b = params_b if params_b is not None else b_from_name(model_clean)
+            # name_params_b: prefer table value; else fall back to B in model name
+            name_params_b = params_b if params_b is not None else b_from_name(model_clean)
 
-        backend = r.get("backend")
-        ngl = r.get("ngl")
-        mmap = r.get("mmap")
+            backend = r.get("backend")
+            ngl = r.get("ngl")
+            mmap = r.get("mmap")
 
-        run = {
-            "model": model_raw,
-            "model_clean": model_clean,
-            "env": env,
-            "env_base": env_base,
-            "env_variant": env_variant,         # e.g. "rocwmma"
-            "fa": bool(fa_enabled),
-            "context": context_tag or "default",
-            "context_tokens": context_tokens,
-            "test": test,                       # "pp512" | "tg128" | None (if error)
-            "tps_mean": tps_mean,
-            "tps_std": tps_std,
-            "error": bool(error),
-            "error_type": etype,                # "load" | "hang" | "runtime" | None
-            "backend": backend,
-            "ngl": (int(ngl) if (ngl and ngl.isdigit()) else None),
-            "mmap": (int(mmap) if (mmap and mmap.isdigit()) else None),
-            "params_b": params_b,               # from table, if available
-            "file_size_gib": file_size_gib,     # from table, if available
-            "name_params_b": name_params_b,     # parsed from model name (e.g., 30B -> 30.0)
-            "quant": quant,
-            "log": path,
-            "build": {"hash": build_hash, "number": build_num} if build_hash else None,
-        }
-        runs.append(run)
+            run = {
+                "model": model_raw,
+                "model_clean": model_clean,
+                "env": env,
+                "env_base": env_base,
+                "env_variant": env_variant,         # e.g. "rocwmma"
+                "fa": bool(fa_enabled),
+                "context": context_tag or "default",
+                "context_tokens": context_tokens,
+                "test": test,                       # "pp512" | "tg128" | None (if error)
+                "tps_mean": tps_mean,
+                "tps_std": tps_std,
+                "error": bool(error),
+                "error_type": etype,                # "load" | "hang" | "runtime" | None
+                "backend": backend,
+                "ngl": (int(ngl) if (ngl and ngl.isdigit()) else None),
+                "mmap": (int(mmap) if (mmap and mmap.isdigit()) else None),
+                "params_b": params_b,               # from table, if available
+                "file_size_gib": file_size_gib,     # from table, if available
+                "name_params_b": name_params_b,     # parsed from model name (e.g., 30B -> 30.0)
+                "quant": quant,
+                "log": path,
+                "rpc": bool(is_rpc_source or rpc_flag),
+                "build": {"hash": build_hash, "number": build_num} if build_hash else None,
+            }
+            runs.append(run)
 
 # Meta
 meta = {
