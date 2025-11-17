@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 RESULTDIR="${RESULTDIR:-$SCRIPT_DIR/results-rpc}"
 mkdir -p "$RESULTDIR"
 
-REMOTE_TARGET="${REMOTE_HOST:-user@10.0.0.1}"
+REMOTE_TARGET="${REMOTE_HOST:-10.0.0.1}"
 REMOTE_PORT="${REMOTE_PORT:-22}"
 REMOTE_HOSTNAME="${REMOTE_TARGET#*@}"
 RPC_HOST="${RPC_HOST:-$REMOTE_HOSTNAME}"   # address the local host uses to reach the RPC server
