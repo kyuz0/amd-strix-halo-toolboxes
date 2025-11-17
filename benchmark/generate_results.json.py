@@ -44,6 +44,7 @@ LONGCTX_RE = re.compile(r"longctx(\d+)", re.IGNORECASE)
 
 ENV_CANON = {
     "rocm7_1": "rocm7.1",
+    "rocm7_alpha": "rocm-7alpha",
 }
 
 def clean_model_name(raw):
