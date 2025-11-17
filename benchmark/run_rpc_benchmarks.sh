@@ -8,9 +8,10 @@ SCRIPT_DIR="$(cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 RESULTDIR="${RESULTDIR:-$SCRIPT_DIR/results-rpc}"
 mkdir -p "$RESULTDIR"
 
-REMOTE_HOST="${REMOTE_HOST:-10.0.0.1}"
+REMOTE_TARGET="${REMOTE_HOST:-user@10.0.0.1}"
 REMOTE_PORT="${REMOTE_PORT:-22}"
-RPC_ADDR="${RPC_ADDR:-10.0.0.1}"   # address the local host uses to reach the RPC server
+REMOTE_HOSTNAME="${REMOTE_TARGET#*@}"
+RPC_HOST="${RPC_HOST:-$REMOTE_HOSTNAME}"   # address the local host uses to reach the RPC server
 RPC_PORT="${RPC_PORT:-50052}"
 LLAMA_BENCH_BIN="${LLAMA_BENCH_BIN:-llama-bench}"
 
@@ -134,7 +135,7 @@ start_remote_rpc() {
     fi
   fi
 
-  ssh -p "$REMOTE_PORT" "$REMOTE_HOST" 'bash -s' <<EOF
+  ssh -p "$REMOTE_PORT" "$REMOTE_TARGET" 'bash -s' <<EOF
 set -euo pipefail
 pkill -9 -f rpc-server || true
 nohup toolbox run -c ${image} -- ${env_prefix}rpc-server -H 0.0.0.0 -p ${RPC_PORT} -c >${remote_log} 2>&1 < /dev/null &
@@ -145,7 +146,7 @@ EOF
 stop_remote_rpc() {
   local env="$1"
   local pid="$2"
-  ssh -p "$REMOTE_PORT" "$REMOTE_HOST" 'bash -s' <<EOF
+  ssh -p "$REMOTE_PORT" "$REMOTE_TARGET" 'bash -s' <<EOF
 set -euo pipefail
 if [[ -n "${pid}" && -e "/proc/${pid}" ]]; then
   kill -9 ${pid} || true
@@ -206,7 +207,7 @@ run_llama_bench_rpc() {
     -mmp 0
     -m "$model_path"
     -fa 1
-    --rpc "${RPC_ADDR}:${RPC_PORT}"
+    --rpc "${RPC_HOST}:${RPC_PORT}"
   )
 
   printf "  -> cmd: %s\n" "${cmd[*]}"
@@ -251,8 +252,8 @@ run_all() {
       CURRENT_REMOTE_PID="$remote_pid"
       echo "  Remote rpc-server PID: ${remote_pid}"
 
-      if ! wait_for_rpc "$RPC_ADDR" "$RPC_PORT"; then
-        echo "[ERROR] RPC server on ${RPC_ADDR}:${RPC_PORT} did not become ready."
+      if ! wait_for_rpc "$RPC_HOST" "$RPC_PORT"; then
+        echo "[ERROR] RPC server on ${RPC_HOST}:${RPC_PORT} did not become ready."
         stop_remote_rpc "$env" "$remote_pid" || true
         CURRENT_REMOTE_PID=""
         CURRENT_REMOTE_ENV=""
