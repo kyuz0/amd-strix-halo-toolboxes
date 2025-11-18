@@ -139,10 +139,17 @@ has_pending_runs() {
   for model_path in "${RESOLVED_MODELS[@]}"; do
     local model_name
     model_name="$(basename "${model_path}" .gguf)"
-    local log_file="$RESULTDIR/${model_name}__${env}${suffix}__rpc.log"
-    if [[ ! -s "$log_file" ]]; then
-      return 0  # still work to do
-    fi
+    for ctx in default longctx32768; do
+      local ctx_suffix=""
+      if [[ "$ctx" == longctx32768 ]]; then
+        ctx_suffix="__longctx32768"
+      fi
+
+      local log_file="$RESULTDIR/${model_name}__${env}${suffix}${ctx_suffix}__rpc.log"
+      if [[ ! -s "$log_file" ]]; then
+        return 0  # still work to do
+      fi
+    done
   done
 
   return 1  # all logs already exist
@@ -214,16 +221,10 @@ run_llama_bench_rpc() {
   local mode="$4"
   local model_name
   model_name="$(basename "${model_path}" .gguf)"
-  local log_file="$RESULTDIR/${model_name}__${env}${suffix}__rpc.log"
   local client_cmd="${CLIENT_CMDS[$env]:-}"
 
   if [[ ! -f "$model_path" ]]; then
     echo "[SKIP] ${model_path} does not exist."
-    return
-  fi
-
-  if [[ -s "$log_file" ]]; then
-    echo "[SKIP] ${log_file} already exists."
     return
   fi
 
@@ -240,30 +241,54 @@ run_llama_bench_rpc() {
     fi
   fi
 
-  kill_local_llamabench
-
-  echo
-  echo "> [${env}${suffix}] ${model_name}"
-  echo "  -> log: ${log_file}"
-
   local -a client_cmd_ary
   # shellcheck disable=SC2206 # intentional word splitting
   client_cmd_ary=( $client_cmd )
 
-  local -a cmd=(
-    "${client_cmd_ary[@]}"
-    -mmp 0
-    -m "$model_path"
-    -fa 1
-    --rpc "${RPC_HOST}:${RPC_PORT}"
-  )
+  for ctx in default longctx32768; do
+    local ctx_suffix=""
+    local ctx_reps=3
+    local -a ctx_args=()
+    if [[ "$ctx" == longctx32768 ]]; then
+      ctx_suffix="__longctx32768"
+      ctx_reps=1
+      ctx_args=( -p 2048 -n 32 -d 32768 )
+      if [[ "$env" == *vulkan* ]]; then
+        ctx_args+=( -ub 512 )
+      else
+        ctx_args+=( -ub 2048 )
+      fi
+    fi
 
-  printf "  -> cmd: %s\n" "${cmd[*]}"
-  if "${cmd[@]}" >"$log_file" 2>&1; then
-    echo "  [OK] Completed"
-  else
-    echo "[ERROR] llama-bench failed for ${env} / ${model_name} (see ${log_file})"
-  fi
+    local log_file="$RESULTDIR/${model_name}__${env}${suffix}${ctx_suffix}__rpc.log"
+    if [[ -s "$log_file" ]]; then
+      echo "[SKIP] ${log_file} already exists."
+      continue
+    fi
+
+    kill_local_llamabench
+
+    echo
+    echo "> [${env}${suffix}] ${model_name} (${ctx})"
+    echo "  -> log: ${log_file}"
+
+    local -a cmd=(
+      "${client_cmd_ary[@]}"
+      -mmp 0
+      -m "$model_path"
+      -fa 1
+      "${ctx_args[@]}"
+      -r "$ctx_reps"
+      --rpc "${RPC_HOST}:${RPC_PORT}"
+    )
+
+    printf "  -> cmd: %s\n" "${cmd[*]}"
+    if "${cmd[@]}" >"$log_file" 2>&1; then
+      echo "  [OK] Completed"
+    else
+      echo "[ERROR] llama-bench failed for ${env} / ${model_name} (see ${log_file})"
+    fi
+  done
 }
 
 run_all() {
