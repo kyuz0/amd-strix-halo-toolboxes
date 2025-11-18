@@ -5,7 +5,7 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 ## 🚨 Updates — 2025-1-18
 
 - Released new toolboxes for ROCm 7 that track the nightly builds, these are now called `alpha`. 
-- Updated and extended benchmakrs across all llama.cpp backend configurations, and included bennchmarks over RPC (two nodes) and long context (32k) -> [Interactie Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
+- Updated and extended benchmakrs across all llama.cpp backend configurations, and included bennchmarks over RPC (two nodes) and long context (32k) -> [Interactive Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
 ## Watch the YouTube Video
 
