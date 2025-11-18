@@ -2,9 +2,36 @@
 
 This project provides pre-built containers (“toolboxes”) for running LLMs on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs. Toolbx is the standard developer container system in Fedora (and now works on Ubuntu, openSUSE, Arch, etc).
 
-## Quick Answers (Read This First)
+## 🚨 Updates — 2025-1-18
 
-Start here for the fastest reference commands. Detailed context lives in [Section 2](#2-quickest-usage-example).
+- Released new toolboxes for ROCm 7 that track the nightly builds, these are now called `alpha`. 
+- Updated and extended benchmakrs across all llama.cpp backend configurations, and included bennchmarks over RPC (two nodes) and long context (32k) -> [Interactie Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
+
+## Watch the YouTube Video
+
+[![Watch the YouTube Video](https://img.youtube.com/vi/wCBLMXgk3No/maxresdefault.jpg)](https://youtu.be/wCBLMXgk3No)  
+
+## Table of Contents
+
+- [Quick Answers (Read This First)](#quick-answers-read-this-first)
+1. [Llama.cpp Compiled for Every Backend](#1-llamacpp-compiled-for-every-backend)  
+    1.1 [Supported Container Images](#11-supported-container-images)
+2. [Quickest Usage Example](#2-quickest-usage-example)  
+    2.1 [Creating the toolboxes with GPU access](#21-creating-the-toolboxes-with-gpu-access)  
+    2.2 [Running models inside the toolboxes](#22-running-models-inside-the-toolboxes)  
+    2.3 [Downloading GGUF Models from HuggingFace](#23-downloading-gguf-models-from-huggingface)  
+3. [Performance Benchmarks](#3-performance-benchmarks)  
+4. [Memory Planning & VRAM Estimator](#4-memory-planning--vram-estimator)  
+5. [Building Containers Locally](#5-building-containers-locally)  
+6. [Host Configuration](#6-host-configuration)  
+    6.1 [Test Configuration](#61-test-configuration)  
+    6.2 [Kernel Parameters (tested on Fedora 42)](#62-kernel-parameters-tested-on-fedora-42)  
+    6.3 [Ubuntu 24.04](#63-ubuntu-2404)
+7. [More Documentation](#7-more-documentation)  
+8. [References](#8-references)
+
+
+## Quick Answers (Read This First)
 
 ### How do I get a toolbox up and running?
 
@@ -51,7 +78,7 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 
 ### How do I run llama-server (and llama-cli) with a model?
 
-Flash attention and no-memory-map **must** be enabled or Strix Halo will crawl/crash. `llama-server` uses `-fa 1 --no-mmap`; `llama-cli` uses `-fa 1 --no-mmap`.
+Flash attention and no-memory-map **must** be enabled or Strix Halo will crawl/crash.
 
 **Command — Run llama-server with flash attention + no-mmap**
 
@@ -81,35 +108,6 @@ llama-cli --no-mmap -ngl 999 -fa 1 -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Code
 ./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.1-rocwmma
 ```
 
-## Watch the YouTube Video
-
-[![Watch the YouTube Video](https://img.youtube.com/vi/wCBLMXgk3No/maxresdefault.jpg)](https://youtu.be/wCBLMXgk3No)  
-
-## 🚨 Updates — 2025-09-28
-
-- Released **ROCm 6.4.4** toolboxes. 
-- **ROCm-6.4.4+ROCWMMA** is the currently recommended one for most use-cases, but always check the benchmakrs to find the backend that performs better with your model architecture and quantization of choice -> [Performance Benchmarks (Key Results)](#3-performance-benchmarks-key-results) 
-
-## Table of Contents
-
-- [Quick Answers (Read This First)](#quick-answers-read-this-first)
-1. [Llama.cpp Compiled for Every Backend](#1-llamacpp-compiled-for-every-backend)  
-    1.1 [Supported Container Images](#11-supported-container-images)
-2. [Quickest Usage Example](#2-quickest-usage-example)  
-    2.1 [Creating the toolboxes with GPU access](#21-creating-the-toolboxes-with-gpu-access)  
-    2.2 [Running models inside the toolboxes](#22-running-models-inside-the-toolboxes)  
-    2.3 [Downloading GGUF Models from HuggingFace](#23-downloading-gguf-models-from-huggingface)  
-3. [Performance Benchmarks (Key Results)](#3-performance-benchmarks-key-results)  
-4. [Memory Planning & VRAM Estimator](#4-memory-planning--vram-estimator)  
-5. [Building Containers Locally](#5-building-containers-locally)  
-6. [Host Configuration](#6-host-configuration)  
-    6.1 [Test Configuration](#61-test-configuration)  
-    6.2 [Kernel Parameters (tested on Fedora 42)](#62-kernel-parameters-tested-on-fedora-42)  
-    6.3 [Ubuntu 24.04](#63-ubuntu-2404)
-7. [More Documentation](#7-more-documentation)  
-8. [References](#8-references)
-
-
 ## 1. Llama.cpp Compiled for Every Backend
 
 This project uses [Llama.cpp](https://github.com/ggerganov/llama.cpp), a high-performance inference engine for running local LLMs (large language models) on CPUs and GPUs. Llama.cpp is open source, extremely fast, and is the only engine supporting all key backends for AMD Strix Halo: Vulkan (RADV, AMDVLK) and ROCm/HIP
@@ -125,17 +123,17 @@ You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-st
 | ------------------------------ | -------------------------------------- | --------------- |
 | `vulkan-amdvlk`                | Vulkan (AMDVLK)                        | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv`                  | Vulkan (Mesa RADV)                     | Most stable and compatible. Recommended for most users and all models. |
-| `rocm-6.4.4`                   | ROCm 6.4.4 (HIP) + hipBLASLt*          | Latest 6.4 LTS build. Great for BF16 models. Occasional crashes possible. |
+| `rocm-6.4.4`                   | ROCm 6.4.4 (HIP) + hipBLASLt*          | Latest stable build for ROCm 6.4.4, performs very well with most model architectures/quants. |
 | `rocm-6.4.4-rocwmma`           | ROCm 6.4.4 + ROCWMMA + hipBLASLt*      | 6.4.4 with ROCWMMA enabled for better flash attention on RDNA3+/CDNA. |
 | `rocm-7.1`                     | ROCm 7.1 GA (HIP) + hipBLASLt*         | Current GA release for ROCm 7.x; improved scheduler and hipBLASLt kernels. |
 | `rocm-7.1-rocwmma`             | ROCm 7.1 GA + ROCWMMA + hipBLASLt*     | 7.1 with ROCWMMA for maximum flash-attention throughput. |
-| `rocm-7rc`                     | ROCm 7.0 RC (HIP) + hipBLASLt*         | Release candidate for ROCm 7.0. Good for regression testing. |
-| `rocm-7rc-rocwmma`             | ROCm 7.0 RC + ROCWMMA + hipBLASLt*     | RC build with ROCWMMA—useful for early flash-attention validation. |
-| `rocm-7alpha`                  | ROCm 7 RC Alpha (“7rc-alpha”) + hipBLASLt* | Experimental ROCm 7 preview with bleeding-edge patches. |
-| `rocm-7alpha-rocwmma`          | ROCm 7 RC Alpha + ROCWMMA + hipBLASLt* | Same alpha stack with ROCWMMA tuned for flash attention. |
-| `rocm-7alpha-rocwmma-improved` | ROCm 7 RC Alpha + ROCWMMA (improved) + hipBLASLt* | Alpha stack plus extra ROCWMMA fixes; fastest but most experimental option. |
+| `rocm-7rc`                     | ROCm 7.9 (HIP) + hipBLASLt*         | Used to be the release candidate for ROCm 7.9.0 (hence the `rc` tag in the name), now released. |
+| `rocm-7rc-rocwmma`             | ROCm 7.9 + ROCWMMA + hipBLASLt*     | 7.9.0 build with ROCWMMA—useful for early flash-attention validation. |
+| `rocm-7alpha`                  | ROCm 7 Nightly (“7rc-alpha”) + hipBLASLt* | Tracks ROCm 7 nightly (alpha) preview with bleeding-edge patches. |
+| `rocm-7alpha-rocwmma`          | ROCm 7 Nightly + ROCWMMA + hipBLASLt* | Same nightly/alpha stack with ROCWMMA tuned for flash attention. |
+| `rocm-7alpha-rocwmma-improved` | ROCm 7 Nightly + ROCWMMA (improved) + hipBLASLt* | Nightly/Alpha stack plus extra ROCWMMA fixes; fastest but most experimental option. |
 
-\* All these toolboxes now export `ROCBLAS_USE_HIPBLASLT=1` because it delivers better performance and stability in *most* cases.
+\* All these toolboxes export `ROCBLAS_USE_HIPBLASLT=1` because it historically delivered better performance and stability, altough this might not be the case any more.
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
 >
@@ -267,47 +265,9 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 
 `HF_HUB_ENABLE_HF_TRANSFER=1` uses a Rust-based package that enables faster download (install from [Pypi](https://pypi.org/project/hf-transfer/)).
 
-## 3. Performance Benchmarks (Key Results)
+## 3. Performance Benchmarks
 
 🌐 Interactive exploration of the latest benchmark runs: [Interactie Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
-
-Benchmarks were analysed with **error-aware ties** (mean ± σ). If two backends overlap within margins, they are treated as a tie. All placement counts below use **Flash Attention ON**.
-
-**Prompt Processing (pp512)**
-| Backend | 1st | 2nd | 3rd |
-| --- | ---: | ---: | ---: |
-| ROCm 6.4.4 (hipBLASLt) | 6 | 2 | 2 |
-| Vulkan AMDVLK | 6 | 1 | 0 |
-| ROCm 6.4.4 (hipBLASLt OFF) | 3 | 2 | 3 |
-| Vulkan RADV | 1 | 2 | 0 |
-| ROCm 7 RC (hipBLASLt) | 1 | 1 | 1 |
-| ROCm 6.4.4 + ROCWMMA (hipBLASLt OFF) | 0 | 5 | 4 |
-| ROCm 6.4.4 + ROCWMMA (hipBLASLt) | 0 | 4 | 2 |
-| ROCm 7 RC (hipBLASLt OFF) | 0 | 0 | 2 |
-| ROCm 7 RC + ROCWMMA + hipBLASLt | 0 | 0 | 3 |
-
-**Token Generation (tg128)**
-| Backend | 1st | 2nd | 3rd |
-| --- | ---: | ---: | ---: |
-| Vulkan RADV | 10 | 1 | 2 |
-| Vulkan AMDVLK | 3 | 10 | 0 |
-| ROCm 6.4.4 + ROCWMMA (hipBLASLt OFF) | 2 | 3 | 7 |
-| ROCm 6.4.4 (hipBLASLt) | 1 | 4 | 3 |
-| ROCm 6.4.4 (hipBLASLt OFF) | 1 | 3 | 5 |
-| ROCm 6.4.4 + ROCWMMA (hipBLASLt) | 1 | 2 | 6 |
-| ROCm 7 RC (hipBLASLt) | 1 | 0 | 1 |
-| ROCm 7 RC (hipBLASLt OFF) | 0 | 1 | 1 |
-| ROCm 7 RC + ROCWMMA + hipBLASLt | 0 | 1 | 1 |
-| ROCm 7 RC + ROCWMMA (hipBLASLt OFF) | 0 | 1 | 1 |
-
-### Summary & Recommendations
-- **Fastest prompt processing:** Vulkan AMDVLK, ROCm 6.4.4 (hipBLASLt) (most 1st-place finishes).
-- **Fastest token generation:** Vulkan RADV (most 1st-place finishes).
-- **Balanced choice:** Vulkan AMDVLK (consistently near the top across PP/TG).
-
-> **Note (ROCm):** ROCm toolboxes enable **hipBLASLt** by default, as in *most* cases this performs better. The benchmark suite also runs **hipBLASLt OFF** variants to show its impact.
-
-📄 Full per-model analysis: [docs/benchmarks.md](docs/benchmarks.md)
 
 ## 4. Memory Planning & VRAM Estimator
 
