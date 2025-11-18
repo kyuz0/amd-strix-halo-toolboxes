@@ -2,7 +2,7 @@
 
 This project provides pre-built containers (“toolboxes”) for running LLMs on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs. Toolbx is the standard developer container system in Fedora (and now works on Ubuntu, openSUSE, Arch, etc).
 
-## 🚨 Updates — 2025-1-18
+## 🚨 Updates — 2025-11-18
 
 - Released new toolboxes for ROCm 7 that track the nightly builds, these are now called `alpha`. 
 - Updated and extended benchmakrs across all llama.cpp backend configurations, and included bennchmarks over RPC (two nodes) and long context (32k) -> [Interactive Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
