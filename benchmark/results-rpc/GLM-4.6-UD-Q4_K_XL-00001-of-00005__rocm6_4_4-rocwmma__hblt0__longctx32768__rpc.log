@@ -1,0 +1,10 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| glm4moe 355B.A32B Q4_K - Medium | 189.69 GiB |   356.79 B | ROCm,RPC   |  99 |     2048 |  1 |    0 | pp2048 @ d32768 |          6.54 ± 0.00 |
+| glm4moe 355B.A32B Q4_K - Medium | 189.69 GiB |   356.79 B | ROCm,RPC   |  99 |     2048 |  1 |    0 |   tg32 @ d32768 |          0.81 ± 0.00 |
+
+build: caca0d55c (7085)

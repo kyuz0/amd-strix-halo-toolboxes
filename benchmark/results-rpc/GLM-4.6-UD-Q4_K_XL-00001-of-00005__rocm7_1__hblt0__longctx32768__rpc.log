@@ -1,0 +1,36 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+:0:rocdevice.cpp            :3580: 143267106124 us:  Callback: Queue 0x7f2f8a400000 aborting with error : HSA_STATUS_ERROR_EXCEPTION: An HSAIL operation resulted in a hardware exception. code: 0x1016
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+Kernel Name: _ZL15flash_attn_tileILi128ELi128ELi16ELi4ELb0EEvPKcS1_S1_S1_S1_PKiPfP15HIP_vector_typeIfLj2EEffffjfiiiiiiiiiiiiiliiliiiiil
+VGPU=0xe824a70 SWq=0x7f308c9e2000, HWq=0x7f2f8a400000, id=2
+	Dispatch Header =0xb02 (type=2, barrier=1, acquire=1, release=1), setup=0
+	grid=[4096, 8, 24], workgroup=[32, 8, 1]
+	private_seg_size=0, group_seg_size=33792
+	kernel_obj=0x7f11bd42f700, kernarg_address=0x0x7f2f8a201e80
+	completion_signal=0x0, correlation_id=0
+	rptr=23, wptr=24
+ /opt/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:89: ROCm error
+/usr/local/lib64/libggml-base.so.0(+0x3565) [0x7f30cc2c5565]
+/usr/local/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7f30cc2c592b]
+/usr/local/lib64/libggml-base.so.0(ggml_abort+0x11f) [0x7f30cc2c5aaf]
+/usr/local/lib64/libggml-hip.so.0(+0x294e092) [0x7f30cecd0092]
+/usr/local/lib64/libggml-hip.so.0(+0x295f107) [0x7f30cece1107]
+/usr/local/lib64/libggml-hip.so.0(+0x295d9dd) [0x7f30cecdf9dd]
+/usr/local/lib64/libggml-hip.so.0(+0x295c95d) [0x7f30cecde95d]
+/usr/local/lib64/libggml-hip.so.0(+0x29575c7) [0x7f30cecd95c7]
+/usr/local/lib64/libggml-hip.so.0(+0x29540ea) [0x7f30cecd60ea]
+/usr/local/lib64/libggml-hip.so.0(+0x295319f) [0x7f30cecd519f]
+/usr/local/lib64/libggml-base.so.0(ggml_backend_sched_graph_compute_async+0x7f3) [0x7f30cc2dfde3]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context13graph_computeEP11ggml_cgraphb+0xa0) [0x7f30cf378650]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context14process_ubatchERK12llama_ubatch14llm_graph_typeP22llama_memory_context_iR11ggml_status+0xe2) [0x7f30cf37a2e2]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context6decodeERK11llama_batch+0x3bf) [0x7f30cf37f1bf]
+/usr/local/lib64/libllama.so.0(llama_decode+0xe) [0x7f30cf38000e]
+/usr/local/bin/llama-bench() [0x40a3db]
+/usr/local/bin/llama-bench() [0x407edc]
+/lib64/libc.so.6(+0x35b5) [0x7f30cbc5b5b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7f30cbc5b668]
+/usr/local/bin/llama-bench() [0x409255]
