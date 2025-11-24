@@ -9,10 +9,16 @@ on:
           Use "all" to build everything.
         required: false
         default: all
+      apply_llama_pr_15405:
+        description: >
+          Set to 0 to skip applying PR 15405 during the build (default applies it).
+        required: false
+        default: ""
 
 env:
   DOCKERHUB_REPO: docker.io/kyuz0/amd-strix-halo-toolboxes
   LOCAL_PREFIX: llama
+  APPLY_LLAMA_PR_15405: ${{ github.event.inputs.apply_llama_pr_15405 }}
 
 jobs:
   # 1) Prepare a clean JSON array for the matrix
@@ -78,14 +84,26 @@ jobs:
         run: |
           set -euo pipefail
           B="${{ matrix.backend }}"
+          APPLY_INPUT="${APPLY_LLAMA_PR_15405:-}"
+          BUILD_ARGS=()
+          NAME_SUFFIX=""
+
+          if [[ -n "${APPLY_INPUT}" ]]; then
+            BUILD_ARGS+=(--build-arg "APPLY_LLAMA_PR_15405=${APPLY_INPUT}")
+            if [[ "${APPLY_INPUT}" == "0" ]]; then
+              NAME_SUFFIX="-no-pr15405"
+            fi
+          fi
+
           DF="Dockerfile.$B"
-          LI="${LOCAL_PREFIX}-$B"
-          TAG="${B}_${BUILD_TS}"
+          NAME="${B}${NAME_SUFFIX}"
+          LI="${LOCAL_PREFIX}-${NAME}"
+          TAG="${NAME}_${BUILD_TS}"
           IMM="${DOCKERHUB_REPO}:${TAG}"
-          CHN="${DOCKERHUB_REPO}:${B}"
+          CHN="${DOCKERHUB_REPO}:${NAME}"
 
           echo "→ Building ${DF}"
-          docker build --no-cache -t "${LI}" -f "${DF}" .
+          docker build --no-cache "${BUILD_ARGS[@]}" -t "${LI}" -f "${DF}" .
 
           echo "→ Tag & push immutable → ${IMM}"
           docker tag "${LI}" "${IMM}"
