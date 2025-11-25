@@ -58,10 +58,13 @@ WORKDIR /opt/llama.cpp
 RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
  && git clean -xdf \
  && if [ "${APPLY_LLAMA_PR_15405}" = "1" ]; then \
+      echo "Applying llama.cpp PR 15405"; \
       git config user.email "builder@localhost"; \
       git config user.name "Container Builder"; \
       git fetch origin pull/15405/head:pr-15405; \
       git merge --no-edit pr-15405; \
+    else \
+      echo "Skipping llama.cpp PR 15405"; \
     fi \
  && git submodule update --recursive
 

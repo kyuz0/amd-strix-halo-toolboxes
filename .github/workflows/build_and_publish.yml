@@ -84,13 +84,28 @@ jobs:
         run: |
           set -euo pipefail
           B="${{ matrix.backend }}"
-          APPLY_INPUT="${APPLY_LLAMA_PR_15405:-}"
+          APPLY_RAW="${APPLY_LLAMA_PR_15405:-}"
+          APPLY_INPUT="$(echo "${APPLY_RAW}" | tr -d '[:space:]')"
+          APPLY_VALUE=""
+          case "${APPLY_INPUT}" in
+            "")
+              echo "→ APPLY_LLAMA_PR_15405 not provided; using Dockerfile defaults for ${B}"
+              ;;
+            0|1)
+              APPLY_VALUE="${APPLY_INPUT}"
+              ;;
+            *)
+              echo "Invalid APPLY_LLAMA_PR_15405 value: '${APPLY_INPUT}'. Expected 0 or 1."
+              exit 1
+              ;;
+          esac
+
           BUILD_ARGS=()
           NAME_SUFFIX=""
 
-          if [[ -n "${APPLY_INPUT}" ]]; then
-            BUILD_ARGS+=(--build-arg "APPLY_LLAMA_PR_15405=${APPLY_INPUT}")
-            if [[ "${APPLY_INPUT}" == "0" ]]; then
+          if [[ -n "${APPLY_VALUE}" ]]; then
+            BUILD_ARGS+=(--build-arg "APPLY_LLAMA_PR_15405=${APPLY_VALUE}")
+            if [[ "${APPLY_VALUE}" == "0" ]]; then
               NAME_SUFFIX="-no-pr15405"
             fi
           fi
@@ -102,7 +117,17 @@ jobs:
           IMM="${DOCKERHUB_REPO}:${TAG}"
           CHN="${DOCKERHUB_REPO}:${NAME}"
 
-          echo "→ Building ${DF}"
+          if [[ -n "${APPLY_VALUE}" ]]; then
+            if [[ "${APPLY_VALUE}" == "1" ]]; then
+              echo "→ Building ${DF} with llama.cpp PR 15405 applied"
+            else
+              echo "→ Building ${DF} with llama.cpp PR 15405 skipped"
+            fi
+          else
+            echo "→ Building ${DF} using Dockerfile default PR behavior"
+          fi
+
+          echo "→ Docker build args: ${BUILD_ARGS[*]:-(default)}"
           docker build --no-cache "${BUILD_ARGS[@]}" -t "${LI}" -f "${DF}" .
 
           echo "→ Tag & push immutable → ${IMM}"
