@@ -177,13 +177,14 @@ toolbox create llama-rocm-7.1-rocwmma \
 
 ### 2.1.1 Ubuntu users
 
-Shantur from the Strix Halo Discord server noted that to get these toolboxes to work on Ubuntu, you need to create a Udev rule to allow all users to use GPU or use toolbox with sudo:
+Ubuntu’s `toolbox` package still breaks GPU access, so follow gyhor’s [issue comment](https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/16#issuecomment-3582028864) and use [Distrobox](https://github.com/89luca89/distrobox) instead:
 
-Create a udev rule in /etc/udev/rules.d/99-amd-kfd.rules
-
-```
-SUBSYSTEM=="kfd", GROUP="render", MODE="0666", OPTIONS+="last_rule"
-SUBSYSTEM=="drm", KERNEL=="card[0-9]*", GROUP="render", MODE="0666", OPTIONS+="last_rule"
+```sh
+distrobox create -n llama-rocm-7.1 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1-rocwmma \
+  --additional-flags "--device /dev/kfd --device /dev/dri --group-add video --group-add render --security-opt seccomp=unconfined"
+distrobox enter llama-rocm-7.1
+llama-cli --list-devices
 ```
 
 ### 2.1.2 Toolbox Refresh Script (Automatic Updates)
