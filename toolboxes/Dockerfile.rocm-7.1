@@ -1,7 +1,5 @@
 # build stage
 FROM registry.fedoraproject.org/fedora:43 AS builder
-# Toggle llama.cpp PR 15405 (RPC perf for large models)
-ARG APPLY_LLAMA_PR_15405=1
 
 # rocm 7.1 repo
 RUN <<'EOF'
@@ -40,15 +38,6 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 
 # build
 RUN git clean -xdf \
- && if [ "${APPLY_LLAMA_PR_15405}" = "1" ]; then \
-      echo "Applying llama.cpp PR 15405"; \
-      git config user.email "builder@localhost"; \
-      git config user.name "Container Builder"; \
-      git fetch origin pull/15405/head:pr-15405; \
-      git merge --no-edit pr-15405; \
-    else \
-      echo "Skipping llama.cpp PR 15405"; \
-    fi \
  && git submodule update --recursive \
  && cmake -S . -B build \
       -DGGML_HIP=ON \

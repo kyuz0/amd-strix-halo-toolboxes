@@ -9,16 +9,10 @@ on:
           Use "all" to build everything.
         required: false
         default: all
-      apply_llama_pr_15405:
-        description: >
-          Set to 0 to skip applying PR 15405 during the build (default applies it).
-        required: false
-        default: ""
 
 env:
   DOCKERHUB_REPO: docker.io/kyuz0/amd-strix-halo-toolboxes
   LOCAL_PREFIX: llama
-  APPLY_LLAMA_PR_15405: ${{ github.event.inputs.apply_llama_pr_15405 }}
 
 jobs:
   # 1) Prepare a clean JSON array for the matrix
@@ -84,51 +78,15 @@ jobs:
         run: |
           set -euo pipefail
           B="${{ matrix.backend }}"
-          APPLY_RAW="${APPLY_LLAMA_PR_15405:-}"
-          APPLY_INPUT="$(echo "${APPLY_RAW}" | tr -d '[:space:]')"
-          APPLY_VALUE=""
-          case "${APPLY_INPUT}" in
-            "")
-              echo "→ APPLY_LLAMA_PR_15405 not provided; using Dockerfile defaults for ${B}"
-              ;;
-            0|1)
-              APPLY_VALUE="${APPLY_INPUT}"
-              ;;
-            *)
-              echo "Invalid APPLY_LLAMA_PR_15405 value: '${APPLY_INPUT}'. Expected 0 or 1."
-              exit 1
-              ;;
-          esac
-
-          BUILD_ARGS=()
-          NAME_SUFFIX=""
-
-          if [[ -n "${APPLY_VALUE}" ]]; then
-            BUILD_ARGS+=(--build-arg "APPLY_LLAMA_PR_15405=${APPLY_VALUE}")
-            if [[ "${APPLY_VALUE}" == "0" ]]; then
-              NAME_SUFFIX="-no-pr15405"
-            fi
-          fi
-
           DF="Dockerfile.$B"
-          NAME="${B}${NAME_SUFFIX}"
+          NAME="${B}"
           LI="${LOCAL_PREFIX}-${NAME}"
           TAG="${NAME}_${BUILD_TS}"
           IMM="${DOCKERHUB_REPO}:${TAG}"
           CHN="${DOCKERHUB_REPO}:${NAME}"
 
-          if [[ -n "${APPLY_VALUE}" ]]; then
-            if [[ "${APPLY_VALUE}" == "1" ]]; then
-              echo "→ Building ${DF} with llama.cpp PR 15405 applied"
-            else
-              echo "→ Building ${DF} with llama.cpp PR 15405 skipped"
-            fi
-          else
-            echo "→ Building ${DF} using Dockerfile default PR behavior"
-          fi
-
-          echo "→ Docker build args: ${BUILD_ARGS[*]:-(default)}"
-          docker build --no-cache "${BUILD_ARGS[@]}" -t "${LI}" -f "${DF}" .
+          echo "→ Building ${DF}"
+          docker build --no-cache -t "${LI}" -f "${DF}" .
 
           echo "→ Tag & push immutable → ${IMM}"
           docker tag "${LI}" "${IMM}"
