@@ -338,19 +338,18 @@ This should work on any Strix Halo. For a complete list of available hardware, s
 
 ### 6.2 Kernel Parameters (tested on Fedora 42)
 
-Add these these boot parameters to enable unified memory and optimal performance:
+Add these boot parameters to enable unified memory while reserving a minimum of 4 GiB for the OS (max 124 GiB for iGPU):
 
-```
-amd_iommu=off amdgpu.gttsize=131072 ttm.pages_limit=33554432
+amd_iommu=off amdgpu.gttsize=126976 ttm.pages_limit=32505856
 
-```
-| Parameter                   | Purpose                                                                                  |
-| --------------------------- | ----------------------------------------------------------------------------------------- |
-| `amd_iommu=off`             | Disables IOMMU for lower latency                                                         |
-| `amdgpu.gttsize=131072`     | Enables unified GPU/system memory (up to 128 GiB); 131072 MiB ÷ 1024 = 128 GiB           |
-| `ttm.pages_limit=33554432`  | Allows large pinned memory allocations; 33554432 × 4 KiB = 134217728 KiB ÷ 1024² = 128 GiB |
+| Parameter                   | Purpose                                                                                    |
+|-----------------------------|--------------------------------------------------------------------------------------------|
+| `amd_iommu=off`             | Disables IOMMU for lower latency                                                           |
+| `amdgpu.gttsize=126976`     | Caps GPU unified memory to 124 GiB; 126976 MiB ÷ 1024 = 124 GiB                            |
+| `ttm.pages_limit=32505856`  | Caps pinned memory to 124 GiB; 32505856 × 4 KiB = 126976 MiB = 124 GiB                     |
 
-Source: https://www.reddit.com/r/LocalLLaMA/comments/1m9wcdc/comment/n5gf53d/?context=3&utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button.
+Source: https://www.reddit.com/r/LocalLLaMA/comments/1m9wcdc/comment/n5gf53d/?context=3&utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+
 
 **Apply the changes:**
 
