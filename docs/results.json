@@ -1,8 +1,12 @@
 {
   "meta": {
-    "generated_at": "2025-11-28T15:55:43Z",
+    "generated_at": "2025-12-05T08:29:05Z",
     "os_kernel": "Fedora 42 \u2014 Linux 6.15.9-201.fc42.x86_64 (Sat Aug  2 11:37:34 UTC 2025)",
     "llamacpp_builds": [
+      {
+        "hash": "03d9a77b8",
+        "number": "7278"
+      },
       {
         "hash": "0a3857fe0",
         "number": "7089"
@@ -46,10 +50,6 @@
       {
         "hash": "bca95ca51",
         "number": "7036"
-      },
-      {
-        "hash": "c6f7a423c",
-        "number": "7189"
       },
       {
         "hash": "caca0d55c",
@@ -22790,8 +22790,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 245.79,
-      "tps_std": 0.39,
+      "tps_mean": 248.51,
+      "tps_std": 1.01,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -22804,8 +22804,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm-7alpha-rocwmma__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -22818,8 +22818,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 19.3,
-      "tps_std": 0.09,
+      "tps_mean": 25.33,
+      "tps_std": 0.52,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -22832,8 +22832,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm-7alpha-rocwmma__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -22846,8 +22846,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 301.76,
-      "tps_std": 0.36,
+      "tps_mean": 302.76,
+      "tps_std": 0.59,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -22860,8 +22860,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm-7alpha-rocwmma__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -22874,8 +22874,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 23.98,
-      "tps_std": 0.02,
+      "tps_mean": 25.42,
+      "tps_std": 0.29,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -22888,8 +22888,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm-7alpha-rocwmma__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -22902,8 +22902,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 249.8,
-      "tps_std": 4.99,
+      "tps_mean": 242.26,
+      "tps_std": 2.27,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -22916,8 +22916,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm-7alpha__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -22930,8 +22930,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 19.17,
-      "tps_std": 0.01,
+      "tps_mean": 24.98,
+      "tps_std": 0.07,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -22944,8 +22944,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm-7alpha__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -22958,8 +22958,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 305.05,
-      "tps_std": 2.25,
+      "tps_mean": 287.99,
+      "tps_std": 2.09,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -22972,8 +22972,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm-7alpha__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -22986,7 +22986,7 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 23.99,
+      "tps_mean": 26.05,
       "tps_std": 0.16,
       "error": false,
       "error_type": null,
@@ -23000,8 +23000,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm-7alpha__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23014,8 +23014,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 311.74,
-      "tps_std": 3.86,
+      "tps_mean": 318.5,
+      "tps_std": 0.98,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23028,8 +23028,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_4-rocwmma__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23042,8 +23042,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 22.66,
-      "tps_std": 0.25,
+      "tps_mean": 24.75,
+      "tps_std": 0.39,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23056,8 +23056,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_4-rocwmma__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23070,8 +23070,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 313.2,
-      "tps_std": 3.93,
+      "tps_mean": 325.56,
+      "tps_std": 2.18,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23084,8 +23084,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_4-rocwmma__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23098,8 +23098,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 23.02,
-      "tps_std": 0.3,
+      "tps_mean": 24.95,
+      "tps_std": 0.39,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23112,8 +23112,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_4-rocwmma__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23126,8 +23126,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 320.42,
-      "tps_std": 0.35,
+      "tps_mean": 320.64,
+      "tps_std": 0.8,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23140,8 +23140,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_4__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23154,8 +23154,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 23.06,
-      "tps_std": 0.13,
+      "tps_mean": 24.55,
+      "tps_std": 0.01,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23168,8 +23168,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_4__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23181,21 +23181,52 @@
       "fa": true,
       "context": "default",
       "context_tokens": null,
-      "test": null,
-      "tps_mean": null,
-      "tps_std": null,
+      "test": "pp512",
+      "tps_mean": 325.06,
+      "tps_std": 1.27,
       "error": false,
       "error_type": null,
-      "backend": null,
-      "ngl": null,
-      "mmap": null,
-      "params_b": null,
-      "file_size_gib": null,
-      "name_params_b": 80.0,
+      "backend": "ROCm",
+      "ngl": 99,
+      "mmap": 0,
+      "params_b": 79.67,
+      "file_size_gib": 79.57,
+      "name_params_b": 79.67,
       "quant": "Q8_K_XL",
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_4__hblt0__fa1.log",
       "rpc": false,
-      "build": null
+      "build": {
+        "hash": "03d9a77b8",
+        "number": "7278"
+      }
+    },
+    {
+      "model": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002",
+      "model_clean": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL",
+      "env": "rocm6_4_4-hblt0",
+      "env_base": "rocm6_4_4",
+      "env_variant": "hblt0",
+      "fa": true,
+      "context": "default",
+      "context_tokens": null,
+      "test": "tg128",
+      "tps_mean": 25.14,
+      "tps_std": 0.02,
+      "error": false,
+      "error_type": null,
+      "backend": "ROCm",
+      "ngl": 99,
+      "mmap": 0,
+      "params_b": 79.67,
+      "file_size_gib": 79.57,
+      "name_params_b": 79.67,
+      "quant": "Q8_K_XL",
+      "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm6_4_4__hblt0__fa1.log",
+      "rpc": false,
+      "build": {
+        "hash": "03d9a77b8",
+        "number": "7278"
+      }
     },
     {
       "model": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002",
@@ -23207,8 +23238,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 258.3,
-      "tps_std": 2.66,
+      "tps_mean": 264.35,
+      "tps_std": 7.13,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23221,8 +23252,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1-rocwmma__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23235,8 +23266,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 18.49,
-      "tps_std": 0.24,
+      "tps_mean": 24.89,
+      "tps_std": 0.59,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23249,8 +23280,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1-rocwmma__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23263,8 +23294,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 322.7,
-      "tps_std": 2.1,
+      "tps_mean": 321.93,
+      "tps_std": 4.64,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23277,8 +23308,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1-rocwmma__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23291,8 +23322,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 23.45,
-      "tps_std": 0.19,
+      "tps_mean": 24.64,
+      "tps_std": 1.29,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23305,8 +23336,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1-rocwmma__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23319,8 +23350,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 253.35,
-      "tps_std": 2.88,
+      "tps_mean": 256.63,
+      "tps_std": 1.91,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23333,8 +23364,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23347,63 +23378,7 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 18.25,
-      "tps_std": 0.15,
-      "error": false,
-      "error_type": null,
-      "backend": "ROCm",
-      "ngl": 99,
-      "mmap": 0,
-      "params_b": 79.67,
-      "file_size_gib": 79.57,
-      "name_params_b": 79.67,
-      "quant": "Q8_K_XL",
-      "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1__fa1.log",
-      "rpc": false,
-      "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
-      }
-    },
-    {
-      "model": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002",
-      "model_clean": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL",
-      "env": "rocm7.1-hblt0",
-      "env_base": "rocm7.1",
-      "env_variant": "hblt0",
-      "fa": true,
-      "context": "default",
-      "context_tokens": null,
-      "test": "pp512",
-      "tps_mean": 319.09,
-      "tps_std": 2.77,
-      "error": false,
-      "error_type": null,
-      "backend": "ROCm",
-      "ngl": 99,
-      "mmap": 0,
-      "params_b": 79.67,
-      "file_size_gib": 79.57,
-      "name_params_b": 79.67,
-      "quant": "Q8_K_XL",
-      "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1__hblt0__fa1.log",
-      "rpc": false,
-      "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
-      }
-    },
-    {
-      "model": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002",
-      "model_clean": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL",
-      "env": "rocm7.1-hblt0",
-      "env_base": "rocm7.1",
-      "env_variant": "hblt0",
-      "fa": true,
-      "context": "default",
-      "context_tokens": null,
-      "test": "tg128",
-      "tps_mean": 23.72,
+      "tps_mean": 25.18,
       "tps_std": 0.03,
       "error": false,
       "error_type": null,
@@ -23414,11 +23389,67 @@
       "file_size_gib": 79.57,
       "name_params_b": 79.67,
       "quant": "Q8_K_XL",
+      "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1__fa1.log",
+      "rpc": false,
+      "build": {
+        "hash": "03d9a77b8",
+        "number": "7278"
+      }
+    },
+    {
+      "model": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002",
+      "model_clean": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL",
+      "env": "rocm7.1-hblt0",
+      "env_base": "rocm7.1",
+      "env_variant": "hblt0",
+      "fa": true,
+      "context": "default",
+      "context_tokens": null,
+      "test": "pp512",
+      "tps_mean": 324.95,
+      "tps_std": 0.42,
+      "error": false,
+      "error_type": null,
+      "backend": "ROCm",
+      "ngl": 99,
+      "mmap": 0,
+      "params_b": 79.67,
+      "file_size_gib": 79.57,
+      "name_params_b": 79.67,
+      "quant": "Q8_K_XL",
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
+      }
+    },
+    {
+      "model": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002",
+      "model_clean": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL",
+      "env": "rocm7.1-hblt0",
+      "env_base": "rocm7.1",
+      "env_variant": "hblt0",
+      "fa": true,
+      "context": "default",
+      "context_tokens": null,
+      "test": "tg128",
+      "tps_mean": 25.54,
+      "tps_std": 0.14,
+      "error": false,
+      "error_type": null,
+      "backend": "ROCm",
+      "ngl": 99,
+      "mmap": 0,
+      "params_b": 79.67,
+      "file_size_gib": 79.57,
+      "name_params_b": 79.67,
+      "quant": "Q8_K_XL",
+      "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7.1__hblt0__fa1.log",
+      "rpc": false,
+      "build": {
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23431,8 +23462,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 254.34,
-      "tps_std": 2.6,
+      "tps_mean": 255.48,
+      "tps_std": 2.19,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23445,8 +23476,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc-rocwmma__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23459,8 +23490,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 18.06,
-      "tps_std": 0.08,
+      "tps_mean": 24.31,
+      "tps_std": 0.65,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23473,8 +23504,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc-rocwmma__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23487,8 +23518,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 323.33,
-      "tps_std": 1.75,
+      "tps_mean": 327.95,
+      "tps_std": 1.55,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23501,8 +23532,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc-rocwmma__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23515,8 +23546,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 23.37,
-      "tps_std": 0.17,
+      "tps_mean": 24.64,
+      "tps_std": 1.08,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23529,8 +23560,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc-rocwmma__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23543,8 +23574,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 242.43,
-      "tps_std": 0.28,
+      "tps_mean": 264.12,
+      "tps_std": 2.61,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23557,8 +23588,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23571,8 +23602,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 18.35,
-      "tps_std": 0.1,
+      "tps_mean": 24.94,
+      "tps_std": 0.15,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23585,8 +23616,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23599,8 +23630,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 305.22,
-      "tps_std": 3.1,
+      "tps_mean": 328.73,
+      "tps_std": 4.15,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23613,8 +23644,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23627,8 +23658,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 23.6,
-      "tps_std": 0.08,
+      "tps_mean": 25.46,
+      "tps_std": 0.21,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
@@ -23641,8 +23672,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__rocm7_rc__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23654,21 +23685,52 @@
       "fa": true,
       "context": "default",
       "context_tokens": null,
-      "test": null,
-      "tps_mean": null,
-      "tps_std": null,
-      "error": true,
-      "error_type": "load",
-      "backend": null,
-      "ngl": null,
-      "mmap": null,
-      "params_b": null,
-      "file_size_gib": null,
-      "name_params_b": 80.0,
+      "test": "pp512",
+      "tps_mean": 417.28,
+      "tps_std": 0.97,
+      "error": false,
+      "error_type": null,
+      "backend": "Vulkan",
+      "ngl": 99,
+      "mmap": 0,
+      "params_b": 79.67,
+      "file_size_gib": 79.57,
+      "name_params_b": 79.67,
       "quant": "Q8_K_XL",
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__vulkan_amdvlk__fa1.log",
       "rpc": false,
-      "build": null
+      "build": {
+        "hash": "03d9a77b8",
+        "number": "7278"
+      }
+    },
+    {
+      "model": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002",
+      "model_clean": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL",
+      "env": "vulkan_amdvlk",
+      "env_base": "vulkan_amdvlk",
+      "env_variant": null,
+      "fa": true,
+      "context": "default",
+      "context_tokens": null,
+      "test": "tg128",
+      "tps_mean": 30.31,
+      "tps_std": 0.01,
+      "error": false,
+      "error_type": null,
+      "backend": "Vulkan",
+      "ngl": 99,
+      "mmap": 0,
+      "params_b": 79.67,
+      "file_size_gib": 79.57,
+      "name_params_b": 79.67,
+      "quant": "Q8_K_XL",
+      "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__vulkan_amdvlk__fa1.log",
+      "rpc": false,
+      "build": {
+        "hash": "03d9a77b8",
+        "number": "7278"
+      }
     },
     {
       "model": "Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002",
@@ -23680,8 +23742,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 324.45,
-      "tps_std": 0.42,
+      "tps_mean": 333.74,
+      "tps_std": 1.19,
       "error": false,
       "error_type": null,
       "backend": "Vulkan",
@@ -23694,8 +23756,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__vulkan_radv__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -23708,8 +23770,8 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 22.31,
-      "tps_std": 0.18,
+      "tps_mean": 27.76,
+      "tps_std": 0.01,
       "error": false,
       "error_type": null,
       "backend": "Vulkan",
@@ -23722,8 +23784,8 @@
       "log": "results/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__vulkan_radv__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "c6f7a423c",
-        "number": "7189"
+        "hash": "03d9a77b8",
+        "number": "7278"
       }
     },
     {
@@ -39368,6 +39430,56 @@
         "hash": "1c398dc9e",
         "number": "7034"
       }
+    },
+    {
+      "model": "gpt-oss-20b-uncensored.Q8_0",
+      "model_clean": "gpt-oss-20b-uncensored.Q8_0",
+      "env": "rocm7_rc",
+      "env_base": "rocm7_rc",
+      "env_variant": null,
+      "fa": true,
+      "context": "default",
+      "context_tokens": null,
+      "test": null,
+      "tps_mean": null,
+      "tps_std": null,
+      "error": false,
+      "error_type": null,
+      "backend": null,
+      "ngl": null,
+      "mmap": null,
+      "params_b": null,
+      "file_size_gib": null,
+      "name_params_b": null,
+      "quant": "Q8_0",
+      "log": "results/gpt-oss-20b-uncensored.Q8_0__rocm7_rc__fa1.log",
+      "rpc": false,
+      "build": null
+    },
+    {
+      "model": "gpt-oss-20b-uncensored.Q8_0",
+      "model_clean": "gpt-oss-20b-uncensored.Q8_0",
+      "env": "rocm7_rc",
+      "env_base": "rocm7_rc",
+      "env_variant": null,
+      "fa": true,
+      "context": "longctx32768",
+      "context_tokens": 32768,
+      "test": null,
+      "tps_mean": null,
+      "tps_std": null,
+      "error": false,
+      "error_type": null,
+      "backend": null,
+      "ngl": null,
+      "mmap": null,
+      "params_b": null,
+      "file_size_gib": null,
+      "name_params_b": null,
+      "quant": "Q8_0",
+      "log": "results/gpt-oss-20b-uncensored.Q8_0__rocm7_rc__fa1__longctx32768.log",
+      "rpc": false,
+      "build": null
     },
     {
       "model": "llama-2-7b.Q4_0",

@@ -4,7 +4,7 @@ ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
 | model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
-| qwen3next ?B Q8_0              |  79.57 GiB |    79.67 B | ROCm       |  99 |  1 |    0 |           pp512 |        320.42 ± 0.35 |
-| qwen3next ?B Q8_0              |  79.57 GiB |    79.67 B | ROCm       |  99 |  1 |    0 |           tg128 |         23.06 ± 0.13 |
+| qwen3next ?B Q8_0              |  79.57 GiB |    79.67 B | ROCm       |  99 |  1 |    0 |           pp512 |        320.64 ± 0.80 |
+| qwen3next ?B Q8_0              |  79.57 GiB |    79.67 B | ROCm       |  99 |  1 |    0 |           tg128 |         24.55 ± 0.01 |
 
-build: c6f7a423c (7189)
+build: 03d9a77b8 (7278)

@@ -2,7 +2,7 @@ ggml_vulkan: Found 1 Vulkan devices:
 ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 32768 | int dot: 1 | matrix cores: KHR_coopmat
 | model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
-ggml_vulkan: Device memory allocation of size 614888064 failed.
-ggml_vulkan: vk::Device::allocateMemory: ErrorOutOfHostMemory
-main: error: failed to load model '/home/kyuz0/models/UD-Q8_K_XL/Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002.gguf'
-✖ ! [vulkan_amdvlk] Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__fa1 failed (exit 0)
+| qwen3next ?B Q8_0              |  79.57 GiB |    79.67 B | Vulkan     |  99 |  1 |    0 |           pp512 |        417.28 ± 0.97 |
+| qwen3next ?B Q8_0              |  79.57 GiB |    79.67 B | Vulkan     |  99 |  1 |    0 |           tg128 |         30.31 ± 0.01 |
+
+build: 03d9a77b8 (7278)
