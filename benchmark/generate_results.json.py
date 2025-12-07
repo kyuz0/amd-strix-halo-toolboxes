@@ -43,7 +43,7 @@ LONGCTX_RE = re.compile(r"longctx(\d+)", re.IGNORECASE)
 # --- Helpers ---------------------------------------------------------------
 
 ENV_CANON = {
-    "rocm7_1": "rocm7.1",
+    "rocm7_1_1": "rocm7.1.1",
     "rocm7_alpha": "rocm-7alpha",
 }
 

@@ -28,8 +28,8 @@ fi
 declare -A TOOLBOX_IMAGES=(
   [rocm6_4_4]="llama-rocm-6.4.4"
   [rocm6_4_4-rocwmma]="llama-rocm-6.4.4-rocwmma"
-  [rocm7_1]="llama-rocm-7.1"
-  [rocm7_1-rocwmma]="llama-rocm-7.1-rocwmma"
+  [rocm7_1_1]="llama-rocm-7.1.1"
+  [rocm7_1_1-rocwmma]="llama-rocm-7.1.1-rocwmma"
   [rocm7_rc]="llama-rocm-7rc"
   [rocm7_rc-rocwmma]="llama-rocm-7rc-rocwmma"
   [rocm7_alpha]="llama-rocm-7alpha"
@@ -42,8 +42,8 @@ declare -A TOOLBOX_IMAGES=(
 declare -A CLIENT_CMDS=(
   [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
   [rocm6_4_4-rocwmma]="toolbox run -c llama-rocm-6.4.4-rocwmma -- /usr/local/bin/llama-bench"
-  [rocm7_1]="toolbox run -c llama-rocm-7.1 -- /usr/local/bin/llama-bench"
-  [rocm7_1-rocwmma]="toolbox run -c llama-rocm-7.1-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm7_1_1]="toolbox run -c llama-rocm-7.1.1 -- /usr/local/bin/llama-bench"
+  [rocm7_1_1-rocwmma]="toolbox run -c llama-rocm-7.1.1-rocwmma -- /usr/local/bin/llama-bench"
   [rocm7_rc]="toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench"
   [rocm7_rc-rocwmma]="toolbox run -c llama-rocm-7rc-rocwmma -- /usr/local/bin/llama-bench"
   [rocm7_alpha]="toolbox run -c llama-rocm-7alpha -- /usr/local/bin/llama-bench"
@@ -56,8 +56,8 @@ declare -A CLIENT_CMDS=(
 ENVIRONMENTS=(
   rocm6_4_4
   rocm6_4_4-rocwmma
-  rocm7_1
-  rocm7_1-rocwmma
+  rocm7_1_1
+  rocm7_1_1-rocwmma
   rocm7_rc
   rocm7_rc-rocwmma
   rocm7_alpha
