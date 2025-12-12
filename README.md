@@ -336,7 +336,9 @@ This should work on any Strix Halo. For a complete list of available hardware, s
 | **GPU Memory**    | 512 MB allocated in BIOS                      |
 | **Host OS**       | Fedora 42, kernel 6.15.6-200.fc42.x86\_86\_64 |
 
-### 6.2 Kernel Parameters (tested on Fedora 42)
+### 6.2 Kernel Parameters
+
+#### Fedora 42
 
 Add these boot parameters to enable unified memory while reserving a minimum of 4 GiB for the OS (max 124 GiB for iGPU):
 
@@ -350,7 +352,6 @@ amd_iommu=off amdgpu.gttsize=126976 ttm.pages_limit=32505856
 
 Source: https://www.reddit.com/r/LocalLLaMA/comments/1m9wcdc/comment/n5gf53d/?context=3&utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 
-
 **Apply the changes:**
 
 ```
@@ -358,6 +359,20 @@ Source: https://www.reddit.com/r/LocalLLaMA/comments/1m9wcdc/comment/n5gf53d/?co
 sudo grub2-mkconfig -o /boot/grub2/grub.cfg
 sudo reboot
 ```
+
+#### Fedora 43
+
+`amdgpu.gttsize` is deprecated on Fedora 43 and one needs to use `ttm.pages_limit` and `ttm.page_pool_size` instead.
+
+amd_iommu=off ttm.pages_limit=32505856 ttm.page_pool_size=32505856
+
+| Parameter                      | Purpose                                                                                    |
+|--------------------------------|--------------------------------------------------------------------------------------------|
+| `amd_iommu=off`                | Disables IOMMU for lower latency                                                           |
+| `ttm.pages_limit=32505856`     | Caps GPU unified memory to 124 GiB; 126976 MiB ÷ 1024 = 124 GiB                            |
+| `ttm.page_pool_size=32505856`  | Reserve memory to 124 GiB; 32505856 × 4 KiB = 126976 MiB = 124 GiB                         |
+
+Source: https://www.jeffgeerling.com/blog/2025/increasing-vram-allocation-on-amd-ai-apus-under-linux
 
 ### 6.3 Ubuntu 24.04
 
