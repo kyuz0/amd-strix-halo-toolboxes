@@ -1,0 +1,17 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+:0:rocdevice.cpp            :3582: 48997963017 us:  Callback: Queue 0x7ff041800000 aborting with error : HSA_STATUS_ERROR_MEMORY_APERTURE_VIOLATION: The agent attempted to access memory beyond the largest legal address. code: 0x29
+Hip error: 'an illegal memory access was encountered'(700) at /therock/src/rocm-libraries/projects/hipblaslt/library/src/amd_detail/hipblaslt.cpp:147
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+Kernel Name: _ZL15flash_attn_tileILi128ELi128ELi16ELi4ELb0EEvPKcS1_S1_S1_S1_PKiPfP15HIP_vector_typeIfLj2EEffffjfiS5_IjLj3EEiiiiiiiiiiiliiliiiiil
+VGPU=0xe715690 SWq=0x7ff143a14000, HWq=0x7ff041800000, id=3
+	Dispatch Header =0xb02 (type=2, barrier=1, acquire=1, release=1), setup=0
+	grid=[4096, 8, 24], workgroup=[32, 8, 1]
+	private_seg_size=0, group_seg_size=33792
+	kernel_obj=0x7fdfbe030100, kernarg_address=0x0x7ff040801600
+	completion_signal=0x0, correlation_id=0
+	rptr=15, wptr=47
+ ✖ ! [rocm7_rc] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__fa1 __longctx16384 failed (exit 0)

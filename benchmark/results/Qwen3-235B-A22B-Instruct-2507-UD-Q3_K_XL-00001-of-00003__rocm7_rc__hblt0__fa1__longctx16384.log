@@ -1,0 +1,24 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+/opt/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:94: ROCm error
+/usr/local/lib64/libggml-base.so.0(+0x35a5) [0x7ff5be8415a5]
+/usr/local/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7ff5be84196b]
+/usr/local/lib64/libggml-base.so.0(ggml_abort+0x11f) [0x7ff5be841aef]
+/usr/local/lib64/libggml-hip.so.0(+0x2d4b5f2) [0x7ff5c16495f2]
+/usr/local/lib64/libggml-hip.so.0(+0x2d55ff5) [0x7ff5c1653ff5]
+/usr/local/lib64/libggml-hip.so.0(+0x2d5083f) [0x7ff5c164e83f]
+/usr/local/lib64/libggml-base.so.0(ggml_backend_sched_graph_compute_async+0x7f3) [0x7ff5be85c483]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context13graph_computeEP11ggml_cgraphb+0xa0) [0x7ff5c1d1f7e0]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context14process_ubatchERK12llama_ubatch14llm_graph_typeP22llama_memory_context_iR11ggml_status+0xe2) [0x7ff5c1d212b2]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context6decodeERK11llama_batch+0x3bf) [0x7ff5c1d266ff]
+/usr/local/lib64/libllama.so.0(llama_decode+0xe) [0x7ff5c1d274fe]
+/usr/local/bin/llama-bench() [0x40ad9b]
+/usr/local/bin/llama-bench() [0x4088ac]
+/lib64/libc.so.6(+0x35b5) [0x7ff5be1d75b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7ff5be1d7668]
+/usr/local/bin/llama-bench() [0x409c25]
+✖ ! [rocm7_rc] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003__hblt0__fa1 __longctx16384 failed (exit 0)

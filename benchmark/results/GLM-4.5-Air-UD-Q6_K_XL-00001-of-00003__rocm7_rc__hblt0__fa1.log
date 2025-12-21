@@ -2,9 +2,26 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
-| glm4moe 106B.A12B Q6_K         |  94.57 GiB |   110.47 B | ROCm       |  99 |     2048 |  1 |    0 |           pp512 |        130.86 ± 0.36 |
-| glm4moe 106B.A12B Q6_K         |  94.57 GiB |   110.47 B | ROCm       |  99 |     2048 |  1 |    0 |           tg128 |         16.53 ± 0.06 |
-
-build: 1c398dc9e (7034)
+| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
+/opt/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:94: ROCm error
+/usr/local/lib64/libggml-base.so.0(+0x35a5) [0x7f48fca035a5]
+/usr/local/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7f48fca0396b]
+/usr/local/lib64/libggml-base.so.0(ggml_abort+0x11f) [0x7f48fca03aef]
+/usr/local/lib64/libggml-hip.so.0(+0x2d4b5f2) [0x7f48ff80b5f2]
+/usr/local/lib64/libggml-hip.so.0(+0x2d5fe47) [0x7f48ff81fe47]
+/usr/local/lib64/libggml-hip.so.0(_Z19ggml_cuda_mul_mat_qR25ggml_backend_cuda_contextPK11ggml_tensorS3_S3_PS1_+0x7d3) [0x7f48ff98aba3]
+/usr/local/lib64/libggml-hip.so.0(+0x2d5802c) [0x7f48ff81802c]
+/usr/local/lib64/libggml-hip.so.0(+0x2d53e28) [0x7f48ff813e28]
+/usr/local/lib64/libggml-hip.so.0(+0x2d5083f) [0x7f48ff81083f]
+/usr/local/lib64/libggml-base.so.0(ggml_backend_sched_graph_compute_async+0x7f3) [0x7f48fca1e483]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context13graph_computeEP11ggml_cgraphb+0xa0) [0x7f48ffee17e0]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context14process_ubatchERK12llama_ubatch14llm_graph_typeP22llama_memory_context_iR11ggml_status+0xe2) [0x7f48ffee32b2]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context6decodeERK11llama_batch+0x3bf) [0x7f48ffee86ff]
+/usr/local/lib64/libllama.so.0(llama_decode+0xe) [0x7f48ffee94fe]
+/usr/local/bin/llama-bench() [0x40ad9b]
+/usr/local/bin/llama-bench() [0x4088ac]
+/lib64/libc.so.6(+0x35b5) [0x7f48fc3995b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7f48fc399668]
+/usr/local/bin/llama-bench() [0x409c25]
+✖ ! [rocm7_rc] GLM-4.5-Air-UD-Q6_K_XL-00001-of-00003__hblt0__fa1 failed (exit 0)

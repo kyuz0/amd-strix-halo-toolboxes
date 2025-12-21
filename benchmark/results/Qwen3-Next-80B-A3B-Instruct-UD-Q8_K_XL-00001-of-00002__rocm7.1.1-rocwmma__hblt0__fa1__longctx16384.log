@@ -1,0 +1,33 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| qwen3next 80B.A3B Q8_0         |  79.57 GiB |    79.67 B | ROCm       |  99 |     2048 |  1 |    0 | pp2048 @ d16384 |        451.46 ± 0.00 |
+:0:rocdevice.cpp            :3587: 7778304718 us:  Callback: Queue 0x7f5274500000 aborting with error : HSA_STATUS_ERROR_MEMORY_APERTURE_VIOLATION: The agent attempted to access memory beyond the largest legal address. code: 0x29
+Kernel Name: _ZL18flash_attn_ext_vecILi256ELi1EL9ggml_type1ELS0_1ELb0EEvPKcS2_S2_S2_S2_PKiPfP15HIP_vector_typeIfLj2EEffffjfiS6_IjLj3EEiiiiiiiiiiiliiliiiiil
+VGPU=0x3fa84a70 SWq=0x7f5276f10000, HWq=0x7f5274500000, id=2
+	Dispatch Header =0xb02 (type=2, barrier=1, acquire=1, release=1), setup=0
+	grid=[32, 60, 16], workgroup=[32, 4, 1]
+	private_seg_size=0, group_seg_size=8448
+	kernel_obj=0x7f5275b4f600, kernarg_address=0x0x7f3d88d43980
+	completion_signal=0x0, correlation_id=0
+	rptr=813327, wptr=816270
+ /opt/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:94: ROCm error
+/usr/local/lib64/libggml-base.so.0(+0x35a5) [0x7f52b67fb5a5]
+/usr/local/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7f52b67fb96b]
+/usr/local/lib64/libggml-base.so.0(ggml_abort+0x11f) [0x7f52b67fbaef]
+/usr/local/lib64/libggml-hip.so.0(+0x2ca0682) [0x7f52b9558682]
+/usr/local/lib64/libggml-hip.so.0(+0x2cab085) [0x7f52b9563085]
+/usr/local/lib64/libggml-hip.so.0(+0x2ca58cf) [0x7f52b955d8cf]
+/usr/local/lib64/libggml-base.so.0(ggml_backend_sched_graph_compute_async+0x7f3) [0x7f52b6816483]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context13graph_computeEP11ggml_cgraphb+0xa0) [0x7f52b9c2e7e0]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context14process_ubatchERK12llama_ubatch14llm_graph_typeP22llama_memory_context_iR11ggml_status+0xe2) [0x7f52b9c302b2]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context6decodeERK11llama_batch+0x3bf) [0x7f52b9c356ff]
+/usr/local/lib64/libllama.so.0(llama_decode+0xe) [0x7f52b9c364fe]
+/usr/local/bin/llama-bench() [0x408c92]
+/lib64/libc.so.6(+0x35b5) [0x7f52b61915b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7f52b6191668]
+/usr/local/bin/llama-bench() [0x409c25]
+✖ ! [rocm7.1.1-rocwmma] Qwen3-Next-80B-A3B-Instruct-UD-Q8_K_XL-00001-of-00002__hblt0__fa1 __longctx16384 failed (exit 0)

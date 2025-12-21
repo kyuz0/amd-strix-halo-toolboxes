@@ -1,0 +1,10 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |     2048 |  1 |    0 | pp2048 @ d16384 |         69.68 ± 0.00 |
+Memory access fault by GPU node-1 (Agent handle: 0x168dcd10) on address 0x7fc71a789000. Reason: Page not present or supervisor privilege.
+:0:rocdevice.cpp            :2992: 91563147890 us:  Callback: Queue 0x7fe05ae00000 aborting with error : HSA_STATUS_ERROR_MEMORY_APERTURE_VIOLATION: The agent attempted to access memory beyond the largest legal address. code: 0x29
+✖ ! [rocm6_4_4-rocwmma] Qwen3-235B-A22B-Instruct-2507-UD-Q3_K_XL-00001-of-00003__hblt0__fa1 __longctx16384 failed (exit 0)

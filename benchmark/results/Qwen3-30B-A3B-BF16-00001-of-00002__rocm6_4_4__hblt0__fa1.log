@@ -2,9 +2,5 @@ ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
 ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
-| qwen3moe 30B.A3B BF16          |  56.89 GiB |    30.53 B | ROCm       |  99 |     2048 |  1 |    0 |           pp512 |        362.53 ± 2.36 |
-| qwen3moe 30B.A3B BF16          |  56.89 GiB |    30.53 B | ROCm       |  99 |     2048 |  1 |    0 |           tg128 |         26.80 ± 0.00 |
-
-build: 1c398dc9e (7034)
+HW Exception by GPU node-1 (Agent handle: 0x3cc03d10) reason :GPU Hang
+✖ ! [rocm6_4_4] Qwen3-30B-A3B-BF16-00001-of-00002__hblt0__fa1 failed (exit 0)

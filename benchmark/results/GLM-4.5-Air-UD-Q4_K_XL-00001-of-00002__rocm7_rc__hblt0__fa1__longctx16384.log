@@ -1,0 +1,20 @@
+ggml_cuda_init: GGML_CUDA_FORCE_MMQ:    no
+ggml_cuda_init: GGML_CUDA_FORCE_CUBLAS: no
+ggml_cuda_init: found 1 ROCm devices:
+  Device 0: AMD Radeon Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+/opt/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:94: ROCm error
+/usr/local/lib64/libggml-base.so.0(+0x35a5) [0x7f126437b5a5]
+/usr/local/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7f126437b96b]
+/usr/local/lib64/libggml-base.so.0(ggml_abort+0x11f) [0x7f126437baef]
+/usr/local/lib64/libggml-hip.so.0(+0x2d4b5f2) [0x7f12671835f2]
+/usr/local/lib64/libggml-hip.so.0(+0x2d507ce) [0x7f12671887ce]
+/usr/local/lib64/libggml-base.so.0(ggml_backend_sched_synchronize+0x2e) [0x7f1264392e5e]
+/usr/local/lib64/libllama.so.0(_ZN13llama_context11synchronizeEv+0x10) [0x7f1267858ab0]
+/usr/local/bin/llama-bench() [0x40adbc]
+/usr/local/bin/llama-bench() [0x4088ac]
+/lib64/libc.so.6(+0x35b5) [0x7f1263d115b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7f1263d11668]
+/usr/local/bin/llama-bench() [0x409c25]
+✖ ! [rocm7_rc] GLM-4.5-Air-UD-Q4_K_XL-00001-of-00002__hblt0__fa1 __longctx16384 failed (exit 0)
