@@ -330,11 +330,11 @@ This should work on any Strix Halo. For a complete list of available hardware, s
 
 |                   |                                               |
 | ----------------- | --------------------------------------------- |
-| **Test Machine**  | HP Z2 Mini G1a                                |
+| **Test Machine**  | Framework Desktop                             |
 | **CPU**           | Ryzen AI MAX+ 395 "Strix Halo"                |
 | **System Memory** | 128 GB RAM                                    |
 | **GPU Memory**    | 512 MB allocated in BIOS                      |
-| **Host OS**       | Fedora 42, kernel 6.15.6-200.fc42.x86\_86\_64 |
+| **Host OS**       | Fedora 43, kernel 6.18-rc6.fc42.x86\_86\_64   |
 
 ### 6.2 Kernel Parameters (tested on Fedora 42)
 
