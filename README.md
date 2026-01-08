@@ -2,6 +2,13 @@
 
 This project provides pre-built containers (“toolboxes”) for running LLMs on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs. Toolbx is the standard developer container system in Fedora (and now works on Ubuntu, openSUSE, Arch, etc).
 
+## 🚨 CRITICAL WARNING — 2026-01-08
+
+**Do NOT use `linux-firmware-20251125`.** It breaks ROCm support on Strix Halo (instability/crashes).
+AMD has recalled this update, but if you have already installed it, you must downgrade for now, until Fedora pushes a fix.
+
+👉 **[Click here for Downgrade Instructions & Fix Guide](docs/troubleshooting-firmware.md)**
+
 ## 🚨 Updates — 2025-11-18
 
 - Released new toolboxes for ROCm 7 that track the nightly builds, these are now called `alpha`. 
