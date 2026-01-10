@@ -25,27 +25,23 @@ The recommended stable version is `20251111`.
 ### Fedora 43
 
 ```bash
-# 1. Download the stable firmware packages
-wget -m https://kojipkgs.fedoraproject.org/packages/linux-firmware/20251111/1.fc43/noarch/ -I /packages/linux-firmware/20251111/1.fc43/noarch/
+mkdir -p ~/linux-firmware-downgrade
+cd ~/linux-firmware-downgrade
 
-# 2. Navigate to the download directory
-cd kojipkgs.fedoraproject.org/packages/linux-firmware/20251111/1.fc43/noarch/
+wget -r -np -nd -A '*.rpm' https://kojipkgs.fedoraproject.org/packages/linux-firmware/20251111/1.fc43/noarch/
 
-# 3. Downgrade
-sudo dnf downgrade *.rpm
+sudo dnf downgrade ./*.rpm
 ```
 
 ### Fedora 42
 
 ```bash
-# 1. Download the stable firmware packages
-wget -m https://kojipkgs.fedoraproject.org/packages/linux-firmware/20251111/1.fc42/noarch/ -I /packages/linux-firmware/20251111/1.fc42/noarch/
+mkdir -p ~/linux-firmware-downgrade
+cd ~/linux-firmware-downgrade
 
-# 2. Navigate to the download directory
-cd kojipkgs.fedoraproject.org/packages/linux-firmware/20251111/1.fc42/noarch/
+wget -r -np -nd -A '*.rpm' https://kojipkgs.fedoraproject.org/packages/linux-firmware/20251111/1.fc42/noarch/
 
-# 3. Downgrade
-sudo dnf downgrade *.rpm
+sudo dnf downgrade ./*.rpm
 ```
 
 ---
