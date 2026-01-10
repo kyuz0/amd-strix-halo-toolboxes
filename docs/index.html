@@ -27,9 +27,6 @@
                 <button id="rocwmma-modal-open" type="button" class="chip small legend-pill legend-pill-rocwmma">
                     rocWMMA
                 </button>
-                <button id="rocwmma-impr-modal-open" type="button" class="chip small legend-pill legend-pill-rocwmma-improved">
-                    rocWMMA-improved
-                </button>
             </div>
         </div>
     </header>
@@ -89,13 +86,19 @@
         <div class="modal-content">
             <button id="hipblas-modal-close" class="modal-close" aria-label="Close dialog">×</button>
             <h2 id="hipblas-title">hipBLASLt &amp; hblt0 explained</h2>
-            <p>The ROCm toolboxes ship with <code>ROCBLAS_USE_HIPBLASLT=1</code> by default. This forces rocBLAS to prefer
-                the hipBLASLt kernel library, which historically delivered the best throughput on gfx1151 (Strix Halo).</p>
-            <p>Rows tagged with <code>__hblt0</code> were re-run with <code>ROCBLAS_USE_HIPBLASLT=0</code>, letting rocBLAS
-                auto-select between hipBLASLt, Tensile, or other kernel providers. These runs show how performance shifts when
+            <p>The ROCm toolboxes ship with <code>ROCBLAS_USE_HIPBLASLT=1</code> by default. This forces rocBLAS to
+                prefer
+                the hipBLASLt kernel library, which historically delivered the best throughput on gfx1151 (Strix Halo).
+            </p>
+            <p>Rows tagged with <code>__hblt0</code> were re-run with <code>ROCBLAS_USE_HIPBLASLT=0</code>, letting
+                rocBLAS
+                auto-select between hipBLASLt, Tensile, or other kernel providers. These runs show how performance
+                shifts when
                 the tuned hipBLASLt path is disabled.</p>
-            <p>hipBLASLt is AMD's LT (low-level tuned) matmul backend, optimized for transformer workloads. Disabling it can
-                expose regressions or improvements depending on driver versions, so both configurations are published for
+            <p>hipBLASLt is AMD's LT (low-level tuned) matmul backend, optimized for transformer workloads. Disabling it
+                can
+                expose regressions or improvements depending on driver versions, so both configurations are published
+                for
                 comparison.</p>
         </div>
     </div>
@@ -104,11 +107,15 @@
         <div class="modal-content">
             <button id="rpc-modal-close" class="modal-close" aria-label="Close dialog">×</button>
             <h2 id="rpc-title">RPC · dual server</h2>
-            <p>These results were produced with two Strix Halo systems (Framework Desktop + HP G1a workstation, each 128&nbsp;GB)
+            <p>These results were produced with two Strix Halo systems (Framework Desktop + HP G1a workstation, each
+                128&nbsp;GB)
                 connected over 5&nbsp;Gbps Ethernet. One runs <code>rpc-server</code> from llama.cpp; the other runs
-                <code>llama-bench --rpc</code>.</p>
-            <p>This setup allows distributed inference, splitting large GGUF models across both machines. The metric shows what
-                you can expect when latency is limited by the network and the workload is balanced between two RPC participants.</p>
+                <code>llama-bench --rpc</code>.
+            </p>
+            <p>This setup allows distributed inference, splitting large GGUF models across both machines. The metric
+                shows what
+                you can expect when latency is limited by the network and the workload is balanced between two RPC
+                participants.</p>
         </div>
     </div>
 
@@ -116,21 +123,27 @@
         <div class="modal-content">
             <button id="rocwmma-modal-close" class="modal-close" aria-label="Close dialog">×</button>
             <h2 id="rocwmma-title">rocWMMA variants</h2>
-            <p>Backends labeled <code>-rocwmma</code> are rebuilt with AMD's rocWMMA library, which unlocks matrix multiply
+            <p>Backends labeled <code>-rocwmma</code> are rebuilt with AMD's rocWMMA library, which unlocks matrix
+                multiply
                 pipelines accelerated via wave matrix multiply-accumulate (WMMA) instructions.</p>
-            <p>rocWMMA kernels can significantly accelerate BF16/F16 workloads on RDNA3 but may trade stability or memory
+            <p>rocWMMA kernels can significantly accelerate BF16/F16 workloads on RDNA3 but may trade stability or
+                memory
                 usage; comparing plain toolboxes against <code>-rocwmma</code> ones highlights the benefit or cost.</p>
         </div>
     </div>
 
-    <div id="rocwmma-impr-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="rocwmma-impr-title">
+    <div id="rocwmma-impr-modal" class="modal hidden" role="dialog" aria-modal="true"
+        aria-labelledby="rocwmma-impr-title">
         <div class="modal-content">
             <button id="rocwmma-impr-modal-close" class="modal-close" aria-label="Close dialog">×</button>
             <h2 id="rocwmma-impr-title">rocWMMA-improved builds</h2>
-            <p>Toolboxes tagged <code>-rocwmma-improved</code> bake in an experimental llama.cpp patch that retunes rocWMMA
+            <p>Toolboxes tagged <code>-rocwmma-improved</code> bake in an experimental llama.cpp patch that retunes
+                rocWMMA
                 kernels for long-context throughput on Strix Halo.</p>
-            <p>Patch reference: <a href="https://github.com/hjc4869/llama.cpp/commit/12bb5c371bd3c647ef75e8e13de9e311edba604d"
-                    target="_blank" rel="noreferrer">12bb5c371bd3</a>. These builds often run faster for 32k+ contexts, but
+            <p>Patch reference: <a
+                    href="https://github.com/hjc4869/llama.cpp/commit/12bb5c371bd3c647ef75e8e13de9e311edba604d"
+                    target="_blank" rel="noreferrer">12bb5c371bd3</a>. These builds often run faster for 32k+ contexts,
+                but
                 the changes are not upstream and may be unstable.</p>
         </div>
     </div>

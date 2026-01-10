@@ -2,6 +2,14 @@
 
 This project provides pre-built containers (“toolboxes”) for running LLMs on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs. Toolbx is the standard developer container system in Fedora (and now works on Ubuntu, openSUSE, Arch, etc).
 
+## 🚨 Updates — 2026-01-10
+
+- **Simplified Offering**: Removed `rocwmma` containers as standard kernels in newer `llama.cpp` are now faster and stable.
+- **Renamings**: `rocm-7alpha` is now `rocm7-nightlies` to better reflect that it tracks TheRock nightly builds.
+- **Discontinued**: `rocm-7rc` builds are discontinued as they are obsolete.
+- **Housekeeping**: Deprecated `rocm-7beta` and other older tags.
+
+
 ## 🚨 CRITICAL WARNING — 2026-01-08
 
 **Do NOT use `linux-firmware-20251125`.** It breaks ROCm support on Strix Halo (instability/crashes).
@@ -11,7 +19,7 @@ AMD has recalled this update, but if you have already installed it, you must dow
 
 ## 🚨 Updates — 2025-11-18
 
-- Released new toolboxes for ROCm 7 that track the nightly builds, these are now called `alpha`. 
+- Released new toolboxes for ROCm 7 that track the nightly builds, these are now called `rocm7-nightlies`. 
 - Updated and extended benchmakrs across all llama.cpp backend configurations, and included bennchmarks over RPC (two nodes) and long context (32k) -> [Interactive Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
 ## Watch the YouTube Video
@@ -50,11 +58,11 @@ toolbox create llama-vulkan-radv \
   -- --device /dev/dri --group-add video --security-opt seccomp=unconfined
 ```
 
-**Command — Create ROCm toolbox (6.4.4/7.1.1/7rc/7alpha)**
+**Command — Create ROCm toolbox (6.4.4/7.1.1/rocm7-nightlies)**
 
 ```sh
-toolbox create llama-rocm-7.1.1-rocwmma \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1.1-rocwmma \
+toolbox create llama-rocm-7.1.1 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1.1 \
   -- --device /dev/dri --device /dev/kfd \
   --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
 ```
@@ -112,7 +120,7 @@ llama-cli --no-mmap -ngl 999 -fa 1 -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Code
 **Command — Refresh specific toolboxes**
 
 ```bash
-./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.1.1-rocwmma
+./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.1.1
 ```
 
 ## 1. Llama.cpp Compiled for Every Backend
@@ -130,21 +138,13 @@ You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-st
 | ------------------------------ | -------------------------------------- | --------------- |
 | `vulkan-amdvlk`                | Vulkan (AMDVLK)                        | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv`                  | Vulkan (Mesa RADV)                     | Most stable and compatible. Recommended for most users and all models. |
-| `rocm-6.4.4`                   | ROCm 6.4.4 (HIP) + hipBLASLt*          | Latest stable build for ROCm 6.4.4, performs very well with most model architectures/quants. |
-| `rocm-6.4.4-rocwmma`           | ROCm 6.4.4 + ROCWMMA + hipBLASLt*      | 6.4.4 with ROCWMMA enabled for better flash attention on RDNA3+/CDNA. |
-| `rocm-7.1.1`                   | ROCm 7.1.1 GA (HIP) + hipBLASLt*         | Current GA release for ROCm 7.x; improved scheduler and hipBLASLt kernels. |
-| `rocm-7.1.1-rocwmma`             | ROCm 7.1.1 GA + ROCWMMA + hipBLASLt*     | 7.1.1 with ROCWMMA for maximum flash-attention throughput. |
-| `rocm-7rc`                     | ROCm 7.9 (HIP) + hipBLASLt*         | Used to be the release candidate for ROCm 7.9.0 (hence the `rc` tag in the name), now released. |
-| `rocm-7rc-rocwmma`             | ROCm 7.9 + ROCWMMA + hipBLASLt*     | 7.9.0 build with ROCWMMA—useful for early flash-attention validation. |
-| `rocm-7alpha`                  | ROCm 7 Nightly (“7rc-alpha”) + hipBLASLt* | Tracks ROCm 7 nightly (alpha) preview with bleeding-edge patches. |
-| `rocm-7alpha-rocwmma`          | ROCm 7 Nightly + ROCWMMA + hipBLASLt* | Same nightly/alpha stack with ROCWMMA tuned for flash attention. |
-| `rocm-7alpha-rocwmma-improved` | ROCm 7 Nightly + ROCWMMA (improved) + hipBLASLt* | Nightly/Alpha stack plus extra ROCWMMA fixes; fastest but most experimental option. |
-
-\* All these toolboxes export `ROCBLAS_USE_HIPBLASLT=1` because it historically delivered better performance and stability, altough this might not be the case any more.
+| `rocm-6.4.4`                   | ROCm 6.4.4 (HIP)                       | Latest stable build for ROCm 6.4.4, performs very well with most model architectures/quants. |
+| `rocm-7.1.1`                   | ROCm 7.1.1 GA (HIP)                      | Current GA release for ROCm 7.x; improved scheduler and kernels. |
+| `rocm7-nightlies`              | ROCm 7 Nightly                           | Tracks ROCm 7 nightly builds with bleeding-edge patches. |
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
 >
-> Legacy images `rocm-6.4.2` and `rocm-6.4.3` are still on Docker Hub for reproducibility but are intentionally excluded from the active list above. Prefer `rocm-6.4.4+` or any `rocm-7.x` tag unless you must bisect an old regression. (The `rocm-7beta` images share the same status.)
+> Legacy images `rocm-6.4.2` and `rocm-6.4.3` are still on Docker Hub for reproducibility but are intentionally excluded from the active list above. Prefer `rocm-6.4.4+` or any `rocm-7.x` tag unless you must bisect an old regression. (The `rocm-7beta` and `rocm-7rc` images share the same status.)
 
 ---
 
@@ -164,16 +164,16 @@ toolbox create llama-vulkan-radv \
 
 *Only `/dev/dri` is required for Vulkan. Make sure your user is in the `video` group.*
 
-#### Command — Create ROCm toolbox (swap the tag for 6.4.4, 7.1, 7rc, 7alpha…)
+#### Command — Create ROCm toolbox (swap the tag for 6.4.4, 7.1, rocm7-nightlies…)
 
 ```sh
-toolbox create llama-rocm-7.1-rocwmma \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1-rocwmma \
+toolbox create llama-rocm-7.1 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1 \
   -- --device /dev/dri --device /dev/kfd \
   --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
 ```
 
-*ROCm needs both `/dev/dri` and `/dev/kfd`, plus the `video`, `render`, and sometimes `sudo` groups for full compute access. Swap `rocm-7.1-rocwmma` for any other active ROCm tag (6.4.4, 7rc, 7alpha, etc.).*
+*ROCm needs both `/dev/dri` and `/dev/kfd`, plus the `video`, `render`, and sometimes `sudo` groups for full compute access. Swap `rocm-7.1` for any other active ROCm tag (6.4.4, rocm7-nightlies, etc.).*
 
 > **Note:**
 >
@@ -188,7 +188,7 @@ Ubuntu’s `toolbox` package still breaks GPU access, so follow gyhor’s [issue
 
 ```sh
 distrobox create -n llama-rocm-7.1.1 \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1.1-rocwmma \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1.1 \
   --additional-flags "--device /dev/kfd --device /dev/dri --group-add video --group-add render --security-opt seccomp=unconfined"
 distrobox enter llama-rocm-7.1.1
 llama-cli --list-devices
@@ -213,7 +213,7 @@ This will:
 You can also refresh just one or more toolboxes:
 
 ```bash
-./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.1.1-rocwmma
+./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.1.1
 ```
 
 ### 2.2 Running models inside the toolboxes

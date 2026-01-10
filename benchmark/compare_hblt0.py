@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 
-DEFAULT_RESULTS = Path("docs") / "results.json"
+DEFAULT_RESULTS = Path("../docs") / "results.json"
 # Matches the tolerance used in docs/assets/index2.js (MIN_TOL = 0.25)
 DEFAULT_TOLERANCE = 0.25
 

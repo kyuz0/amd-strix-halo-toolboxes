@@ -27,14 +27,8 @@ echo
 
 declare -A CMDS=(
   [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
-  [rocm6_4_4-rocwmma]="toolbox run -c llama-rocm-6.4.4-rocwmma -- /usr/local/bin/llama-bench"
   [rocm7.1.1]="toolbox run -c llama-rocm-7.1.1 -- /usr/local/bin/llama-bench"
-  [rocm7.1.1-rocwmma]="toolbox run -c llama-rocm-7.1.1-rocwmma -- /usr/local/bin/llama-bench"
-  [rocm-7alpha-rocwmma-improved]="toolbox run -c llama-rocm-7alpha-rocwmma-improved -- /usr/local/bin/llama-bench"
-  [rocm-7alpha]="toolbox run -c llama-rocm-7alpha -- /usr/local/bin/llama-bench"
-  [rocm-7alpha-rocwmma]="toolbox run -c llama-rocm-7alpha-rocwmma -- /usr/local/bin/llama-bench"  
-  [rocm7_rc]="toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench"
-  [rocm7_rc-rocwmma]="toolbox run -c llama-rocm-7rc-rocwmma -- /usr/local/bin/llama-bench"
+  [rocm7-nightlies]="toolbox run -c llama-rocm7-nightlies -- /usr/local/bin/llama-bench"
   [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
   [vulkan_radv]="toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench"
 )
@@ -91,9 +85,9 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
           fi
 
           OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}${CTX_SUFFIX}.log"
-          CTX_REPS=3
+          CTX_REPS=5
           if [[ "$CTX" == longctx32768 ]]; then
-            CTX_REPS=1
+            CTX_REPS=3
           fi
 
           if [[ -s "$OUT" ]]; then

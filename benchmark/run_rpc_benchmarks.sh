@@ -27,42 +27,24 @@ fi
 # Toolbox containers to exercise over RPC.
 declare -A TOOLBOX_IMAGES=(
   [rocm6_4_4]="llama-rocm-6.4.4"
-  [rocm6_4_4-rocwmma]="llama-rocm-6.4.4-rocwmma"
   [rocm7_1_1]="llama-rocm-7.1.1"
-  [rocm7_1_1-rocwmma]="llama-rocm-7.1.1-rocwmma"
-  [rocm7_rc]="llama-rocm-7rc"
-  [rocm7_rc-rocwmma]="llama-rocm-7rc-rocwmma"
-  [rocm7_alpha]="llama-rocm-7alpha"
-  [rocm7_alpha-rocwmma]="llama-rocm-7alpha-rocwmma"
-  [rocm7_alpha-rocwmma-improved]="llama-rocm-7alpha-rocwmma-improved"
+  [rocm7-nightlies]="llama-rocm7-nightlies"
   [vulkan_amdvlk]="llama-vulkan-amdvlk"
   [vulkan_radv]="llama-vulkan-radv"
 )
 
 declare -A CLIENT_CMDS=(
   [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
-  [rocm6_4_4-rocwmma]="toolbox run -c llama-rocm-6.4.4-rocwmma -- /usr/local/bin/llama-bench"
   [rocm7_1_1]="toolbox run -c llama-rocm-7.1.1 -- /usr/local/bin/llama-bench"
-  [rocm7_1_1-rocwmma]="toolbox run -c llama-rocm-7.1.1-rocwmma -- /usr/local/bin/llama-bench"
-  [rocm7_rc]="toolbox run -c llama-rocm-7rc -- /usr/local/bin/llama-bench"
-  [rocm7_rc-rocwmma]="toolbox run -c llama-rocm-7rc-rocwmma -- /usr/local/bin/llama-bench"
-  [rocm7_alpha]="toolbox run -c llama-rocm-7alpha -- /usr/local/bin/llama-bench"
-  [rocm7_alpha-rocwmma]="toolbox run -c llama-rocm-7alpha-rocwmma -- /usr/local/bin/llama-bench"
-  [rocm7_alpha-rocwmma-improved]="toolbox run -c llama-rocm-7alpha-rocwmma-improved -- /usr/local/bin/llama-bench"
+  [rocm7-nightlies]="toolbox run -c llama-rocm7-nightlies -- /usr/local/bin/llama-bench"
   [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
   [vulkan_radv]="toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench"
 )
 
 ENVIRONMENTS=(
   rocm6_4_4
-  rocm6_4_4-rocwmma
   rocm7_1_1
-  rocm7_1_1-rocwmma
-  rocm7_rc
-  rocm7_rc-rocwmma
-  rocm7_alpha
-  rocm7_alpha-rocwmma
-  rocm7_alpha-rocwmma-improved
+  rocm7-nightlies
   vulkan_amdvlk
   vulkan_radv
 )
