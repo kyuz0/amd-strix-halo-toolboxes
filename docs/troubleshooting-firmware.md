@@ -31,6 +31,7 @@ cd ~/linux-firmware-downgrade
 wget -r -np -nd -A '*.rpm' https://kojipkgs.fedoraproject.org/packages/linux-firmware/20251111/1.fc43/noarch/
 
 sudo dnf downgrade ./*.rpm
+sudo dracut -f
 ```
 
 ### Fedora 42
@@ -42,18 +43,24 @@ cd ~/linux-firmware-downgrade
 wget -r -np -nd -A '*.rpm' https://kojipkgs.fedoraproject.org/packages/linux-firmware/20251111/1.fc42/noarch/
 
 sudo dnf downgrade ./*.rpm
+sudo dracut -f
 ```
 
 ---
 
-## Kernel & Modules Check
+## Important: Kernel & Initramfs
 
-After downgrading firmware, ensure your kernel and modules are consistent. You may want to reinstall/upgrade the kernel to ensure initramfs is rebuilt correctly or simply to match the tested configuration.
+**Crucially, `dracut -f` MUST be run with the kernel you intend to boot.** 
+
+By default, `dracut -f` regenerates the initramfs for the *currently running* kernel. If you are not currently running the kernel you intend to use (e.g. you just installed it but haven't rebooted, or are booting into an older one), you must specify the version explicitly.
+
+All tests have been validated with kernel: **`6.18.4-200.fc43.x86_64`**
+
+To regenerate for a specific kernel (e.g. the tested one):
 
 ```bash
-sudo dnf install kernel-6.18.3-200.fc43.x86_64 kernel-modules-extra-6.18.3-200.fc43.x86_64 kernel-tools-6.18.3-200.fc43.x86_64 --enablerepo=updates-testing
+sudo dracut -f --kver 6.18.4-200.fc43.x86_64
 ```
-*(Adjust kernel version numbers as appropriate for your specific distribution state)*
 
 Finally, **reboot** your system:
 
