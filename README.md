@@ -275,7 +275,7 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 
 ## 3. Performance Benchmarks
 
-🌐 Interactive exploration of the latest benchmark runs: [Interactie Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
+🌐 Interactive exploration of the latest benchmark runs: [Interactive Benchmark Viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
 ## 4. Memory Planning & VRAM Estimator
 
