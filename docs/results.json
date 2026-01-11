@@ -1,7 +1,12 @@
 {
   "meta": {
-    "generated_at": "2026-01-10T10:27:18Z",
-    "os_kernel": "Fedora 42 \u2014 Linux 6.15.9-201.fc42.x86_64 (Sat Aug  2 11:37:34 UTC 2025)",
+    "generated_at": "2026-01-11T10:01:18Z",
+    "system_info": {
+      "distro": "Fedora Linux 42 (Workstation Edition)",
+      "kernel": "6.18.3-100.fc42.x86_64",
+      "linux_firmware": "linux-firmware-20251111-1.fc42.noarch",
+      "timestamp": "09 Jan 2026"
+    },
     "llamacpp_builds": [
       {
         "hash": "9c142e3a2",

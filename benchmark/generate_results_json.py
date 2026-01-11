@@ -281,10 +281,21 @@ for results_dir, is_rpc_source in RESULT_SOURCES:
             }
             runs.append(run)
 
+# Read system_info.json
+sys_info = {}
+if RESULT_SOURCES:
+    si_path = os.path.join(RESULT_SOURCES[0][0], "system_info.json")
+    if os.path.exists(si_path):
+        try:
+            with open(si_path) as f:
+                sys_info = json.load(f)
+        except:
+            pass
+
 # Meta
 meta = {
     "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-    "os_kernel": "Fedora 42 — Linux 6.15.9-201.fc42.x86_64 (Sat Aug  2 11:37:34 UTC 2025)",
+    "system_info": sys_info,
     "llamacpp_builds": [{"hash": h, "number": n} for (h, n) in sorted(builds)],
     "environments": sorted(envs),
     "notes": "pp512 = prompt processing; tg128 = text generation; t/s = tokens/second",

@@ -5,6 +5,41 @@ MODEL_DIR="$(realpath models)"
 RESULTDIR="results"
 mkdir -p "$RESULTDIR"
 
+# Capture system info
+if [[ ! -f "$RESULTDIR/system_info.json" ]]; then
+    python3 -c '
+import platform, json, datetime
+def get_distro():
+    try:
+        with open("/etc/os-release") as f:
+            for line in f:
+                if line.startswith("PRETTY_NAME="):
+                    return line.split("=", 1)[1].strip().strip("\"")
+    except:
+        return "Linux"
+    return "Linux"
+
+def get_linux_firmware():
+    try:
+        import subprocess
+        result = subprocess.run(["rpm", "-q", "linux-firmware"], capture_output=True, text=True)
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except:
+        pass
+    return "unknown"
+
+info = {
+    "distro": get_distro(),
+    "kernel": platform.release(),
+    "linux_firmware": get_linux_firmware(),
+    "timestamp": datetime.datetime.now().strftime("%d %b %Y")
+}
+print(json.dumps(info))
+' > "$RESULTDIR/system_info.json"
+    echo "Captured system info to $RESULTDIR/system_info.json"
+fi
+
 # Pick exactly one .gguf per model: either
 #  - any .gguf without "-000*-of-" (single-file models)
 #  - or the first shard "*-00001-of-*.gguf"

@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         const res = await fetch("results.json");
         const data = await res.json();
+        updateHeader(data.meta || {});
         prepareData(data?.runs || []);
         initializeControls();
         renderTables();
@@ -764,4 +765,29 @@ function setupResizeOverlay(tableWrap, backendList, table) {
     });
     resizeObserver.observe(tableWrap);
     tableWrap._overlayResize = resizeObserver;
+}
+
+function updateHeader(meta) {
+    const sysInfo = document.getElementById("sys-info");
+    const runInfo = document.getElementById("run-info");
+    const info = meta.system_info || {};
+
+    let buildStr = "llama.cpp build unknown";
+    if (meta.llamacpp_builds && meta.llamacpp_builds.length > 0) {
+        const b = meta.llamacpp_builds[meta.llamacpp_builds.length - 1];
+        buildStr = `llama.cpp build ${b.hash} (${b.number})`;
+    }
+
+    if (sysInfo && (info.distro || info.kernel)) {
+        const parts = [];
+        if (info.distro) parts.push(info.distro);
+        if (info.kernel) parts.push(`Linux ${info.kernel}`);
+        if (info.linux_firmware) parts.push(info.linux_firmware);
+        parts.push(buildStr);
+        sysInfo.textContent = parts.join(" · ");
+    }
+
+    if (runInfo && info.timestamp) {
+        runInfo.innerHTML = `Benchmarks captured ${info.timestamp} · Repo: <a href="https://github.com/kyuz0/amd-strix-halo-toolboxes" target="_blank" rel="noreferrer">kyuz0/amd-strix-halo-toolboxes</a>`;
+    }
 }
