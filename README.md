@@ -2,6 +2,14 @@
 
 This project provides pre-built containers (“toolboxes”) for running LLMs on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs. Toolbx is the standard developer container system in Fedora (and now works on Ubuntu, openSUSE, Arch, etc).
 
+## ✅ Stable Configuration
+
+- **OS**: Fedora 42/43
+- **Linux Kernel**: 6.18.3-200
+- **Linux Firmware**: 20251111
+
+This is currently the most stable setup. Switching to newer kernels, such as 6.18.4 breaks all versions of ROCm but the cutting edge nightly builds from TheRock.
+
 ## 🚨 Updates — 2026-01-10
 
 - **Simplified Offering**: Removed `rocwmma` containers as standard kernels in newer `llama.cpp` are now faster and stable.
