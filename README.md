@@ -50,8 +50,9 @@ AMD has recalled this update, but if you have already installed it, you must dow
     6.1 [Test Configuration](#61-test-configuration)  
     6.2 [Kernel Parameters (tested on Fedora 42)](#62-kernel-parameters-tested-on-fedora-42)  
     6.3 [Ubuntu 24.04](#63-ubuntu-2404)
-7. [More Documentation](#7-more-documentation)  
-8. [References](#8-references)
+7. [Distributed Inference on Strix Halo Clusters](#7-distributed-inference-on-strix-halo-clusters)
+8. [More Documentation](#8-more-documentation)  
+9. [References](#9-references)
 
 
 ## Quick Answers (Read This First)
@@ -380,13 +381,39 @@ Follow this guide by TechnigmaAI for a working configuration on Ubuntu 24.04:
 
 [https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-(Ubuntu-24.04)](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29)
 
-## 7. More Documentation
+## 7. Distributed Inference on Strix Halo Clusters
+
+You can use the included `run_distributed_llama.py` script to run models on a cluster of Strix Halo machines.
+
+### Setup
+1.  **Install Toolboxes**: Install the required toolboxes on each node (main and workers).
+2.  **Download Models**: Download the model weights to the main node.
+3.  **SSH Configuration**: Configure SSH passwordless authentication from the main node to all other nodes. The script relies on being able to SSH into workers without user interaction.
+    ```bash
+    ssh-copy-id user@worker-node-ip
+    ```
+
+### Execution
+Run the script on the main node **outside of the toolbox**:
+
+```bash
+python3 run_distributed_llama.py
+```
+
+This will launch the TUI, where you can:
+1.  Configure the list of worker nodes (IPs).
+2.  Select the model and toolbox version.
+3.  Start the distributed inference.
+
+The script automatically starts the necessary toolbox containers locally and on the remote nodes to handle the inference.
+
+## 8. More Documentation
 
 * [docs/benchmarks.md](docs/benchmarks.md): Full benchmark logs, model list, parsed results  
 * [docs/vram-estimator.md](docs/vram-estimator.md): Memory planning, practical example runs  
 * [docs/building.md](docs/building.md): Local build, toolbox customization, advanced use  
 
-## 8. References
+## 9. References
 
 * The main reference for AMD Ryzen AI MAX home labs, by deseven (there's also a Discord server): [https://strixhalo-homelab.d7.wtf/](https://strixhalo-homelab.d7.wtf/)
 * Most comprehesive repostiry of test builds for Strix Halo by lhl -> [https://github.com/lhl/strix-halo-testing/tree/main](https://github.com/lhl/strix-halo-testing/tree/main)
