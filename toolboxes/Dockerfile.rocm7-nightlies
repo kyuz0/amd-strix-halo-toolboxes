@@ -75,7 +75,7 @@ RUN find /opt/rocm-7.0 -type f -name '*.a' -delete \
 FROM registry.fedoraproject.org/fedora-minimal:43
 
 RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
-  bash ca-certificates libatomic libstdc++ libgcc radeontop vim \
+  bash ca-certificates libatomic libstdc++ libgcc radeontop vim procps-ng \
   && microdnf clean all && rm -rf /var/cache/dnf/*
 
 COPY --from=builder /opt/rocm-7.0 /opt/rocm-7.0

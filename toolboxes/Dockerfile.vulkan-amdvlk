@@ -3,17 +3,17 @@ FROM registry.fedoraproject.org/fedora:43 AS builder
 
 # deps
 RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
-      git vim \
-      make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
-      vulkan-loader-devel vulkaninfo mesa-vulkan-drivers \
-      radeontop glslc wget \
-    && dnf clean all && rm -rf /var/cache/dnf/*
+  git vim \
+  make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
+  vulkan-loader-devel vulkaninfo mesa-vulkan-drivers \
+  radeontop glslc wget \
+  && dnf clean all && rm -rf /var/cache/dnf/*
 
 # amdvlk
 RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
-    https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm \
- && dnf -y install /tmp/amdvlk-*.rpm \
- && rm -f /tmp/amdvlk-*.rpm
+  https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm \
+  && dnf -y install /tmp/amdvlk-*.rpm \
+  && rm -f /tmp/amdvlk-*.rpm
 
 # llama.cpp
 WORKDIR /opt/llama.cpp
@@ -21,21 +21,21 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
 
 # build
 RUN git clean -xdf \
- && git submodule update --recursive \
- && cmake -S . -B build -G Ninja \
-      -DGGML_VULKAN=ON \
-      -DCMAKE_BUILD_TYPE=Release \
-      -DGGML_RPC=ON \
-      -DCMAKE_INSTALL_PREFIX=/usr \
-      -DLLAMA_BUILD_TESTS=OFF \
-      -DLLAMA_BUILD_EXAMPLES=ON \
-      -DLLAMA_BUILD_SERVER=ON \
- && cmake --build build --config Release \
- && cmake --install build --config Release
+  && git submodule update --recursive \
+  && cmake -S . -B build -G Ninja \
+  -DGGML_VULKAN=ON \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DGGML_RPC=ON \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DLLAMA_BUILD_TESTS=OFF \
+  -DLLAMA_BUILD_EXAMPLES=ON \
+  -DLLAMA_BUILD_SERVER=ON \
+  && cmake --build build --config Release \
+  && cmake --install build --config Release
 
 # libs
 RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
- && ldconfig
+  && ldconfig
 
 # helper
 COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
@@ -47,15 +47,15 @@ FROM registry.fedoraproject.org/fedora-minimal:43
 
 # runtime deps
 RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
-      bash ca-certificates libatomic libstdc++ libgcc \
-      vulkan-loader vulkan-loader-devel vulkaninfo mesa-vulkan-drivers radeontop \
+  bash ca-certificates libatomic libstdc++ libgcc \
+  vulkan-loader vulkan-loader-devel vulkaninfo mesa-vulkan-drivers radeontop procps-ng \
   && microdnf clean all && rm -rf /var/cache/dnf/*
 
 # amdvlk
 RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
-    https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm \
- && microdnf -y install /tmp/amdvlk-*.rpm \
- && rm -f /tmp/amdvlk-*.rpm
+  https://github.com/GPUOpen-Drivers/AMDVLK/releases/download/v-2025.Q2.1/amdvlk-2025.Q2.1.x86_64.rpm \
+  && microdnf -y install /tmp/amdvlk-*.rpm \
+  && rm -f /tmp/amdvlk-*.rpm
 
 # copy
 COPY --from=builder /usr/ /usr/
@@ -64,10 +64,10 @@ COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
 
 # ld
 RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
- && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
- && ldconfig \
- && cp -n /usr/local/lib/libllama*.so* /usr/lib64/ 2>/dev/null || true \
- && ldconfig
+  && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+  && ldconfig \
+  && cp -n /usr/local/lib/libllama*.so* /usr/lib64/ 2>/dev/null || true \
+  && ldconfig
 
 # helper
 COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
