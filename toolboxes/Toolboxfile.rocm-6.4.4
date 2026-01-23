@@ -8,8 +8,8 @@
 #
 
 # rocm testing or std update: https://bugzilla.redhat.com/show_bug.cgi?id=2430582 / https://src.fedoraproject.org/rpms/rocm-runtime
-ARG DNF_UPDATE="upgrade --enablerepo=updates-testing --refresh --advisory=FEDORA-2026-e8113d69d1"
-#ARG DNF_UPDATE="upgrade --refresh"
+#ARG DNF_UPDATE="upgrade --enablerepo=updates-testing --refresh --advisory=FEDORA-2026-e8113d69d1"
+ARG DNF_UPDATE="upgrade --refresh"
 
 #------------------------------------------------------------------------------------------
 # build stage
@@ -74,3 +74,4 @@ ENV GGML_CUDA_ENABLE_UNIFIED_MEMORY=ON \
     LLAMA_ARG_FLASH_ATTN=1 \
     LLAMA_ARG_NO_MMAP=1 \
     LLAMA_ARG_N_GPU_LAYERS=999
+

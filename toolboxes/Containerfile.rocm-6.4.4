@@ -12,13 +12,13 @@
 #> podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models --entrypoint="/opt/llama.cpp/bin/llama-bench" rocm-serve:6.4.4 -m /models/openai_gpt-oss-120b/MXFP4.gguf -b 8192 -ub 2048 -fa 1 -ngl 999 --mmap 0 -p "1,1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192"
 #
 #  interactive run:
-#> podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models --entrypoint="/usr/bin/bash" rocm-serve:6.4.4
+#> podman run --rm -it --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models --entrypoint="/usr/bin/bash" rocm-serve:6.4.4
 #>>  /opt/llama.cpp/bin/llama-cli -m /models/openai_gpt-oss-120b/MXFP4.gguf --jinja --ctx-size 0
 #
 
 # rocm testing or std update: https://bugzilla.redhat.com/show_bug.cgi?id=2430582 / https://src.fedoraproject.org/rpms/rocm-runtime
-ARG DNF_UPDATE="upgrade --enablerepo=updates-testing --refresh --advisory=FEDORA-2026-e8113d69d1"
-#ARG DNF_UPDATE="upgrade --refresh"
+# ARG DNF_UPDATE="upgrade --enablerepo=updates-testing --refresh --advisory=FEDORA-2026-e8113d69d1"
+ARG DNF_UPDATE="upgrade --refresh"
 
 #------------------------------------------------------------------------------------------
 # build stage
