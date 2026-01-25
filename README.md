@@ -70,8 +70,8 @@ toolbox create llama-vulkan-radv \
 **Command — Create ROCm toolbox (6.4.4/7.1.1/rocm7-nightlies)**
 
 ```sh
-toolbox create llama-rocm-7.1.1 \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.1.1 \
+toolbox create llama-rocm-7.2 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2 \
   -- --device /dev/dri --device /dev/kfd \
   --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
 ```
@@ -129,7 +129,7 @@ llama-cli --no-mmap -ngl 999 -fa 1 -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Code
 **Command — Refresh specific toolboxes**
 
 ```bash
-./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.1.1
+./refresh-toolboxes.sh llama-vulkan-radv llama-rocm-7.2
 ```
 
 ## 1. Llama.cpp Compiled for Every Backend
