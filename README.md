@@ -147,10 +147,10 @@ You can check the containers on DockerHub: https://hub.docker.com/r/kyuz0/amd-st
 | ------------------------------ | -------------------------------------- | --------------- |
 | `vulkan-amdvlk`                | Vulkan (AMDVLK)                        | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv`                  | Vulkan (Mesa RADV)                     | Most stable and compatible. Recommended for most users and all models. |
-| `rocm-6.4.4`                   | ROCm 6.4.4 (HIP)                       | Latest stable build for ROCm 6.4.4, performs very well with most model architectures/quants. |
-| `rocm-7.1.1`                   | ROCm 7.1.1 GA (HIP)                      | Current GA release for ROCm 7.x; improved scheduler and kernels. |
-| `rocm-7.2`                     | ROCm 7.2                               | RHEL10-based build for ROCm 7.2. |
-| `rocm7-nightlies`              | ROCm 7 Nightly                           | Tracks ROCm 7 nightly builds with bleeding-edge patches. |
+| `rocm-6.4.4`                   | ROCm 6.4.4 (Fedora 43)                 | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
+| `rocm-7.1.1`                   | ROCm 7.1.1                      | Current GA. **Incompatible with kernel 6.18.4+** (missing patch). Use kernel ≤ 6.18.3. |
+| `rocm-7.2`                     | ROCm 7.2                               | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
+| `rocm7-nightlies`              | ROCm 7 Nightly                           | Tracks nightly builds. Includes patch for **kernel 6.18.4+** support. |
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated, ensuring you get the latest bug fixes and new model support. The easiest way to update to the newest versions is by running the `refresh-toolboxes.sh` [script below](#211-toolbox-refresh-script-automatic-updates).
 >
