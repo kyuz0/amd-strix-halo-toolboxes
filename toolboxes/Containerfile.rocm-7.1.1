@@ -1,30 +1,24 @@
 # build:
-#> podman build -t rocm-serve:6.4.4 -f Containerfile.rocm-6.4.4
+#> podman build -t rocm-serve:7.1.1 -f Containerfile.rocm-7.1.1
 #
 # run llama-server with podman:
 #  - mount simple model file:
-#> podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM/openai_gpt-oss-120b/MXFP4.gguf:/models/default.gguf rocm-serve:6.4.4 --ctx-size 0 --jinja
+#> podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM/openai_gpt-oss-120b/MXFP4.gguf:/models/default.gguf rocm-serve:7.1.1 --ctx-size 0 --jinja
 #
 #  - mount models path:
-#> podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models rocm-serve:6.4.4 --ctx-size 0 -m /models/openai_gpt-oss-120b/MXFP4.gguf --jinja
+#> podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models rocm-serve:7.1.1 --ctx-size 0 -m /models/openai_gpt-oss-120b/MXFP4.gguf --jinja
 #
 # run other llama exec:
-#> podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models --entrypoint="llama-bench" rocm-serve:6.4.4 -m /models/openai_gpt-oss-120b/MXFP4.gguf -b 8192 -ub 2048 -fa 1 -ngl 999 --mmap 0 -p "1,1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192"
+#> podman run --rm --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models --entrypoint="llama-bench" rocm-serve:7.1.1 -m /models/openai_gpt-oss-120b/MXFP4.gguf -b 8192 -ub 2048 -fa 1 -ngl 999 --mmap 0 -p "1,1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192"
 #
 #  interactive run:
-#> podman run --rm -it --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models --entrypoint="/usr/bin/bash" rocm-serve:6.4.4
+#> podman run --rm -it --device /dev/dri --device /dev/kfd --privileged --network=host -v ~/LLM:/models --entrypoint="/usr/bin/bash" rocm-serve:7.1.1
 #>>  llama-cli -m /models/openai_gpt-oss-120b/MXFP4.gguf --jinja --ctx-size 0
 #
 
-# rocm testing or std update: https://bugzilla.redhat.com/show_bug.cgi?id=2430582 / https://src.fedoraproject.org/rpms/rocm-runtime
-# ARG DNF_UPDATE="upgrade --enablerepo=updates-testing --refresh --advisory=FEDORA-2026-e8113d69d1"
-ARG DNF_UPDATE="upgrade --refresh"
-
 #------------------------------------------------------------------------------------------
 # build stage
-FROM registry.fedoraproject.org/fedora:43 AS builder
-
-ARG DNF_UPDATE
+FROM registry.fedoraproject.org/fedora:44 AS builder
 
 # build dep
 RUN \
@@ -33,8 +27,7 @@ RUN \
       install \
         git git-lfs patch \
         make gcc-c++ cmake libcurl-devel ninja-build \
-        hipblas-devel rocm-hip-devel rocblas-devel \
- && dnf -y --nodocs ${DNF_UPDATE}
+        hipblas-devel rocm-hip-devel rocblas-devel
 
 # llama.cpp
 WORKDIR /tmp/llama.cpp
@@ -54,16 +47,15 @@ RUN git clean -xdf \
 
 #------------------------------------------------------------------------------------------
 # runtime stage
-FROM registry.fedoraproject.org/fedora-minimal:43
-
-ARG DNF_UPDATE
+FROM registry.fedoraproject.org/fedora-minimal:44
 
 # runtime deps
-RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
-      install \
-        libatomic libgomp \
-        rocm-hip rocblas hipblas rocminfo radeontop procps-ng \
-  && microdnf -y --nodocs ${DNF_UPDATE} \
+RUN \
+     microdnf -y --nodocs upgrade --refresh \
+  && microdnf -y --nodocs --setopt=install_weak_deps=0 \
+       install \
+         libatomic libgomp \
+         rocm-hip rocblas hipblas rocminfo radeontop procps-ng \
   && microdnf clean all && rm -rf /var/cache/dnf/*
 
 # copy llama.cpp

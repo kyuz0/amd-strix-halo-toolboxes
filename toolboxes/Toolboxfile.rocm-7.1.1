@@ -1,19 +1,15 @@
 # build:
-#> podman build -t rocm-toolbox:6.4.4 -f Toolboxfile.rocm-6.4.4
+#> podman build -t rocm-toolbox:7.1.1 -f Toolboxfile.rocm-7.1.1
 #
 # run:
-#> toolbox create -i rocm-toolbox:6.4.4 rocm-toolbox-6.4.4
-#> toolbox enter rocm-toolbox-6.4.4
+#> toolbox create -i rocm-toolbox:7.1.1 rocm-toolbox-7.1.1
+#> toolbox enter rocm-toolbox-7.1.1
 #>>  /opt/llama.cpp/bin/llama-cli -m openai_gpt-oss-120b/MXFP4.gguf --jinja --ctx-size 0
 #
 
-# rocm testing or std update: https://bugzilla.redhat.com/show_bug.cgi?id=2430582 / https://src.fedoraproject.org/rpms/rocm-runtime
-#ARG DNF_UPDATE_TESTING="dnf -y --nodocs upgrade --enablerepo=updates-testing --refresh --advisory=FEDORA-2026-e8113d69d1"
-#ARG DNF_UPDATE_TESTING="dnf -y --nodocs upgrade --refresh"
-
 #------------------------------------------------------------------------------------------
 # build stage
-FROM registry.fedoraproject.org/fedora:43 AS builder
+FROM registry.fedoraproject.org/fedora:44 AS builder
 
 # build dep
 RUN  dnf -y --nodocs upgrade --refresh \
@@ -41,7 +37,7 @@ RUN git clean -xdf \
 
 #------------------------------------------------------------------------------------------
 # runtime stage
-FROM registry.fedoraproject.org/fedora-toolbox:43
+FROM registry.fedoraproject.org/fedora-toolbox:44
 
 # runtime deps
 RUN  dnf -y --nodocs upgrade --refresh \
