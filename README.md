@@ -10,6 +10,12 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 
 This is currently the most stable setup. Switching to newer kernels, such as 6.18.4 breaks all versions of ROCm but the cutting edge nightly builds from TheRock.
 
+## ⚠️ Performance Regression Warning — 2026-02-03
+
+There is a considerable performance regression when using Llama.cpp with ROCm 7.1+ or the nightly builds (from TheRock) compared to ROCm 6.4.4. This is a known issue tracked in [ROCm-systems#2865](https://github.com/ROCm/rocm-systems/issues/2865).
+
+AMD has pinpointed the cause to a compiler patch (llvm/llvm-project#147700) which causes VGPR spills and drops kernel occupancy. Reverting this patch restores performance (e.g., from ~1416 t/s to ~4378 t/s on gfx1100). We are tracking this issue and will update the toolboxes once a fix is available.
+
 ## 🚨 Updates — 2026-01-10
 
 - **Simplified Offering**: Removed `rocwmma` containers as standard kernels in newer `llama.cpp` are now faster and stable.
