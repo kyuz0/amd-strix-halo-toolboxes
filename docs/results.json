@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated_at": "2026-01-23T15:10:46Z",
+    "generated_at": "2026-02-04T17:41:39Z",
     "system_info": {
       "distro": "Fedora Linux 42 (Workstation Edition)",
       "kernel": "6.18.3-100.fc42.x86_64",
@@ -19,6 +19,10 @@
       {
         "hash": "a14b960bc",
         "number": "7816"
+      },
+      {
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     ],
     "environments": [
@@ -16138,13 +16142,13 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 283.71,
-      "tps_std": 2.88,
+      "tps_mean": 674.34,
+      "tps_std": 3.87,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 116.83,
       "file_size_gib": 59.02,
       "name_params_b": 116.83,
@@ -16152,8 +16156,8 @@
       "log": "results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7-nightlies__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -16166,13 +16170,13 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 52.21,
+      "tps_mean": 52.1,
       "tps_std": 0.0,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 116.83,
       "file_size_gib": 59.02,
       "name_params_b": 116.83,
@@ -16180,8 +16184,8 @@
       "log": "results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7-nightlies__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -16194,13 +16198,13 @@
       "context": "longctx32768",
       "context_tokens": 32768,
       "test": "pp2048 @ d32768",
-      "tps_mean": 207.09,
-      "tps_std": 0.0,
+      "tps_mean": 352.35,
+      "tps_std": 0.56,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 116.83,
       "file_size_gib": 59.02,
       "name_params_b": 116.83,
@@ -16208,8 +16212,8 @@
       "log": "results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7-nightlies__fa1__longctx32768.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -16222,13 +16226,13 @@
       "context": "longctx32768",
       "context_tokens": 32768,
       "test": "tg32 @ d32768",
-      "tps_mean": 36.3,
-      "tps_std": 0.0,
+      "tps_mean": 40.44,
+      "tps_std": 0.01,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 116.83,
       "file_size_gib": 59.02,
       "name_params_b": 116.83,
@@ -16236,8 +16240,8 @@
       "log": "results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7-nightlies__fa1__longctx32768.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -16250,13 +16254,13 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 284.3,
-      "tps_std": 2.38,
+      "tps_mean": 679.62,
+      "tps_std": 5.41,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 116.83,
       "file_size_gib": 59.02,
       "name_params_b": 116.83,
@@ -16264,8 +16268,8 @@
       "log": "results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7-nightlies__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -16278,13 +16282,13 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 52.16,
+      "tps_mean": 52.11,
       "tps_std": 0.0,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 116.83,
       "file_size_gib": 59.02,
       "name_params_b": 116.83,
@@ -16292,8 +16296,8 @@
       "log": "results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7-nightlies__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -16306,13 +16310,13 @@
       "context": "longctx32768",
       "context_tokens": 32768,
       "test": "pp2048 @ d32768",
-      "tps_mean": 198.59,
-      "tps_std": 0.0,
+      "tps_mean": 352.62,
+      "tps_std": 1.18,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 116.83,
       "file_size_gib": 59.02,
       "name_params_b": 116.83,
@@ -16320,8 +16324,8 @@
       "log": "results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7-nightlies__hblt0__fa1__longctx32768.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -16334,13 +16338,13 @@
       "context": "longctx32768",
       "context_tokens": 32768,
       "test": "tg32 @ d32768",
-      "tps_mean": 36.34,
-      "tps_std": 0.0,
+      "tps_mean": 40.46,
+      "tps_std": 0.03,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 116.83,
       "file_size_gib": 59.02,
       "name_params_b": 116.83,
@@ -16348,8 +16352,8 @@
       "log": "results/gpt-oss-120b-mxfp4-00001-of-00003__rocm7-nightlies__hblt0__fa1__longctx32768.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -17258,13 +17262,13 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 816.54,
-      "tps_std": 1.21,
+      "tps_mean": 1734.91,
+      "tps_std": 19.75,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 20.91,
       "file_size_gib": 11.27,
       "name_params_b": 20.91,
@@ -17272,8 +17276,8 @@
       "log": "results/gpt-oss-20b-mxfp4__rocm7-nightlies__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -17286,13 +17290,13 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 73.67,
+      "tps_mean": 73.48,
       "tps_std": 0.01,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 20.91,
       "file_size_gib": 11.27,
       "name_params_b": 20.91,
@@ -17300,8 +17304,8 @@
       "log": "results/gpt-oss-20b-mxfp4__rocm7-nightlies__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -17314,13 +17318,13 @@
       "context": "longctx32768",
       "context_tokens": 32768,
       "test": "pp2048 @ d32768",
-      "tps_mean": 374.1,
-      "tps_std": 0.0,
+      "tps_mean": 557.68,
+      "tps_std": 0.88,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 20.91,
       "file_size_gib": 11.27,
       "name_params_b": 20.91,
@@ -17328,8 +17332,8 @@
       "log": "results/gpt-oss-20b-mxfp4__rocm7-nightlies__fa1__longctx32768.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -17342,13 +17346,13 @@
       "context": "longctx32768",
       "context_tokens": 32768,
       "test": "tg32 @ d32768",
-      "tps_mean": 51.98,
-      "tps_std": 0.0,
+      "tps_mean": 57.8,
+      "tps_std": 0.01,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 20.91,
       "file_size_gib": 11.27,
       "name_params_b": 20.91,
@@ -17356,8 +17360,8 @@
       "log": "results/gpt-oss-20b-mxfp4__rocm7-nightlies__fa1__longctx32768.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -17370,13 +17374,13 @@
       "context": "default",
       "context_tokens": null,
       "test": "pp512",
-      "tps_mean": 821.55,
-      "tps_std": 13.2,
+      "tps_mean": 1709.32,
+      "tps_std": 28.51,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 20.91,
       "file_size_gib": 11.27,
       "name_params_b": 20.91,
@@ -17384,8 +17388,8 @@
       "log": "results/gpt-oss-20b-mxfp4__rocm7-nightlies__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -17398,13 +17402,13 @@
       "context": "default",
       "context_tokens": null,
       "test": "tg128",
-      "tps_mean": 73.73,
-      "tps_std": 0.01,
+      "tps_mean": 73.53,
+      "tps_std": 0.0,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 20.91,
       "file_size_gib": 11.27,
       "name_params_b": 20.91,
@@ -17412,8 +17416,8 @@
       "log": "results/gpt-oss-20b-mxfp4__rocm7-nightlies__hblt0__fa1.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -17426,13 +17430,13 @@
       "context": "longctx32768",
       "context_tokens": 32768,
       "test": "pp2048 @ d32768",
-      "tps_mean": 355.59,
-      "tps_std": 0.0,
+      "tps_mean": 541.93,
+      "tps_std": 1.58,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 20.91,
       "file_size_gib": 11.27,
       "name_params_b": 20.91,
@@ -17440,8 +17444,8 @@
       "log": "results/gpt-oss-20b-mxfp4__rocm7-nightlies__hblt0__fa1__longctx32768.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
@@ -17454,13 +17458,13 @@
       "context": "longctx32768",
       "context_tokens": 32768,
       "test": "tg32 @ d32768",
-      "tps_mean": 52.02,
-      "tps_std": 0.0,
+      "tps_mean": 57.84,
+      "tps_std": 0.02,
       "error": false,
       "error_type": null,
       "backend": "ROCm",
       "ngl": 99,
-      "mmap": 0,
+      "mmap": null,
       "params_b": 20.91,
       "file_size_gib": 11.27,
       "name_params_b": 20.91,
@@ -17468,8 +17472,8 @@
       "log": "results/gpt-oss-20b-mxfp4__rocm7-nightlies__hblt0__fa1__longctx32768.log",
       "rpc": false,
       "build": {
-        "hash": "9c142e3a2",
-        "number": "7670"
+        "hash": "e0c93af2a",
+        "number": "7938"
       }
     },
     {
