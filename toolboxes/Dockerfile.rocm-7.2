@@ -41,7 +41,7 @@ RUN git clean -xdf \
   && git submodule update --recursive \
   && cmake -S . -B build \
   -DGGML_HIP=ON \
-  -DCMAKE_HIP_FLAGS="-mllvm --amdgpu-unroll-threshold-local=600" \
+  -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm -mllvm --amdgpu-unroll-threshold-local=600" \
   -DAMDGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
@@ -50,7 +50,6 @@ RUN git clean -xdf \
   -DROCM_PATH=/opt/rocm \
   -DHIP_PATH=/opt/rocm \
   -DHIP_PLATFORM=amd \
-  -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm" \
   && cmake --build build --config Release -- -j$(nproc) \
   && cmake --install build --config Release
 
