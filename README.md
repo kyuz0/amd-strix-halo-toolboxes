@@ -6,6 +6,21 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 
 [![Watch the YouTube Video](https://img.youtube.com/vi/wCBLMXgk3No/maxresdefault.jpg)](https://youtu.be/wCBLMXgk3No)
 
+## Table of Contents
+
+- [Stable Configuration](#stable-configuration)
+- [ROCm 7 Performance Regression Workaround](#rocm-7-performance-regression-workaround-applied--2026-02-04)
+- [Supported Toolboxes](#supported-toolboxes)
+- [Quick Start](#quick-start)
+- [Performance Benchmarks](#performance-benchmarks)
+- [Memory Planning & VRAM Estimator](#memory-planning--vram-estimator)
+- [Building Locally](#building-locally)
+- [Host Configuration](#host-configuration)
+- [Distributed Inference](#distributed-inference)
+- [More Documentation](#more-documentation)
+- [References](#references)
+
+
 ## ✅ Stable Configuration
 
 - **OS**: Fedora 42/43
