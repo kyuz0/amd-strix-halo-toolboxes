@@ -27,7 +27,7 @@ fi
 # Toolbox containers to exercise over RPC.
 declare -A TOOLBOX_IMAGES=(
   [rocm6_4_4]="llama-rocm-6.4.4"
-  [rocm7_1_1]="llama-rocm-7.1.1"
+
   [rocm-7.2]="llama-rocm-7.2"
   [rocm7-nightlies]="llama-rocm7-nightlies"
   [vulkan_amdvlk]="llama-vulkan-amdvlk"
@@ -36,7 +36,7 @@ declare -A TOOLBOX_IMAGES=(
 
 declare -A CLIENT_CMDS=(
   [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
-  [rocm7_1_1]="toolbox run -c llama-rocm-7.1.1 -- /usr/local/bin/llama-bench"
+
   [rocm-7.2]="toolbox run -c llama-rocm-7.2 -- /usr/local/bin/llama-bench"
   [rocm7-nightlies]="toolbox run -c llama-rocm7-nightlies -- /usr/local/bin/llama-bench"
   [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
@@ -45,7 +45,7 @@ declare -A CLIENT_CMDS=(
 
 ENVIRONMENTS=(
   rocm6_4_4
-  rocm7_1_1
+
   rocm-7.2
   rocm7-nightlies
   vulkan_amdvlk

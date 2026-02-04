@@ -13,7 +13,7 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 DEFAULT_TOOLBOX = "rocm7-nightlies"
 TOOLBOX_IMAGES = {
     "rocm6_4_4": "llama-rocm-6.4.4",
-    "rocm7_1_1": "llama-rocm-7.1.1",
+
     "rocm7-nightlies": "llama-rocm7-nightlies",
     "vulkan_amdvlk": "llama-vulkan-amdvlk",
     "vulkan_radv": "llama-vulkan-radv",
