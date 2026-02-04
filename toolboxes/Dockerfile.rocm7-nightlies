@@ -33,8 +33,7 @@ ENV ROCM_PATH=/opt/rocm-7.0 \
   LD_LIBRARY_PATH=/opt/rocm-7.0/lib:/opt/rocm-7.0/lib64:/opt/rocm-7.0/llvm/lib \
   LIBRARY_PATH=/opt/rocm-7.0/lib:/opt/rocm-7.0/lib64 \
   CPATH=/opt/rocm-7.0/include \
-  PKG_CONFIG_PATH=/opt/rocm-7.0/lib/pkgconfig \
-  HIP_CLANG_FLAGS="-mllvm --amdgpu-unroll-threshold-local=600"
+  PKG_CONFIG_PATH=/opt/rocm-7.0/lib/pkgconfig 
 
 RUN printf '%s\n' \
   'export ROCM_PATH=/opt/rocm-7.0' \
@@ -49,7 +48,6 @@ RUN printf '%s\n' \
   'export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64"' \
   'export CPATH="$HIP_INCLUDE_PATH"' \
   'export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig"' \
-  'export HIP_LLVM_FLAGS="-mllvm --amdgpu-unroll-threshold-local=600"' \
   > /etc/profile.d/rocm.sh \
   && chmod +x /etc/profile.d/rocm.sh \
   && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
@@ -63,6 +61,7 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
 
 RUN cmake -S . -B build \
   -DGGML_HIP=ON \
+  -DCMAKE_HIP_FLAGS="-mllvm --amdgpu-unroll-threshold-local=600" \
   -DAMDGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
