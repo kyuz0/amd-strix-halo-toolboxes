@@ -57,6 +57,9 @@ RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
   && git clean -xdf \
   && git submodule update --recursive
 
+# Temporary workaround for ROCm 7 performance regression (https://github.com/ROCm/rocm-systems/issues/2865#issuecomment-3846679806)
+ENV HIP_LLVM_FLAGS="-mllvm --amdgpu-unroll-threshold-local=600"
+
 RUN cmake -S . -B build \
   -DGGML_HIP=ON \
   -DAMDGPU_TARGETS=gfx1151 \
