@@ -12,10 +12,10 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 - [ROCm 7 Performance Regression Workaround](#rocm-7-performance-regression-workaround-applied--2026-02-04)
 - [Supported Toolboxes](#supported-toolboxes)
 - [Quick Start](#quick-start)
+- [Host Configuration](#host-configuration)
 - [Performance Benchmarks](#performance-benchmarks)
 - [Memory Planning & VRAM Estimator](#memory-planning--vram-estimator)
 - [Building Locally](#building-locally)
-- [Host Configuration](#host-configuration)
 - [Distributed Inference](#distributed-inference)
 - [More Documentation](#more-documentation)
 - [References](#references)
@@ -28,6 +28,8 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 - **Linux Firmware**: 20260110
 
 This is currently the most stable setup. Kernels older than 6.18.4 have a bug that causes stability issues on gfx1151 and should be avoided. Also, **do NOT use `linux-firmware-20251125`.** It breaks ROCm support on Strix Halo (instability/crashes).
+
+> ⚠️ **Important**: See [Host Configuration](#host-configuration) for critical kernel parameters.
 
 ## ✅ ROCm 7 Performance Regression Workaround Applied — 2026-02-04
 
@@ -112,6 +114,41 @@ Refresh your authenticated toolboxes to the latest nightly/stable builds:
 ./refresh-toolboxes.sh all
 ```
 
+## ⚙️ Host Configuration
+
+This should work on any Strix Halo. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
+
+### Test Configuration
+
+| Component         | Specification                                               |
+| :---------------- | :---------------------------------------------------------- |
+| **Test Machine**  | Framework Desktop                                           |
+| **CPU**           | Ryzen AI MAX+ 395 "Strix Halo"                              |
+| **System Memory** | 128 GB RAM                                                  |
+| **GPU Memory**    | 512 MB allocated in BIOS                                    |
+| **Host OS**       | Fedora 43, Linux 6.18.5-200.fc43.x86_64            |
+
+### Kernel Parameters (tested on Fedora 42)
+
+Add these boot parameters to enable unified memory while reserving a minimum of 4 GiB for the OS (max 124 GiB for iGPU):
+
+`iommu=pt amdgpu.gttsize=126976 ttm.pages_limit=32505856`
+
+| Parameter                   | Purpose                                                                                    |
+|-----------------------------|--------------------------------------------------------------------------------------------|
+| `iommu=pt`              | Sets IOMMU to "Pass-Through" mode. This helps performance, reducing overhead for the iGPU unified memory access.               |
+| `amdgpu.gttsize=126976`     | Caps GPU unified memory to 124 GiB; 126976 MiB ÷ 1024 = 124 GiB                            |
+| `ttm.pages_limit=32505856`  | Caps pinned memory to 124 GiB; 32505856 × 4 KiB = 126976 MiB = 124 GiB                     |
+
+Apply with:
+```bash
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg
+sudo reboot
+```
+
+### Ubuntu 24.04
+See [TechnigmaAI's Guide](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29).
+
 ## 📊 Performance Benchmarks
 
 🌐 **Interactive Viewer**: [https://kyuz0.github.io/amd-strix-halo-toolboxes/](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
@@ -132,25 +169,7 @@ See [docs/vram-estimator.md](docs/vram-estimator.md) for details.
 You can build the containers yourself to customize packages or llama.cpp versions.
 Instructions: [docs/building.md](docs/building.md).
 
-## ⚙️ Host Configuration
 
-### Test Machine: Framework Desktop / Mini Server
-*   **CPU**: Ryzen AI MAX+ 395 "Strix Halo"
-*   **RAM**: 128 GB
-*   **OS**: Fedora 43 (Kernel 6.18-rc6)
-
-### Kernel Parameters
-Add these to `GRUB_CMDLINE_LINUX` to manage unified memory (reserved 4GB for OS):
-`amd_iommu=off amdgpu.gttsize=126976 ttm.pages_limit=32505856`
-
-Apply with:
-```bash
-sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-sudo reboot
-```
-
-### Ubuntu 24.04
-See [TechnigmaAI's Guide](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29).
 
 ## 🌩️ Distributed Inference
 
