@@ -12,7 +12,7 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 - **Linux Kernel**: 6.18.6-200
 - **Linux Firmware**: 20260110
 
-This is currently the most stable setup. Kernels older than 6.18.4 have a bug that causes stability issues on gfx1151 and should be avoided. Alsp, **do NOT use `linux-firmware-20251125`.** It breaks ROCm support on Strix Halo (instability/crashes).
+This is currently the most stable setup. Kernels older than 6.18.4 have a bug that causes stability issues on gfx1151 and should be avoided. Also, **do NOT use `linux-firmware-20251125`.** It breaks ROCm support on Strix Halo (instability/crashes).
 
 ## ✅ ROCm 7 Performance Regression Workaround Applied — 2026-02-04
 
