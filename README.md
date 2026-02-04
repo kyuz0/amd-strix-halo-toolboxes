@@ -10,11 +10,15 @@ This project provides pre-built containers (“toolboxes”) for running LLMs on
 
 This is currently the most stable setup. Switching to newer kernels, such as 6.18.4 breaks all versions of ROCm but the cutting edge nightly builds from TheRock.
 
-## ⚠️ Performance Regression Warning — 2026-02-03
+## ✅ ROCm 7 Performance Regression Workaround Applied — 2026-02-04
 
-There is a considerable performance regression when using Llama.cpp with ROCm 7.1+ or the nightly builds (from TheRock) compared to ROCm 6.4.4. This is a known issue tracked in [ROCm-systems#2865](https://github.com/ROCm/rocm-systems/issues/2865).
+The performance regression previously observed in ROCm 7+ builds (compared to ROCm 6.4.4) has been **resolved in the toolboxes** via a workaround.
 
-AMD has pinpointed the cause to a compiler patch (llvm/llvm-project#147700) which causes VGPR spills and drops kernel occupancy. Reverting this patch restores performance (e.g., from ~1416 t/s to ~4378 t/s on gfx1100). We are tracking this issue and will update the toolboxes once a fix is available.
+The issue was caused by a compiler regression (llvm/llvm-project#147700) affecting loop unrolling thresholds. We have applied the workaround (`-mllvm --amdgpu-unroll-threshold-local=600`) in the latest toolbox builds, restoring full performance.
+
+This workaround will be removed once the upstream fix lands.
+
+For details, see the issue: [kyuz0/amd-strix-halo-toolboxes#45](https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/45)
 
 ## 🚨 Updates — 2026-01-10
 
