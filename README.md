@@ -19,19 +19,19 @@ This is a hobby project maintained in my spare time. If you find these toolboxes
 ## Table of Contents
 
 - [Stable Configuration](#stable-configuration)
-- [ROCm 7 Performance Regression Workaround](#rocm-7-performance-regression-workaround-applied--2026-02-04)
+- [ROCm 7 Performance Regression Workaround](#rocm-7-performance-regression-workaround)
 - [Supported Toolboxes](#supported-toolboxes)
 - [Quick Start](#quick-start)
 - [Host Configuration](#host-configuration)
 - [Performance Benchmarks](#performance-benchmarks)
-- [Memory Planning & VRAM Estimator](#memory-planning--vram-estimator)
+- [Memory Planning and VRAM Estimator](#memory-planning-and-vram-estimator)
 - [Building Locally](#building-locally)
 - [Distributed Inference](#distributed-inference)
 - [More Documentation](#more-documentation)
 - [References](#references)
 
 
-## ✅ Stable Configuration
+## Stable Configuration
 
 - **OS**: Fedora 42/43
 - **Linux Kernel**: 6.18.6-200
@@ -41,7 +41,7 @@ This is currently the most stable setup. Kernels older than 6.18.4 have a bug th
 
 > ⚠️ **Important**: See [Host Configuration](#host-configuration) for critical kernel parameters.
 
-## ✅ ROCm 7 Performance Regression Workaround Applied — 2026-02-04
+## ROCm 7 Performance Regression Workaround
 
 The performance regression previously observed in ROCm 7+ builds (compared to ROCm 6.4.4) has been **resolved in the toolboxes** via a workaround.
 
@@ -50,7 +50,7 @@ The issue was caused by a compiler regression (llvm/llvm-project#147700) affecti
 This workaround will be removed once the upstream fix lands. For details, see the issue: [kyuz0/amd-strix-halo-toolboxes#45](https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/45)
 
 
-## 📦 Supported Toolboxes
+## Supported Toolboxes
 
 You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags).
 
@@ -64,7 +64,7 @@ You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](http
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated. Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from this list.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Create & Enter Toolbox
 
@@ -128,7 +128,7 @@ Refresh your authenticated toolboxes to the latest nightly/stable builds:
 ./refresh-toolboxes.sh all
 ```
 
-## ⚙️ Host Configuration
+## Host Configuration
 
 This should work on any Strix Halo. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
 
@@ -163,13 +163,13 @@ sudo reboot
 ### Ubuntu 24.04
 See [TechnigmaAI's Guide](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29).
 
-## 📊 Performance Benchmarks
+## Performance Benchmarks
 
 🌐 **Interactive Viewer**: [https://kyuz0.github.io/amd-strix-halo-toolboxes/](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 
 See [docs/benchmarks.md](docs/benchmarks.md) for full logs.
 
-## 💾 Memory Planning & VRAM Estimator
+## Memory Planning and VRAM Estimator
 
 Strix Halo uses unified memory. To estimate VRAM requirements for models (including context overhead), use the included tool:
 
@@ -178,28 +178,28 @@ gguf-vram-estimator.py models/my-model.gguf --contexts 32768
 ```
 See [docs/vram-estimator.md](docs/vram-estimator.md) for details.
 
-## 🛠️ Building Locally
+## Building Locally
 
 You can build the containers yourself to customize packages or llama.cpp versions.
 Instructions: [docs/building.md](docs/building.md).
 
 
 
-## 🌩️ Distributed Inference
+## Distributed Inference
 
 Run models across a cluster of Strix Halo machines using `run_distributed_llama.py`.
 1.  Setup SSH keys between nodes.
 2.  Run `python3 run_distributed_llama.py` on the main node.
 3.  Follow the TUI to launch the cluster.
 
-## 📚 More Documentation
+## More Documentation
 
 *   [docs/benchmarks.md](docs/benchmarks.md)
 *   [docs/vram-estimator.md](docs/vram-estimator.md)
 *   [docs/building.md](docs/building.md)
 *   [docs/troubleshooting-firmware.md](docs/troubleshooting-firmware.md)
 
-## 🔗 References
+## References
 
 *   [Strix Halo Home Lab (deseven)](https://strixhalo-homelab.d7.wtf/)
 *   [Strix Halo Testing Builds (lhl)](https://github.com/lhl/strix-halo-testing/tree/main)
