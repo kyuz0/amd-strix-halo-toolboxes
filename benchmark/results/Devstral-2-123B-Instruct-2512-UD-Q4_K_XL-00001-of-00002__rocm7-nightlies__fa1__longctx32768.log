@@ -1,18 +1,8 @@
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
-/opt/llama.cpp/ggml/src/ggml-cuda/ggml-cuda.cu:96: ROCm error
-/usr/local/lib64/libggml-base.so.0(+0x35a5) [0x7f1a3468b5a5]
-/usr/local/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7f1a3468b96b]
-/usr/local/lib64/libggml-base.so.0(ggml_abort+0x11f) [0x7f1a3468baef]
-/usr/local/lib64/libggml-hip.so.0(+0x2d4e882) [0x7f1a37496882]
-/usr/local/lib64/libggml-hip.so.0(+0x2d53c4e) [0x7f1a3749bc4e]
-/usr/local/lib64/libggml-base.so.0(ggml_backend_sched_synchronize+0x2e) [0x7f1a346a2e5e]
-/usr/local/lib64/libllama.so.0(_ZN13llama_context11synchronizeEv+0x10) [0x7f1a37b75630]
-/usr/local/bin/llama-bench() [0x40ae7c]
-/usr/local/bin/llama-bench() [0x408bd1]
-/lib64/libc.so.6(+0x35b5) [0x7f1a340215b5]
-/lib64/libc.so.6(__libc_start_main+0x88) [0x7f1a34021668]
-/usr/local/bin/llama-bench() [0x409cf5]
-✖ ! [rocm-7alpha] Devstral-2-123B-Instruct-2512-UD-Q4_K_XL-00001-of-00002__fa1 __longctx32768 failed (exit 0)
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | --------------: | -------------------: |
+| llama ?B Q4_K - Medium         |  70.31 GiB |   125.03 B | ROCm       |  99 |     2048 |  1 | pp2048 @ d32768 |         17.18 ± 0.03 |
+| llama ?B Q4_K - Medium         |  70.31 GiB |   125.03 B | ROCm       |  99 |     2048 |  1 |   tg32 @ d32768 |          2.06 ± 0.02 |
+
+build: e0c93af2a (7938)

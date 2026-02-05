@@ -2,7 +2,7 @@ ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
 | model                          |       size |     params | backend    | ngl | fa |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | -: | --------------: | -------------------: |
-| nemotron_h_moe 31B.A3.5B Q8_0  |  37.66 GiB |    31.58 B | ROCm       |  99 |  1 |           pp512 |        393.57 ± 2.37 |
-| nemotron_h_moe 31B.A3.5B Q8_0  |  37.66 GiB |    31.58 B | ROCm       |  99 |  1 |           tg128 |         41.69 ± 0.01 |
+| nemotron_h_moe 31B.A3.5B Q8_0  |  37.66 GiB |    31.58 B | ROCm       |  99 |  1 |           pp512 |        393.61 ± 2.94 |
+| nemotron_h_moe 31B.A3.5B Q8_0  |  37.66 GiB |    31.58 B | ROCm       |  99 |  1 |           tg128 |         42.58 ± 0.00 |
 
-build: a14b960bc (7816)
+build: e0c93af2a (7938)

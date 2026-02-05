@@ -1,0 +1,6 @@
+{
+    "distro": "Fedora Linux 42 (Workstation Edition)",
+    "kernel": "6.18.3-100.fc42.x86_64",
+    "linux_firmware": "linux-firmware-20251111-1.fc42.noarch",
+    "timestamp": "09 Jan 2026"
+}
