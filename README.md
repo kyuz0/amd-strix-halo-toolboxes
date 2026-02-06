@@ -10,7 +10,7 @@ This repository is part of the **[Strix Halo AI Toolboxes](https://strix-halo-to
 
 ### ❤️ Support
 
-This is a hobby project maintained in my spare time. If you find these toolboxes and tutorials useful, you can **[buy me a coffee](https://buymeacoffee.com/dcapitellau)** to support the work! ☕
+This is a hobby project maintained in my spare time. If you find these toolboxes and tutorials useful, you can **[buy me a coffee](https://buymeacoffee.com/dcapitella)** to support the work! ☕
 
 ## 📺 Video Demo
 
