@@ -1,6 +1,10 @@
 ggml_vulkan: Found 1 Vulkan devices:
 ggml_vulkan: 0 = Radeon 8060S Graphics (RADV GFX1151) (radv) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
-Failed to connect to 192.168.100.2:50052
+Failed to connect to 10.0.0.1:50052
+radv/amdgpu: Failed to allocate a buffer:
+radv/amdgpu:    size      : 990904320 bytes
+radv/amdgpu:    alignment : 262144 bytes
+radv/amdgpu:    domains   : 4
 radv/amdgpu: Failed to allocate a buffer:
 radv/amdgpu:    size      : 990904320 bytes
 radv/amdgpu:    alignment : 262144 bytes

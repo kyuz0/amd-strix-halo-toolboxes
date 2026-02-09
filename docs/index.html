@@ -108,9 +108,10 @@
         <div class="modal-content">
             <button id="rpc-modal-close" class="modal-close" aria-label="Close dialog">×</button>
             <h2 id="rpc-title">RPC · dual server</h2>
-            <p>These results were produced with two Strix Halo systems (Framework Desktop + HP G1a workstation, each
+            <p>These results were produced with two Strix Halo systems (Framework Desktops, each
                 128&nbsp;GB)
-                connected over 5&nbsp;Gbps Ethernet. One runs <code>rpc-server</code> from llama.cpp; the other runs
+                connected over 50&nbsp;Gbps Ethernet (likely bandwidth is not the limiting factor here, but latency).
+                One runs <code>rpc-server</code> from llama.cpp; the other runs
                 <code>llama-bench --rpc</code>.
             </p>
             <p>This setup allows distributed inference, splitting large GGUF models across both machines. The metric

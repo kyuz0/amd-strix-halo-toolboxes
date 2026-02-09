@@ -1,3 +1,8 @@
 ggml_vulkan: Found 1 Vulkan devices:
 ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 32768 | int dot: 1 | matrix cores: KHR_coopmat
-Failed to connect to 10.0.0.1:50052
+Failed to connect to 192.168.100.2:50052
+| model                          |       size |     params | backend    | ngl | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | --------------: | -------------------: |
+ggml_vulkan: Device memory allocation of size 990904320 failed.
+ggml_vulkan: vk::Device::allocateMemory: ErrorOutOfHostMemory
+main: error: failed to load model '/mnt/storage/MiniMax-M2-GGUF/UD-Q6_K_XL/MiniMax-M2-UD-Q6_K_XL-00001-of-00004.gguf'
