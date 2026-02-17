@@ -40,7 +40,7 @@ podman build --no-cache -t llama-rocm-6.4.2 -f Dockerfile.rocm-6.4.2 .
 
 ## 3. Customizing the Build
 
-* **llama.cpp version**: Change the `git clone` or `git checkout` line in the Dockerfile.
+* **llama.cpp version**: Use the `--build-arg REPO=...` and `--build-arg BRANCH=...` options to specify a different repository or branch.
 * **Extra dependencies**: Add them to the Dockerfile as needed.
 * **Other customizations**: Install tools, patch scripts, or swap to a different base image.
 

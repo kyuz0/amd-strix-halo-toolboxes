@@ -53,7 +53,9 @@ RUN printf '%s\n' \
   && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
 
 WORKDIR /opt/llama.cpp
-RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git . \
+ARG REPO=https://github.com/ggerganov/llama.cpp.git
+ARG BRANCH=master
+RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} . \
   && git clean -xdf \
   && git submodule update --recursive
 
