@@ -34,7 +34,9 @@ ENV ROCM_PATH=/opt/rocm \
 
 # llama.cpp
 WORKDIR /opt/llama.cpp
-RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
+ARG REPO=https://github.com/ggerganov/llama.cpp.git
+ARG BRANCH=master
+RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} . \
 
 # build
 RUN git clean -xdf \
