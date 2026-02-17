@@ -13,7 +13,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False \
 WORKDIR /opt/llama.cpp
 ARG REPO=https://github.com/ggerganov/llama.cpp.git
 ARG BRANCH=master
-RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} . \
+RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
 # build + install
 RUN git clean -xdf \
