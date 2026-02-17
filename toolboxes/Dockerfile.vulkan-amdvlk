@@ -19,7 +19,7 @@ RUN curl -L -o /tmp/amdvlk-2025.Q2.1.x86_64.rpm \
 WORKDIR /opt/llama.cpp
 ARG REPO=https://github.com/ggerganov/llama.cpp.git
 ARG BRANCH=master
-RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} . \
+RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
 # build
 RUN git clean -xdf \
