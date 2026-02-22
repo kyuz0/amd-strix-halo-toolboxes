@@ -66,7 +66,7 @@ You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](http
 
 ## Quick Start
 
-Create and enter your toolbox of choice. **(Ubuntu users: remember to use `distrobox` instead of `toolbox` in the commands below).**
+Create and enter your toolbox of choice. **(Ubuntu users: remember to use `distrobox` instead of `toolbox` in the commands below).** (check [Strix Halo Toolboxes](https://strix-halo-toolboxes.com/#config) for details).
 
 **Option A: Vulkan (RADV/AMDVLK)** - best for compatibility
 ```sh
