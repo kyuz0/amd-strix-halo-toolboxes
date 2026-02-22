@@ -66,7 +66,7 @@ You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](http
 
 ## Quick Start
 
-### 1. Create & Enter Toolbox
+Create and enter your toolbox of choice. **(Ubuntu users: remember to use `distrobox` instead of `toolbox` in the commands below).**
 
 **Option A: Vulkan (RADV/AMDVLK)** - best for compatibility
 ```sh
@@ -86,7 +86,6 @@ toolbox create llama-rocm-7.2 \
 
 toolbox enter llama-rocm-7.2
 ```
-*(Ubuntu users: use [Distrobox](https://github.com/89luca89/distrobox) as `toolbox` may break GPU access).*
 
 ### 2. Check GPU Access
 Inside the toolbox:

@@ -20,9 +20,33 @@ function usage() {
   exit 1
 }
 
+# Check OS and set appropriate toolbox command
+IS_UBUNTU=false
+if [ -f /etc/os-release ]; then
+  . /etc/os-release
+  if [ "$ID" = "ubuntu" ]; then
+    IS_UBUNTU=true
+  fi
+fi
+
+if [ "$IS_UBUNTU" = true ]; then
+  TOOLBOX_CMD="distrobox"
+else
+  TOOLBOX_CMD="toolbox"
+fi
+
 # Check dependencies
-for cmd in podman toolbox; do
-  command -v "$cmd" > /dev/null || { echo "Error: '$cmd' is not installed." >&2; exit 1; }
+DEPENDENCIES=("podman" "$TOOLBOX_CMD")
+for cmd in "${DEPENDENCIES[@]}"; do
+  if ! command -v "$cmd" > /dev/null; then
+    if [ "$cmd" = "distrobox" ] && [ "$IS_UBUNTU" = true ]; then
+      echo "Error: 'distrobox' is not installed. Ubuntu users must use distrobox instead of toolbox." >&2
+      echo "Please install distrobox (e.g., sudo apt install distrobox) and try again." >&2
+    else
+      echo "Error: '$cmd' is not installed." >&2
+    fi
+    exit 1
+  fi
 done
 
 if [ "$#" -lt 1 ]; then
@@ -53,9 +77,9 @@ for name in "${SELECTED_TOOLBOXES[@]}"; do
   echo "🔄 Refreshing $name (image: $image)"
 
   # Remove the toolbox if it exists
-  if toolbox list | grep -q "$name"; then
+  if $TOOLBOX_CMD list | grep -q "$name"; then
     echo "🧹 Removing existing toolbox: $name"
-    toolbox rm -f "$name"
+    $TOOLBOX_CMD rm -f "$name"
   fi
 
   echo "⬇️ Pulling latest image: $image"
@@ -64,7 +88,7 @@ for name in "${SELECTED_TOOLBOXES[@]}"; do
 
 
   echo "📦 Recreating toolbox: $name"
-  toolbox create "$name" --image "$image" -- $options
+  $TOOLBOX_CMD create "$name" --image "$image" -- $options
 
   # --- Cleanup: remove dangling images ---
   repo="${image%:*}"
