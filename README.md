@@ -117,7 +117,7 @@ llama-server -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF1
 
 **CLI Mode:**
 ```sh
-llama-cli --no-mmap -ngl 999 -fa 1 \
+llama-cli --no-mmap -c 1892 -ngl 999 -fa 1 \
   -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
   -p "Write a Strix Halo toolkit haiku."
 ```
