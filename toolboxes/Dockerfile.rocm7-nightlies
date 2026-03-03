@@ -63,7 +63,6 @@ RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} . \
 
 RUN cmake -S . -B build \
   -DGGML_HIP=ON \
-  -DCMAKE_HIP_FLAGS="-mllvm --amdgpu-unroll-threshold-local=600" \
   -DAMDGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
