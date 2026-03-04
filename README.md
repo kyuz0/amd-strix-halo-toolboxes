@@ -115,6 +115,12 @@ llama-server -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF1
   -c 8192 -ngl 999 -fa 1 --no-mmap
 ```
 
+**Router Mode:**
+> Uses [`models.ini`](docs/models.ini.example) preset configuration for multi-model routing.
+```sh
+llama-server --models-preset models.ini --host 0.0.0.0 --port 8080 --models-max 1 --parallel 1
+```
+
 **CLI Mode:**
 ```sh
 llama-cli --no-mmap -ngl 999 -fa 1 \

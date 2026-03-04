@@ -1,0 +1,92 @@
+version = 1
+
+[*]
+threads = 12
+flash-attn = on
+mlock = off
+mmap = off
+fit = off
+warmup = off
+batch-size = 4096
+ubatch-size = 512
+cache-type-k = q8_0
+cache-type-v = q8_0
+jinja = true
+direct-io = on
+cache-prompt = true
+cache-reuse = 256
+cache-ram = 32768
+
+# --- MODELS ---
+
+[unsloth-Qwen3-Coder-Next]
+model = /path/to/models/unsloth-Qwen3-Coder-Next/UD-Q6_K_XL/Qwen3-Coder-Next-UD-Q6_K_XL-00001-of-00003.gguf
+n-gpu-layers = 999
+ctx-size = 128000
+temp = 1.0
+top-p = 0.95
+top-k = 40
+min-p = 0.01
+
+[unsloth-GLM-4.7-Flash]
+model = /path/to/models/unsloth-GLM-4.7-Flash-GGUF/GLM-4.7-Flash-UD-Q6_K_XL.gguf
+n-gpu-layers = 999
+ctx-size = 128000
+temp = 0.7
+top-p = 1.0
+min-p = 0.01
+
+[gpt-oss-120b]
+model = /path/to/models/gpt-oss-120/ud-q8_k_xl/gpt-oss-120b-UD-Q8_K_XL-00001-of-00002.gguf
+alias = gpt-120b
+n-gpu-layers = 999
+ctx-size = 65536
+temp = 0.8
+min-p = 0.05
+chat-template-kwargs = {"reasoning_effort": "high"}
+
+[llama-4-scout]
+model = /path/to/models/llama4-scout-17b-16e/unsloth/q4_k_xl/Llama-4-Scout-17B-16E-Instruct-UD-Q4_K_XL-00001-of-00002.gguf
+mmproj = /path/to/models/llama4-scout-17b-16e/unsloth/q4_k_xl/unsloth-Llama-4-Scout-17B-16E-Instruct-GGUF-mmproj-BF16.gguf
+alias = llama-4
+n-gpu-layers = 999
+ctx-size = 65536
+
+[unsloth-MiniMax-M2.5]
+model = /path/to/models/unsloth-MiniMax-M2.5-GGUF/UD-IQ3_XXS/MiniMax-M2.5-UD-IQ3_XXS-00001-of-00003.gguf
+n-gpu-layers = 999
+ctx-size = 128000
+temp = 1.0
+top-p = 0.95
+top-k = 40
+min-p = 0.01
+
+[unsloth-Qwen3.5-397B-A17B]
+model = /path/to/models/unsloth-Qwen3.5-397B-A17B/Qwen3.5-397B-A17B-UD-TQ1_0.gguf
+mmproj = /path/to/models/unsloth-Qwen3.5-397B-A17B/mmproj-BF16.gguf
+alias = qwen3.5
+n-gpu-layers = 999
+ctx-size = 128000
+temp = 0.6
+top-p = 0.95
+top-k = 20
+min-p = 0.0
+cache-type-k = q4_0
+cache-type-v = q4_0
+chat-template-kwargs = {"enable_thinking": true}
+ubatch-size = 256
+cache-reuse = 0
+
+[unsloth-Qwen3.5-122B-A10B]
+model = /path/to/models/unsloth-Qwen3.5-122B-A10B-GGUF/Qwen3.5-122B-A10B-MXFP4_MOE-00001-of-00003.gguf
+alias = qwen3.5-122b
+n-gpu-layers = 999
+ctx-size = 128000
+temp = 1.0
+top-p = 0.95
+top-k = 20
+min-p = 0.0
+ubatch-size = 2048
+cache-type-k = q4_0
+cache-type-v = q4_0
+cache-reuse = 0
