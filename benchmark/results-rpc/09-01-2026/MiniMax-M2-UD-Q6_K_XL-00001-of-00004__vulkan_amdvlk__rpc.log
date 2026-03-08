@@ -1,0 +1,19 @@
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 32768 | int dot: 1 | matrix cores: KHR_coopmat
+| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
+/opt/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:724: Remote RPC server crashed or returned malformed response
+/lib64/libggml-base.so.0(+0x35a5) [0x7f7c046f25a5]
+/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7f7c046f296b]
+/lib64/libggml-base.so.0(ggml_abort+0x11f) [0x7f7c046f2aef]
+/lib64/libggml-rpc.so.0(+0x5b4a) [0x7f7c07d17b4a]
+/lib64/libggml-base.so.0(+0x171b2) [0x7f7c047061b2]
+/lib64/libggml-base.so.0(+0x1749f) [0x7f7c0470649f]
+/lib64/libggml-base.so.0(ggml_backend_alloc_ctx_tensors_from_buft+0x19) [0x7f7c04707509]
+/lib64/libllama.so.0(_ZN11llama_model12load_tensorsER18llama_model_loader+0x3c61) [0x7f7c07f673c1]
+/lib64/libllama.so.0(+0x25568) [0x7f7c07ebd568]
+/lib64/libllama.so.0(llama_model_load_from_file+0xac) [0x7f7c07ebe3cc]
+/usr/sbin/llama-bench() [0x4077b5]
+/lib64/libc.so.6(+0x35b5) [0x7f7c040885b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7f7c04088668]
+/usr/sbin/llama-bench() [0x409cf5]

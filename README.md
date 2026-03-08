@@ -66,7 +66,7 @@ You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](http
 
 ## Quick Start
 
-### 1. Create & Enter Toolbox
+Create and enter your toolbox of choice. **(Ubuntu users: remember to use `distrobox` instead of `toolbox` in the commands below).** (check [Strix Halo Toolboxes](https://strix-halo-toolboxes.com/#config) for details).
 
 **Option A: Vulkan (RADV/AMDVLK)** - best for compatibility
 ```sh
@@ -86,7 +86,6 @@ toolbox create llama-rocm-7.2 \
 
 toolbox enter llama-rocm-7.2
 ```
-*(Ubuntu users: use [Distrobox](https://github.com/89luca89/distrobox) as `toolbox` may break GPU access).*
 
 ### 2. Check GPU Access
 Inside the toolbox:
@@ -96,12 +95,13 @@ llama-cli --list-devices
 
 ### 3. Download Model
 Example: Qwen3 Coder 30B (BF16)
+Consider: setting your Hugging Face HF_TOKEN for faster downloads
 ```bash
-HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF \
+HF_XET_HIGH_PERFORMANCE=1 hf download unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF \
   BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
   --local-dir models/qwen3-coder-30B-A3B/
 
-HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF \
+HF_XET_HIGH_PERFORMANCE=1 hf download unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF \
   BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00002-of-00002.gguf \
   --local-dir models/qwen3-coder-30B-A3B/
 ```
@@ -113,6 +113,12 @@ HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download unsloth/Qwen3-Coder-30B-A3B
 ```sh
 llama-server -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
   -c 8192 -ngl 999 -fa 1 --no-mmap
+```
+
+**Router Mode:**
+> Uses [`models.ini`](docs/models.ini.example) preset configuration for multi-model routing.
+```sh
+llama-server --models-preset models.ini --host 0.0.0.0 --port 8080 --models-max 1 --parallel 1
 ```
 
 **CLI Mode:**

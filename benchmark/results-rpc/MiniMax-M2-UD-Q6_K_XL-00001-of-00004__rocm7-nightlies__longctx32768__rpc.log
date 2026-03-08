@@ -1,8 +1,8 @@
 ggml_cuda_init: found 1 ROCm devices:
   Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
-| minimax-m2 230B.A10B Q6_K      | 180.94 GiB |   228.69 B | ROCm,RPC   |  99 |     2048 |  1 |    0 | pp2048 @ d32768 |         60.47 ± 0.00 |
-| minimax-m2 230B.A10B Q6_K      | 180.94 GiB |   228.69 B | ROCm,RPC   |  99 |     2048 |  1 |    0 |   tg32 @ d32768 |          6.04 ± 0.00 |
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | --------------: | -------------------: |
+| minimax-m2 230B.A10B Q6_K      | 180.94 GiB |   228.69 B | ROCm,RPC   |  99 |     2048 |  1 | pp2048 @ d32768 |         60.78 ± 0.00 |
+| minimax-m2 230B.A10B Q6_K      | 180.94 GiB |   228.69 B | ROCm,RPC   |  99 |     2048 |  1 |   tg32 @ d32768 |          6.10 ± 0.00 |
 
-build: 2656c0d26 (7693)
+build: e0c93af2a (7938)
