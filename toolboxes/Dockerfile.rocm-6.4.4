@@ -6,7 +6,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False \
   install \
   make gcc cmake lld clang clang-devel compiler-rt libcurl-devel \
   rocminfo radeontop 'rocm-*' 'rocblas-*' hipblas 'hipblas-*' \
-  git vim rsync sudo tar xz \
+  git vim rsync sudo tar xz patch \
   && dnf clean all && rm -rf /var/cache/dnf/*
 
 # llama.cpp
@@ -15,9 +15,12 @@ ARG REPO=https://github.com/ggerganov/llama.cpp.git
 ARG BRANCH=master
 RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
+COPY llama-grammar.patch /tmp/llama-grammar.patch
+
 # build + install
 RUN git clean -xdf \
   && git submodule update --recursive \
+  && patch -p1 < /tmp/llama-grammar.patch \
   && HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
   cmake -S . -B build \
   -DGGML_HIP=ON \
