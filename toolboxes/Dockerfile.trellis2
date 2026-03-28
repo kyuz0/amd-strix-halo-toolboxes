@@ -1,0 +1,71 @@
+# TRELLIS.2 for AMD gfx1151 (Strix Halo)
+# GPU-accelerated 3D generation via HIP-ported CuMesh, FlexGEMM, O-Voxel
+#
+# Build:
+#   podman build --no-cache -t trellis2-gfx1151 -f Dockerfile.trellis2 .
+#
+# Run:
+#   podman run --rm -it --device /dev/dri --device /dev/kfd \
+#     --group-add video --group-add render \
+#     --security-opt seccomp=unconfined \
+#     -p 8080:8080 trellis2-gfx1151
+
+FROM kyuz0/vllm-therock-gfx1151:latest
+
+ENV HSA_XNACK=1 \
+    HSA_ENABLE_SDMA=0 \
+    PYTORCH_HIP_ALLOC_CONF="garbage_collection_threshold:0.6,max_split_size_mb:128" \
+    PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True" \
+    OPENCV_IO_ENABLE_OPENEXR=1 \
+    SPARSE_CONV_BACKEND=flex_gemm \
+    ATTN_BACKEND=flash_attn \
+    GPU_ARCHS=gfx1151 \
+    PYTORCH_ROCM_ARCH=gfx1151 \
+    ROCM_HOME=/opt/rocm \
+    HIP_VISIBLE_DEVICES=0 \
+    TRITON_CACHE_DIR=/tmp/triton_cache \
+    PYTHONPATH="/app/trellis2"
+
+WORKDIR /app
+
+RUN dnf install -y \
+    libjpeg-turbo-devel mesa-libGL glib2 git-lfs cmake gcc-c++ make \
+    && dnf clean all
+
+RUN pip install --no-cache-dir \
+    imageio imageio-ffmpeg tqdm easydict kornia timm lpips zstandard \
+    gradio==6.0.1 trimesh tensorboard pandas safetensors huggingface_hub \
+    fastapi uvicorn python-multipart xatlas pymeshfix \
+    "git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8"
+
+RUN git clone -b rocm --recursive https://github.com/Lamothe/TRELLIS.2_rocm.git /app/trellis2
+
+# ── Build FlexGEMM (Triton sparse convolutions) ──
+RUN git clone --recursive https://github.com/JeffreyXiang/FlexGEMM.git /tmp/FlexGEMM \
+    && cd /tmp/FlexGEMM \
+    && GPU_ARCHS=gfx1151 pip install . --no-build-isolation \
+    && rm -rf /tmp/FlexGEMM
+
+# ── Build CuMesh (HIP-ported GPU mesh operations) ──
+COPY trellis2/patch_cumesh_hip.sh /tmp/patch_cumesh_hip.sh
+RUN git clone --recursive https://github.com/JeffreyXiang/CuMesh.git /tmp/CuMesh \
+    && bash /tmp/patch_cumesh_hip.sh /tmp/CuMesh \
+    && cd /tmp/CuMesh \
+    && GPU_ARCHS=gfx1151 pip install . --no-build-isolation \
+    && rm -rf /tmp/CuMesh /tmp/patch_cumesh_hip.sh
+
+# ── Install nvdiffrast stub (rendering not available on ROCm) ──
+COPY trellis2/nvdiffrast_stub/ /tmp/nvdiffrast_stub/
+RUN pip install /tmp/nvdiffrast_stub && rm -rf /tmp/nvdiffrast_stub
+
+# ── Build O-Voxel (HIP kernels from Lamothe fork) ──
+RUN cd /app/trellis2/o-voxel \
+    && sed -i 's|"-O3", "-std=c++17"|"-O3", "-std=c++17", "-Wno-c++11-narrowing"|g' setup.py \
+    && GPU_ARCHS=gfx1151 pip install . --no-build-isolation
+
+# API server
+COPY trellis2/server.py /app/server.py
+
+EXPOSE 8080
+WORKDIR /app/trellis2
+CMD ["python", "/app/server.py"]
