@@ -22,7 +22,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False \
   rocm-llvm rocm-device-libs hip-runtime-amd hip-devel \
   rocblas rocblas-devel hipblas hipblas-devel rocm-cmake libomp-devel libomp \
   rocminfo radeontop \
-  git-core vim sudo rsync \
+  git-core vim sudo rsync patch \
   && dnf clean all && rm -rf /var/cache/dnf/*
 
 # rocm env
@@ -38,9 +38,12 @@ ARG REPO=https://github.com/ggerganov/llama.cpp.git
 ARG BRANCH=master
 RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
+COPY llama-grammar.patch /tmp/llama-grammar.patch
+
 # build
 RUN git clean -xdf \
   && git submodule update --recursive \
+  && patch -p1 < /tmp/llama-grammar.patch \
   && cmake -S . -B build \
   -DGGML_HIP=ON \
   -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm -mllvm --amdgpu-unroll-threshold-local=600" \

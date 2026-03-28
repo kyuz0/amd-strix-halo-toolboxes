@@ -6,7 +6,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
   git vim \
   make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
   vulkan-loader-devel vulkaninfo mesa-vulkan-drivers \
-  radeontop glslc wget \
+  radeontop glslc wget patch \
   && dnf clean all && rm -rf /var/cache/dnf/*
 
 # amdvlk
@@ -21,9 +21,12 @@ ARG REPO=https://github.com/ggerganov/llama.cpp.git
 ARG BRANCH=master
 RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
+COPY llama-grammar.patch /tmp/llama-grammar.patch
+
 # build
 RUN git clean -xdf \
   && git submodule update --recursive \
+  && patch -p1 < /tmp/llama-grammar.patch \
   && cmake -S . -B build -G Ninja \
   -DGGML_VULKAN=ON \
   -DCMAKE_BUILD_TYPE=Release \

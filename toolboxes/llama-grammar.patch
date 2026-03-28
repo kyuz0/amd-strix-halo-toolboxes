@@ -1,0 +1,15 @@
+From: KYmidnight
+Issue: https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/70
+Subject: Increase MAX_REPETITION_THRESHOLD to 100000 for complex tool schemas
+
+--- a/src/llama-grammar.cpp
++++ b/src/llama-grammar.cpp
+@@ -10,7 +10,7 @@
+ #include <set>
+ #include <stdexcept>
+ 
+-#define MAX_REPETITION_THRESHOLD 2000
++#define MAX_REPETITION_THRESHOLD 100000
+ //
+ // helpers
+ //

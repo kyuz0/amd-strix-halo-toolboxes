@@ -59,9 +59,10 @@ RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} . \
   && git clean -xdf \
   && git submodule update --recursive
 
+COPY llama-grammar.patch /tmp/llama-grammar.patch
 
-
-RUN cmake -S . -B build \
+RUN patch -p1 < /tmp/llama-grammar.patch \
+  && cmake -S . -B build \
   -DGGML_HIP=ON \
   -DAMDGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
