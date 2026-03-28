@@ -1,5 +1,5 @@
 # TRELLIS.2 for AMD gfx1151 (Strix Halo)
-# GPU-accelerated 3D generation via HIP-ported CuMesh, FlexGEMM, O-Voxel
+# GPU-accelerated image-to-3D generation via HIP-ported CuMesh, FlexGEMM, O-Voxel
 #
 # Build:
 #   podman build --no-cache -t trellis2-gfx1151 -f Dockerfile.trellis2 .
@@ -8,7 +8,20 @@
 #   podman run --rm -it --device /dev/dri --device /dev/kfd \
 #     --group-add video --group-add render \
 #     --security-opt seccomp=unconfined \
+#     -e HSA_XNACK=1 -e HSA_ENABLE_SDMA=0 \
+#     -v /path/to/models:/hf-models \
+#     -v /path/to/cache:/cache \
 #     -p 8080:8080 trellis2-gfx1151
+#
+# AMD gfx1151 Runtime Fixes (applied in server.py):
+#   1. FlexGEMM: tf32 not supported on AMD, use ieee precision
+#   2. BiRefNet: FP16/FP32 mismatch, force fp32 before inference
+#   3. sparse_structure_decoder: MIOpen fp16 Conv3d produces NaN, convert to fp32
+#   4. CuMesh fill_holes: HIP crash on gfx1151, fallback to pymeshfix
+#
+# Performance (Radeon 8060S, 103GB VRAM):
+#   512 pipeline: ~95s (first run with autotuning), ~60s (cached)
+#   1024_cascade: ~30-40min (needs RDNA4-optimized FlexGEMM configs)
 
 FROM kyuz0/vllm-therock-gfx1151:latest
 
@@ -23,7 +36,9 @@ ENV HSA_XNACK=1 \
     PYTORCH_ROCM_ARCH=gfx1151 \
     ROCM_HOME=/opt/rocm \
     HIP_VISIBLE_DEVICES=0 \
-    TRITON_CACHE_DIR=/tmp/triton_cache \
+    TRITON_CACHE_DIR=/cache/triton \
+    FLEX_GEMM_AUTOTUNE_CACHE_PATH=/cache/flex_gemm_autotune_cache.json \
+    PYTORCH_TUNABLEOP_ENABLED=1 \
     PYTHONPATH="/app/trellis2"
 
 WORKDIR /app
@@ -63,7 +78,7 @@ RUN cd /app/trellis2/o-voxel \
     && sed -i 's|"-O3", "-std=c++17"|"-O3", "-std=c++17", "-Wno-c++11-narrowing"|g' setup.py \
     && GPU_ARCHS=gfx1151 pip install . --no-build-isolation
 
-# API server
+# API server with AMD gfx1151 runtime fixes
 COPY trellis2/server.py /app/server.py
 
 EXPOSE 8080
