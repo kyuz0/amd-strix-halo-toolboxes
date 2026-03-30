@@ -1,8 +1,8 @@
-ggml_cuda_init: found 1 ROCm devices:
-  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | n_ubatch | fa |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | --------------: | -------------------: |
-| gemma3 4B Q3_K - Small         |   1.80 GiB |     3.88 B | ROCm       |  99 |     2048 |  1 | pp2048 @ d32768 |      1419.18 ± 40.21 |
-| gemma3 4B Q3_K - Small         |   1.80 GiB |     3.88 B | ROCm       |  99 |     2048 |  1 |   tg32 @ d32768 |         60.24 ± 0.11 |
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 126976 MiB):
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32, VRAM: 126976 MiB
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| gemma3 4B Q3_K - Small         |   1.80 GiB |     3.88 B | ROCm       |  99 |     2048 |  1 |    0 | pp2048 @ d32768 |      1681.29 ± 17.71 |
+| gemma3 4B Q3_K - Small         |   1.80 GiB |     3.88 B | ROCm       |  99 |     2048 |  1 |    0 |   tg32 @ d32768 |         54.11 ± 0.29 |
 
-build: e0c93af2a (7938)
+build: 2405d59cb (8577)

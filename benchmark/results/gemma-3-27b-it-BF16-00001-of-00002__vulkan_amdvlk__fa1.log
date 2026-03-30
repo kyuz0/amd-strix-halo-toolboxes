@@ -1,8 +1,23 @@
 ggml_vulkan: Found 1 Vulkan devices:
 ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 32768 | int dot: 1 | matrix cores: KHR_coopmat
-| model                          |       size |     params | backend    | ngl | fa |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | --------------: | -------------------: |
-| gemma3 27B BF16                |  50.31 GiB |    27.01 B | Vulkan     |  99 |  1 |           pp512 |          9.32 ± 0.00 |
-| gemma3 27B BF16                |  50.31 GiB |    27.01 B | Vulkan     |  99 |  1 |           tg128 |          3.87 ± 0.00 |
-
-build: e0c93af2a (7938)
+/lib64/libggml-base.so.0(+0x3c25) [0x7f25ac3cbc25]
+/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7f25ac3cbfeb]
+/lib64/libggml-base.so.0(+0x16669) [0x7f25ac3de669]
+/lib64/libstdc++.so.6(+0x1ebfc) [0x7f25abb42bfc]
+/lib64/libstdc++.so.6(_ZSt10unexpectedv+0x0) [0x7f25abb2cd3a]
+/lib64/libstdc++.so.6(+0x1eea8) [0x7f25abb42ea8]
+/lib64/libggml-vulkan.so.0(+0x16b68) [0x7f25ac488b68]
+/lib64/libggml-vulkan.so.0(+0xfcfd0) [0x7f25ac56efd0]
+/lib64/libggml-base.so.0(ggml_backend_sched_graph_compute_async+0x3b2) [0x7f25ac3e7092]
+/lib64/libllama.so.0(_ZN13llama_context13graph_computeEP11ggml_cgraphb+0xa0) [0x7f25afcfce70]
+/lib64/libllama.so.0(_ZN13llama_context14process_ubatchERK12llama_ubatch14llm_graph_typeP22llama_memory_context_iR11ggml_status+0xe5) [0x7f25afcff445]
+/lib64/libllama.so.0(_ZN13llama_context6decodeERK11llama_batch+0x35f) [0x7f25afd05aaf]
+/lib64/libllama.so.0(llama_decode+0xe) [0x7f25afd0742e]
+/usr/sbin/llama-bench() [0x41cc3b]
+/usr/sbin/llama-bench() [0x419a10]
+/lib64/libc.so.6(+0x35b5) [0x7f25ab8135b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7f25ab813668]
+/usr/sbin/llama-bench() [0x41b595]
+terminate called after throwing an instance of 'vk::DeviceLostError'
+  what():  vk::Queue::submit: ErrorDeviceLost
+✖ ! [vulkan_amdvlk] gemma-3-27b-it-BF16-00001-of-00002__fa1 failed (exit 0)

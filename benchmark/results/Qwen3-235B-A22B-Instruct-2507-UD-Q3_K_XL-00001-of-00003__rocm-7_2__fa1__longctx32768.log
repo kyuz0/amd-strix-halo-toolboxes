@@ -1,8 +1,8 @@
-ggml_cuda_init: found 1 ROCm devices:
-  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | n_ubatch | fa |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | --------------: | -------------------: |
-| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |     2048 |  1 | pp2048 @ d32768 |         41.36 ± 0.87 |
-| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |     2048 |  1 |   tg32 @ d32768 |          9.65 ± 0.30 |
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 126976 MiB):
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32, VRAM: 126976 MiB
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |     2048 |  1 |    0 | pp2048 @ d32768 |         49.93 ± 0.03 |
+| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |     2048 |  1 |    0 |   tg32 @ d32768 |          8.41 ± 0.37 |
 
-build: e0c93af2a (7938)
+build: 2405d59cb (8577)

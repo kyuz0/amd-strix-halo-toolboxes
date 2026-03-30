@@ -1,8 +1,8 @@
-ggml_cuda_init: found 1 ROCm devices:
-  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32
-| model                          |       size |     params | backend    | ngl | n_ubatch | fa |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | --------------: | -------------------: |
-| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | ROCm       |  99 |     2048 |  1 | pp2048 @ d32768 |        191.18 ± 2.26 |
-| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | ROCm       |  99 |     2048 |  1 |   tg32 @ d32768 |          6.94 ± 0.00 |
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 126976 MiB):
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32, VRAM: 126976 MiB
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | ROCm       |  99 |     2048 |  1 |    0 | pp2048 @ d32768 |        196.03 ± 1.28 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | ROCm       |  99 |     2048 |  1 |    0 |   tg32 @ d32768 |          6.97 ± 0.00 |
 
-build: e0c93af2a (7938)
+build: 2405d59cb (8577)
