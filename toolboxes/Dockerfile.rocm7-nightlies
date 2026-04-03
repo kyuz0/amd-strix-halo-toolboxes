@@ -67,7 +67,6 @@ RUN patch -p1 < /tmp/llama-grammar.patch \
   -DAMDGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
-  -DGGML_CUDA_DISABLE_FUSION=1 \
   -DLLAMA_HIP_UMA=ON \
   && cmake --build build --config Release -- -j$(nproc) \
   && cmake --install build --config Release
