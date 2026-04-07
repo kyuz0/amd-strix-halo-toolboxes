@@ -61,8 +61,9 @@ RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} . \
 
 COPY llama-grammar.patch /tmp/llama-grammar.patch
 
+# PR 21566: test a fix for gemma-4 inference bug (CUDA: check for buffer overlap before fusing)
 RUN patch -p1 < /tmp/llama-grammar.patch \
-  && curl -sSL https://github.com/ggml-org/llama.cpp/pull/21506.patch | patch -p1 \
+  && curl -sSL https://github.com/ggml-org/llama.cpp/pull/21566.patch | patch -p1 \
   && cmake -S . -B build \
   -DGGML_HIP=ON \
   -DAMDGPU_TARGETS=gfx1151 \
