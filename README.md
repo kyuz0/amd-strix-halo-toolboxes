@@ -59,7 +59,7 @@ You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](http
 | `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv` | Vulkan (Mesa RADV) | Most stable and compatible. Recommended for most users and all models. |
 | `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
-| `rocm-7.2` | ROCm 7.2 | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
+| `rocm-7.2.1` | ROCm 7.2.1 | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
 | `rocm7-nightlies` | ROCm 7 Nightly | Tracks nightly builds. Includes patch for **kernel 6.18.4+** support. |
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated. Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from this list.
