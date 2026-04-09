@@ -48,7 +48,7 @@ jobs:
           else
             IN_CLEAN=$(echo "$IN" | tr -d '[:space:]')
             JSON='["'${IN_CLEAN//,/\",\"}'"]'
-          fi`
+          fi
           echo "list=${JSON}" >> "$GITHUB_OUTPUT"
 
       - name: Prune old tags
