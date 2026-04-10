@@ -84,14 +84,6 @@ resolve_model_path() {
   return 1
 }
 
-get_hblt_modes() {
-  local env="$1"
-  if [[ "$env" == rocm* ]]; then
-    printf '%s\n' default off
-  else
-    printf '%s\n' default
-  fi
-}
 
 ensure_models_exist() {
   RESOLVED_MODELS=()
@@ -141,23 +133,13 @@ has_pending_runs() {
 start_remote_rpc() {
   local env="$1"
   local image="$2"
-  local mode="$3"
-  local suffix="$4"
+  local suffix="$3"
   local remote_log="/tmp/rpc-server-${env}${suffix}.log"
-  local env_prefix=""
-
-  if [[ "$env" == rocm* ]]; then
-    if [[ "$mode" == off ]]; then
-      env_prefix="env ROCBLAS_USE_HIPBLASLT=0 "
-    else
-      env_prefix="env ROCBLAS_USE_HIPBLASLT=1 "
-    fi
-  fi
 
   ssh -p "$REMOTE_PORT" "$REMOTE_TARGET" 'bash -s' <<EOF
 set -euo pipefail
 pkill -9 -f rpc-server || true
-nohup toolbox run -c ${image} -- ${env_prefix}rpc-server -H 0.0.0.0 -p ${RPC_PORT} -c >${remote_log} 2>&1 < /dev/null &
+nohup toolbox run -c ${image} -- rpc-server -H 0.0.0.0 -p ${RPC_PORT} -c >${remote_log} 2>&1 < /dev/null &
 echo \$!
 EOF
 }
@@ -201,7 +183,6 @@ run_llama_bench_rpc() {
   local model_path="$1"
   local env="$2"
   local suffix="$3"
-  local mode="$4"
   local model_name
   model_name="$(basename "${model_path}" .gguf)"
   local client_cmd="${CLIENT_CMDS[$env]:-}"
@@ -214,14 +195,6 @@ run_llama_bench_rpc() {
   if [[ -z "$client_cmd" ]]; then
     echo "[WARN] No client llama-bench command defined for ${env} - skipping."
     return
-  fi
-
-  if [[ "$env" == rocm* ]]; then
-    if [[ "$mode" == off ]]; then
-      client_cmd="${client_cmd/-- /-- env ROCBLAS_USE_HIPBLASLT=0 }"
-    else
-      client_cmd="${client_cmd/-- /-- env ROCBLAS_USE_HIPBLASLT=1 }"
-    fi
   fi
 
   local -a client_cmd_ary
@@ -284,13 +257,7 @@ run_all() {
       continue
     fi
 
-    mapfile -t hblt_modes < <(get_hblt_modes "$env")
-
-    for mode in "${hblt_modes[@]}"; do
       local suffix=""
-      if [[ "$mode" == off ]]; then
-        suffix="__hblt0"
-      fi
 
       echo
       echo "==== ${env}${suffix} -> ${image} ===="
@@ -302,7 +269,7 @@ run_all() {
 
       CURRENT_REMOTE_ENV="${env}${suffix}"
       local remote_pid
-      remote_pid="$(start_remote_rpc "$env" "$image" "$mode" "$suffix" | tr -d '\r')"
+      remote_pid="$(start_remote_rpc "$env" "$image" "$suffix" | tr -d '\r')"
 
       if [[ -z "$remote_pid" ]]; then
         echo "[ERROR] Failed to start RPC server for ${env}${suffix}"
@@ -322,13 +289,12 @@ run_all() {
       fi
 
       for model in "${RESOLVED_MODELS[@]}"; do
-        run_llama_bench_rpc "$model" "$env" "$suffix" "$mode"
+        run_llama_bench_rpc "$model" "$env" "$suffix"
       done
 
       stop_remote_rpc "$env" "$remote_pid" || true
       CURRENT_REMOTE_PID=""
       CURRENT_REMOTE_ENV=""
-    done
   done
 }
 

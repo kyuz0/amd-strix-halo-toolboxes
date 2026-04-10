@@ -55,9 +55,7 @@ function cacheUI() {
         stats: document.getElementById("stats-line"),
         resetBtn: document.getElementById("reset-layout"),
         tables: document.getElementById("tables"),
-        hipblasModalOpen: document.getElementById("hipblas-modal-open"),
-        hipblasModal: document.getElementById("hipblas-modal"),
-        hipblasModalClose: document.getElementById("hipblas-modal-close"),
+
         rpcModalOpen: document.getElementById("rpc-modal-open"),
         rpcModal: document.getElementById("rpc-modal"),
         rpcModalClose: document.getElementById("rpc-modal-close"),
@@ -72,11 +70,6 @@ function cacheUI() {
 
 function setupModals() {
     const modalConfigs = [
-        {
-            open: state.ui.hipblasModalOpen,
-            modal: state.ui.hipblasModal,
-            close: state.ui.hipblasModalClose,
-        },
         {
             open: state.ui.rpcModalOpen,
             modal: state.ui.rpcModal,
@@ -668,7 +661,7 @@ function backendValue(entry, direction) {
 
 function splitEnvName(env) {
     const canonical = env.replace(/_/g, ".");
-    const tagRegex = /-(rocwmma-improved|rocwmma|improved|hblt0)/gi;
+    const tagRegex = /-(rocwmma-improved|rocwmma|improved)/gi;
     const tags = [];
     let match;
     while ((match = tagRegex.exec(canonical)) !== null) {
