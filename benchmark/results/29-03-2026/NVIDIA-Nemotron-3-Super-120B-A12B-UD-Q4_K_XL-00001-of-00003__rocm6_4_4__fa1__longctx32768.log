@@ -1,0 +1,8 @@
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 126976 MiB):
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32, VRAM: 126976 MiB
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| nemotron_h_moe 120B.A12B Q4_K - Medium |  78.02 GiB |   120.67 B | ROCm       |  99 |     2048 |  1 |    0 | pp2048 @ d32768 |        324.69 ± 0.27 |
+| nemotron_h_moe 120B.A12B Q4_K - Medium |  78.02 GiB |   120.67 B | ROCm       |  99 |     2048 |  1 |    0 |   tg32 @ d32768 |         15.38 ± 0.01 |
+
+build: 2405d59cb (8577)

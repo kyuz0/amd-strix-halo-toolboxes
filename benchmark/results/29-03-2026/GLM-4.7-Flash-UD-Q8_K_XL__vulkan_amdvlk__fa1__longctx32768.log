@@ -1,0 +1,23 @@
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 32768 | int dot: 1 | matrix cores: KHR_coopmat
+/lib64/libggml-base.so.0(+0x3c25) [0x7fa3d16b4c25]
+/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7fa3d16b4feb]
+/lib64/libggml-base.so.0(+0x16669) [0x7fa3d16c7669]
+/lib64/libstdc++.so.6(+0x1ebfc) [0x7fa3d0e2bbfc]
+/lib64/libstdc++.so.6(_ZSt10unexpectedv+0x0) [0x7fa3d0e15d3a]
+/lib64/libstdc++.so.6(+0x1eea8) [0x7fa3d0e2bea8]
+/lib64/libggml-vulkan.so.0(+0x16b68) [0x7fa3d1771b68]
+/lib64/libggml-vulkan.so.0(+0xfcfd0) [0x7fa3d1857fd0]
+/lib64/libggml-base.so.0(ggml_backend_sched_graph_compute_async+0x3b2) [0x7fa3d16d0092]
+/lib64/libllama.so.0(_ZN13llama_context13graph_computeEP11ggml_cgraphb+0xa0) [0x7fa3d4fe5e70]
+/lib64/libllama.so.0(_ZN13llama_context14process_ubatchERK12llama_ubatch14llm_graph_typeP22llama_memory_context_iR11ggml_status+0xe5) [0x7fa3d4fe8445]
+/lib64/libllama.so.0(_ZN13llama_context6decodeERK11llama_batch+0x35f) [0x7fa3d4feeaaf]
+/lib64/libllama.so.0(llama_decode+0xe) [0x7fa3d4ff042e]
+/usr/sbin/llama-bench() [0x41cc3b]
+/usr/sbin/llama-bench() [0x419a10]
+/lib64/libc.so.6(+0x35b5) [0x7fa3d0afc5b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7fa3d0afc668]
+/usr/sbin/llama-bench() [0x41b595]
+terminate called after throwing an instance of 'vk::DeviceLostError'
+  what():  vk::Queue::submit: ErrorDeviceLost
+✖ ! [vulkan_amdvlk] GLM-4.7-Flash-UD-Q8_K_XL__fa1 __longctx32768 failed (exit 0)
