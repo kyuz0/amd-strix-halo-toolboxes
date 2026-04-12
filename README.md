@@ -79,8 +79,8 @@ toolbox enter llama-vulkan-radv
 
 **Option B: ROCm (Recommended for Performance)**
 ```sh
-toolbox create llama-rocm-7.2 \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2 \
+toolbox create llama-rocm-7.2.1 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.1 \
   -- --device /dev/dri --device /dev/kfd \
   --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
 
