@@ -6,7 +6,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
   git vim \
   make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
   vulkan-loader-devel vulkaninfo mesa-vulkan-drivers \
-  radeontop glslc wget patch \
+  spirv-headers-devel radeontop glslc wget patch \
   && dnf clean all && rm -rf /var/cache/dnf/*
 
 # amdvlk
