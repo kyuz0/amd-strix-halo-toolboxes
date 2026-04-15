@@ -2,7 +2,7 @@ ggml_vulkan: Found 1 Vulkan devices:
 ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 32768 | int dot: 1 | matrix cores: KHR_coopmat
 | model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
 | ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
-| minimax-m2 230B.A10B Q3_K - Medium |  94.93 GiB |   228.69 B | Vulkan     |  99 |  1 |    0 | pp2048 @ d32768 |         31.94 ± 0.07 |
-| minimax-m2 230B.A10B Q3_K - Medium |  94.93 GiB |   228.69 B | Vulkan     |  99 |  1 |    0 |   tg32 @ d32768 |         10.05 ± 0.01 |
+| minimax-m2 230B.A10B Q3_K - Medium |  94.93 GiB |   228.69 B | Vulkan     |  99 |  1 |    0 | pp2048 @ d32768 |         31.64 ± 0.19 |
+| minimax-m2 230B.A10B Q3_K - Medium |  94.93 GiB |   228.69 B | Vulkan     |  99 |  1 |    0 |   tg32 @ d32768 |         10.06 ± 0.00 |
 
 build: 3f8752b55 (8743)
