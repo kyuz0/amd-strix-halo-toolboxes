@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-MODEL_DIR="$(realpath models)"
+MODEL_DIR="$(realpath ~/models)"
 RESULTDIR="results"
 mkdir -p "$RESULTDIR"
 
