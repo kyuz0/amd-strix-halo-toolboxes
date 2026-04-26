@@ -8,7 +8,7 @@
 *   **Hardware / Drivers**: AMD "Strix Halo" APUs (Gfx1151). Implementations depend on ROCm (v6.4.4, v7.x) and Vulkan (Mesa RADV, AMDVLK).
 
 ## Repository Structure Overview
-*   `/toolboxes/`: Dockerfiles used to build the container images (e.g., `rocm-6.4.4`, `rocm-7.2.1`, `vulkan-radv`). These often use multi-stage builds to compile Llama.cpp and extract standalone binaries.
+*   `/toolboxes/`: Dockerfiles used to build the container images (e.g., `rocm-6.4.4`, `rocm-7.2.2`, `vulkan-radv`). These often use multi-stage builds to compile Llama.cpp and extract standalone binaries.
 *   `/benchmark/`: Shell scripts and Python utilities (like `generate_results_json.py`) to systematically test Llama.cpp throughput, latency, and RPC performance.
 *   `/docs/`: Markdown documents, along with HTML/CSS/JS (e.g., `index.html`, `assets/`) for the GitHub Pages website (`strix-halo-toolboxes.com`), plus interactive benchmark viewers and documentation on VRAM estimation.
 *   `/scripts/`: Python utilities, including `run_distributed_llama.py` for distributed inference across nodes.

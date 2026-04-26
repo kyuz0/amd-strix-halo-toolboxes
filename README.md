@@ -34,23 +34,17 @@ This is a hobby project maintained in my spare time. If you find these toolboxes
 ## Stable Configuration
 
 - **OS**: Fedora 42/43
-- **Linux Kernel**: 6.18.6-200
+- **Linux Kernel**: 6.18.9-200.fc43.x86_64
 - **Linux Firmware**: 20260110
 
 This is currently the most stable setup. Kernels older than 6.18.4 have a bug that causes stability issues on gfx1151 and should be avoided. Also, **do NOT use `linux-firmware-20251125`.** It breaks ROCm support on Strix Halo (instability/crashes).
 
 > ⚠️ **Important**: See [Host Configuration](#host-configuration) for critical kernel parameters.
 
-## ROCm 7 Performance Regression Workaround
-
-The performance regression previously observed in ROCm 7+ builds (compared to ROCm 6.4.4) has been **resolved in the toolboxes** via a workaround.
-
-The issue was caused by a compiler regression (llvm/llvm-project#147700) affecting loop unrolling thresholds. We have applied the workaround (`-mllvm --amdgpu-unroll-threshold-local=600`) in the latest toolbox builds, restoring full performance.
-
-This workaround will be removed once the upstream fix lands. For details, see the issue: [kyuz0/amd-strix-halo-toolboxes#45](https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/45)
-
-
 ## Supported Toolboxes
+
+> [!WARNING]
+> Current `rocm7-nightlies` builds have a bug that caps memory allocation to 64GB. If you need larger models, prefer stable builds like `rocm-7.2.2` (performance is similar). Track the issue here: https://github.com/ROCm/TheRock/issues/4645
 
 You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags).
 
@@ -59,7 +53,7 @@ You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](http
 | `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv` | Vulkan (Mesa RADV) | Most stable and compatible. Recommended for most users and all models. |
 | `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
-| `rocm-7.2.1` | ROCm 7.2.1 | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
+| `rocm-7.2.2` | ROCm 7.2.2 | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
 | `rocm7-nightlies` | ROCm 7 Nightly | Tracks nightly builds. Includes patch for **kernel 6.18.4+** support. |
 
 > These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated. Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from this list.
@@ -79,12 +73,12 @@ toolbox enter llama-vulkan-radv
 
 **Option B: ROCm (Recommended for Performance)**
 ```sh
-toolbox create llama-rocm-7.2.1 \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.1 \
+toolbox create llama-rocm-7.2.2 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.2 \
   -- --device /dev/dri --device /dev/kfd \
   --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
 
-toolbox enter llama-rocm-7.2
+toolbox enter llama-rocm-7.2.2
 ```
 
 ### 2. Check GPU Access

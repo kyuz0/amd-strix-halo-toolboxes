@@ -1,14 +1,12 @@
 # build stage
-# Based on Dockerfile.rocm-7.2.1, but clones pedapudi/llama.cpp@gfx1151-opt
-# (PR #21344: gfx1151 nwarps, tile sizing to curb VGPR pressure)
 FROM registry.fedoraproject.org/fedora:43 AS builder
 
-# rocm 7.2.1 repo
+# rocm 7.2.2 repo
 RUN <<'EOF'
 tee /etc/yum.repos.d/rocm.repo <<REPO
-[ROCm-7.2.1]
-name=ROCm7.2.1
-baseurl=https://repo.radeon.com/rocm/rhel10/7.2.1/main
+[ROCm-7.2.2]
+name=ROCm7.2.2
+baseurl=https://repo.radeon.com/rocm/rhel10/7.2.2/main
 enabled=1
 priority=50
 gpgcheck=1
@@ -34,10 +32,10 @@ ENV ROCM_PATH=/opt/rocm \
   HIP_DEVICE_LIB_PATH=/opt/rocm/amdgcn/bitcode \
   PATH=/opt/rocm/bin:/opt/rocm/llvm/bin:$PATH
 
-# llama.cpp — PR #21344 fork (gfx1151 MMQ/MMVQ tile + nwarp tuning)
+# llama.cpp
 WORKDIR /opt/llama.cpp
-ARG REPO=https://github.com/pedapudi/llama.cpp.git
-ARG BRANCH=gfx1151-opt
+ARG REPO=https://github.com/ggerganov/llama.cpp.git
+ARG BRANCH=master
 RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
 COPY llama-grammar.patch /tmp/llama-grammar.patch
@@ -48,19 +46,12 @@ RUN git clean -xdf \
   && patch -p1 < /tmp/llama-grammar.patch \
   && cmake -S . -B build \
   -DGGML_HIP=ON \
-  -DCMAKE_HIP_COMPILER=${HIP_CLANG_PATH}/clang \
   -DCMAKE_HIP_FLAGS="--rocm-path=/opt/rocm -mllvm --amdgpu-unroll-threshold-local=600" \
   -DAMDGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
   -DLLAMA_HIP_UMA=ON \
   -DGGML_CUDA_ENABLE_UNIFIED_MEMORY=ON \
-  -DGGML_BMI2=ON \
-  -DGGML_FMA=ON \
-  -DGGML_F16C=ON \
-  -DGGML_CUDA_FA_ALL_QUANTS=ON \
-  -DLLAMA_BUILD_TESTS=OFF \
-  -DLLAMA_BUILD_EXAMPLES=OFF \
   -DROCM_PATH=/opt/rocm \
   -DHIP_PATH=/opt/rocm \
   -DHIP_PLATFORM=amd \
@@ -78,12 +69,12 @@ RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 # runtime stage
 FROM registry.fedoraproject.org/fedora-minimal:43
 
-# rocm 7.2.1 repo
+# rocm 7.2.2 repo
 RUN <<'EOF'
 tee /etc/yum.repos.d/rocm.repo <<REPO
-[ROCm-7.2.1]
-name=ROCm7.2.1
-baseurl=https://repo.radeon.com/rocm/rhel10/7.2.1/main
+[ROCm-7.2.2]
+name=ROCm7.2.2
+baseurl=https://repo.radeon.com/rocm/rhel10/7.2.2/main
 enabled=1
 priority=50
 gpgcheck=1
