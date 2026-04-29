@@ -1,0 +1,6 @@
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 64055 MiB):
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32, VRAM: 64055 MiB
+main: error: failed to load model '/home/kyuz0/models/qwen-3.6-35b-a3b/BF16/Qwen3.6-35B-A3B-BF16-00001-of-00002.gguf'
+| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
+✖ ! [rocm7-nightlies] Qwen3.6-35B-A3B-BF16-00001-of-00002__fa1 failed (exit 0)

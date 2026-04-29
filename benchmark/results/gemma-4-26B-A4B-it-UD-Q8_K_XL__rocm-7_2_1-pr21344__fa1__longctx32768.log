@@ -1,8 +1,0 @@
-ggml_cuda_init: found 1 ROCm devices (Total VRAM: 126976 MiB):
-  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32, VRAM: 126976 MiB
-| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
-| gemma4 ?B Q8_0                 |  25.94 GiB |    25.23 B | ROCm       |  99 |     2048 |  1 |    0 | pp2048 @ d32768 |        683.73 ± 6.54 |
-| gemma4 ?B Q8_0                 |  25.94 GiB |    25.23 B | ROCm       |  99 |     2048 |  1 |    0 |   tg32 @ d32768 |         33.71 ± 0.01 |
-
-build: 7957de9dc (8645)
