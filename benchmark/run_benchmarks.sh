@@ -84,7 +84,7 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
         EXTRA_ARGS=( -fa 1 )
       fi
 
-      for CTX in default longctx32768; do
+      for CTX in default longctx32768 longctx65536; do
         CTX_SUFFIX=""
         CTX_ARGS=()
         if [[ "$CTX" == longctx32768 ]]; then
@@ -95,11 +95,19 @@ for MODEL_PATH in "${MODEL_PATHS[@]}"; do
           else
             CTX_ARGS+=( -ub 2048 )
           fi
+        elif [[ "$CTX" == longctx65536 ]]; then
+          CTX_SUFFIX="__longctx65536"
+          CTX_ARGS=( -p 2048 -n 32 -d 65536 )
+          if [[ "$ENV" == *vulkan* ]]; then
+            CTX_ARGS+=( -ub 512 )
+          else
+            CTX_ARGS+=( -ub 2048 )
+          fi
         fi
 
         OUT="$RESULTDIR/${MODEL_NAME}__${ENV}${SUFFIX}${CTX_SUFFIX}.log"
         CTX_REPS=5
-        if [[ "$CTX" == longctx32768 ]]; then
+        if [[ "$CTX" == longctx32768 ]] || [[ "$CTX" == longctx65536 ]]; then
           CTX_REPS=3
         fi
 

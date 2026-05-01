@@ -114,10 +114,12 @@ has_pending_runs() {
   for model_path in "${RESOLVED_MODELS[@]}"; do
     local model_name
     model_name="$(basename "${model_path}" .gguf)"
-    for ctx in default longctx32768; do
+    for ctx in default longctx32768 longctx65536; do
       local ctx_suffix=""
       if [[ "$ctx" == longctx32768 ]]; then
         ctx_suffix="__longctx32768"
+      elif [[ "$ctx" == longctx65536 ]]; then
+        ctx_suffix="__longctx65536"
       fi
 
       local log_file="$RESULTDIR/${model_name}__${env}${suffix}${ctx_suffix}__rpc.log"
@@ -201,7 +203,7 @@ run_llama_bench_rpc() {
   # shellcheck disable=SC2206 # intentional word splitting
   client_cmd_ary=( $client_cmd )
 
-  for ctx in default longctx32768; do
+  for ctx in default longctx32768 longctx65536; do
     local ctx_suffix=""
     local ctx_reps=3
     local -a ctx_args=()
@@ -209,6 +211,15 @@ run_llama_bench_rpc() {
       ctx_suffix="__longctx32768"
       ctx_reps=1
       ctx_args=( -p 2048 -n 32 -d 32768 )
+      if [[ "$env" == *vulkan* ]]; then
+        ctx_args+=( -ub 512 )
+      else
+        ctx_args+=( -ub 2048 )
+      fi
+    elif [[ "$ctx" == longctx65536 ]]; then
+      ctx_suffix="__longctx65536"
+      ctx_reps=1
+      ctx_args=( -p 2048 -n 32 -d 65536 )
       if [[ "$env" == *vulkan* ]]; then
         ctx_args+=( -ub 512 )
       else
