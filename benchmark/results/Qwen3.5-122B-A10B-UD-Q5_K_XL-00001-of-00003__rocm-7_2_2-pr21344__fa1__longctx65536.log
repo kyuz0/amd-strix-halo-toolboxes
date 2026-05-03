@@ -1,0 +1,8 @@
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 126976 MiB):
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32, VRAM: 126976 MiB
+| model                          |       size |     params | backend    | ngl | n_ubatch | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -------: | -: | ---: | --------------: | -------------------: |
+| qwen35moe 122B.A10B Q5_K - Medium |  85.60 GiB |   122.11 B | ROCm       |  99 |     2048 |  1 |    0 | pp2048 @ d65536 |        170.79 ± 0.22 |
+| qwen35moe 122B.A10B Q5_K - Medium |  85.60 GiB |   122.11 B | ROCm       |  99 |     2048 |  1 |    0 |   tg32 @ d65536 |         14.19 ± 0.06 |
+
+build: 7957de9dc (8645)

@@ -1,0 +1,3 @@
+ggml_cuda_init: found 1 ROCm devices (Total VRAM: 126976 MiB):
+  Device 0: Radeon 8060S Graphics, gfx1151 (0x1151), VMM: no, Wave Size: 32, VRAM: 126976 MiB
+✖ ! [rocm6_4_4] MiniMax-M2.7-UD-Q3_K_S-00001-of-00003__fa1 __longctx65536 failed (exit 0)

@@ -1,0 +1,3 @@
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = Radeon 8060S Graphics (AMD open-source driver) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 32768 | int dot: 1 | matrix cores: KHR_coopmat
+✖ ! [vulkan_amdvlk] MiniMax-M2.7-UD-Q3_K_S-00001-of-00003__fa1 __longctx65536 failed (exit 0)

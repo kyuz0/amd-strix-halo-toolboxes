@@ -1,0 +1,25 @@
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = Radeon 8060S Graphics (RADV GFX1151) (radv) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+radv/amdgpu: The CS has been cancelled because the context is lost. This context is innocent.
+/lib64/libggml-base.so.0(+0x4465) [0x7fd3fbd2c465]
+/lib64/libggml-base.so.0(ggml_print_backtrace+0x1eb) [0x7fd3fbd2c83b]
+/lib64/libggml-base.so.0(+0x16f19) [0x7fd3fbd3ef19]
+/lib64/libstdc++.so.6(+0x1ebfc) [0x7fd3fbacfbfc]
+/lib64/libstdc++.so.6(_ZSt10unexpectedv+0x0) [0x7fd3fbab9d3a]
+/lib64/libstdc++.so.6(+0x1eea8) [0x7fd3fbacfea8]
+/lib64/libggml-vulkan.so.0(+0x1569b) [0x7fd3fbdff69b]
+/lib64/libggml-vulkan.so.0(+0x14505a) [0x7fd3fbf2f05a]
+/lib64/libggml-vulkan.so.0(+0x145c31) [0x7fd3fbf2fc31]
+/lib64/libggml-base.so.0(ggml_backend_sched_graph_compute_async+0x7f3) [0x7fd3fbd485d3]
+/lib64/libllama.so.0(_ZN13llama_context13graph_computeEP11ggml_cgraphb+0xa0) [0x7fd3ff9b6c70]
+/lib64/libllama.so.0(_ZN13llama_context14process_ubatchERK12llama_ubatch14llm_graph_typeP22llama_memory_context_iR11ggml_status+0xe5) [0x7fd3ff9b9255]
+/lib64/libllama.so.0(_ZN13llama_context6decodeERK11llama_batch+0x35f) [0x7fd3ff9bf98f]
+/lib64/libllama.so.0(llama_decode+0xe) [0x7fd3ff9c132e]
+/usr/sbin/llama-bench() [0x40663b]
+/usr/sbin/llama-bench() [0x403a5b]
+/lib64/libc.so.6(+0x35b5) [0x7fd3fb7a05b5]
+/lib64/libc.so.6(__libc_start_main+0x88) [0x7fd3fb7a0668]
+/usr/sbin/llama-bench() [0x404e65]
+terminate called after throwing an instance of 'vk::DeviceLostError'
+  what():  vk::Queue::submit: ErrorDeviceLost
+✖ ! [vulkan_radv] Devstral-2-123B-Instruct-2512-UD-Q4_K_XL-00001-of-00002__fa1 __longctx65536 failed (exit 0)
