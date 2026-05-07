@@ -1,0 +1,75 @@
+# build stage
+FROM registry.fedoraproject.org/fedora:43 AS builder
+
+# deps
+RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
+  git vim \
+  make gcc cmake ninja-build lld clang clang-devel compiler-rt libcurl-devel \
+  vulkan-loader-devel vulkaninfo mesa-vulkan-drivers \
+  spirv-headers-devel radeontop glslc patch \
+  && dnf clean all && rm -rf /var/cache/dnf/*
+
+# llama.cpp
+WORKDIR /opt/llama.cpp
+ARG REPO=https://github.com/ggerganov/llama.cpp.git
+ARG BRANCH=master
+RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
+
+COPY llama-grammar.patch /tmp/llama-grammar.patch
+
+# build
+RUN git clean -xdf \
+  && git submodule update --recursive \
+  && patch -p1 < /tmp/llama-grammar.patch \
+  && cmake -S . -B build -G Ninja \
+  -DGGML_VULKAN=ON \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DGGML_RPC=ON \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DLLAMA_BUILD_TESTS=OFF \
+  -DLLAMA_BUILD_EXAMPLES=ON \
+  -DLLAMA_BUILD_SERVER=ON \
+  && cmake --build build --config Release \
+  && cmake --install build --config Release
+
+# libs
+RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
+  && ldconfig
+
+# helper
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+
+# runtime stage
+FROM registry.fedoraproject.org/fedora-minimal:43
+
+# runtime deps
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
+  bash ca-certificates libatomic libstdc++ libgcc \
+  vulkan-loader vulkan-loader-devel vulkaninfo mesa-vulkan-drivers radeontop procps-ng \
+  curl \
+  && microdnf clean all && rm -rf /var/cache/dnf/*
+
+# copy
+COPY --from=builder /usr/ /usr/
+COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
+
+# ld
+RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
+  && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+  && ldconfig \
+  && cp -n /usr/local/lib/libllama*.so* /usr/lib64/ 2>/dev/null || true \
+  && ldconfig
+
+# helper
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# service
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=120s --retries=3 \
+  CMD curl -fsS http://127.0.0.1:8080/health || exit 1
+ENTRYPOINT ["/usr/bin/llama-server"]
+CMD ["--help"]
