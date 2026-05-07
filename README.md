@@ -52,6 +52,7 @@ You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](http
 | :--- | :--- | :--- |
 | `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv` | Vulkan (Mesa RADV) | Most stable and compatible. Recommended for most users and all models. |
+| `vulkan-radv-server` | Vulkan (Mesa RADV) — service | Service variant of `vulkan-radv` with `llama-server` as `ENTRYPOINT` (no interactive shell). For systemd-managed `docker run` deployments. |
 | `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
 | `rocm-7.2.2` | ROCm 7.2.2 | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
 | `rocm7-nightlies` | ROCm 7 Nightly | Tracks nightly builds. Includes patch for **kernel 6.18.4+** support. |
