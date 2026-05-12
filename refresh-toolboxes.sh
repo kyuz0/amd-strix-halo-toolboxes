@@ -24,7 +24,7 @@ function usage() {
 IS_UBUNTU=false
 if [ -f /etc/os-release ]; then
   . /etc/os-release
-  if [ "$ID" = "ubuntu" ]; then
+  if [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
     IS_UBUNTU=true
   fi
 fi
