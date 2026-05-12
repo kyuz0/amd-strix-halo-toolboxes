@@ -21,26 +21,21 @@ function usage() {
 }
 
 # Check OS and set appropriate toolbox command
-IS_UBUNTU=false
 if [ -f /etc/os-release ]; then
   . /etc/os-release
-  if [ "$ID" = "ubuntu" ]; then
-    IS_UBUNTU=true
+  if [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
+    TOOLBOX_CMD="distrobox"
+  else
+    TOOLBOX_CMD="toolbox"
   fi
-fi
-
-if [ "$IS_UBUNTU" = true ]; then
-  TOOLBOX_CMD="distrobox"
-else
-  TOOLBOX_CMD="toolbox"
 fi
 
 # Check dependencies
 DEPENDENCIES=("podman" "$TOOLBOX_CMD")
 for cmd in "${DEPENDENCIES[@]}"; do
   if ! command -v "$cmd" > /dev/null; then
-    if [ "$cmd" = "distrobox" ] && [ "$IS_UBUNTU" = true ]; then
-      echo "Error: 'distrobox' is not installed. Ubuntu users must use distrobox instead of toolbox." >&2
+    if [ "$cmd" = "distrobox" ]; then
+      echo "Error: 'distrobox' is not installed. Debian-based distributions (like Ubuntu) must use distrobox instead of toolbox." >&2
       echo "Please install distrobox (e.g., sudo apt install distrobox) and try again." >&2
     else
       echo "Error: '$cmd' is not installed." >&2
