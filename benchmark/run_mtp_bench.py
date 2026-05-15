@@ -66,6 +66,17 @@ COOLDOWN = 5           # seconds between runs
 BENCH_SCRIPT = Path(__file__).parent / "mtp-bench.py"
 
 
+def _sigint_handler(sig, frame):
+    """Clean up container on Ctrl+C."""
+    print("\n\n🛑 Interrupted — cleaning up container...")
+    subprocess.run(["podman", "stop", "-t", "3", CONTAINER_NAME], capture_output=True)
+    subprocess.run(["podman", "rm", "-f", CONTAINER_NAME], capture_output=True)
+    sys.exit(1)
+
+import signal
+signal.signal(signal.SIGINT, _sigint_handler)
+
+
 # ── Model discovery ──────────────────────────────────────────────────────────
 
 def discover_models(models_dir: Path) -> list[dict]:
@@ -207,7 +218,7 @@ def start_server(toolbox: dict, gguf: str, models_dir: Path,
         return False
 
     cmd = [
-        "podman", "run", "--rm", "-d",
+        "podman", "run", "--rm", "--replace", "-d",
         "--name", CONTAINER_NAME,
         "--security-opt", "label=disable",
         "--userns=keep-id",
