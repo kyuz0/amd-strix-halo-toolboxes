@@ -186,21 +186,21 @@ def kill_port_holder(port: int):
             print(f"     {result.stdout.strip()}")
 
 
-def cleanup(port: int):
-    """Full cleanup: stop stale containers and free the port."""
-    # Stop any leftover benchmark container
+def cleanup(port: int) -> bool:
+    """Full cleanup: stop stale containers and wait for port to be free."""
     stop_container()
 
-    # Check for port conflicts
-    if not check_port_free(port):
-        print(f"  ⚠️  Port {port} is already in use — attempting cleanup...")
-        kill_port_holder(port)
+    # Wait for port to be released (podman proxy takes a moment after stop)
+    for i in range(15):  # up to 15 seconds
+        if check_port_free(port):
+            return True
+        if i == 0:
+            print(f"  ⏳ Waiting for port {port} to be released...")
         time.sleep(1)
-        if not check_port_free(port):
-            print(f"  ❌ Port {port} is still in use after cleanup. Aborting.")
-            return False
-        print(f"  ✅ Port {port} is now free.")
-    return True
+
+    print(f"  ❌ Port {port} still in use after 15s. Something else is holding it.")
+    return False
+
 
 
 def stop_container():
