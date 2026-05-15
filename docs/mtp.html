@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AMD Strix Halo — MTP Benchmark Results</title>
+    <link rel="stylesheet" href="assets/index2.css">
+    <link rel="stylesheet" href="assets/mtp.css?v=2">
+    <script defer data-domain="kyuz0.github.io/amd-strix-halo-toolboxes" src="https://plausible.skybound.link/js/plausible.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="mtp-layout-inner">
+            <h1>AMD Ryzen AI MAX+ 395 “Strix Halo” — MTP Benchmarks</h1>
+            <p>Framework Desktop · AMD Ryzen AI MAX 395+ · 128GB unified RAM</p>
+            <p class="description">
+                Multi-Token Prediction (MTP) is an experimental speculative decoding feature for `llama.cpp`
+                (see <a href="https://github.com/ggml-org/llama.cpp/pull/22673" target="_blank" rel="noreferrer">PR #22673</a>).
+                It allows supported models to predict multiple tokens per forward pass, significantly increasing generation speed.
+                These benchmarks compare the baseline generation speed against MTP with 2-token and 3-token drafts.
+            </p>
+        </div>
+    </header>
+
+    <section class="panel compact">
+        <div class="panel-split mtp-layout-inner">
+            <div class="stats-box" style="margin-left: 0;">
+                <div class="stat-line" id="stats-line">Loading results...</div>
+            </div>
+            <div class="actions" style="margin-left: auto;">
+                <a href="index.html" class="chip small" style="text-decoration: none;">← Back to Main Benchmarks</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel compact" id="tables-panel" style="border-bottom: none; background: transparent;">
+        <div class="table-wrap mtp-layout-inner" style="margin-top: 16px; margin-bottom: 32px; background: var(--card);">
+            <div class="table-scroll">
+                <table id="mtp-table" class="mtp-table hidden">
+                    <thead>
+                        <tr>
+                            <th class="model">Model</th>
+                            <th>Toolbox</th>
+                            <th class="metric-col">Baseline<br><span class="sub">tok/s</span></th>
+                            <th class="metric-col">MTP-2<br><span class="sub">tok/s</span></th>
+                            <th class="metric-col">Speedup<br><span class="sub">MTP-2</span></th>
+                            <th class="metric-col">MTP-3<br><span class="sub">tok/s</span></th>
+                            <th class="metric-col">Speedup<br><span class="sub">MTP-3</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="mtp-tbody">
+                        <!-- Rows populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <script src="assets/mtp.js" type="module"></script>
+</body>
+
+</html>

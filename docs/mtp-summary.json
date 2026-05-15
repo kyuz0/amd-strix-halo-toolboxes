@@ -1,0 +1,98 @@
+[
+  {
+    "model": "Qwen3.6-27B-UD-Q8_K_XL",
+    "toolbox": "rocm-7.2.3-mtp",
+    "mode": "baseline",
+    "avg_tok_s": 6.5,
+    "accept_rate": null,
+    "wall_s_total": 273.39
+  },
+  {
+    "model": "Qwen3.6-27B-UD-Q8_K_XL",
+    "toolbox": "rocm-7.2.3-mtp",
+    "mode": "mtp-2",
+    "avg_tok_s": 12.4,
+    "accept_rate": 0.7971,
+    "wall_s_total": 147.31
+  },
+  {
+    "model": "Qwen3.6-27B-UD-Q8_K_XL",
+    "toolbox": "rocm-7.2.3-mtp",
+    "mode": "mtp-3",
+    "avg_tok_s": 13.5,
+    "accept_rate": 0.744,
+    "wall_s_total": 135.2
+  },
+  {
+    "model": "Qwen3.6-27B-UD-Q8_K_XL",
+    "toolbox": "vulkan-radv-mtp",
+    "mode": "baseline",
+    "avg_tok_s": 6.3,
+    "accept_rate": null,
+    "wall_s_total": 283.86
+  },
+  {
+    "model": "Qwen3.6-27B-UD-Q8_K_XL",
+    "toolbox": "vulkan-radv-mtp",
+    "mode": "mtp-2",
+    "avg_tok_s": 11.7,
+    "accept_rate": 0.8024,
+    "wall_s_total": 159.41
+  },
+  {
+    "model": "Qwen3.6-27B-UD-Q8_K_XL",
+    "toolbox": "vulkan-radv-mtp",
+    "mode": "mtp-3",
+    "avg_tok_s": 13.3,
+    "accept_rate": 0.7301,
+    "wall_s_total": 141.74
+  },
+  {
+    "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
+    "toolbox": "rocm-7.2.3-mtp",
+    "mode": "baseline",
+    "avg_tok_s": 48.7,
+    "accept_rate": null,
+    "wall_s_total": 37.55
+  },
+  {
+    "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
+    "toolbox": "rocm-7.2.3-mtp",
+    "mode": "mtp-2",
+    "avg_tok_s": 64.5,
+    "accept_rate": 0.7958,
+    "wall_s_total": 29.33
+  },
+  {
+    "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
+    "toolbox": "rocm-7.2.3-mtp",
+    "mode": "mtp-3",
+    "avg_tok_s": 68.3,
+    "accept_rate": 0.7386,
+    "wall_s_total": 27.83
+  },
+  {
+    "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
+    "toolbox": "vulkan-radv-mtp",
+    "mode": "baseline",
+    "avg_tok_s": 58.7,
+    "accept_rate": null,
+    "wall_s_total": 31.93
+  },
+  {
+    "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
+    "toolbox": "vulkan-radv-mtp",
+    "mode": "mtp-2",
+    "avg_tok_s": 72.8,
+    "accept_rate": 0.7907,
+    "wall_s_total": 26.85
+  },
+  {
+    "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
+    "toolbox": "vulkan-radv-mtp",
+    "mode": "mtp-3",
+    "avg_tok_s": 74.6,
+    "accept_rate": 0.7374,
+    "wall_s_total": 26.36
+  }
+]
