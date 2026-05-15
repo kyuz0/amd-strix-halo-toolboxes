@@ -96,11 +96,10 @@ def discover_models(models_dir: Path) -> list[dict]:
         if "-000" in name and "-00001-of-" not in name:
             continue
 
-        # Derive display name from parent directory or filename
-        if gguf.parent != models_dir:
-            display_name = gguf.parent.name
-        else:
-            display_name = gguf.stem
+        # Always use the actual filename (without .gguf) to capture the quant level
+        display_name = gguf.stem
+        if "-00001-of-" in display_name:
+            display_name = display_name.split("-00001-of-")[0]
 
         models.append({
             "name": display_name,
