@@ -288,18 +288,22 @@ def wait_for_health(port: int) -> bool:
     while time.time() < deadline:
         polls += 1
 
-        # Check if container died
+        # Check if container died (or was auto-removed by --rm)
         if not is_container_alive():
-            print(f"  ❌ Container died!")
+            print(f"  ❌ Container exited — model likely failed to load.")
+            # Try to get logs (won't work if --rm already cleaned up)
             logs = subprocess.run(
                 ["podman", "logs", "--tail", "20", CONTAINER_NAME],
                 capture_output=True, text=True,
             )
             output = (logs.stdout + logs.stderr).strip()
-            if output:
+            if output and "no container with name" not in output:
                 print(f"  📝 Container logs:")
                 for line in output.split("\n")[-10:]:
                     print(f"     {line}")
+            else:
+                print(f"  💡 Container was auto-removed. To see the error, run manually:")
+                print(f"     podman run --name debug-server ... (without -d)")
             return False
 
         # Try health endpoint
