@@ -236,33 +236,94 @@ def start_server(toolbox: dict, gguf: str, models_dir: Path,
     return True
 
 
+def is_container_alive() -> bool:
+    """Check if the benchmark container is still running."""
+    result = subprocess.run(
+        ["podman", "inspect", "--format", "{{.State.Status}}", CONTAINER_NAME],
+        capture_output=True, text=True,
+    )
+    return result.returncode == 0 and result.stdout.strip() == "running"
+
+
+def get_last_log_line() -> str:
+    """Get the last meaningful log line from the container."""
+    result = subprocess.run(
+        ["podman", "logs", "--tail", "3", CONTAINER_NAME],
+        capture_output=True, text=True,
+    )
+    # Merge stdout+stderr (llama-server logs to stderr)
+    lines = (result.stdout + result.stderr).strip().split("\n")
+    # Return last non-empty line
+    for line in reversed(lines):
+        line = line.strip()
+        if line:
+            return line[:120]  # truncate for display
+    return ""
+
+
 def wait_for_health(port: int) -> bool:
-    """Poll /health until the server is ready."""
+    """Poll /health until the server is ready. Detects dead containers."""
     url = f"http://127.0.0.1:{port}/health"
     deadline = time.time() + HEALTH_TIMEOUT
-    print(f"  ⏳ Waiting for server health ({HEALTH_TIMEOUT}s timeout)...", end="", flush=True)
+    last_status_time = 0
+    status_interval = 15  # show log progress every 15s
+    polls = 0
+
+    print(f"  ⏳ Waiting for server health ({HEALTH_TIMEOUT}s timeout)...")
+
+    # Brief initial wait for container to start
+    time.sleep(3)
 
     while time.time() < deadline:
+        polls += 1
+
+        # Check if container died
+        if not is_container_alive():
+            print(f"  ❌ Container died!")
+            logs = subprocess.run(
+                ["podman", "logs", "--tail", "20", CONTAINER_NAME],
+                capture_output=True, text=True,
+            )
+            output = (logs.stdout + logs.stderr).strip()
+            if output:
+                print(f"  📝 Container logs:")
+                for line in output.split("\n")[-10:]:
+                    print(f"     {line}")
+            return False
+
+        # Try health endpoint
         try:
             req = request.Request(url, method="GET")
             with request.urlopen(req, timeout=5) as r:
                 if r.status == 200:
                     data = json.loads(r.read())
                     if data.get("status") == "ok":
-                        print(f" ✅ ready")
+                        print(f"  ✅ Server ready!")
                         return True
         except (URLError, OSError, json.JSONDecodeError):
             pass
-        print(".", end="", flush=True)
+
+        # Periodically show what the server is doing
+        now = time.time()
+        if now - last_status_time >= status_interval:
+            last_status_time = now
+            elapsed = int(now - (deadline - HEALTH_TIMEOUT))
+            log_line = get_last_log_line()
+            if log_line:
+                print(f"     [{elapsed}s] {log_line}")
+            else:
+                print(f"     [{elapsed}s] (waiting...)")
+
         time.sleep(HEALTH_INTERVAL)
 
-    print(f" ❌ timeout")
+    print(f"  ❌ Health check timeout after {HEALTH_TIMEOUT}s")
     # Dump container logs for debugging
     logs = subprocess.run(["podman", "logs", "--tail", "30", CONTAINER_NAME],
                           capture_output=True, text=True)
-    if logs.stdout:
-        print(f"  📝 Last 30 lines of server logs:")
-        for line in logs.stdout.strip().split("\n")[-15:]:
+    output = (logs.stdout + logs.stderr).strip()
+    if output:
+        print(f"  📝 Last lines of server logs:")
+        for line in output.split("\n")[-15:]:
             print(f"     {line}")
     return False
 
