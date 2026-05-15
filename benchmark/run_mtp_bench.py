@@ -154,6 +154,7 @@ def check_port_free(port: int) -> bool:
     """Check if a port is free. If not, identify and report what's using it."""
     import socket
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         try:
             s.bind(("127.0.0.1", port))
             return True
