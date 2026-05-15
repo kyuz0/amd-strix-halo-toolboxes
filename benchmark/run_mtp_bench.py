@@ -137,7 +137,60 @@ def capture_system_info(results_dir: Path):
     print(f"📋 Captured system info → {path}")
 
 
-# ── Container lifecycle ──────────────────────────────────────────────────────
+# ── Cleanup & container lifecycle ────────────────────────────────────────────
+
+def check_port_free(port: int) -> bool:
+    """Check if a port is free. If not, identify and report what's using it."""
+    import socket
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind(("127.0.0.1", port))
+            return True
+        except OSError:
+            return False
+
+
+def kill_port_holder(port: int):
+    """Find and kill whatever process is holding the port."""
+    result = subprocess.run(
+        ["fuser", f"{port}/tcp"],
+        capture_output=True, text=True,
+    )
+    pids = result.stdout.strip().split()
+    if pids:
+        print(f"  ⚠️  Port {port} held by PID(s): {', '.join(pids)} — killing...")
+        for pid in pids:
+            pid = pid.strip()
+            if pid.isdigit():
+                subprocess.run(["kill", "-9", pid], capture_output=True)
+        time.sleep(2)
+    else:
+        # fuser didn't find it, try ss as fallback
+        result = subprocess.run(
+            ["ss", "-tlnp", f"sport = :{port}"],
+            capture_output=True, text=True,
+        )
+        if result.stdout.strip():
+            print(f"  ⚠️  Port {port} is in use (could not identify PID):")
+            print(f"     {result.stdout.strip()}")
+
+
+def cleanup(port: int):
+    """Full cleanup: stop stale containers and free the port."""
+    # Stop any leftover benchmark container
+    stop_container()
+
+    # Check for port conflicts
+    if not check_port_free(port):
+        print(f"  ⚠️  Port {port} is already in use — attempting cleanup...")
+        kill_port_holder(port)
+        time.sleep(1)
+        if not check_port_free(port):
+            print(f"  ❌ Port {port} is still in use after cleanup. Aborting.")
+            return False
+        print(f"  ✅ Port {port} is now free.")
+    return True
+
 
 def stop_container():
     """Stop and remove the benchmark container if it exists."""
@@ -150,7 +203,8 @@ def stop_container():
 def start_server(toolbox: dict, gguf: str, models_dir: Path,
                  spec_flags: list[str], port: int) -> bool:
     """Start llama-server in a podman container. Returns True on success."""
-    stop_container()
+    if not cleanup(port):
+        return False
 
     cmd = [
         "podman", "run", "--rm", "-d",
@@ -374,6 +428,13 @@ def main():
 
     # Capture system info
     capture_system_info(results_dir)
+
+    # Pre-flight cleanup
+    print("🧹 Pre-flight cleanup...")
+    if not cleanup(args.port):
+        print("❌ Cannot free port — exiting.")
+        sys.exit(1)
+    print("✅ Environment clean.\n")
 
     # Run benchmarks
     run_count = 0
