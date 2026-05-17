@@ -29,8 +29,8 @@ from urllib.error import URLError
 # ── Toolbox definitions ──────────────────────────────────────────────────────
 
 TOOLBOXES = {
-    "rocm-7.2.3-mtp": {
-        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.3-mtp",
+    "rocm-7.2.3": {
+        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.3",
         "engine_args": [
             "--device", "/dev/dri",
             "--device", "/dev/kfd",
@@ -39,8 +39,8 @@ TOOLBOXES = {
             "--security-opt", "seccomp=unconfined",
         ],
     },
-    "vulkan-radv-mtp": {
-        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-mtp",
+    "vulkan-radv": {
+        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv",
         "engine_args": [
             "--device", "/dev/dri",
             "--group-add", "video",
@@ -415,9 +415,9 @@ def print_summary(results_dir: Path):
             baselines[key] = r["_avg_toks"]
 
     # Print table
-    print("\n" + "=" * 100)
-    print(f"{'Model':<30} {'Toolbox':<20} {'Mode':<10} {'Avg tok/s':>10} {'Accept%':>9} {'Wall(s)':>8} {'Speedup':>8}")
-    print("-" * 100)
+    print("\n" + "=" * 115)
+    print(f"{'Model':<30} {'Toolbox':<20} {'Mode':<10} {'Prefill pt/s':>13} {'Avg tok/s':>10} {'Accept%':>9} {'Wall(s)':>8} {'Speedup':>8}")
+    print("-" * 115)
 
     for r in results:
         agg = r.get("aggregate", {})
@@ -426,6 +426,9 @@ def print_summary(results_dir: Path):
         accept_str = f"{accept * 100:.1f}%" if accept is not None else "—"
         avg_toks = r["_avg_toks"]
 
+        avg_prompt = agg.get("avg_prompt_per_second")
+        prefill_str = f"{avg_prompt:.1f}" if avg_prompt is not None else "—"
+        
         # Speedup relative to baseline
         baseline_key = (r["model"], r["toolbox"])
         baseline_toks = baselines.get(baseline_key)
@@ -434,9 +437,9 @@ def print_summary(results_dir: Path):
         else:
             speedup = "—"
 
-        print(f"{r['model']:<30} {r['toolbox']:<20} {r['mode']:<10} {avg_toks:>10.1f} {accept_str:>9} {wall:>8.1f} {speedup:>8}")
+        print(f"{r['model']:<30} {r['toolbox']:<20} {r['mode']:<10} {prefill_str:>13} {avg_toks:>10.1f} {accept_str:>9} {wall:>8.1f} {speedup:>8}")
 
-    print("=" * 100)
+    print("=" * 115)
 
     # Write summary.json
     summary_data = []
@@ -446,9 +449,11 @@ def print_summary(results_dir: Path):
             "model": r["model"],
             "toolbox": r["toolbox"],
             "mode": r["mode"],
+            "avg_prompt_tok_s": agg.get("avg_prompt_per_second"),
             "avg_tok_s": round(r["_avg_toks"], 1),
             "accept_rate": agg.get("aggregate_accept_rate"),
             "wall_s_total": agg.get("wall_s_total"),
+            "results": r.get("results", [])
         })
 
     summary_path = results_dir / "summary.json"

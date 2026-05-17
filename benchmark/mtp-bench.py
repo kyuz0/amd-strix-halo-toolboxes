@@ -87,21 +87,33 @@ def run(args):
         # OpenAI-compatible endpoint: timings are in usage or top-level
         usage = r.get("usage", {}) or {}
         t = r.get("timings", {}) or {}
+        prompt_n = usage.get("prompt_tokens") or t.get("prompt_n")
+        prompt_ms = t.get("prompt_ms")
+        prompt_per_second = t.get("prompt_per_second")
         predicted_n = usage.get("completion_tokens") or t.get("predicted_n")
         predicted_per_second = t.get("predicted_per_second") or (predicted_n / wall if wall > 0 else 0)
         rec = {"name": p["name"], "wall_s": round(wall,3),
+               "prompt_n": prompt_n,
+               "prompt_ms": round(prompt_ms, 2) if prompt_ms is not None else None,
+               "prompt_per_second": round(prompt_per_second, 2) if prompt_per_second is not None else None,
                "predicted_n": predicted_n, "predicted_per_second": round(predicted_per_second, 2),
                "draft_n": t.get("draft_n",0), "draft_n_accepted": t.get("draft_n_accepted",0)}
         rec["accept_rate"] = round(rec["draft_n_accepted"]/rec["draft_n"],4) if rec["draft_n"] else None
         out["results"].append(rec)
         ar = f"{rec['accept_rate']:.3f}" if rec["accept_rate"] is not None else "n/a"
-        print(f"  {rec['name']:<18} pred={rec['predicted_n']:>4} draft={rec['draft_n']:>4} acc={rec['draft_n_accepted']:>4} rate={ar} tok/s={rec['predicted_per_second']:.1f}")
+        pps = f" pt/s={rec['prompt_per_second']:.1f}" if rec.get("prompt_per_second") else ""
+        print(f"  {rec['name']:<18} pred={rec['predicted_n']:>4} draft={rec['draft_n']:>4} acc={rec['draft_n_accepted']:>4} rate={ar} tok/s={rec['predicted_per_second']:.1f}{pps}")
     td  = sum(x["draft_n"] or 0 for x in out["results"])
     ta  = sum(x["draft_n_accepted"] or 0 for x in out["results"])
     tp  = sum(x["predicted_n"] or 0 for x in out["results"])
+    t_pn = sum(x["prompt_n"] or 0 for x in out["results"])
     tw  = sum(x["wall_s"] for x in out["results"])
+    pps_list = [x["prompt_per_second"] for x in out["results"] if x.get("prompt_per_second") is not None]
+    avg_pps = sum(pps_list)/len(pps_list) if pps_list else None
+    
     out["aggregate"] = {"n_requests": len(out["results"]), "total_predicted": tp, "total_draft": td, "total_draft_accepted": ta,
-                        "aggregate_accept_rate": round(ta/td,4) if td else None, "wall_s_total": round(tw,2)}
+                        "aggregate_accept_rate": round(ta/td,4) if td else None, "wall_s_total": round(tw,2),
+                        "total_prompt_tokens": t_pn, "avg_prompt_per_second": round(avg_pps, 2) if avg_pps is not None else None}
     print("\nAggregate:", json.dumps(out["aggregate"], indent=2))
     if args.out:
         json.dump(out, open(args.out,"w"), indent=2); print("Wrote", args.out)

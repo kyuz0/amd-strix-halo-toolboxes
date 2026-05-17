@@ -103,9 +103,90 @@
     font-size: 11px;
     background: #f1f5ff;
     color: #1d4ed8;
+    white-space: nowrap;
 }
 
 .toolbox-pill.radv {
     background: #fdf2f8;
     color: #9d174d;
+}
+
+/* Expandable row interactivity */
+.mtp-table tbody tr.main-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.mtp-table tbody tr.main-row:hover {
+    background-color: var(--hover);
+}
+
+.mtp-table tbody tr.main-row td:first-child::before {
+    content: "▶";
+    display: inline-block;
+    font-size: 10px;
+    margin-right: 8px;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+}
+
+.mtp-table tbody tr.main-row.expanded td:first-child::before {
+    transform: rotate(90deg);
+}
+
+/* Details row and sub-table */
+.details-row {
+    background-color: #f8fafc;
+}
+
+.details-row.hidden {
+    display: none;
+}
+
+.details-row td {
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.granular-wrap {
+    padding: 16px 24px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.granular-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.granular-table th, .granular-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.granular-table th {
+    background: #f1f5f9;
+    font-weight: 600;
+    color: var(--ink);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.granular-table td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.granular-table tr:last-child td {
+    border-bottom: none;
+}
+
+.granular-table tbody tr:hover {
+    background-color: var(--hover);
 }
