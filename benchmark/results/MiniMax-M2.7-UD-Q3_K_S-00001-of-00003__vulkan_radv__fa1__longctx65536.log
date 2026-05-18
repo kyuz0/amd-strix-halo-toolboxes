@@ -1,3 +1,8 @@
 ggml_vulkan: Found 1 Vulkan devices:
-ggml_vulkan: 0 = Radeon 8060S Graphics (RADV GFX1151) (radv) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
-✖ ! [vulkan_radv] MiniMax-M2.7-UD-Q3_K_S-00001-of-00003__fa1 __longctx65536 failed (exit 0)
+ggml_vulkan: 0 = AMD Radeon 8060S Graphics (RADV GFX1151) (radv) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
+| minimax-m2 230B.A10B Q3_K - Small |  87.20 GiB |   228.69 B | Vulkan     |  99 |  1 |    0 | pp2048 @ d65536 |         13.79 ± 0.08 |
+| minimax-m2 230B.A10B Q3_K - Small |  87.20 GiB |   228.69 B | Vulkan     |  99 |  1 |    0 |   tg32 @ d65536 |          8.84 ± 0.09 |
+
+build: 0253fb21f (9187)
