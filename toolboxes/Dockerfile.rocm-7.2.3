@@ -59,7 +59,8 @@ RUN git clean -xdf \
   && cmake --install build --config Release
 
 # libs
-RUN find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/lib64/ \; \
+RUN mkdir -p /usr/local/lib64 \
+  && find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/local/lib64/ \; \
   && ldconfig
 
 # helper
@@ -100,6 +101,7 @@ RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
   && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
   && ldconfig \
   && cp -n /usr/local/lib/libllama*.so* /usr/lib64/ 2>/dev/null || true \
+  && cp -n /usr/local/lib64/libllama*.so* /usr/lib64/ 2>/dev/null || true \
   && ldconfig
 
 # helper

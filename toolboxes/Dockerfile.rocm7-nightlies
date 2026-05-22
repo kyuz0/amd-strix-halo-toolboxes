@@ -71,6 +71,11 @@ RUN patch -p1 < /tmp/llama-grammar.patch \
   && cmake --build build --config Release -- -j$(nproc) \
   && cmake --install build --config Release
 
+# libs
+RUN mkdir -p /usr/local/lib64 \
+  && find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/local/lib64/ \; \
+  && ldconfig
+
 # keep bin; drop headers/docs/static libs (retain llama.cpp for rpc binaries)
 RUN find /opt/rocm-7.0 -type f -name '*.a' -delete \
   && rm -rf /opt/rocm-7.0/include /opt/rocm-7.0/share \
@@ -123,6 +128,9 @@ RUN printf '%s\n' \
 # make /usr/local libs visible without touching env
 RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
   && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+  && ldconfig \
+  && cp -n /usr/local/lib/libllama*.so* /usr/lib64/ 2>/dev/null || true \
+  && cp -n /usr/local/lib64/libllama*.so* /usr/lib64/ 2>/dev/null || true \
   && ldconfig
 
 CMD ["/bin/bash"]
