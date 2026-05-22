@@ -88,6 +88,11 @@ jobs:
           echo "→ Building ${DF}"
           docker build --no-cache -t "${LI}" -f "${DF}" .
 
+          echo "→ Running smoke test..."
+          docker run --rm "${LI}" llama version
+          docker run --rm "${LI}" llama-cli --help || [[ $? -eq 1 || $? -eq 0 ]]
+          docker run --rm "${LI}" llama-server --help || [[ $? -eq 1 || $? -eq 0 ]]
+
           echo "→ Tag & push immutable → ${IMM}"
           docker tag "${LI}" "${IMM}"
           docker push "${IMM}"
