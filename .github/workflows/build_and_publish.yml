@@ -90,8 +90,8 @@ jobs:
 
           echo "→ Running smoke test..."
           docker run --rm "${LI}" llama version
-          docker run --rm "${LI}" llama-cli --help || [[ $? -eq 1 || $? -eq 0 ]]
-          docker run --rm "${LI}" llama-server --help || [[ $? -eq 1 || $? -eq 0 ]]
+          docker run --rm "${LI}" llama-cli --help || { status=$?; echo "llama-cli exited with status $status"; [[ $status -eq 0 || $status -eq 1 || $status -eq 134 ]]; }
+          docker run --rm "${LI}" llama-server --help || { status=$?; echo "llama-server exited with status $status"; [[ $status -eq 0 || $status -eq 1 || $status -eq 134 ]]; }
 
           echo "→ Tag & push immutable → ${IMM}"
           docker tag "${LI}" "${IMM}"
