@@ -5,8 +5,8 @@ on:
     inputs:
       backends:
         description: >
-          Comma-separated backends to build (e.g. "rocm-7beta,rocm-7rc").
-          Use "all" to build everything.
+          Comma-separated backends to build (e.g. "rocm-7.2.4-turboquant").
+          Use "all" to build everything (defaults to stable branches).
         required: false
         default: all
 

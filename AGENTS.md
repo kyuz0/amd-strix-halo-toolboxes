@@ -17,7 +17,6 @@
 ## Critical Technical Quirks (Important for Development)
 *   **Flash Attention & no-mmap**: Running `llama-server` or `llama-cli` on Strix Halo *requires* `-fa 1` (flash attention) and `--no-mmap` to avoid memory fragmentation and crashes.
 *   **Kernel memory params**: The optimal Strix Halo host configuration relies on custom boot parameters (`iommu=pt amdgpu.gttsize=126976 ttm.pages_limit=32505856`) to allocate unified RAM to the iGPU.
-*   **ROCm 7+ Workaround**: Due to LLVM compiler regressions, ROCm 7 builds currently use a workaround flag (`-mllvm --amdgpu-unroll-threshold-local=600`) to restore Llama.cpp performance.
 *   **Kernel Bugs**: Avoid kernels older than 6.18.4, and the specifically broken `linux-firmware-20251125`.
 
 ## General Instructions for Coding Agents
