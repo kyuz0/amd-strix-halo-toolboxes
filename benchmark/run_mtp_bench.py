@@ -29,8 +29,8 @@ from urllib.error import URLError
 # ── Toolbox definitions ──────────────────────────────────────────────────────
 
 TOOLBOXES = {
-    "rocm-7.2.3": {
-        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.3",
+    "rocm-7.2.4": {
+        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4",
         "engine_args": [
             "--device", "/dev/dri",
             "--device", "/dev/kfd",

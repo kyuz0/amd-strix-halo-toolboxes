@@ -8,12 +8,12 @@ declare -A TOOLBOXES
 TOOLBOXES["llama-vulkan-amdvlk"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-amdvlk --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-vulkan-radv"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-6.4.4"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
-TOOLBOXES["llama-rocm-7.2.3"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.3 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7.2.4"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm7-nightlies"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm7-nightlies --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 
 # MTP (Multi-Token Prediction) — am17an/llama.cpp mtp-clean fork
 TOOLBOXES["llama-vulkan-radv-mtp"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-mtp --device /dev/dri --group-add video --security-opt seccomp=unconfined"
-TOOLBOXES["llama-rocm-7.2.3-mtp"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.3-mtp --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7.2.4-mtp"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4-mtp --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 
 function usage() {
   echo "Usage: $0 [all|toolbox-name1 toolbox-name2 ...]"
