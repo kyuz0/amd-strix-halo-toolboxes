@@ -34,7 +34,7 @@ ENV ROCM_PATH=/opt/rocm \
 
 # llama.cpp
 WORKDIR /opt/llama.cpp
-ARG REPO=https://github.com/TheTom-YT/turboquant-llama.git
+ARG REPO=https://github.com/TheTom/llama-cpp-turboquant.git
 RUN git clone --single-branch --recursive ${REPO} .
 
 COPY llama-grammar.patch /tmp/llama-grammar.patch
