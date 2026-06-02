@@ -89,7 +89,7 @@ jobs:
           docker build --no-cache -t "${LI}" -f "${DF}" .
 
           echo "→ Running smoke test..."
-          docker run --rm "${LI}" llama version
+          docker run --rm "${LI}" bash -c "if command -v llama >/dev/null; then llama version; else llama-cli --version; fi"
           docker run --rm "${LI}" llama-cli --help || { status=$?; echo "llama-cli exited with status $status"; [[ $status -eq 0 || $status -eq 1 || $status -eq 134 ]]; }
           docker run --rm "${LI}" llama-server --help || { status=$?; echo "llama-server exited with status $status"; [[ $status -eq 0 || $status -eq 1 || $status -eq 134 ]]; }
 
