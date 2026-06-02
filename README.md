@@ -46,6 +46,9 @@ This is currently the most stable setup. Kernels older than 6.18.4 have a bug th
 > [!WARNING]
 > Current `rocm7-nightlies` builds have a bug that caps memory allocation to 64GB. If you need larger models, prefer stable builds like `rocm-7.2.4` (performance is similar). Track the issue here: https://github.com/ROCm/TheRock/issues/4645
 
+> [!WARNING]
+> **Deprecation Notice for `-mtp` toolboxes**: MTP support was recently merged into the main branch of `llama.cpp`. It is now available with all updates in the standard toolboxes. Please do **not** use the deprecated `-mtp` toolboxes.
+
 You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags).
 
 | Container Tag | Backend/Stack | Purpose / Notes |
