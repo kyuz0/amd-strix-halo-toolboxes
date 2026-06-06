@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**⚠️ WARNING: Reports without logs, environment info, or steps to reproduce will be IGNRED as I do not have a crystal ball.**
+**⚠️ WARNING: Reports unrelated to the llama.cpp toolboxes, or without logs, environment info, or steps to reproduce will be IGNORED as I do not have a crystal ball.**
 
 **Describe the bug**
 A clear and concise description of what the bug is. 
