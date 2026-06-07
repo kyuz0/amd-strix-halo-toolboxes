@@ -51,15 +51,28 @@ This is currently the most stable setup. Kernels older than 6.18.4 have a bug th
 
 You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags).
 
+### Stable Toolboxes
+
+These are stable, tested containers that are automatically rebuilt whenever the `llama.cpp` master branch is updated.
+
 | Container Tag | Backend/Stack | Purpose / Notes |
 | :--- | :--- | :--- |
-| `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv` | Vulkan (Mesa RADV) | Most stable and compatible. Recommended for most users and all models. |
-| `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
+| `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `rocm-7.2.4` | ROCm 7.2.4 | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
-| `rocm7-nightlies` | ROCm 7 Nightly | Tracks nightly builds. Includes patch for **kernel 6.18.4+** support. |
+| `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
 
-> These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated. Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from this list.
+### Experimental / Custom Toolboxes
+
+These are experimental or custom builds. They are not rebuilt automatically on every upstream change and must be triggered manually.
+
+| Container Tag | Backend/Stack | Purpose / Notes |
+| :--- | :--- | :--- |
+| `rocm-7.2.4-rocmfp4` | ROCm 7.2.4 (Custom) | Custom `charlie12345/rocmfp4-llama` build supporting ROCmFP4 tensor types and draft-MTP. Manual build only. |
+| `rocm-7.2.4-turboquant` | ROCm 7.2.4 (Custom) | Custom TurboQuant build for AMD Strix Halo. Manual build only. |
+| `rocm7-nightlies` | ROCm 7 Nightly | Tracks ROCm nightly builds. Includes patch for **kernel 6.18.4+** support. *Warning: currently has memory limit bug.* |
+
+> Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from these lists.
 
 ## Quick Start
 
