@@ -69,6 +69,35 @@ RUN mkdir -p /usr/local/lib64 \
 COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
+
+# llama-swap ui build stage
+FROM node:22-bookworm AS llama-swap-ui-builder
+
+ARG LLAMA_SWAP_REPO=https://github.com/mostlygeek/llama-swap.git
+ARG LLAMA_SWAP_BRANCH=main
+
+WORKDIR /opt/llama-swap
+RUN git clone -b ${LLAMA_SWAP_BRANCH} --single-branch ${LLAMA_SWAP_REPO} .
+
+RUN npm --prefix ui-svelte ci \
+  && npm --prefix ui-svelte run build \
+  && rm -rf ui-svelte/node_modules
+
+
+# llama-swap build stage
+FROM golang:1.26-bookworm AS llama-swap-builder
+
+WORKDIR /opt/llama-swap
+COPY --from=llama-swap-ui-builder /opt/llama-swap/ .
+
+RUN COMMIT="$(git rev-parse --short HEAD)" \
+  && VERSION="local_${COMMIT}" \
+  && BUILD_DATE="$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+  && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+  -ldflags="-X main.commit=${COMMIT} -X main.version=${VERSION} -X main.date=${BUILD_DATE}" \
+  -o /usr/local/bin/llama-swap
+
+
 # runtime stage
 FROM registry.fedoraproject.org/fedora-minimal:43
 
@@ -97,6 +126,7 @@ RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
 # copy
 COPY --from=builder /usr/local/ /usr/local/
 COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
+COPY --from=llama-swap-builder /usr/local/bin/llama-swap /usr/local/bin/llama-swap
 
 # ld
 RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
