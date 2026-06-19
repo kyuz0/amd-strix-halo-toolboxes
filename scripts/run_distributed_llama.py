@@ -215,7 +215,7 @@ class AppState:
 
         # KV cache quantization
         kv = data.get("kv_cache_quant")
-        if kv is None or (isinstance(kv, str) and kv in ("q8_0", "q4_0")):
+        if kv is None or (isinstance(kv, str) and kv in KV_CACHE_QUANT_VALUES):
             self.kv_cache_quant = kv
 
         # Extra args
@@ -277,10 +277,15 @@ def select_context(state):
         else:
             state.context_size = None
 
+KV_CACHE_QUANT_VALUES = ("q8_0", "q5_1", "q5_0", "q4_1", "q4_0", "iq4_nl")
 KV_CACHE_OPTIONS = {
     "off": "Disabled (full precision)",
     "q8_0": "Q8_0 (recommended)",
+    "q5_1": "Q5_1",
+    "q5_0": "Q5_0",
+    "q4_1": "Q4_1",
     "q4_0": "Q4_0 (aggressive)",
+    "iq4_nl": "IQ4_NL",
 }
 
 def select_kv_cache(state):
