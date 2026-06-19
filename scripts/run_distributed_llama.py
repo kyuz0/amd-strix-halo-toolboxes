@@ -10,6 +10,7 @@ from pathlib import Path
 
 # --- Configuration & Defaults ---
 SCRIPT_DIR = Path(__file__).parent.resolve()
+DEFAULT_MODELS_DIR = Path.home() / "models"
 DEFAULT_TOOLBOX = "rocm-7.2.4"
 TOOLBOX_IMAGES = {
     "rocm-6.4.4": "llama-rocm-6.4.4",
@@ -142,13 +143,19 @@ class AppState:
         # List of [ip, enabled]
         self.hosts = [list(h) for h in DEFAULT_HOSTS]
         self.context_size = None # None means default (do not pass -c)
+        self.extra_args = ""  # Extra CLI arguments passed to the executable
 
     @property
     def active_hosts(self):
         return [h[0] for h in self.hosts if h[1]]
 
 def select_model(state):
-    start_path = state.model_path if state.model_path else os.getcwd()
+    if state.model_path:
+        start_path = state.model_path
+    elif DEFAULT_MODELS_DIR.is_dir():
+        start_path = str(DEFAULT_MODELS_DIR)
+    else:
+        start_path = os.getcwd()
     if os.path.isfile(start_path):
         start_path = os.path.dirname(start_path)
         
@@ -195,6 +202,21 @@ def select_context(state):
             state.context_size = int(val)
         else:
             state.context_size = None
+
+def edit_extra_args(state):
+    current = state.extra_args
+    selection, code = run_dialog([
+        "--title", "Extra Arguments",
+        "--inputbox",
+        "Enter extra CLI arguments for the executable.\n"
+        "These are appended to the command as-is.\n"
+        "Example: --threads 8 -ngl 99\n"
+        "Leave empty for none:",
+        "13", "65",
+        current
+    ])
+    if code == 0:
+        state.extra_args = selection.strip()
 
 def add_server(state):
     selection, code = run_dialog([
@@ -332,6 +354,7 @@ def run_distributed(state):
     print(f"Toolbox: {state.toolbox} ({image})")
     print(f"Mode:    {state.mode}")
     print(f"Context: {state.context_size if state.context_size else 'Default'}")
+    print(f"Extra:   {state.extra_args if state.extra_args else '(none)'}")
     print(f"Hosts:   {active_ips}")
     print("--------------------------------")
 
@@ -469,6 +492,9 @@ def run_distributed(state):
              extra_args = []
 
         local_cmd = base_args + extra_args
+        if state.extra_args:
+            import shlex
+            local_cmd += shlex.split(state.extra_args)
         
         print(f"CMD: {' '.join(local_cmd)}")
         
@@ -490,18 +516,20 @@ def main_menu():
         model_display = Path(state.model_path).name if state.model_path else "(None)"
         servers_display = f"{len(state.active_hosts)} Active"
         context_display = str(state.context_size) if state.context_size else "Default"
+        extra_display = state.extra_args if state.extra_args else "(none)"
         
         menu = [
             "--clear", "--backtitle", "AMD Strix Halo - Distributed Llama",
             "--title", "Main Menu",
-            "--menu", "Select an option to configure or run:", "20", "60", "7",
+            "--menu", "Select an option to configure or run:", "22", "65", "8",
             "1", f"Model:   {model_display}",
             "2", f"Toolbox: {state.toolbox}",
             "3", f"Servers: {servers_display}",
             "4", f"Mode:    {state.mode}",
             "5", f"Context: {context_display}",
-            "6", "RUN DISTRIBUTED SERVER",
-            "7", "Exit"
+            "6", f"Extra:   {extra_display}",
+            "7", "RUN DISTRIBUTED SERVER",
+            "8", "Exit"
         ]
         
         choice, code = run_dialog(menu)
@@ -520,8 +548,10 @@ def main_menu():
         elif choice == "5":
             select_context(state)
         elif choice == "6":
-            run_distributed(state)
+            edit_extra_args(state)
         elif choice == "7":
+            run_distributed(state)
+        elif choice == "8":
             break
 
     subprocess.run(["clear"])
