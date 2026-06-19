@@ -10,13 +10,12 @@ from pathlib import Path
 
 # --- Configuration & Defaults ---
 SCRIPT_DIR = Path(__file__).parent.resolve()
-DEFAULT_TOOLBOX = "rocm7-nightlies"
+DEFAULT_TOOLBOX = "rocm-7.2.4"
 TOOLBOX_IMAGES = {
-    "rocm6_4_4": "llama-rocm-6.4.4",
-
-    "rocm7-nightlies": "llama-rocm7-nightlies",
-    "vulkan_amdvlk": "llama-vulkan-amdvlk",
-    "vulkan_radv": "llama-vulkan-radv",
+    "rocm-6.4.4": "llama-rocm-6.4.4",
+    "rocm-7.2.4": "llama-rocm-7.2.4",
+    "vulkan-amdvlk": "llama-vulkan-amdvlk",
+    "vulkan-radv": "llama-vulkan-radv",
 }
 
 MODES = ["llama-server", "llama-cli", "llama-bench"]
