@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
+import json
 import shutil
 import tempfile
 import subprocess
@@ -11,6 +12,7 @@ from pathlib import Path
 # --- Configuration & Defaults ---
 SCRIPT_DIR = Path(__file__).parent.resolve()
 DEFAULT_MODELS_DIR = Path.home() / "models"
+CONFIG_FILE = Path.home() / ".config" / "strix-halo-distributed-llama.json"
 DEFAULT_TOOLBOX = "rocm-7.2.4"
 TOOLBOX_IMAGES = {
     "rocm-6.4.4": "llama-rocm-6.4.4",
@@ -145,10 +147,81 @@ class AppState:
         self.context_size = None # None means default (do not pass -c)
         self.kv_cache_quant = None  # None = off, "q8_0" or "q4_0"
         self.extra_args = "--jinja"  # Extra CLI arguments passed to the executable
+        self.load_config()
 
     @property
     def active_hosts(self):
         return [h[0] for h in self.hosts if h[1]]
+
+    def save_config(self):
+        """Persist current settings to disk."""
+        data = {
+            "model_path": self.model_path,
+            "toolbox": self.toolbox,
+            "mode": self.mode,
+            "hosts": self.hosts,
+            "context_size": self.context_size,
+            "kv_cache_quant": self.kv_cache_quant,
+            "extra_args": self.extra_args,
+        }
+        try:
+            CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+            CONFIG_FILE.write_text(json.dumps(data, indent=2))
+        except OSError:
+            pass  # Non-fatal: silently skip if we can't write
+
+    def load_config(self):
+        """Load settings from disk, falling back to defaults for any bad values."""
+        if not CONFIG_FILE.is_file():
+            return
+        try:
+            data = json.loads(CONFIG_FILE.read_text())
+        except (json.JSONDecodeError, OSError):
+            return  # Corrupt or unreadable — keep defaults
+
+        if not isinstance(data, dict):
+            return
+
+        # Model path: only restore if the file still exists
+        mp = data.get("model_path", "")
+        if isinstance(mp, str) and mp and os.path.isfile(mp):
+            self.model_path = mp
+
+        # Toolbox: only restore if it's still a known backend
+        tb = data.get("toolbox")
+        if isinstance(tb, str) and tb in TOOLBOX_IMAGES:
+            self.toolbox = tb
+
+        # Mode
+        md = data.get("mode")
+        if isinstance(md, str) and md in MODES:
+            self.mode = md
+
+        # Hosts: list of [ip_str, enabled_bool]
+        hs = data.get("hosts")
+        if isinstance(hs, list) and hs:
+            valid = []
+            for entry in hs:
+                if (isinstance(entry, list) and len(entry) == 2
+                        and isinstance(entry[0], str) and isinstance(entry[1], bool)):
+                    valid.append(entry)
+            if valid:
+                self.hosts = valid
+
+        # Context size
+        cs = data.get("context_size")
+        if cs is None or (isinstance(cs, int) and cs > 0):
+            self.context_size = cs
+
+        # KV cache quantization
+        kv = data.get("kv_cache_quant")
+        if kv is None or (isinstance(kv, str) and kv in ("q8_0", "q4_0")):
+            self.kv_cache_quant = kv
+
+        # Extra args
+        ea = data.get("extra_args")
+        if isinstance(ea, str):
+            self.extra_args = ea
 
 def select_model(state):
     if state.model_path:
@@ -585,6 +658,10 @@ def main_menu():
         elif choice == "9":
             break
 
+        # Persist after every action
+        state.save_config()
+
+    state.save_config()
     subprocess.run(["clear"])
     exit(0)
 
