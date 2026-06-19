@@ -143,7 +143,8 @@ class AppState:
         # List of [ip, enabled]
         self.hosts = [list(h) for h in DEFAULT_HOSTS]
         self.context_size = None # None means default (do not pass -c)
-        self.extra_args = ""  # Extra CLI arguments passed to the executable
+        self.kv_cache_quant = None  # None = off, "q8_0" or "q4_0"
+        self.extra_args = "--jinja"  # Extra CLI arguments passed to the executable
 
     @property
     def active_hosts(self):
@@ -202,6 +203,28 @@ def select_context(state):
             state.context_size = int(val)
         else:
             state.context_size = None
+
+KV_CACHE_OPTIONS = {
+    "off": "Disabled (full precision)",
+    "q8_0": "Q8_0 (recommended)",
+    "q4_0": "Q4_0 (aggressive)",
+}
+
+def select_kv_cache(state):
+    menu_items = []
+    for key, desc in KV_CACHE_OPTIONS.items():
+        menu_items.extend([key, desc])
+
+    selection, code = run_dialog([
+        "--title", "KV Cache Quantization",
+        "--menu",
+        "Quantize the KV cache to reduce memory usage.\n"
+        "This adds --cache-type-k and --cache-type-v flags.",
+        "14", "55", "5",
+        *menu_items
+    ])
+    if code == 0 and selection:
+        state.kv_cache_quant = None if selection == "off" else selection
 
 def edit_extra_args(state):
     current = state.extra_args
@@ -354,6 +377,7 @@ def run_distributed(state):
     print(f"Toolbox: {state.toolbox} ({image})")
     print(f"Mode:    {state.mode}")
     print(f"Context: {state.context_size if state.context_size else 'Default'}")
+    print(f"KV Cache:{' ' + state.kv_cache_quant if state.kv_cache_quant else ' Off'}")
     print(f"Extra:   {state.extra_args if state.extra_args else '(none)'}")
     print(f"Hosts:   {active_ips}")
     print("--------------------------------")
@@ -492,6 +516,9 @@ def run_distributed(state):
              extra_args = []
 
         local_cmd = base_args + extra_args
+        if state.kv_cache_quant:
+            local_cmd += ["--cache-type-k", state.kv_cache_quant,
+                          "--cache-type-v", state.kv_cache_quant]
         if state.extra_args:
             import shlex
             local_cmd += shlex.split(state.extra_args)
@@ -516,20 +543,22 @@ def main_menu():
         model_display = Path(state.model_path).name if state.model_path else "(None)"
         servers_display = f"{len(state.active_hosts)} Active"
         context_display = str(state.context_size) if state.context_size else "Default"
+        kv_display = state.kv_cache_quant if state.kv_cache_quant else "Off"
         extra_display = state.extra_args if state.extra_args else "(none)"
         
         menu = [
             "--clear", "--backtitle", "AMD Strix Halo - Distributed Llama",
             "--title", "Main Menu",
-            "--menu", "Select an option to configure or run:", "22", "65", "8",
-            "1", f"Model:   {model_display}",
-            "2", f"Toolbox: {state.toolbox}",
-            "3", f"Servers: {servers_display}",
-            "4", f"Mode:    {state.mode}",
-            "5", f"Context: {context_display}",
-            "6", f"Extra:   {extra_display}",
-            "7", "RUN DISTRIBUTED SERVER",
-            "8", "Exit"
+            "--menu", "Select an option to configure or run:", "22", "65", "9",
+            "1", f"Model:    {model_display}",
+            "2", f"Toolbox:  {state.toolbox}",
+            "3", f"Servers:  {servers_display}",
+            "4", f"Mode:     {state.mode}",
+            "5", f"Context:  {context_display}",
+            "6", f"KV Cache: {kv_display}",
+            "7", f"Extra:    {extra_display}",
+            "8", "RUN DISTRIBUTED SERVER",
+            "9", "Exit"
         ]
         
         choice, code = run_dialog(menu)
@@ -548,10 +577,12 @@ def main_menu():
         elif choice == "5":
             select_context(state)
         elif choice == "6":
-            edit_extra_args(state)
+            select_kv_cache(state)
         elif choice == "7":
-            run_distributed(state)
+            edit_extra_args(state)
         elif choice == "8":
+            run_distributed(state)
+        elif choice == "9":
             break
 
     subprocess.run(["clear"])
