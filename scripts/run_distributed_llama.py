@@ -146,6 +146,7 @@ class AppState:
         self.hosts = [list(h) for h in DEFAULT_HOSTS]
         self.context_size = None # None means default (do not pass -c)
         self.bench_prefill = "512,8192,16384,32768,65536" # Default bench prefill curve
+        self.bench_gen = "128" # Default generation lengths
         self.kv_cache_quant = None  # None = off, "q8_0" or "q4_0"
         self.extra_args = "--jinja"  # Extra CLI arguments passed to the executable
         self.bench_extra_args = ""
@@ -164,6 +165,7 @@ class AppState:
             "hosts": self.hosts,
             "context_size": self.context_size,
             "bench_prefill": self.bench_prefill,
+            "bench_gen": self.bench_gen,
             "kv_cache_quant": self.kv_cache_quant,
             "extra_args": self.extra_args,
             "bench_extra_args": self.bench_extra_args,
@@ -227,6 +229,10 @@ class AppState:
         if bp is not None:
             self.bench_prefill = str(bp)
 
+        bg = data.get("bench_gen")
+        if bg is not None:
+            self.bench_gen = str(bg)
+
         # Extra args
         ea = data.get("extra_args")
         if isinstance(ea, str):
@@ -282,15 +288,25 @@ def select_mode(state):
 
 def select_context(state):
     if state.mode == "llama-bench":
-        current = str(state.bench_prefill) if state.bench_prefill else ""
-        selection, code = run_dialog([
+        current_p = str(state.bench_prefill) if state.bench_prefill else ""
+        selection_p, code_p = run_dialog([
             "--title", "Bench Prefill Sizes",
-            "--inputbox", "Enter prefill sizes (-p) separated by comma (e.g. 512,8192,16384).\nLeave empty for default:", "10", "65",
-            current
+            "--inputbox", "Enter prefill sizes (-p) separated by comma (e.g. 512,8192,16384).\nLeave empty to skip:", "10", "65",
+            current_p
         ])
-        if code == 0:
-            val = selection.strip()
-            state.bench_prefill = val if val else None
+        if code_p == 0:
+            val_p = selection_p.strip()
+            state.bench_prefill = val_p if val_p else None
+            
+            current_n = str(state.bench_gen) if state.bench_gen else ""
+            selection_n, code_n = run_dialog([
+                "--title", "Bench Generation Sizes",
+                "--inputbox", "Enter token generation lengths (-n) separated by comma (e.g. 128,512).\nLeave empty to skip:", "10", "65",
+                current_n
+            ])
+            if code_n == 0:
+                val_n = selection_n.strip()
+                state.bench_gen = val_n if val_n else None
     else:
         current = str(state.context_size) if state.context_size else ""
         selection, code = run_dialog([
@@ -492,7 +508,12 @@ def run_distributed(state):
     print(f"Toolbox: {state.toolbox} ({image})")
     print(f"Mode:    {state.mode}")
     
-    context_val = state.bench_prefill if state.mode == "llama-bench" else state.context_size
+    if state.mode == "llama-bench":
+        p_val = state.bench_prefill if state.bench_prefill else "skip"
+        n_val = state.bench_gen if state.bench_gen else "skip"
+        context_val = f"P: {p_val} | N: {n_val}"
+    else:
+        context_val = state.context_size
     print(f"Context/Prefill: {context_val if context_val else 'Default'}")
     print(f"KV Cache:{' ' + state.kv_cache_quant if state.kv_cache_quant else ' Off'}")
     
@@ -624,14 +645,14 @@ def run_distributed(state):
 
         elif state.mode == "llama-bench":
              # Llama Bench specific
-             # User requested -mmp 0 and -fa 1 (Note: llama-bench uses different arg names sometimes?)
-             # llama-bench: -mmp (mmap)
              extra_args = [
                  "-mmp", "0",
                  "-fa", "1"
              ]
              if state.bench_prefill:
                  extra_args.extend(["-p", str(state.bench_prefill)])
+             if state.bench_gen:
+                 extra_args.extend(["-n", str(state.bench_gen)])
         else:
              extra_args = []
 
@@ -666,8 +687,13 @@ def main_menu():
         servers_display = f"{len(state.active_hosts)} Active"
         
         if state.mode == "llama-bench":
-            context_display = str(state.bench_prefill) if state.bench_prefill else "Default"
-            context_label = "Prefill:  "
+            p_val = str(state.bench_prefill) if state.bench_prefill else "-"
+            n_val = str(state.bench_gen) if state.bench_gen else "-"
+            disp = f"{p_val} / {n_val}"
+            if len(disp) > 30:
+                disp = disp[:27] + "..."
+            context_display = disp
+            context_label = "Pref/Gen: "
             run_label = "RUN BENCHMARK"
         else:
             context_display = str(state.context_size) if state.context_size else "Default"
