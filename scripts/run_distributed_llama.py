@@ -648,23 +648,21 @@ def run_distributed(state):
                  extra_args.extend(["-c", str(state.context_size)])
 
         elif state.mode == "llama-bench":
-             # Llama Bench specific — use -pg pairs for combined prefill+generation
+             # Llama Bench specific — separate pp and tg at each context length
              extra_args = [
                  "-mmp", "0",
                  "-fa", "1"
              ]
-             if state.bench_prefill and state.bench_gen:
-                 gen_n = str(state.bench_gen).strip()
+             if state.bench_prefill:
                  for p_val in str(state.bench_prefill).split(","):
                      p_val = p_val.strip()
                      if p_val:
-                         extra_args.extend(["-pg", f"{p_val},{gen_n}"])
-             elif state.bench_prefill:
-                 # Fallback: prefill-only (no gen length specified)
-                 extra_args.extend(["-p", str(state.bench_prefill)])
-             elif state.bench_gen:
-                 # Fallback: generation-only (no prefill sizes specified)
-                 extra_args.extend(["-n", str(state.bench_gen)])
+                         extra_args.extend(["-pp", p_val])
+             if state.bench_gen:
+                 for n_val in str(state.bench_gen).split(","):
+                     n_val = n_val.strip()
+                     if n_val:
+                         extra_args.extend(["-tg", n_val])
         else:
              extra_args = []
 
