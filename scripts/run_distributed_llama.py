@@ -654,15 +654,9 @@ def run_distributed(state):
                  "-fa", "1"
              ]
              if state.bench_prefill:
-                 for p_val in str(state.bench_prefill).split(","):
-                     p_val = p_val.strip()
-                     if p_val:
-                         extra_args.extend(["-pp", p_val])
+                 extra_args.extend(["-p", str(state.bench_prefill).strip()])
              if state.bench_gen:
-                 for n_val in str(state.bench_gen).split(","):
-                     n_val = n_val.strip()
-                     if n_val:
-                         extra_args.extend(["-tg", n_val])
+                 extra_args.extend(["-n", str(state.bench_gen).strip()])
         else:
              extra_args = []
 
