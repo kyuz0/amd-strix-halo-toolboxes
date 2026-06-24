@@ -290,9 +290,9 @@ def select_context(state):
     if state.mode == "llama-bench":
         current_p = str(state.bench_prefill) if state.bench_prefill else ""
         selection_p, code_p = run_dialog([
-            "--title", "Bench Prefill Sizes (pg mode)",
-            "--inputbox", "Enter prefill sizes separated by comma (e.g. 512,8192,16384).\n"
-            "Each value creates a -pg P,N pair (combined prefill+generation).\n"
+            "--title", "Bench Prefill Sizes (pp)",
+            "--inputbox", "Enter prompt processing sizes separated by comma (e.g. 512,8192,16384).\n"
+            "Each value creates a separate -pp test.\n"
             "Leave empty to skip:", "12", "68",
             current_p
         ])
@@ -302,9 +302,9 @@ def select_context(state):
 
             current_n = str(state.bench_gen) if state.bench_gen else ""
             selection_n, code_n = run_dialog([
-                "--title", "Bench Generation Length",
-                "--inputbox", "Enter token generation length for each pg pair (e.g. 128).\n"
-                "This N is paired with every prefill size above as -pg P,N:\n"
+                "--title", "Bench Token Generation (tg)",
+                "--inputbox", "Enter token generation lengths separated by comma (e.g. 128).\n"
+                "Each value creates a separate -tg test.\n"
                 "Leave empty to skip:", "12", "68",
                 current_n
             ])
