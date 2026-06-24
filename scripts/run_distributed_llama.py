@@ -290,18 +290,22 @@ def select_context(state):
     if state.mode == "llama-bench":
         current_p = str(state.bench_prefill) if state.bench_prefill else ""
         selection_p, code_p = run_dialog([
-            "--title", "Bench Prefill Sizes",
-            "--inputbox", "Enter prefill sizes (-p) separated by comma (e.g. 512,8192,16384).\nLeave empty to skip:", "10", "65",
+            "--title", "Bench Prefill Sizes (pg mode)",
+            "--inputbox", "Enter prefill sizes separated by comma (e.g. 512,8192,16384).\n"
+            "Each value creates a -pg P,N pair (combined prefill+generation).\n"
+            "Leave empty to skip:", "12", "68",
             current_p
         ])
         if code_p == 0:
             val_p = selection_p.strip()
             state.bench_prefill = val_p if val_p else None
-            
+
             current_n = str(state.bench_gen) if state.bench_gen else ""
             selection_n, code_n = run_dialog([
-                "--title", "Bench Generation Sizes",
-                "--inputbox", "Enter token generation lengths (-n) separated by comma (e.g. 128,512).\nLeave empty to skip:", "10", "65",
+                "--title", "Bench Generation Length",
+                "--inputbox", "Enter token generation length for each pg pair (e.g. 128).\n"
+                "This N is paired with every prefill size above as -pg P,N:\n"
+                "Leave empty to skip:", "12", "68",
                 current_n
             ])
             if code_n == 0:
@@ -511,7 +515,7 @@ def run_distributed(state):
     if state.mode == "llama-bench":
         p_val = state.bench_prefill if state.bench_prefill else "skip"
         n_val = state.bench_gen if state.bench_gen else "skip"
-        context_val = f"P: {p_val} | N: {n_val}"
+        context_val = f"pg pairs: P=[{p_val}], N={n_val}"
     else:
         context_val = state.context_size
     print(f"Context/Prefill: {context_val if context_val else 'Default'}")
@@ -644,14 +648,22 @@ def run_distributed(state):
                  extra_args.extend(["-c", str(state.context_size)])
 
         elif state.mode == "llama-bench":
-             # Llama Bench specific
+             # Llama Bench specific — use -pg pairs for combined prefill+generation
              extra_args = [
                  "-mmp", "0",
                  "-fa", "1"
              ]
-             if state.bench_prefill:
+             if state.bench_prefill and state.bench_gen:
+                 gen_n = str(state.bench_gen).strip()
+                 for p_val in str(state.bench_prefill).split(","):
+                     p_val = p_val.strip()
+                     if p_val:
+                         extra_args.extend(["-pg", f"{p_val},{gen_n}"])
+             elif state.bench_prefill:
+                 # Fallback: prefill-only (no gen length specified)
                  extra_args.extend(["-p", str(state.bench_prefill)])
-             if state.bench_gen:
+             elif state.bench_gen:
+                 # Fallback: generation-only (no prefill sizes specified)
                  extra_args.extend(["-n", str(state.bench_gen)])
         else:
              extra_args = []
@@ -689,11 +701,11 @@ def main_menu():
         if state.mode == "llama-bench":
             p_val = str(state.bench_prefill) if state.bench_prefill else "-"
             n_val = str(state.bench_gen) if state.bench_gen else "-"
-            disp = f"{p_val} / {n_val}"
+            disp = f"pg P=[{p_val}] N={n_val}"
             if len(disp) > 30:
                 disp = disp[:27] + "..."
             context_display = disp
-            context_label = "Pref/Gen: "
+            context_label = "Bench:    "
             run_label = "RUN BENCHMARK"
         else:
             context_display = str(state.context_size) if state.context_size else "Default"
