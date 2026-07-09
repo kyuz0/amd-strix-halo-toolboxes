@@ -536,7 +536,7 @@ def run_distributed(state):
                 if pid:
                     print(f"Killing remote RPC on {ip} (PID: {pid})...")
                     subprocess.run(
-                        ["ssh", "-p", REMOTE_PORT, ip, f"kill -9 {pid} 2>/dev/null || true; pkill -9 -f rpc-server || true"], 
+                        ["ssh", "-p", REMOTE_PORT, ip, f"kill -9 {pid} 2>/dev/null || true; pkill -9 -f ggml-rpc-server || true"], 
                         stderr=subprocess.DEVNULL
                     )
 
@@ -557,8 +557,8 @@ def run_distributed(state):
             # We assume 'toolbox' command exists on remote
             cmd_str = f"""
             set -euo pipefail
-            pkill -9 -f rpc-server || true
-            nohup toolbox run -c {image} -- rpc-server -H 0.0.0.0 -p {RPC_PORT} -c > /tmp/rpc-server-{ip}.log 2>&1 < /dev/null &
+            pkill -9 -f ggml-rpc-server || true
+            nohup toolbox run -c {image} -- ggml-rpc-server -H 0.0.0.0 -p {RPC_PORT} -c > /tmp/ggml-rpc-server-{ip}.log 2>&1 < /dev/null &
             echo $!
             """
             

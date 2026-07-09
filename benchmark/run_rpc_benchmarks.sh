@@ -136,12 +136,12 @@ start_remote_rpc() {
   local env="$1"
   local image="$2"
   local suffix="$3"
-  local remote_log="/tmp/rpc-server-${env}${suffix}.log"
+  local remote_log="/tmp/ggml-rpc-server-${env}${suffix}.log"
 
   ssh -p "$REMOTE_PORT" "$REMOTE_TARGET" 'bash -s' <<EOF
 set -euo pipefail
-pkill -9 -f rpc-server || true
-nohup toolbox run -c ${image} -- rpc-server -H 0.0.0.0 -p ${RPC_PORT} -c >${remote_log} 2>&1 < /dev/null &
+pkill -9 -f ggml-rpc-server || true
+nohup toolbox run -c ${image} -- ggml-rpc-server -H 0.0.0.0 -p ${RPC_PORT} -c >${remote_log} 2>&1 < /dev/null &
 echo \$!
 EOF
 }
@@ -154,7 +154,7 @@ set -euo pipefail
 if [[ -n "${pid}" && -e "/proc/${pid}" ]]; then
   kill -9 ${pid} || true
 fi
-pkill -9 -f rpc-server || true
+pkill -9 -f ggml-rpc-server || true
 EOF
 }
 
@@ -289,7 +289,7 @@ run_all() {
       fi
 
       CURRENT_REMOTE_PID="$remote_pid"
-      echo "  Remote rpc-server PID: ${remote_pid}"
+      echo "  Remote ggml-rpc-server PID: ${remote_pid}"
 
       if ! wait_for_rpc "$RPC_HOST" "$RPC_PORT"; then
         echo "[ERROR] RPC server on ${RPC_HOST}:${RPC_PORT} did not become ready."

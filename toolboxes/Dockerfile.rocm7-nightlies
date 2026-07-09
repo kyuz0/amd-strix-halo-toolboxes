@@ -76,7 +76,7 @@ RUN mkdir -p /usr/local/lib64 \
   && find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/local/lib64/ \; \
   && ldconfig
 
-# keep bin; drop headers/docs/static libs (retain llama.cpp for rpc binaries)
+# keep bin; drop headers/docs/static libs (retain llama.cpp for ggml-rpc binaries)
 RUN find /opt/rocm-7.0 -type f -name '*.a' -delete \
   && rm -rf /opt/rocm-7.0/include /opt/rocm-7.0/share \
   /opt/rocm-7.0/llvm/include /opt/rocm-7.0/llvm/share
@@ -90,7 +90,7 @@ RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
 
 COPY --from=builder /opt/rocm-7.0 /opt/rocm-7.0
 COPY --from=builder /usr/local/ /usr/local/
-COPY --from=builder /opt/llama.cpp/build/bin/rpc-* /usr/local/bin/
+COPY --from=builder /opt/llama.cpp/build/bin/ggml-rpc-* /usr/local/bin/
 
 COPY gguf-vram-estimator.py /usr/local/bin/
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
