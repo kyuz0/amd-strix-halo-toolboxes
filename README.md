@@ -78,6 +78,14 @@ The images include RDMA support for llama.cpp RPC. On Linux hosts with a
 RoCEv2-capable NIC, llama.cpp automatically negotiates the RDMA transport when
 available and otherwise falls back to TCP.
 
+On Toolbx hosts, `refresh-toolboxes.sh` detects `/dev/infiniband` and adds the
+required device, `rdma` group, and unlimited memlock options automatically.
+For manual Toolbx creation, append:
+
+```sh
+--device /dev/infiniband --group-add rdma --ulimit memlock=-1
+```
+
 ## Quick Start
 
 Create and enter your toolbox of choice. **(Ubuntu users: remember to use `distrobox` instead of `toolbox` in the commands below).** (check [Strix Halo Toolboxes](https://strix-halo-toolboxes.com/#config) for details).

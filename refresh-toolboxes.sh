@@ -40,6 +40,18 @@ if [ -f /etc/os-release ]; then
   fi
 fi
 
+# Match the known-good RDMA setup used by the vLLM Toolbx project.
+# Distrobox already manages host device integration and is left unchanged.
+RDMA_OPTIONS=""
+if [ "$TOOLBOX_CMD" = "toolbox" ]; then
+  if [ -d /dev/infiniband ]; then
+    echo "🔎 InfiniBand devices detected. Enabling RDMA for Toolbx."
+    RDMA_OPTIONS="--device /dev/infiniband --group-add rdma --ulimit memlock=-1"
+  else
+    echo "ℹ️  No InfiniBand devices detected."
+  fi
+fi
+
 # Check dependencies
 DEPENDENCIES=("podman" "$TOOLBOX_CMD")
 for cmd in "${DEPENDENCIES[@]}"; do
@@ -78,6 +90,9 @@ for name in "${SELECTED_TOOLBOXES[@]}"; do
   config="${TOOLBOXES[$name]}"
   image=$(echo "$config" | awk '{print $1}')
   options="${config#* }"
+  if [ -n "$RDMA_OPTIONS" ]; then
+    options="$options $RDMA_OPTIONS"
+  fi
 
   echo "🔄 Refreshing $name (image: $image)"
 
@@ -89,8 +104,6 @@ for name in "${SELECTED_TOOLBOXES[@]}"; do
 
   echo "⬇️ Pulling latest image: $image"
   podman pull "$image"
-
-
 
   echo "📦 Recreating toolbox: $name"
   $TOOLBOX_CMD create "$name" --image "$image" -- $options
