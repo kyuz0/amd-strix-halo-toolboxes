@@ -74,6 +74,10 @@ These are experimental or custom builds. They are not rebuilt automatically on e
 
 > Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from these lists.
 
+The images include RDMA support for llama.cpp RPC. On Linux hosts with a
+RoCEv2-capable NIC, llama.cpp automatically negotiates the RDMA transport when
+available and otherwise falls back to TCP.
+
 ## Quick Start
 
 Create and enter your toolbox of choice. **(Ubuntu users: remember to use `distrobox` instead of `toolbox` in the commands below).** (check [Strix Halo Toolboxes](https://strix-halo-toolboxes.com/#config) for details).
@@ -99,6 +103,7 @@ toolbox enter llama-rocm-7.2.4
 
 ### 2. Check GPU Access
 Inside the toolbox:
+
 ```sh
 llama-cli --list-devices
 ```
