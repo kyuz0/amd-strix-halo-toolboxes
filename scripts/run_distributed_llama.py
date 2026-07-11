@@ -34,7 +34,8 @@ DEFAULT_HOSTS = [
 
 REMOTE_PORT = os.getenv("REMOTE_PORT", "22")
 RPC_PORT = os.getenv("RPC_PORT", "50052")
-RPC_DEBUG = os.getenv("GGML_RPC_DEBUG", "1")
+RDMA_DEV = os.getenv("GGML_RDMA_DEV", "")
+RDMA_GID = os.getenv("GGML_RDMA_GID", "")
 LOCAL_HOST_PORT = "8080"
 
 
@@ -150,6 +151,7 @@ class AppState:
         self.bench_prefill = "512,8192,16384,32768,65536" # Default bench prefill curve
         self.bench_gen = "128" # Default generation lengths
         self.kv_cache_quant = None  # None = off, "q8_0" or "q4_0"
+        self.rpc_debug = True
         self.extra_args = "--jinja"  # Extra CLI arguments passed to the executable
         self.bench_extra_args = ""
         self.load_config()
@@ -169,6 +171,7 @@ class AppState:
             "bench_prefill": self.bench_prefill,
             "bench_gen": self.bench_gen,
             "kv_cache_quant": self.kv_cache_quant,
+            "rpc_debug": self.rpc_debug,
             "extra_args": self.extra_args,
             "bench_extra_args": self.bench_extra_args,
         }
@@ -225,6 +228,10 @@ class AppState:
         kv = data.get("kv_cache_quant")
         if kv is None or (isinstance(kv, str) and kv in KV_CACHE_QUANT_VALUES):
             self.kv_cache_quant = kv
+
+        rd = data.get("rpc_debug")
+        if isinstance(rd, bool):
+            self.rpc_debug = rd
 
         # Bench prefill
         bp = data.get("bench_prefill")
@@ -526,7 +533,9 @@ def run_distributed(state):
     current_extra_args = state.bench_extra_args if state.mode == "llama-bench" else state.extra_args
     print(f"Extra:   {current_extra_args if current_extra_args else '(none)'}")
     print(f"Hosts:   {active_ips}")
-    print(f"RPC Debug: GGML_RPC_DEBUG={RPC_DEBUG}")
+    print(f"RPC Debug: {'On' if state.rpc_debug else 'Off'}")
+    if RDMA_DEV or RDMA_GID:
+        print(f"RDMA Override: device={RDMA_DEV or 'auto'}, GID={RDMA_GID or 'auto'}")
     print("--------------------------------")
 
     remote_pids = []
@@ -555,13 +564,21 @@ def run_distributed(state):
         # 1. Start Remote RPC Servers
         for ip in active_ips:
             print(f"-> Starting RPC server on {ip}...")
+            rpc_env = []
+            if state.rpc_debug:
+                rpc_env.append("GGML_RPC_DEBUG=1")
+            if RDMA_DEV:
+                rpc_env.append(f"GGML_RDMA_DEV={RDMA_DEV}")
+            if RDMA_GID:
+                rpc_env.append(f"GGML_RDMA_GID={RDMA_GID}")
+            rpc_env_prefix = "env " + " ".join(shlex.quote(value) for value in rpc_env) + " " if rpc_env else ""
             
             # Using bash heredoc via ssh to start background process and print PID
             # We assume 'toolbox' command exists on remote
             cmd_str = f"""
             set -euo pipefail
             pkill -9 -f ggml-rpc-server || true
-            nohup toolbox run -c {image} -- env GGML_RPC_DEBUG={shlex.quote(RPC_DEBUG)} ggml-rpc-server -H 0.0.0.0 -p {RPC_PORT} -c > /tmp/ggml-rpc-server-{ip}.log 2>&1 < /dev/null &
+            nohup toolbox run -c {image} -- {rpc_env_prefix}ggml-rpc-server -H 0.0.0.0 -p {RPC_PORT} -c > /tmp/ggml-rpc-server-{ip}.log 2>&1 < /dev/null &
             echo $!
             """
             
@@ -622,8 +639,19 @@ def run_distributed(state):
         # 2. Run Local Executable
         # Base arguments for all modes
         base_args = [
-            "toolbox", "run", "-c", image, "--",
-            "env", f"GGML_RPC_DEBUG={RPC_DEBUG}",
+            "toolbox", "run", "-c", image, "--"
+        ]
+        if state.rpc_debug:
+            base_args += ["env", "GGML_RPC_DEBUG=1"]
+        if RDMA_DEV:
+            if "env" not in base_args:
+                base_args.append("env")
+            base_args.append(f"GGML_RDMA_DEV={RDMA_DEV}")
+        if RDMA_GID:
+            if "env" not in base_args:
+                base_args.append("env")
+            base_args.append(f"GGML_RDMA_GID={RDMA_GID}")
+        base_args += [
             state.mode,
             "-m", state.model_path,
             "--rpc", rpc_arg
@@ -709,6 +737,7 @@ def main_menu():
             run_label = "RUN DISTRIBUTED SERVER"
             
         kv_display = state.kv_cache_quant if state.kv_cache_quant else "Off"
+        rpc_debug_display = "On" if state.rpc_debug else "Off"
         
         current_extra_args = state.bench_extra_args if state.mode == "llama-bench" else state.extra_args
         extra_display = current_extra_args if current_extra_args else "(none)"
@@ -716,7 +745,7 @@ def main_menu():
         menu = [
             "--clear", "--backtitle", "AMD Strix Halo - Distributed Llama",
             "--title", "Main Menu",
-            "--menu", "Select an option to configure or run:", "22", "65", "9",
+            "--menu", "Select an option to configure or run:", "23", "65", "10",
             "1", f"Model:    {model_display}",
             "2", f"Toolbox:  {state.toolbox}",
             "3", f"Servers:  {servers_display}",
@@ -724,8 +753,9 @@ def main_menu():
             "5", f"{context_label}{context_display}",
             "6", f"KV Cache: {kv_display}",
             "7", f"Extra:    {extra_display}",
-            "8", run_label,
-            "9", "Exit"
+            "8", f"RPC Debug: {rpc_debug_display}",
+            "9", run_label,
+            "10", "Exit"
         ]
         
         choice, code = run_dialog(menu)
@@ -748,8 +778,10 @@ def main_menu():
         elif choice == "7":
             edit_extra_args(state)
         elif choice == "8":
-            run_distributed(state)
+            state.rpc_debug = not state.rpc_debug
         elif choice == "9":
+            run_distributed(state)
+        elif choice == "10":
             break
 
         # Persist after every action
