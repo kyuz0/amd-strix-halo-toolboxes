@@ -15,6 +15,9 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 DEFAULT_MODELS_DIR = Path.home() / "models"
 CONFIG_FILE = Path.home() / ".config" / "strix-halo-distributed-llama.json"
 DEFAULT_TOOLBOX = "rocm-7.2.4"
+DEFAULT_BENCH_PREFILL = "8192,16384,24576,32768,40960,49152,57344,65536"
+LEGACY_BENCH_PREFILL = "512,8192,16384,32768,65536"
+DEFAULT_BENCH_UBATCH = 2048
 TOOLBOX_IMAGES = {
     "rocm-6.4.4": "llama-rocm-6.4.4",
     "rocm-7.2.4": "llama-rocm-7.2.4",
@@ -148,8 +151,9 @@ class AppState:
         # List of [ip, enabled]
         self.hosts = [list(h) for h in DEFAULT_HOSTS]
         self.context_size = None # None means default (do not pass -c)
-        self.bench_prefill = "512,8192,16384,32768,65536" # Default bench prefill curve
+        self.bench_prefill = DEFAULT_BENCH_PREFILL
         self.bench_gen = "128" # Default generation lengths
+        self.bench_ubatch = DEFAULT_BENCH_UBATCH
         self.kv_cache_quant = None  # None = off, "q8_0" or "q4_0"
         self.rpc_debug = True
         self.extra_args = "--jinja"  # Extra CLI arguments passed to the executable
@@ -170,6 +174,7 @@ class AppState:
             "context_size": self.context_size,
             "bench_prefill": self.bench_prefill,
             "bench_gen": self.bench_gen,
+            "bench_ubatch": self.bench_ubatch,
             "kv_cache_quant": self.kv_cache_quant,
             "rpc_debug": self.rpc_debug,
             "extra_args": self.extra_args,
@@ -236,11 +241,20 @@ class AppState:
         # Bench prefill
         bp = data.get("bench_prefill")
         if bp is not None:
-            self.bench_prefill = str(bp)
+            saved_prefill = str(bp)
+            self.bench_prefill = (
+                DEFAULT_BENCH_PREFILL
+                if saved_prefill == LEGACY_BENCH_PREFILL
+                else saved_prefill
+            )
 
         bg = data.get("bench_gen")
         if bg is not None:
             self.bench_gen = str(bg)
+
+        bu = data.get("bench_ubatch")
+        if isinstance(bu, int) and bu > 0:
+            self.bench_ubatch = bu
 
         # Extra args
         ea = data.get("extra_args")
@@ -320,6 +334,17 @@ def select_context(state):
             if code_n == 0:
                 val_n = selection_n.strip()
                 state.bench_gen = val_n if val_n else None
+
+                selection_ub, code_ub = run_dialog([
+                    "--title", "Bench Ubatch",
+                    "--inputbox", "Enter the physical batch size (-ub).\n"
+                    "Default: 2048", "10", "55",
+                    str(state.bench_ubatch)
+                ])
+                if code_ub == 0:
+                    val_ub = selection_ub.strip()
+                    if val_ub.isdigit() and int(val_ub) > 0:
+                        state.bench_ubatch = int(val_ub)
     else:
         current = str(state.context_size) if state.context_size else ""
         selection, code = run_dialog([
@@ -690,6 +715,7 @@ def run_distributed(state):
                  extra_args.extend(["-p", str(state.bench_prefill).strip()])
              if state.bench_gen:
                  extra_args.extend(["-n", str(state.bench_gen).strip()])
+             extra_args.extend(["-ub", str(state.bench_ubatch)])
         else:
              extra_args = []
 
@@ -725,7 +751,8 @@ def main_menu():
         if state.mode == "llama-bench":
             p_val = str(state.bench_prefill) if state.bench_prefill else "-"
             n_val = str(state.bench_gen) if state.bench_gen else "-"
-            disp = f"pg P=[{p_val}] N={n_val}"
+            p_count = len([value for value in p_val.split(",") if value != "-"])
+            disp = f"P={p_count} sizes N={n_val} UB={state.bench_ubatch}"
             if len(disp) > 30:
                 disp = disp[:27] + "..."
             context_display = disp
