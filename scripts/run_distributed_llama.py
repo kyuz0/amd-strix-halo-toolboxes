@@ -7,6 +7,7 @@ import tempfile
 import subprocess
 import time
 import signal
+import shlex
 from pathlib import Path
 
 # --- Configuration & Defaults ---
@@ -33,6 +34,7 @@ DEFAULT_HOSTS = [
 
 REMOTE_PORT = os.getenv("REMOTE_PORT", "22")
 RPC_PORT = os.getenv("RPC_PORT", "50052")
+RPC_DEBUG = os.getenv("GGML_RPC_DEBUG", "1")
 LOCAL_HOST_PORT = "8080"
 
 
@@ -524,6 +526,7 @@ def run_distributed(state):
     current_extra_args = state.bench_extra_args if state.mode == "llama-bench" else state.extra_args
     print(f"Extra:   {current_extra_args if current_extra_args else '(none)'}")
     print(f"Hosts:   {active_ips}")
+    print(f"RPC Debug: GGML_RPC_DEBUG={RPC_DEBUG}")
     print("--------------------------------")
 
     remote_pids = []
@@ -558,7 +561,7 @@ def run_distributed(state):
             cmd_str = f"""
             set -euo pipefail
             pkill -9 -f ggml-rpc-server || true
-            nohup toolbox run -c {image} -- ggml-rpc-server -H 0.0.0.0 -p {RPC_PORT} -c > /tmp/ggml-rpc-server-{ip}.log 2>&1 < /dev/null &
+            nohup toolbox run -c {image} -- env GGML_RPC_DEBUG={shlex.quote(RPC_DEBUG)} ggml-rpc-server -H 0.0.0.0 -p {RPC_PORT} -c > /tmp/ggml-rpc-server-{ip}.log 2>&1 < /dev/null &
             echo $!
             """
             
@@ -585,6 +588,7 @@ def run_distributed(state):
                 
             remote_pids.append(pid)
             print(f"   PID: {pid}")
+            print(f"   Debug log: ssh -p {REMOTE_PORT} {ip} 'tail -f /tmp/ggml-rpc-server-{ip}.log'")
 
             # Wait for port check
             print(f"   Waiting for port {RPC_PORT}...", end="", flush=True)
@@ -619,6 +623,7 @@ def run_distributed(state):
         # Base arguments for all modes
         base_args = [
             "toolbox", "run", "-c", image, "--",
+            "env", f"GGML_RPC_DEBUG={RPC_DEBUG}",
             state.mode,
             "-m", state.model_path,
             "--rpc", rpc_arg
@@ -667,7 +672,6 @@ def run_distributed(state):
                           
         current_extra_args = state.bench_extra_args if state.mode == "llama-bench" else state.extra_args
         if current_extra_args:
-            import shlex
             local_cmd += shlex.split(current_extra_args)
         
         print(f"CMD: {' '.join(local_cmd)}")
