@@ -6,14 +6,17 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
   radeontop git vim patch curl ninja-build tar xz aria2c \
   && dnf clean all && rm -rf /var/cache/dnf/*
 
-# fetch TheRock nightly tarball (gfx1151)
-# Pin: 20260608 is the last build before the libhsa-runtime64 InitDma regression
-# Override with: docker build --build-arg TARBALL_KEY=therock-dist-linux-gfx1151-7.14.0a20260612.tar.gz
+# find & fetch the latest Linux 7.x.x tarball (gfx1151)
 WORKDIR /tmp
-ARG TARBALL_KEY=therock-dist-linux-gfx1151-7.14.0a20260608.tar.gz
-ARG BASE_URL=https://rocm.nightlies.amd.com/tarball
-RUN echo "Downloading: ${BASE_URL}/${TARBALL_KEY}" \
-  && aria2c -x 16 -s 16 -j 16 --file-allocation=none "${BASE_URL}/${TARBALL_KEY}" -o therock.tar.gz
+ARG ROCM_MAJOR_VER=7
+ARG GFX=gfx1151
+RUN set -euo pipefail; \
+  BASE="https://rocm.nightlies.amd.com/tarball-multi-arch"; \
+  KEY="$(curl -sL "${BASE}/" \
+  | grep -o "therock-dist-linux-${GFX}-[0-9.a]*\.tar\.gz" \
+  | sort -V | tail -n1)"; \
+  echo "Latest tarball: ${KEY}"; \
+  aria2c -x 16 -s 16 -j 16 --file-allocation=none "${BASE}/${KEY}" -o therock.tar.gz
 RUN mkdir -p /opt/rocm-7.0 \
   && tar xzf therock.tar.gz -C /opt/rocm-7.0 --strip-components=1
 
