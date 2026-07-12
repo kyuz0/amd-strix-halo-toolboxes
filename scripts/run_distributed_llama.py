@@ -17,10 +17,12 @@ CONFIG_FILE = Path.home() / ".config" / "strix-halo-distributed-llama.json"
 DEFAULT_TOOLBOX = "rocm-7.2.4"
 DEFAULT_BENCH_PREFILL = "8192,16384,24576,32768,40960,49152,57344,65536"
 LEGACY_BENCH_PREFILL = "512,8192,16384,32768,65536"
+DEFAULT_BENCH_PREFILL_CHUNK = 2048
 DEFAULT_BENCH_UBATCH = 2048
 TOOLBOX_IMAGES = {
     "rocm-6.4.4": "llama-rocm-6.4.4",
     "rocm-7.2.4": "llama-rocm-7.2.4",
+    "rocm-7.2.4-rdma-fix": "llama-rocm-7.2.4-rdma-fix",
     "vulkan-amdvlk": "llama-vulkan-amdvlk",
     "vulkan-radv": "llama-vulkan-radv",
 }
@@ -313,10 +315,10 @@ def select_context(state):
     if state.mode == "llama-bench":
         current_p = str(state.bench_prefill) if state.bench_prefill else ""
         selection_p, code_p = run_dialog([
-            "--title", "Bench Prefill Sizes (pp)",
-            "--inputbox", "Enter prompt processing sizes separated by comma (e.g. 512,8192,16384).\n"
-            "Each value creates a separate -pp test.\n"
-            "Leave empty to skip:", "12", "68",
+            "--title", "Benchmark Context Frontiers",
+            "--inputbox", "Enter context frontiers separated by commas (e.g. 8192,16384,24576).\n"
+            "Each frontier measures a 2048-token prefill ending there and generation starting there.",
+            "12", "76",
             current_p
         ])
         if code_p == 0:
@@ -536,6 +538,26 @@ def run_distributed(state):
         show_msg("Error", "No remote servers selected.")
         return
 
+    bench_frontiers = []
+    if state.mode == "llama-bench":
+        try:
+            bench_frontiers = [
+                int(value.strip())
+                for value in str(state.bench_prefill).split(",")
+                if value.strip()
+            ]
+        except ValueError:
+            show_msg("Error", "Benchmark context frontiers must be comma-separated integers.")
+            return
+        if not bench_frontiers or any(
+            frontier < DEFAULT_BENCH_PREFILL_CHUNK for frontier in bench_frontiers
+        ):
+            show_msg(
+                "Error",
+                f"Every benchmark frontier must be at least {DEFAULT_BENCH_PREFILL_CHUNK}.",
+            )
+            return
+
     image = TOOLBOX_IMAGES[state.toolbox]
     active_ips = state.active_hosts
     
@@ -547,9 +569,11 @@ def run_distributed(state):
     print(f"Mode:    {state.mode}")
     
     if state.mode == "llama-bench":
-        p_val = state.bench_prefill if state.bench_prefill else "skip"
         n_val = state.bench_gen if state.bench_gen else "skip"
-        context_val = f"pg pairs: P=[{p_val}], N={n_val}"
+        context_val = (
+            f"frontiers=[{','.join(map(str, bench_frontiers))}], "
+            f"prefill={DEFAULT_BENCH_PREFILL_CHUNK}, generation={n_val}"
+        )
     else:
         context_val = state.context_size
     print(f"Context/Prefill: {context_val if context_val else 'Default'}")
@@ -706,16 +730,11 @@ def run_distributed(state):
                  extra_args.extend(["-c", str(state.context_size)])
 
         elif state.mode == "llama-bench":
-             # Llama Bench specific — separate pp and tg at each context length
              extra_args = [
                  "-mmp", "0",
-                 "-fa", "1"
+                 "-fa", "1",
+                 "-ub", str(state.bench_ubatch),
              ]
-             if state.bench_prefill:
-                 extra_args.extend(["-p", str(state.bench_prefill).strip()])
-             if state.bench_gen:
-                 extra_args.extend(["-n", str(state.bench_gen).strip()])
-             extra_args.extend(["-ub", str(state.bench_ubatch)])
         else:
              extra_args = []
 
@@ -728,10 +747,42 @@ def run_distributed(state):
         if current_extra_args:
             local_cmd += shlex.split(current_extra_args)
         
-        print(f"CMD: {' '.join(local_cmd)}")
-        
-        proc = subprocess.Popen(local_cmd)
-        proc.wait()
+        if state.mode == "llama-bench":
+            prefill_depths = ",".join(
+                str(frontier - DEFAULT_BENCH_PREFILL_CHUNK)
+                for frontier in bench_frontiers
+            )
+            generation_depths = ",".join(map(str, bench_frontiers))
+            benchmark_commands = [
+                (
+                    "Prefill depth curve",
+                    local_cmd + [
+                        "-p", str(DEFAULT_BENCH_PREFILL_CHUNK),
+                        "-n", "0",
+                        "-d", prefill_depths,
+                    ],
+                ),
+            ]
+            if state.bench_gen:
+                benchmark_commands.append((
+                    "Generation depth curve",
+                    local_cmd + [
+                        "-p", "0",
+                        "-n", str(state.bench_gen).strip(),
+                        "-d", generation_depths,
+                    ],
+                ))
+            for label, command in benchmark_commands:
+                print(f"\n=== {label} ===")
+                print(f"CMD: {' '.join(command)}")
+                result = subprocess.run(command)
+                if result.returncode != 0:
+                    print(f"[ERROR] {label} exited with code {result.returncode}")
+                    break
+        else:
+            print(f"CMD: {' '.join(local_cmd)}")
+            proc = subprocess.Popen(local_cmd)
+            proc.wait()
         
     except Exception as e:
         print(f"\n[EXCEPTION] {e}")
@@ -752,7 +803,7 @@ def main_menu():
             p_val = str(state.bench_prefill) if state.bench_prefill else "-"
             n_val = str(state.bench_gen) if state.bench_gen else "-"
             p_count = len([value for value in p_val.split(",") if value != "-"])
-            disp = f"P={p_count} sizes N={n_val} UB={state.bench_ubatch}"
+            disp = f"D={p_count} frontiers N={n_val} UB={state.bench_ubatch}"
             if len(disp) > 30:
                 disp = disp[:27] + "..."
             context_display = disp
