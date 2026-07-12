@@ -15,7 +15,8 @@ SCRIPT_DIR = Path(__file__).parent.resolve()
 DEFAULT_MODELS_DIR = Path.home() / "models"
 CONFIG_FILE = Path.home() / ".config" / "strix-halo-distributed-llama.json"
 DEFAULT_TOOLBOX = "rocm-7.2.4"
-DEFAULT_BENCH_PREFILL = "8192,16384,24576,32768,40960,49152,57344,65536"
+DEFAULT_BENCH_PREFILL = "0,8192,16384,24576,32768,40960,49152,57344,65536"
+PREVIOUS_BENCH_PREFILL = "8192,16384,24576,32768,40960,49152,57344,65536"
 LEGACY_BENCH_PREFILL = "512,8192,16384,32768,65536"
 DEFAULT_BENCH_PREFILL_CHUNK = 2048
 DEFAULT_BENCH_UBATCH = 2048
@@ -246,7 +247,7 @@ class AppState:
             saved_prefill = str(bp)
             self.bench_prefill = (
                 DEFAULT_BENCH_PREFILL
-                if saved_prefill == LEGACY_BENCH_PREFILL
+                if saved_prefill in (LEGACY_BENCH_PREFILL, PREVIOUS_BENCH_PREFILL)
                 else saved_prefill
             )
 
@@ -315,9 +316,9 @@ def select_context(state):
     if state.mode == "llama-bench":
         current_p = str(state.bench_prefill) if state.bench_prefill else ""
         selection_p, code_p = run_dialog([
-            "--title", "Benchmark Context Frontiers",
-            "--inputbox", "Enter context frontiers separated by commas (e.g. 8192,16384,24576).\n"
-            "Each frontier measures a 2048-token prefill ending there and generation starting there.",
+            "--title", "Benchmark Starting Depths",
+            "--inputbox", "Enter starting KV depths separated by commas (e.g. 0,8192,16384).\n"
+            "At each depth, measure a 2048-token prefill and 128-token generation separately.",
             "12", "76",
             current_p
         ])
@@ -538,24 +539,19 @@ def run_distributed(state):
         show_msg("Error", "No remote servers selected.")
         return
 
-    bench_frontiers = []
+    bench_depths = []
     if state.mode == "llama-bench":
         try:
-            bench_frontiers = [
+            bench_depths = [
                 int(value.strip())
                 for value in str(state.bench_prefill).split(",")
                 if value.strip()
             ]
         except ValueError:
-            show_msg("Error", "Benchmark context frontiers must be comma-separated integers.")
+            show_msg("Error", "Benchmark starting depths must be comma-separated integers.")
             return
-        if not bench_frontiers or any(
-            frontier < DEFAULT_BENCH_PREFILL_CHUNK for frontier in bench_frontiers
-        ):
-            show_msg(
-                "Error",
-                f"Every benchmark frontier must be at least {DEFAULT_BENCH_PREFILL_CHUNK}.",
-            )
+        if not bench_depths or any(depth < 0 for depth in bench_depths):
+            show_msg("Error", "Benchmark starting depths must be zero or positive.")
             return
 
     image = TOOLBOX_IMAGES[state.toolbox]
@@ -571,7 +567,7 @@ def run_distributed(state):
     if state.mode == "llama-bench":
         n_val = state.bench_gen if state.bench_gen else "skip"
         context_val = (
-            f"frontiers=[{','.join(map(str, bench_frontiers))}], "
+            f"depths=[{','.join(map(str, bench_depths))}], "
             f"prefill={DEFAULT_BENCH_PREFILL_CHUNK}, generation={n_val}"
         )
     else:
@@ -748,18 +744,14 @@ def run_distributed(state):
             local_cmd += shlex.split(current_extra_args)
         
         if state.mode == "llama-bench":
-            prefill_depths = ",".join(
-                str(frontier - DEFAULT_BENCH_PREFILL_CHUNK)
-                for frontier in bench_frontiers
-            )
-            generation_depths = ",".join(map(str, bench_frontiers))
+            depth_values = ",".join(map(str, bench_depths))
             benchmark_commands = [
                 (
                     "Prefill depth curve",
                     local_cmd + [
                         "-p", str(DEFAULT_BENCH_PREFILL_CHUNK),
                         "-n", "0",
-                        "-d", prefill_depths,
+                        "-d", depth_values,
                     ],
                 ),
             ]
@@ -769,7 +761,7 @@ def run_distributed(state):
                     local_cmd + [
                         "-p", "0",
                         "-n", str(state.bench_gen).strip(),
-                        "-d", generation_depths,
+                        "-d", depth_values,
                     ],
                 ))
             for label, command in benchmark_commands:
@@ -803,7 +795,7 @@ def main_menu():
             p_val = str(state.bench_prefill) if state.bench_prefill else "-"
             n_val = str(state.bench_gen) if state.bench_gen else "-"
             p_count = len([value for value in p_val.split(",") if value != "-"])
-            disp = f"D={p_count} frontiers N={n_val} UB={state.bench_ubatch}"
+            disp = f"D={p_count} depths N={n_val} UB={state.bench_ubatch}"
             if len(disp) > 30:
                 disp = disp[:27] + "..."
             context_display = disp
