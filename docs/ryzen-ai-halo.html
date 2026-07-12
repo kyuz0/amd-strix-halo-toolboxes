@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ryzen AI Halo — Profile Benchmark Comparison</title>
+    <link rel="stylesheet" href="assets/ryzen-ai-halo.css">
+    <script defer data-domain="kyuz0.github.io/amd-strix-halo-toolboxes" src="https://plausible.skybound.link/js/plausible.js"></script>
+</head>
+
+<body>
+    <header class="page-header">
+        <div class="layout">
+            <a class="back-link" href="index.html">← Main benchmarks</a>
+            <h1>Ryzen AI Halo — Performance Curves</h1>
+            <p id="system-info">AMD Ryzen AI Halo reference system · Loading results…</p>
+            <p class="intro">Prefill and token-generation throughput across increasing context depths and system profiles.</p>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="card controls-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Choose comparisons</span>
+                    <h2>Models and profiles</h2>
+                </div>
+                <span id="result-count" class="result-count">Loading…</span>
+            </div>
+            <div class="selector-heading">
+                <strong>Models</strong>
+                <span><button id="models-all" type="button" class="text-button">All</button><button id="models-none" type="button" class="text-button">None</button></span>
+            </div>
+            <div id="model-selector" class="model-selector" role="group" aria-label="Select models"></div>
+            <div class="selector-heading profile-heading">
+                <strong>Profiles</strong>
+            </div>
+            <div id="profile-selector" class="profile-selector" role="group" aria-label="Select profiles"></div>
+            <p id="model-config" class="model-config"></p>
+            <div id="profile-legend" class="profile-legend"></div>
+            <div class="scale-control" role="group" aria-label="Chart scale">
+                <span>Chart view</span>
+                <button type="button" class="scale-button active" data-scale="absolute">Tokens/s</button>
+                <button type="button" class="scale-button" data-scale="retention">Depth retention</button>
+                <button type="button" class="scale-button" data-scale="gain">Gain vs Default</button>
+            </div>
+        </section>
+
+        <section class="chart-grid" aria-live="polite">
+            <article class="card chart-card">
+                <div class="chart-heading">
+                    <div>
+                        <span class="eyebrow">Prompt processing</span>
+                        <h2>Prefill throughput</h2>
+                    </div>
+                    <span class="unit">tokens/s</span>
+                </div>
+                <div id="prefill-chart" class="curve-chart"></div>
+            </article>
+
+            <article class="card chart-card">
+                <div class="chart-heading">
+                    <div>
+                        <span class="eyebrow">Text generation</span>
+                        <h2>Generation throughput</h2>
+                    </div>
+                    <span class="unit">tokens/s</span>
+                </div>
+                <div id="generation-chart" class="curve-chart"></div>
+            </article>
+        </section>
+
+        <section class="card data-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Exact measurements</span>
+                    <h2>Selected results</h2>
+                </div>
+                <div class="metric-tabs" role="group" aria-label="Table metric">
+                    <button type="button" class="metric-button active" data-metric="prefill">Prefill</button>
+                    <button type="button" class="metric-button" data-metric="generation">Generation</button>
+                </div>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead id="results-head"></thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+            </div>
+            <p class="method-note">Each point measures a 2,048-token prefill or 128-token generation after the listed starting depth. Values after ± are standard deviations.</p>
+        </section>
+    </main>
+
+    <script src="assets/ryzen-ai-halo.js" type="module"></script>
+</body>
+
+</html>
