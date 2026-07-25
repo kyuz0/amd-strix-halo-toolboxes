@@ -32,26 +32,31 @@ ENV ROCM_PATH=/opt/rocm \
   HIP_DEVICE_LIB_PATH=/opt/rocm/amdgcn/bitcode \
   PATH=/opt/rocm/bin:/opt/rocm/llvm/bin:$PATH
 
-# llama.cpp
+# ROCmFPX (llama.cpp fork with ROCmFP3/FP4/FP6/FP8 weight formats)
 WORKDIR /opt/llama.cpp
-ARG REPO=https://github.com/charlie12345/rocmfp4-llama.git
-ARG BRANCH=mtp-rocmfp4-strix
-RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
+ARG REPO=https://github.com/charlie12345/ROCmFPX.git
+ARG BRANCH=main
+RUN git clone -b ${BRANCH} --single-branch ${REPO} .
 
 COPY llama-grammar.patch /tmp/llama-grammar.patch
 
-# build
+# build — ROCm/HIP only
+# GGML_HIP_FORCE_MMQ=ON is required for ROCmFP4 MMQ kernels
 RUN git clean -xdf \
-  && git submodule update --recursive \
   && patch -p1 < /tmp/llama-grammar.patch \
   && cmake -S . -B build \
   -DGGML_HIP=ON \
-  -DCMAKE_HIP_ARCHITECTURES=gfx1151 \
+  -DGGML_VULKAN=OFF \
+  -DGGML_CUDA=OFF \
   -DGGML_HIP_FORCE_MMQ=ON \
+  -DCMAKE_HIP_ARCHITECTURES=gfx1151 \
+  -DGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
   -DLLAMA_BUILD_SERVER=ON \
   -DLLAMA_BUILD_EXAMPLES=ON \
+  -DLLAMA_BUILD_WEBUI=OFF \
+  -DLLAMA_USE_PREBUILT_WEBUI=OFF \
   -DLLAMA_BUILD_TESTS=OFF \
   -DGGML_BUILD_TESTS=OFF \
   -DROCM_PATH=/opt/rocm \
