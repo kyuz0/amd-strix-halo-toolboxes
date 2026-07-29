@@ -118,6 +118,46 @@ Inside the toolbox:
 llama-cli --list-devices
 ```
 
+For the current tested `rocm-7.2.4` image, first verify that Strix Halo is
+reported as `gfx1151` without an architecture override. A legacy
+`HSA_OVERRIDE_GFX_VERSION=11.0.0` exported by the host can be inherited by
+Distrobox. On the independently tested Beelink/Ubuntu path, that changed
+detection to `gfx1100` and crashed in `libamdhip64` during model load. Remove
+an obsolete override from the host shell startup files before retrying.
+
+### Optional: run an image directly with rootless Podman
+
+If you only need a single `llama.cpp` command or server, the images can be
+used without Toolbx or Distrobox. The following rootless commands were
+validated on Ubuntu 24.04 with a user that already had access to the GPU
+devices. They required no `--privileged` flag or host-root mount.
+
+Vulkan/RADV:
+
+```sh
+podman run --rm \
+  --device /dev/dri \
+  --volume ~/models:/models:ro \
+  docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv \
+  llama-bench -m /models/MODEL.gguf -p 512 -n 128 -r 3 \
+    -b 2048 -ub 512 -ngl 999 -fa on -dev Vulkan0
+```
+
+ROCm:
+
+```sh
+podman run --rm \
+  --device /dev/dri \
+  --device /dev/kfd \
+  --volume ~/models:/models:ro \
+  docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4 \
+  llama-bench -m /models/MODEL.gguf -p 512 -n 128 -r 3 \
+    -b 2048 -ub 512 -ngl 999 -fa on -dev ROCm0
+```
+
+These are intentionally minimal examples. If device access fails, fix the
+host user/group or udev permissions rather than adding `--privileged`.
+
 ### 3. Download Model
 Example: Qwen3 Coder 30B (BF16)
 Consider: setting your Hugging Face HF_TOKEN for faster downloads

@@ -94,6 +94,17 @@ for name in "${SELECTED_TOOLBOXES[@]}"; do
   config="${TOOLBOXES[$name]}"
   image=$(echo "$config" | awk '{print $1}')
   options="${config#* }"
+
+  if [[ "$name" == "llama-rocm-7.2.4" ]] && [ -n "${HSA_OVERRIDE_GFX_VERSION:-}" ]; then
+    echo "⚠️  HSA_OVERRIDE_GFX_VERSION is set to '${HSA_OVERRIDE_GFX_VERSION}' on the host."
+    echo "   The current ROCm 7.2.4 image detected gfx1151 without an override on the"
+    echo "   tested Strix Halo host. A legacy override inherited by Distrobox can"
+    echo "   misidentify the GPU and crash inference. If this override is obsolete,"
+    echo "   remove it from your shell startup files and run:"
+    echo "     unset HSA_OVERRIDE_GFX_VERSION"
+    echo
+  fi
+
   if [ -n "$RDMA_OPTIONS" ]; then
     options="$options $RDMA_OPTIONS"
   fi
