@@ -44,6 +44,7 @@ LONGCTX_RE = re.compile(r"longctx(\d+)", re.IGNORECASE)
 
 ENV_CANON = {
     "rocm7_1_1": "rocm7.1.1",
+    # Preserve names used by historical benchmark files.
     "rocm7_alpha": "rocm7-nightlies",
     "rocm-7alpha": "rocm7-nightlies",
 }

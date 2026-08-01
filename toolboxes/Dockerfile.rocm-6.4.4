@@ -16,10 +16,20 @@ ARG BRANCH=master
 RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
 COPY llama-grammar.patch /tmp/llama-grammar.patch
+COPY llama-cpp-25992-rocm-host-buffer.patch /tmp/llama-cpp-25992-rocm-host-buffer.patch
 
 # build + install
+# Temporary workaround for ggml-org/llama.cpp#25992, based on PR #25863.
 RUN git clean -xdf \
   && git submodule update --recursive \
+  && if git apply --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
+       git apply /tmp/llama-cpp-25992-rocm-host-buffer.patch; \
+     elif git apply --reverse --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
+       echo "llama.cpp #25992 workaround is already present upstream"; \
+     else \
+       echo "ERROR: llama.cpp #25992 workaround no longer applies; review upstream #25863 and #26225"; \
+       exit 1; \
+     fi \
   && patch -p1 < /tmp/llama-grammar.patch \
   && HIPCXX="$(hipconfig -l)/clang" HIP_PATH="$(hipconfig -R)" \
   cmake -S . -B build \

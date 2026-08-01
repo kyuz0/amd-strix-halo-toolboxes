@@ -44,9 +44,6 @@ This is currently the most stable setup. Kernels older than 6.18.4 have a bug th
 ## Supported Toolboxes
 
 > [!WARNING]
-> Current `rocm7-nightlies` builds have a bug that caps memory allocation to 64GB. If you need larger models, prefer stable builds like `rocm-7.14`. Track the issue here: https://github.com/ROCm/TheRock/issues/4645
-
-> [!WARNING]
 > **Deprecation Notice for `-mtp` toolboxes**: MTP support was recently merged into the main branch of `llama.cpp`. It is now available with all updates in the standard toolboxes. Please do **not** use the deprecated `-mtp` toolboxes.
 
 You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags).
@@ -64,7 +61,7 @@ These are stable, tested containers that are automatically rebuilt whenever the 
 
 ### Experimental / Custom Toolboxes
 
-These are experimental or custom builds. They are not rebuilt automatically on every upstream change and must be triggered manually.
+These use nightly or custom backend stacks. Their rebuild policy is noted below.
 
 | Container Tag | Backend/Stack | Purpose / Notes |
 | :--- | :--- | :--- |
@@ -72,9 +69,23 @@ These are experimental or custom builds. They are not rebuilt automatically on e
 | `vulkan-rocmfpx` | Vulkan (Custom) | Vulkan-only `charlie12345/ROCmFPX` build with ROCmFPX weight formats. No ROCm dependency. Auto-built on upstream changes. |
 | `rocm-7.2.4-rdma-fix` | ROCm 7.2.4 (Custom) | Test build from `kyuz0/llama.cpp:fix/rpc-rdma-inline-fallback`, which retries RDMA QP creation without inline data. Manual build only. |
 | `rocm-7.2.4-turboquant` | ROCm 7.2.4 (Custom) | Custom TurboQuant build for AMD Strix Halo. Manual build only. |
-| `rocm7-nightlies` | ROCm 7 Nightly | Tracks ROCm nightly builds. Includes patch for **kernel 6.18.4+** support. *Warning: currently has memory limit bug.* |
+| `therock-nightly` | TheRock Nightly | Tracks the latest TheRock multi-arch `gfx1151` nightly tarball using the [official release layout](https://github.com/ROCm/TheRock/blob/main/RELEASES.md). Auto-built on upstream changes. |
 
 > Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from these lists.
+
+### Temporary llama.cpp ROCm Inference Workaround
+
+The `rocm-6.4.4`, `rocm-7.14`, and `therock-nightly` images currently apply a
+temporary workaround for [llama.cpp issue #25992](https://github.com/ggml-org/llama.cpp/issues/25992),
+based on [pull request #25863](https://github.com/ggml-org/llama.cpp/pull/25863).
+It prevents llama.cpp from selecting ROCm host buffers for computation on
+integrated GPUs, which addresses the reported inference failures while retaining
+pinned host memory for transfers.
+
+The workaround is isolated in
+[`toolboxes/llama-cpp-25992-rocm-host-buffer.patch`](toolboxes/llama-cpp-25992-rocm-host-buffer.patch)
+and the corresponding Dockerfile build steps. It is intended to be removed once
+llama.cpp incorporates an equivalent upstream fix.
 
 The images include RDMA support for llama.cpp RPC. On Linux hosts with a
 RoCEv2-capable NIC, llama.cpp automatically negotiates the RDMA transport when

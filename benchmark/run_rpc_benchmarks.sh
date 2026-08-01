@@ -29,7 +29,7 @@ declare -A TOOLBOX_IMAGES=(
   [rocm6_4_4]="llama-rocm-6.4.4"
 
   [rocm-7_2]="llama-rocm-7.2"
-  [rocm7-nightlies]="llama-rocm7-nightlies"
+  [therock-nightly]="llama-therock-nightly"
   [vulkan_amdvlk]="llama-vulkan-amdvlk"
   [vulkan_radv]="llama-vulkan-radv"
 )
@@ -37,7 +37,7 @@ declare -A TOOLBOX_IMAGES=(
 declare -A CLIENT_CMDS=(
   [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
   [rocm-7_2]="toolbox run -c llama-rocm-7.2 -- /usr/local/bin/llama-bench"
-  [rocm7-nightlies]="toolbox run -c llama-rocm7-nightlies -- /usr/local/bin/llama-bench"
+  [therock-nightly]="toolbox run -c llama-therock-nightly -- /usr/local/bin/llama-bench"
   [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
   [vulkan_radv]="toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench"
 )
@@ -45,7 +45,7 @@ declare -A CLIENT_CMDS=(
 ENVIRONMENTS=(
   rocm6_4_4
   rocm-7_2
-  rocm7-nightlies
+  therock-nightly
   vulkan_amdvlk
   vulkan_radv
 )

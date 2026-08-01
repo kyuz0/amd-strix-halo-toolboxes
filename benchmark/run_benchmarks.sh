@@ -29,7 +29,7 @@ _recovery_count=0
 # --- Container / Backend Configuration ---
 declare -A CONTAINERS=(
   [rocm6_4_4]="llama-rocm-6.4.4"
-  [rocm7-nightlies]="llama-rocm7-nightlies"
+  [therock-nightly]="llama-therock-nightly"
   [vulkan_amdvlk]="llama-vulkan-amdvlk"
   [vulkan_radv]="llama-vulkan-radv"
 )
@@ -37,7 +37,7 @@ declare -A CONTAINERS=(
 declare -A BENCH_BINS=(
   [rocm6_4_4]="/usr/local/bin/llama-bench"
   [rocm-7_2_3]="/usr/local/bin/llama-bench"
-  [rocm7-nightlies]="/usr/local/bin/llama-bench"
+  [therock-nightly]="/usr/local/bin/llama-bench"
   [vulkan_amdvlk]="/usr/sbin/llama-bench"
   [vulkan_radv]="/usr/sbin/llama-bench"
 )

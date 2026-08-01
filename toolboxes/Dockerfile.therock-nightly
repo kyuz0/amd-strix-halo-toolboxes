@@ -3,46 +3,48 @@ FROM registry.fedoraproject.org/fedora:43 AS builder
 
 RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
   make gcc cmake lld clang clang-devel compiler-rt libcurl-devel rdma-core-devel \
-  radeontop git vim patch curl ninja-build tar xz aria2c \
+  radeontop git vim patch curl ninja-build tar xz aria2 \
   && dnf clean all && rm -rf /var/cache/dnf/*
 
-# find & fetch the latest Linux 7.x.x tarball (gfx1151)
+# Fetch the latest TheRock multi-arch Linux nightly for gfx1151.
 WORKDIR /tmp
-ARG ROCM_MAJOR_VER=7
 ARG GFX=gfx1151
 RUN set -euo pipefail; \
   BASE="https://rocm.nightlies.amd.com/tarball-multi-arch"; \
-  KEY="$(curl -sL "${BASE}/" \
+  KEY="$(curl -fsSL "${BASE}/" \
   | grep -o "therock-dist-linux-${GFX}-[0-9.a]*\.tar\.gz" \
   | sort -V | tail -n1)"; \
+  test -n "${KEY}" || { echo "No TheRock nightly tarball found for ${GFX}" >&2; exit 1; }; \
   echo "Latest tarball: ${KEY}"; \
   aria2c -x 16 -s 16 -j 16 --file-allocation=none "${BASE}/${KEY}" -o therock.tar.gz
-RUN mkdir -p /opt/rocm-7.0 \
-  && tar xzf therock.tar.gz -C /opt/rocm-7.0 --strip-components=1
+RUN mkdir -p /opt/rocm \
+  && tar xzf therock.tar.gz -C /opt/rocm --strip-components=1
 
-ENV ROCM_PATH=/opt/rocm-7.0 \
+ENV ROCM_HOME=/opt/rocm \
+  ROCM_PATH=/opt/rocm \
   HIP_PLATFORM=amd \
-  HIP_PATH=/opt/rocm-7.0 \
-  HIP_CLANG_PATH=/opt/rocm-7.0/llvm/bin \
-  HIP_INCLUDE_PATH=/opt/rocm-7.0/include \
-  HIP_LIB_PATH=/opt/rocm-7.0/lib \
-  HIP_DEVICE_LIB_PATH=/opt/rocm-7.0/lib/llvm/amdgcn/bitcode \
-  PATH=/opt/rocm-7.0/bin:/opt/rocm-7.0/llvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
-  LD_LIBRARY_PATH=/opt/rocm-7.0/lib:/opt/rocm-7.0/lib64:/opt/rocm-7.0/llvm/lib \
-  LIBRARY_PATH=/opt/rocm-7.0/lib:/opt/rocm-7.0/lib64 \
-  CPATH=/opt/rocm-7.0/include \
-  PKG_CONFIG_PATH=/opt/rocm-7.0/lib/pkgconfig 
+  HIP_PATH=/opt/rocm \
+  HIP_CLANG_PATH=/opt/rocm/lib/llvm/bin \
+  HIP_INCLUDE_PATH=/opt/rocm/include \
+  HIP_LIB_PATH=/opt/rocm/lib \
+  HIP_DEVICE_LIB_PATH=/opt/rocm/lib/llvm/amdgcn/bitcode \
+  PATH=/opt/rocm/bin:/opt/rocm/lib/llvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+  LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64:/opt/rocm/lib/llvm/lib \
+  LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+  CPATH=/opt/rocm/include \
+  PKG_CONFIG_PATH=/opt/rocm/lib/pkgconfig
 
 RUN printf '%s\n' \
-  'export ROCM_PATH=/opt/rocm-7.0' \
+  'export ROCM_HOME=/opt/rocm' \
+  'export ROCM_PATH=/opt/rocm' \
   'export HIP_PLATFORM=amd' \
-  'export HIP_PATH=/opt/rocm-7.0' \
-  'export HIP_CLANG_PATH=/opt/rocm-7.0/llvm/bin' \
-  'export HIP_INCLUDE_PATH=/opt/rocm-7.0/include' \
-  'export HIP_LIB_PATH=/opt/rocm-7.0/lib' \
-  'export HIP_DEVICE_LIB_PATH=/opt/rocm-7.0/lib/llvm/amdgcn/bitcode' \
+  'export HIP_PATH=/opt/rocm' \
+  'export HIP_CLANG_PATH=/opt/rocm/lib/llvm/bin' \
+  'export HIP_INCLUDE_PATH=/opt/rocm/include' \
+  'export HIP_LIB_PATH=/opt/rocm/lib' \
+  'export HIP_DEVICE_LIB_PATH=/opt/rocm/lib/llvm/amdgcn/bitcode' \
   'export PATH="$ROCM_PATH/bin:$HIP_CLANG_PATH:$PATH"' \
-  'export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/llvm/lib"' \
+  'export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/lib/llvm/lib"' \
   'export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64"' \
   'export CPATH="$HIP_INCLUDE_PATH"' \
   'export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig"' \
@@ -58,8 +60,18 @@ RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} . \
   && git submodule update --recursive
 
 COPY llama-grammar.patch /tmp/llama-grammar.patch
+COPY llama-cpp-25992-rocm-host-buffer.patch /tmp/llama-cpp-25992-rocm-host-buffer.patch
 
-RUN patch -p1 < /tmp/llama-grammar.patch \
+# Temporary workaround for ggml-org/llama.cpp#25992, based on PR #25863.
+RUN if git apply --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
+      git apply /tmp/llama-cpp-25992-rocm-host-buffer.patch; \
+    elif git apply --reverse --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
+      echo "llama.cpp #25992 workaround is already present upstream"; \
+    else \
+      echo "ERROR: llama.cpp #25992 workaround no longer applies; review upstream #25863 and #26225"; \
+      exit 1; \
+    fi \
+  && patch -p1 < /tmp/llama-grammar.patch \
   && cmake -S . -B build \
   -DGGML_HIP=ON \
   -DAMDGPU_TARGETS=gfx1151 \
@@ -75,9 +87,9 @@ RUN mkdir -p /usr/local/lib64 \
   && ldconfig
 
 # keep bin; drop headers/docs/static libs (retain llama.cpp for ggml-rpc binaries)
-RUN find /opt/rocm-7.0 -type f -name '*.a' -delete \
-  && rm -rf /opt/rocm-7.0/include /opt/rocm-7.0/share \
-  /opt/rocm-7.0/llvm/include /opt/rocm-7.0/llvm/share
+RUN find /opt/rocm -type f -name '*.a' -delete \
+  && rm -rf /opt/rocm/include /opt/rocm/share \
+  /opt/rocm/lib/llvm/include /opt/rocm/lib/llvm/share
 
 # runtime
 FROM registry.fedoraproject.org/fedora-minimal:43
@@ -87,36 +99,38 @@ RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
   && microdnf clean all && rm -rf /var/cache/dnf/* \
   && ln -sf /usr/bin/python3 /usr/bin/python
 
-COPY --from=builder /opt/rocm-7.0 /opt/rocm-7.0
+COPY --from=builder /opt/rocm /opt/rocm
 COPY --from=builder /usr/local/ /usr/local/
 COPY --from=builder /opt/llama.cpp/build/bin/ggml-rpc-* /usr/local/bin/
 
 COPY gguf-vram-estimator.py /usr/local/bin/
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
-ENV ROCM_PATH=/opt/rocm-7.0 \
+ENV ROCM_HOME=/opt/rocm \
+  ROCM_PATH=/opt/rocm \
   HIP_PLATFORM=amd \
-  HIP_PATH=/opt/rocm-7.0 \
-  HIP_CLANG_PATH=/opt/rocm-7.0/llvm/bin \
-  HIP_INCLUDE_PATH=/opt/rocm-7.0/include \
-  HIP_LIB_PATH=/opt/rocm-7.0/lib \
-  HIP_DEVICE_LIB_PATH=/opt/rocm-7.0/lib/llvm/amdgcn/bitcode \
-  PATH=/opt/rocm-7.0/bin:/opt/rocm-7.0/llvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
-  LD_LIBRARY_PATH=/opt/rocm-7.0/lib:/opt/rocm-7.0/lib64:/opt/rocm-7.0/llvm/lib \
-  LIBRARY_PATH=/opt/rocm-7.0/lib:/opt/rocm-7.0/lib64 \
-  CPATH=/opt/rocm-7.0/include \
-  PKG_CONFIG_PATH=/opt/rocm-7.0/lib/pkgconfig
+  HIP_PATH=/opt/rocm \
+  HIP_CLANG_PATH=/opt/rocm/lib/llvm/bin \
+  HIP_INCLUDE_PATH=/opt/rocm/include \
+  HIP_LIB_PATH=/opt/rocm/lib \
+  HIP_DEVICE_LIB_PATH=/opt/rocm/lib/llvm/amdgcn/bitcode \
+  PATH=/opt/rocm/bin:/opt/rocm/lib/llvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+  LD_LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64:/opt/rocm/lib/llvm/lib \
+  LIBRARY_PATH=/opt/rocm/lib:/opt/rocm/lib64 \
+  CPATH=/opt/rocm/include \
+  PKG_CONFIG_PATH=/opt/rocm/lib/pkgconfig
 
 RUN printf '%s\n' \
-  'export ROCM_PATH=/opt/rocm-7.0' \
+  'export ROCM_HOME=/opt/rocm' \
+  'export ROCM_PATH=/opt/rocm' \
   'export HIP_PLATFORM=amd' \
-  'export HIP_PATH=/opt/rocm-7.0' \
-  'export HIP_CLANG_PATH=/opt/rocm-7.0/llvm/bin' \
-  'export HIP_INCLUDE_PATH=/opt/rocm-7.0/include' \
-  'export HIP_LIB_PATH=/opt/rocm-7.0/lib' \
-  'export HIP_DEVICE_LIB_PATH=/opt/rocm-7.0/lib/llvm/amdgcn/bitcode' \
+  'export HIP_PATH=/opt/rocm' \
+  'export HIP_CLANG_PATH=/opt/rocm/lib/llvm/bin' \
+  'export HIP_INCLUDE_PATH=/opt/rocm/include' \
+  'export HIP_LIB_PATH=/opt/rocm/lib' \
+  'export HIP_DEVICE_LIB_PATH=/opt/rocm/lib/llvm/amdgcn/bitcode' \
   'export PATH="$ROCM_PATH/bin:$HIP_CLANG_PATH:$PATH"' \
-  'export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/llvm/lib"' \
+  'export LD_LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64:$ROCM_PATH/lib/llvm/lib"' \
   'export LIBRARY_PATH="$HIP_LIB_PATH:$ROCM_PATH/lib:$ROCM_PATH/lib64"' \
   'export CPATH="$HIP_INCLUDE_PATH"' \
   'export PKG_CONFIG_PATH="$ROCM_PATH/lib/pkgconfig"' \

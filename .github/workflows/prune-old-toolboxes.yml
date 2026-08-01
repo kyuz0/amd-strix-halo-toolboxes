@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       backends:
-        description: Comma-separated backends to prune (e.g. "rocm-7beta,rocm-7rc") or "all"
+        description: Comma-separated backends to prune (e.g. "rocm-7.14,therock-nightly") or "all"
         default: all
       keep:
         description: Number of latest tags to keep
@@ -12,7 +12,7 @@ on:
   workflow_run:
     workflows: ["Build & Publish AMD Strix Halo Toolboxes"]
     types: [completed]   # runs after success/failure/cancel
-    branches: [main]     
+    branches: [main]
 
 jobs:
   prune:
@@ -44,7 +44,8 @@ jobs:
         run: |
           IN='${{ github.event.inputs.backends }}'
           if [[ "$IN" == "all" || -z "$IN" ]]; then
-            JSON='["rocm-6.4.2","rocm-6.4.3","rocm-6.4.4","rocm-7.1.1","rocm-7.2","rocm-7.2.1","rocm-7.2.1-pr21344","rocm-7.2.2","rocm-7.2.3","rocm-7.2.3-mtp","rocm-7.14","rocm-7beta","rocm7-nightlies","vulkan-amdvlk","vulkan-radv","vulkan-radv-mtp"]'
+            # Keep the retired rocm7-nightlies prefix here until its immutable tags age out.
+            JSON='["rocm-6.4.2","rocm-6.4.3","rocm-6.4.4","rocm-7.1.1","rocm-7.2","rocm-7.2.1","rocm-7.2.1-pr21344","rocm-7.2.2","rocm-7.2.3","rocm-7.2.3-mtp","rocm-7.14","rocm-7beta","rocm7-nightlies","therock-nightly","vulkan-amdvlk","vulkan-radv","vulkan-radv-mtp"]'
           else
             IN_CLEAN=$(echo "$IN" | tr -d '[:space:]')
             JSON='["'${IN_CLEAN//,/\",\"}'"]'
