@@ -49,8 +49,6 @@ RUN git clean -xdf \
   -DAMDGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
-  -DLLAMA_HIP_UMA=ON \
-  -DGGML_CUDA_ENABLE_UNIFIED_MEMORY=ON \
   -DROCM_PATH=/opt/rocm \
   -DHIP_PATH=/opt/rocm \
   -DHIP_PLATFORM=amd \

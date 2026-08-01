@@ -29,7 +29,6 @@ _recovery_count=0
 # --- Container / Backend Configuration ---
 declare -A CONTAINERS=(
   [rocm6_4_4]="llama-rocm-6.4.4"
-  [rocm-7_2_4]="llama-rocm-7.2.4"
   [rocm7-nightlies]="llama-rocm7-nightlies"
   [vulkan_amdvlk]="llama-vulkan-amdvlk"
   [vulkan_radv]="llama-vulkan-radv"

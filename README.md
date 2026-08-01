@@ -44,7 +44,7 @@ This is currently the most stable setup. Kernels older than 6.18.4 have a bug th
 ## Supported Toolboxes
 
 > [!WARNING]
-> Current `rocm7-nightlies` builds have a bug that caps memory allocation to 64GB. If you need larger models, prefer stable builds like `rocm-7.2.4` (performance is similar). Track the issue here: https://github.com/ROCm/TheRock/issues/4645
+> Current `rocm7-nightlies` builds have a bug that caps memory allocation to 64GB. If you need larger models, prefer stable builds like `rocm-7.14`. Track the issue here: https://github.com/ROCm/TheRock/issues/4645
 
 > [!WARNING]
 > **Deprecation Notice for `-mtp` toolboxes**: MTP support was recently merged into the main branch of `llama.cpp`. It is now available with all updates in the standard toolboxes. Please do **not** use the deprecated `-mtp` toolboxes.
@@ -59,7 +59,7 @@ These are stable, tested containers that are automatically rebuilt whenever the 
 | :--- | :--- | :--- |
 | `vulkan-radv` | Vulkan (Mesa RADV) | Most stable and compatible. Recommended for most users and all models. |
 | `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
-| `rocm-7.2.4` | ROCm 7.2.4 | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
+| `rocm-7.14` | ROCm 7.14 (Fedora 44) | Latest stable ROCm Core SDK build, using AMD's supported gfx1151 package set. |
 | `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
 
 ### Experimental / Custom Toolboxes
@@ -103,12 +103,12 @@ toolbox enter llama-vulkan-radv
 
 **Option B: ROCm (Recommended for Performance)**
 ```sh
-toolbox create llama-rocm-7.2.4 \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4 \
+toolbox create llama-rocm-7.14 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14 \
   -- --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo \
   --security-opt seccomp=unconfined
 
-toolbox enter llama-rocm-7.2.4
+toolbox enter llama-rocm-7.14
 ```
 
 ### 2. Check GPU Access
@@ -237,3 +237,4 @@ Run models across a cluster of Strix Halo machines using `run_distributed_llama.
 
 *   [Strix Halo Home Lab (deseven)](https://strixhalo-homelab.d7.wtf/)
 *   [Strix Halo Testing Builds (lhl)](https://github.com/lhl/strix-halo-testing/tree/main)
+*   [AMD ROCm 7.14 installation guide](https://rocm.docs.amd.com/en/docs-7.14.0/install/rocm.html)

@@ -14,7 +14,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).parent.resolve()
 DEFAULT_MODELS_DIR = Path.home() / "models"
 CONFIG_FILE = Path.home() / ".config" / "strix-halo-distributed-llama.json"
-DEFAULT_TOOLBOX = "rocm-7.2.4"
+DEFAULT_TOOLBOX = "rocm-7.14"
 DEFAULT_BENCH_PREFILL = "0,8192,16384,24576,32768,40960,49152,57344,65536"
 PREVIOUS_BENCH_PREFILL = "8192,16384,24576,32768,40960,49152,57344,65536"
 LEGACY_BENCH_PREFILL = "512,8192,16384,32768,65536"
@@ -22,7 +22,7 @@ DEFAULT_BENCH_PREFILL_CHUNK = 2048
 DEFAULT_BENCH_UBATCH = 2048
 TOOLBOX_IMAGES = {
     "rocm-6.4.4": "llama-rocm-6.4.4",
-    "rocm-7.2.4": "llama-rocm-7.2.4",
+    "rocm-7.14": "llama-rocm-7.14",
     "rocm-7.2.4-rdma-fix": "llama-rocm-7.2.4-rdma-fix",
     "vulkan-amdvlk": "llama-vulkan-amdvlk",
     "vulkan-radv": "llama-vulkan-radv",
