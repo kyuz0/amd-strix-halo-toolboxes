@@ -4,7 +4,7 @@ This systemd service manages cooling and the TuneD power profile on a Framework 
 
 ## Behavior
 
-- Detects `llama-*`, `ds4-*`, `hipfire`, and vLLM processes.
+- Detects `llama-*`, `ds4-*`, `hipfire`, and vLLM executables, process names, and Python entry points. Idle containers whose names contain these strings do not trigger the watcher.
 - Selects the TuneD `accelerator-performance` profile as soon as a matching process starts, even while the GPU is idle.
 - Selects the TuneD `balanced` profile when no matching process remains.
 - Sets the fans to 100% after AMDGPU utilization is at least 20% for two seconds.

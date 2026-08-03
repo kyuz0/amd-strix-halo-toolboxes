@@ -31,7 +31,7 @@ if [[ -z "${gpu_busy_file}" ]]; then
 fi
 
 gpu_workload_is_running() {
-    local proc comm executable arg arg_name lower
+    local proc comm executable lower module
     local -a argv
 
     for proc in /proc/[0-9]*; do
@@ -57,20 +57,26 @@ gpu_workload_is_running() {
                 ;;
         esac
 
-        for arg in "${argv[@]:1}"; do
-            lower="${arg,,}"
-            arg_name="${lower##*/}"
-            case "${arg_name}" in
-                llama-*|ds4-*|*hipfire*|*vllm*)
-                    return 0
-                    ;;
-            esac
-            case "${lower}" in
-                vllm|vllm.*|*/vllm/*|*/vllm-*)
-                    return 0
-                    ;;
-            esac
-        done
+        case "${lower}" in
+            python*)
+                if (( ${#argv[@]} > 2 )) && [[ "${argv[1]}" == "-m" ]]; then
+                    module="${argv[2],,}"
+                    case "${module}" in
+                        llama-*|ds4-*|hipfire*|vllm*)
+                            return 0
+                            ;;
+                    esac
+                elif (( ${#argv[@]} > 1 )); then
+                    lower="${argv[1],,}"
+                    lower="${lower##*/}"
+                    case "${lower}" in
+                        llama-*|ds4-*|*hipfire*|*vllm*)
+                            return 0
+                            ;;
+                    esac
+                fi
+                ;;
+        esac
     done
 
     return 1
