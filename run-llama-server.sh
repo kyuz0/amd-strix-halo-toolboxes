@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default-Werte
-CONTAINER_NAME="llama-vulkan-radv"
+CONTAINER_NAME="llamacpp-server"
 PORT=11434
 CTX_SIZE=65536
 GPU_LAYERS=999
