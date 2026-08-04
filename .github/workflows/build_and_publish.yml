@@ -5,7 +5,7 @@ on:
     inputs:
       backends:
         description: >
-          Comma-separated backends to build (e.g. "rocm-7.14", "therock-nightly", "vulkan-radv-performance").
+          Comma-separated backends to build (e.g. "rocm-7.14", "rocm-7.14-pr26592", "vulkan-radv-performance").
           Use "all" to build the standard auto-built set.
         required: false
         default: all
