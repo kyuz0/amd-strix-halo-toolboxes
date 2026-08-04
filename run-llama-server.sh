@@ -13,10 +13,12 @@ MODELS_DIR="./models"
 # Auf Strix Halo laut Upstream-README zwingend: Flash Attention und kein
 # mmap, sonst drohen Abstuerze und Einbrueche bei der Geschwindigkeit.
 #
-# Die README nennt dafuer noch "-fa 1 --no-mmap". Beide Schreibweisen sind in
-# aktuellem llama.cpp veraltet: --no-mmap warnt beim Start und entspricht
-# "--load-mode none", -fa erwartet inzwischen on|off|auto.
-EXTRA_ARGS="-fa on --load-mode none"
+# Die Schreibweise dafuer hat sich in llama.cpp geaendert: frueher
+# "-fa 1 --no-mmap", inzwischen "-fa on --load-mode none". Alte Builds kennen
+# --load-mode nicht und brechen damit ab, neue warnen bei --no-mmap. Welche
+# Variante gilt, wird deshalb unten am Image ermittelt. Leer heisst
+# "automatisch"; --extra-args ueberschreibt die Erkennung komplett.
+EXTRA_ARGS=""
 
 # Hilfe-Funktion
 show_help() {
@@ -36,8 +38,10 @@ Options:
     --threads NUM       Anzahl Threads (default: $THREADS)
     --name NAME         Container Name (default: $CONTAINER_NAME)
     --models-dir DIR    Modellverzeichnis auf dem Host (default: $MODELS_DIR)
-    --extra-args ARGS   Zusaetzliche llama-server-Argumente
-                        (default: "$EXTRA_ARGS")
+    --extra-args ARGS   Zusaetzliche llama-server-Argumente. Ohne Angabe
+                        ermittelt das Script am Image, ob
+                        "-fa on --load-mode none" (neu) oder
+                        "-fa 1 --no-mmap" (alt) unterstuetzt wird.
     --help              Zeigt diese Hilfe
 
 Beispiele:
@@ -170,6 +174,25 @@ fi
 
 # Vollstaendiger Modell-Pfad im Container
 FULL_MODEL_PATH="/workspace/models/${REL_MODEL_PATH}"
+
+# Passende Schreibweise fuer Flash Attention / mmap am Image ermitteln, falls
+# nicht per --extra-args vorgegeben. Kostet einen kurzen Container-Start ohne
+# GPU-Zugriff. Schlaegt die Erkennung fehl, gilt die alte Schreibweise: die
+# erzeugt auf neuen Builds nur eine Deprecation-Warnung, waehrend --load-mode
+# auf alten Builds den Start abbricht.
+if [ -z "$EXTRA_ARGS" ]; then
+    echo "Ermittle unterstuetzte llama-server-Argumente aus $IMAGE ..."
+    HELP_OUTPUT="$(podman run --rm "$IMAGE" llama-server --help 2>&1)"
+
+    if [ -z "$HELP_OUTPUT" ]; then
+        EXTRA_ARGS="-fa 1 --no-mmap"
+        echo "  Erkennung fehlgeschlagen, nutze die alte Schreibweise."
+    elif grep -q -- "--load-mode" <<< "$HELP_OUTPUT"; then
+        EXTRA_ARGS="-fa on --load-mode none"
+    else
+        EXTRA_ARGS="-fa 1 --no-mmap"
+    fi
+fi
 
 # Pruefe ob Container bereits laeuft
 if podman ps -a --format "{{.Names}}" | grep -q "^${CONTAINER_NAME}$"; then
