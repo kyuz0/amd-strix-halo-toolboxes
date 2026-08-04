@@ -1,22 +1,31 @@
 #!/usr/bin/env python3
 import sys
 import os
+import json
 import shutil
 import tempfile
 import subprocess
 import time
 import signal
+import shlex
 from pathlib import Path
 
 # --- Configuration & Defaults ---
 SCRIPT_DIR = Path(__file__).parent.resolve()
-DEFAULT_TOOLBOX = "rocm7-nightlies"
+DEFAULT_MODELS_DIR = Path.home() / "models"
+CONFIG_FILE = Path.home() / ".config" / "strix-halo-distributed-llama.json"
+DEFAULT_TOOLBOX = "rocm-7.14"
+DEFAULT_BENCH_PREFILL = "0,8192,16384,24576,32768,40960,49152,57344,65536"
+PREVIOUS_BENCH_PREFILL = "8192,16384,24576,32768,40960,49152,57344,65536"
+LEGACY_BENCH_PREFILL = "512,8192,16384,32768,65536"
+DEFAULT_BENCH_PREFILL_CHUNK = 2048
+DEFAULT_BENCH_UBATCH = 2048
 TOOLBOX_IMAGES = {
-    "rocm6_4_4": "llama-rocm-6.4.4",
-
-    "rocm7-nightlies": "llama-rocm7-nightlies",
-    "vulkan_amdvlk": "llama-vulkan-amdvlk",
-    "vulkan_radv": "llama-vulkan-radv",
+    "rocm-6.4.4": "llama-rocm-6.4.4",
+    "rocm-7.14": "llama-rocm-7.14",
+    "rocm-7.2.4-rdma-fix": "llama-rocm-7.2.4-rdma-fix",
+    "vulkan-amdvlk": "llama-vulkan-amdvlk",
+    "vulkan-radv": "llama-vulkan-radv",
 }
 
 MODES = ["llama-server", "llama-cli", "llama-bench"]
@@ -31,6 +40,8 @@ DEFAULT_HOSTS = [
 
 REMOTE_PORT = os.getenv("REMOTE_PORT", "22")
 RPC_PORT = os.getenv("RPC_PORT", "50052")
+RDMA_DEV = os.getenv("GGML_RDMA_DEV", "")
+RDMA_GID = os.getenv("GGML_RDMA_GID", "")
 LOCAL_HOST_PORT = "8080"
 
 
@@ -143,13 +154,131 @@ class AppState:
         # List of [ip, enabled]
         self.hosts = [list(h) for h in DEFAULT_HOSTS]
         self.context_size = None # None means default (do not pass -c)
+        self.bench_prefill = DEFAULT_BENCH_PREFILL
+        self.bench_gen = "128" # Default generation lengths
+        self.bench_ubatch = DEFAULT_BENCH_UBATCH
+        self.kv_cache_quant = None  # None = off, "q8_0" or "q4_0"
+        self.rpc_debug = True
+        self.extra_args = "--jinja"  # Extra CLI arguments passed to the executable
+        self.bench_extra_args = ""
+        self.load_config()
 
     @property
     def active_hosts(self):
         return [h[0] for h in self.hosts if h[1]]
 
+    def save_config(self):
+        """Persist current settings to disk."""
+        data = {
+            "model_path": self.model_path,
+            "toolbox": self.toolbox,
+            "mode": self.mode,
+            "hosts": self.hosts,
+            "context_size": self.context_size,
+            "bench_prefill": self.bench_prefill,
+            "bench_gen": self.bench_gen,
+            "bench_ubatch": self.bench_ubatch,
+            "kv_cache_quant": self.kv_cache_quant,
+            "rpc_debug": self.rpc_debug,
+            "extra_args": self.extra_args,
+            "bench_extra_args": self.bench_extra_args,
+        }
+        try:
+            CONFIG_FILE.parent.mkdir(parents=True, exist_ok=True)
+            CONFIG_FILE.write_text(json.dumps(data, indent=2))
+        except OSError:
+            pass  # Non-fatal: silently skip if we can't write
+
+    def load_config(self):
+        """Load settings from disk, falling back to defaults for any bad values."""
+        if not CONFIG_FILE.is_file():
+            return
+        try:
+            data = json.loads(CONFIG_FILE.read_text())
+        except (json.JSONDecodeError, OSError):
+            return  # Corrupt or unreadable — keep defaults
+
+        if not isinstance(data, dict):
+            return
+
+        # Model path: only restore if the file still exists
+        mp = data.get("model_path", "")
+        if isinstance(mp, str) and mp and os.path.isfile(mp):
+            self.model_path = mp
+
+        # Toolbox: only restore if it's still a known backend
+        tb = data.get("toolbox")
+        if isinstance(tb, str) and tb in TOOLBOX_IMAGES:
+            self.toolbox = tb
+
+        # Mode
+        md = data.get("mode")
+        if isinstance(md, str) and md in MODES:
+            self.mode = md
+
+        # Hosts: list of [ip_str, enabled_bool]
+        hs = data.get("hosts")
+        if isinstance(hs, list) and hs:
+            valid = []
+            for entry in hs:
+                if (isinstance(entry, list) and len(entry) == 2
+                        and isinstance(entry[0], str) and isinstance(entry[1], bool)):
+                    valid.append(entry)
+            if valid:
+                self.hosts = valid
+
+        # Context size
+        cs = data.get("context_size")
+        if cs is None or (isinstance(cs, int) and cs > 0):
+            self.context_size = cs
+
+        # KV cache quantization
+        kv = data.get("kv_cache_quant")
+        if kv is None or (isinstance(kv, str) and kv in KV_CACHE_QUANT_VALUES):
+            self.kv_cache_quant = kv
+
+        rd = data.get("rpc_debug")
+        if isinstance(rd, bool):
+            self.rpc_debug = rd
+
+        # Bench prefill
+        bp = data.get("bench_prefill")
+        if bp is not None:
+            saved_prefill = str(bp)
+            self.bench_prefill = (
+                DEFAULT_BENCH_PREFILL
+                if saved_prefill in (LEGACY_BENCH_PREFILL, PREVIOUS_BENCH_PREFILL)
+                else saved_prefill
+            )
+
+        bg = data.get("bench_gen")
+        if bg is not None:
+            self.bench_gen = str(bg)
+
+        bu = data.get("bench_ubatch")
+        if isinstance(bu, int) and bu > 0:
+            self.bench_ubatch = bu
+
+        # Extra args
+        ea = data.get("extra_args")
+        if isinstance(ea, str):
+            self.extra_args = ea
+        elif isinstance(ea, dict):
+            self.extra_args = ea.get("llama-server", "")
+            
+        bea = data.get("bench_extra_args")
+        if isinstance(bea, str):
+            self.bench_extra_args = bea
+        elif isinstance(ea, dict):
+            self.bench_extra_args = ea.get("llama-bench", "")
+
 def select_model(state):
-    start_path = state.model_path if state.model_path else os.getcwd()
+    if state.model_path:
+        start_path = state.model_path
+    elif DEFAULT_MODELS_DIR.is_dir():
+        start_path = str(DEFAULT_MODELS_DIR)
+    else:
+        start_path = os.getcwd()
     if os.path.isfile(start_path):
         start_path = os.path.dirname(start_path)
         
@@ -184,18 +313,105 @@ def select_mode(state):
         state.mode = selection
 
 def select_context(state):
-    current = str(state.context_size) if state.context_size else ""
+    if state.mode == "llama-bench":
+        current_p = str(state.bench_prefill) if state.bench_prefill else ""
+        selection_p, code_p = run_dialog([
+            "--title", "Benchmark Starting Depths",
+            "--inputbox", "Enter starting KV depths separated by commas (e.g. 0,8192,16384).\n"
+            "At each depth, measure a 2048-token prefill and 128-token generation separately.",
+            "12", "76",
+            current_p
+        ])
+        if code_p == 0:
+            val_p = selection_p.strip()
+            state.bench_prefill = val_p if val_p else None
+
+            current_n = str(state.bench_gen) if state.bench_gen else ""
+            selection_n, code_n = run_dialog([
+                "--title", "Bench Token Generation (tg)",
+                "--inputbox", "Enter token generation lengths separated by comma (e.g. 128).\n"
+                "Each value creates a separate -tg test.\n"
+                "Leave empty to skip:", "12", "68",
+                current_n
+            ])
+            if code_n == 0:
+                val_n = selection_n.strip()
+                state.bench_gen = val_n if val_n else None
+
+                selection_ub, code_ub = run_dialog([
+                    "--title", "Bench Ubatch",
+                    "--inputbox", "Enter the physical batch size (-ub).\n"
+                    "Default: 2048", "10", "55",
+                    str(state.bench_ubatch)
+                ])
+                if code_ub == 0:
+                    val_ub = selection_ub.strip()
+                    if val_ub.isdigit() and int(val_ub) > 0:
+                        state.bench_ubatch = int(val_ub)
+    else:
+        current = str(state.context_size) if state.context_size else ""
+        selection, code = run_dialog([
+            "--title", "Context Size",
+            "--inputbox", "Enter context size (e.g. 4096, 8192).\nLeave empty for model default:", "10", "60",
+            current
+        ])
+        if code == 0:
+            val = selection.strip()
+            if val.isdigit():
+                state.context_size = int(val)
+            else:
+                state.context_size = None
+
+KV_CACHE_QUANT_VALUES = ("q8_0", "q5_1", "q5_0", "q4_1", "q4_0", "iq4_nl")
+KV_CACHE_OPTIONS = {
+    "off": "Disabled (full precision)",
+    "q8_0": "Q8_0 (recommended)",
+    "q5_1": "Q5_1",
+    "q5_0": "Q5_0",
+    "q4_1": "Q4_1",
+    "q4_0": "Q4_0 (aggressive)",
+    "iq4_nl": "IQ4_NL",
+}
+
+def select_kv_cache(state):
+    menu_items = []
+    for key, desc in KV_CACHE_OPTIONS.items():
+        menu_items.extend([key, desc])
+
     selection, code = run_dialog([
-        "--title", "Context Size",
-        "--inputbox", "Enter context size (e.g. 4096, 8192).\nLeave empty for model default:", "10", "60",
+        "--title", "KV Cache Quantization",
+        "--menu",
+        "Quantize the KV cache to reduce memory usage.\n"
+        "This adds --cache-type-k and --cache-type-v flags.",
+        "14", "55", "5",
+        *menu_items
+    ])
+    if code == 0 and selection:
+        state.kv_cache_quant = None if selection == "off" else selection
+
+def edit_extra_args(state):
+    if state.mode == "llama-bench":
+        current = state.bench_extra_args
+        title_suffix = "(Bench)"
+    else:
+        current = state.extra_args
+        title_suffix = "(Server/CLI)"
+        
+    selection, code = run_dialog([
+        "--title", f"Extra Arguments {title_suffix}",
+        "--inputbox",
+        f"Enter extra CLI arguments for {state.mode}.\n"
+        "These are appended to the command as-is.\n"
+        "Example: --threads 8 -ngl 99\n"
+        "Leave empty for none:",
+        "13", "65",
         current
     ])
     if code == 0:
-        val = selection.strip()
-        if val.isdigit():
-            state.context_size = int(val)
+        if state.mode == "llama-bench":
+            state.bench_extra_args = selection.strip()
         else:
-            state.context_size = None
+            state.extra_args = selection.strip()
 
 def add_server(state):
     selection, code = run_dialog([
@@ -323,6 +539,21 @@ def run_distributed(state):
         show_msg("Error", "No remote servers selected.")
         return
 
+    bench_depths = []
+    if state.mode == "llama-bench":
+        try:
+            bench_depths = [
+                int(value.strip())
+                for value in str(state.bench_prefill).split(",")
+                if value.strip()
+            ]
+        except ValueError:
+            show_msg("Error", "Benchmark starting depths must be comma-separated integers.")
+            return
+        if not bench_depths or any(depth < 0 for depth in bench_depths):
+            show_msg("Error", "Benchmark starting depths must be zero or positive.")
+            return
+
     image = TOOLBOX_IMAGES[state.toolbox]
     active_ips = state.active_hosts
     
@@ -332,8 +563,24 @@ def run_distributed(state):
     print(f"Model:   {state.model_path}")
     print(f"Toolbox: {state.toolbox} ({image})")
     print(f"Mode:    {state.mode}")
-    print(f"Context: {state.context_size if state.context_size else 'Default'}")
+    
+    if state.mode == "llama-bench":
+        n_val = state.bench_gen if state.bench_gen else "skip"
+        context_val = (
+            f"depths=[{','.join(map(str, bench_depths))}], "
+            f"prefill={DEFAULT_BENCH_PREFILL_CHUNK}, generation={n_val}"
+        )
+    else:
+        context_val = state.context_size
+    print(f"Context/Prefill: {context_val if context_val else 'Default'}")
+    print(f"KV Cache:{' ' + state.kv_cache_quant if state.kv_cache_quant else ' Off'}")
+    
+    current_extra_args = state.bench_extra_args if state.mode == "llama-bench" else state.extra_args
+    print(f"Extra:   {current_extra_args if current_extra_args else '(none)'}")
     print(f"Hosts:   {active_ips}")
+    print(f"RPC Debug: {'On' if state.rpc_debug else 'Off'}")
+    if RDMA_DEV or RDMA_GID:
+        print(f"RDMA Override: device={RDMA_DEV or 'auto'}, GID={RDMA_GID or 'auto'}")
     print("--------------------------------")
 
     remote_pids = []
@@ -346,7 +593,7 @@ def run_distributed(state):
                 if pid:
                     print(f"Killing remote RPC on {ip} (PID: {pid})...")
                     subprocess.run(
-                        ["ssh", "-p", REMOTE_PORT, ip, f"kill -9 {pid} 2>/dev/null || true; pkill -9 -f rpc-server || true"], 
+                        ["ssh", "-p", REMOTE_PORT, ip, f"kill -9 {pid} 2>/dev/null || true; pkill -9 -f ggml-rpc-server || true"], 
                         stderr=subprocess.DEVNULL
                     )
 
@@ -362,13 +609,21 @@ def run_distributed(state):
         # 1. Start Remote RPC Servers
         for ip in active_ips:
             print(f"-> Starting RPC server on {ip}...")
+            rpc_env = []
+            if state.rpc_debug:
+                rpc_env.append("GGML_RPC_DEBUG=1")
+            if RDMA_DEV:
+                rpc_env.append(f"GGML_RDMA_DEV={RDMA_DEV}")
+            if RDMA_GID:
+                rpc_env.append(f"GGML_RDMA_GID={RDMA_GID}")
+            rpc_env_prefix = "env " + " ".join(shlex.quote(value) for value in rpc_env) + " " if rpc_env else ""
             
             # Using bash heredoc via ssh to start background process and print PID
             # We assume 'toolbox' command exists on remote
             cmd_str = f"""
             set -euo pipefail
-            pkill -9 -f rpc-server || true
-            nohup toolbox run -c {image} -- rpc-server -H 0.0.0.0 -p {RPC_PORT} -c > /tmp/rpc-server-{ip}.log 2>&1 < /dev/null &
+            pkill -9 -f ggml-rpc-server || true
+            nohup toolbox run -c {image} -- {rpc_env_prefix}ggml-rpc-server -H 0.0.0.0 -p {RPC_PORT} -c > /tmp/ggml-rpc-server-{ip}.log 2>&1 < /dev/null &
             echo $!
             """
             
@@ -395,6 +650,7 @@ def run_distributed(state):
                 
             remote_pids.append(pid)
             print(f"   PID: {pid}")
+            print(f"   Debug log: ssh -p {REMOTE_PORT} {ip} 'tail -f /tmp/ggml-rpc-server-{ip}.log'")
 
             # Wait for port check
             print(f"   Waiting for port {RPC_PORT}...", end="", flush=True)
@@ -428,7 +684,19 @@ def run_distributed(state):
         # 2. Run Local Executable
         # Base arguments for all modes
         base_args = [
-            "toolbox", "run", "-c", image, "--",
+            "toolbox", "run", "-c", image, "--"
+        ]
+        if state.rpc_debug:
+            base_args += ["env", "GGML_RPC_DEBUG=1"]
+        if RDMA_DEV:
+            if "env" not in base_args:
+                base_args.append("env")
+            base_args.append(f"GGML_RDMA_DEV={RDMA_DEV}")
+        if RDMA_GID:
+            if "env" not in base_args:
+                base_args.append("env")
+            base_args.append(f"GGML_RDMA_GID={RDMA_GID}")
+        base_args += [
             state.mode,
             "-m", state.model_path,
             "--rpc", rpc_arg
@@ -458,23 +726,55 @@ def run_distributed(state):
                  extra_args.extend(["-c", str(state.context_size)])
 
         elif state.mode == "llama-bench":
-             # Llama Bench specific
-             # User requested -mmp 0 and -fa 1 (Note: llama-bench uses different arg names sometimes?)
-             # llama-bench: -mmp (mmap)
              extra_args = [
                  "-mmp", "0",
-                 "-fa", "1"
+                 "-fa", "1",
+                 "-ub", str(state.bench_ubatch),
              ]
-             # bench usually controls context via other flags, user didn't ask for it here.
         else:
              extra_args = []
 
         local_cmd = base_args + extra_args
+        if state.kv_cache_quant:
+            local_cmd += ["--cache-type-k", state.kv_cache_quant,
+                          "--cache-type-v", state.kv_cache_quant]
+                          
+        current_extra_args = state.bench_extra_args if state.mode == "llama-bench" else state.extra_args
+        if current_extra_args:
+            local_cmd += shlex.split(current_extra_args)
         
-        print(f"CMD: {' '.join(local_cmd)}")
-        
-        proc = subprocess.Popen(local_cmd)
-        proc.wait()
+        if state.mode == "llama-bench":
+            depth_values = ",".join(map(str, bench_depths))
+            benchmark_commands = [
+                (
+                    "Prefill depth curve",
+                    local_cmd + [
+                        "-p", str(DEFAULT_BENCH_PREFILL_CHUNK),
+                        "-n", "0",
+                        "-d", depth_values,
+                    ],
+                ),
+            ]
+            if state.bench_gen:
+                benchmark_commands.append((
+                    "Generation depth curve",
+                    local_cmd + [
+                        "-p", "0",
+                        "-n", str(state.bench_gen).strip(),
+                        "-d", depth_values,
+                    ],
+                ))
+            for label, command in benchmark_commands:
+                print(f"\n=== {label} ===")
+                print(f"CMD: {' '.join(command)}")
+                result = subprocess.run(command)
+                if result.returncode != 0:
+                    print(f"[ERROR] {label} exited with code {result.returncode}")
+                    break
+        else:
+            print(f"CMD: {' '.join(local_cmd)}")
+            proc = subprocess.Popen(local_cmd)
+            proc.wait()
         
     except Exception as e:
         print(f"\n[EXCEPTION] {e}")
@@ -490,19 +790,42 @@ def main_menu():
     while True:
         model_display = Path(state.model_path).name if state.model_path else "(None)"
         servers_display = f"{len(state.active_hosts)} Active"
-        context_display = str(state.context_size) if state.context_size else "Default"
+        
+        if state.mode == "llama-bench":
+            p_val = str(state.bench_prefill) if state.bench_prefill else "-"
+            n_val = str(state.bench_gen) if state.bench_gen else "-"
+            p_count = len([value for value in p_val.split(",") if value != "-"])
+            disp = f"D={p_count} depths N={n_val} UB={state.bench_ubatch}"
+            if len(disp) > 30:
+                disp = disp[:27] + "..."
+            context_display = disp
+            context_label = "Bench:    "
+            run_label = "RUN BENCHMARK"
+        else:
+            context_display = str(state.context_size) if state.context_size else "Default"
+            context_label = "Context:  "
+            run_label = "RUN DISTRIBUTED SERVER"
+            
+        kv_display = state.kv_cache_quant if state.kv_cache_quant else "Off"
+        rpc_debug_display = "On" if state.rpc_debug else "Off"
+        
+        current_extra_args = state.bench_extra_args if state.mode == "llama-bench" else state.extra_args
+        extra_display = current_extra_args if current_extra_args else "(none)"
         
         menu = [
             "--clear", "--backtitle", "AMD Strix Halo - Distributed Llama",
             "--title", "Main Menu",
-            "--menu", "Select an option to configure or run:", "20", "60", "7",
-            "1", f"Model:   {model_display}",
-            "2", f"Toolbox: {state.toolbox}",
-            "3", f"Servers: {servers_display}",
-            "4", f"Mode:    {state.mode}",
-            "5", f"Context: {context_display}",
-            "6", "RUN DISTRIBUTED SERVER",
-            "7", "Exit"
+            "--menu", "Select an option to configure or run:", "23", "65", "10",
+            "1", f"Model:    {model_display}",
+            "2", f"Toolbox:  {state.toolbox}",
+            "3", f"Servers:  {servers_display}",
+            "4", f"Mode:     {state.mode}",
+            "5", f"{context_label}{context_display}",
+            "6", f"KV Cache: {kv_display}",
+            "7", f"Extra:    {extra_display}",
+            "8", f"RPC Debug: {rpc_debug_display}",
+            "9", run_label,
+            "10", "Exit"
         ]
         
         choice, code = run_dialog(menu)
@@ -521,10 +844,20 @@ def main_menu():
         elif choice == "5":
             select_context(state)
         elif choice == "6":
-            run_distributed(state)
+            select_kv_cache(state)
         elif choice == "7":
+            edit_extra_args(state)
+        elif choice == "8":
+            state.rpc_debug = not state.rpc_debug
+        elif choice == "9":
+            run_distributed(state)
+        elif choice == "10":
             break
 
+        # Persist after every action
+        state.save_config()
+
+    state.save_config()
     subprocess.run(["clear"])
     exit(0)
 

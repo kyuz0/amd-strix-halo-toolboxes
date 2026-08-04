@@ -29,7 +29,7 @@ declare -A TOOLBOX_IMAGES=(
   [rocm6_4_4]="llama-rocm-6.4.4"
 
   [rocm-7_2]="llama-rocm-7.2"
-  [rocm7-nightlies]="llama-rocm7-nightlies"
+  [therock-nightly]="llama-therock-nightly"
   [vulkan_amdvlk]="llama-vulkan-amdvlk"
   [vulkan_radv]="llama-vulkan-radv"
 )
@@ -37,7 +37,7 @@ declare -A TOOLBOX_IMAGES=(
 declare -A CLIENT_CMDS=(
   [rocm6_4_4]="toolbox run -c llama-rocm-6.4.4 -- /usr/local/bin/llama-bench"
   [rocm-7_2]="toolbox run -c llama-rocm-7.2 -- /usr/local/bin/llama-bench"
-  [rocm7-nightlies]="toolbox run -c llama-rocm7-nightlies -- /usr/local/bin/llama-bench"
+  [therock-nightly]="toolbox run -c llama-therock-nightly -- /usr/local/bin/llama-bench"
   [vulkan_amdvlk]="toolbox run -c llama-vulkan-amdvlk -- /usr/sbin/llama-bench"
   [vulkan_radv]="toolbox run -c llama-vulkan-radv -- /usr/sbin/llama-bench"
 )
@@ -45,7 +45,7 @@ declare -A CLIENT_CMDS=(
 ENVIRONMENTS=(
   rocm6_4_4
   rocm-7_2
-  rocm7-nightlies
+  therock-nightly
   vulkan_amdvlk
   vulkan_radv
 )
@@ -84,14 +84,6 @@ resolve_model_path() {
   return 1
 }
 
-get_hblt_modes() {
-  local env="$1"
-  if [[ "$env" == rocm* ]]; then
-    printf '%s\n' default off
-  else
-    printf '%s\n' default
-  fi
-}
 
 ensure_models_exist() {
   RESOLVED_MODELS=()
@@ -122,10 +114,12 @@ has_pending_runs() {
   for model_path in "${RESOLVED_MODELS[@]}"; do
     local model_name
     model_name="$(basename "${model_path}" .gguf)"
-    for ctx in default longctx32768; do
+    for ctx in default longctx32768 longctx65536; do
       local ctx_suffix=""
       if [[ "$ctx" == longctx32768 ]]; then
         ctx_suffix="__longctx32768"
+      elif [[ "$ctx" == longctx65536 ]]; then
+        ctx_suffix="__longctx65536"
       fi
 
       local log_file="$RESULTDIR/${model_name}__${env}${suffix}${ctx_suffix}__rpc.log"
@@ -141,23 +135,13 @@ has_pending_runs() {
 start_remote_rpc() {
   local env="$1"
   local image="$2"
-  local mode="$3"
-  local suffix="$4"
-  local remote_log="/tmp/rpc-server-${env}${suffix}.log"
-  local env_prefix=""
-
-  if [[ "$env" == rocm* ]]; then
-    if [[ "$mode" == off ]]; then
-      env_prefix="env ROCBLAS_USE_HIPBLASLT=0 "
-    else
-      env_prefix="env ROCBLAS_USE_HIPBLASLT=1 "
-    fi
-  fi
+  local suffix="$3"
+  local remote_log="/tmp/ggml-rpc-server-${env}${suffix}.log"
 
   ssh -p "$REMOTE_PORT" "$REMOTE_TARGET" 'bash -s' <<EOF
 set -euo pipefail
-pkill -9 -f rpc-server || true
-nohup toolbox run -c ${image} -- ${env_prefix}rpc-server -H 0.0.0.0 -p ${RPC_PORT} -c >${remote_log} 2>&1 < /dev/null &
+pkill -9 -f ggml-rpc-server || true
+nohup toolbox run -c ${image} -- ggml-rpc-server -H 0.0.0.0 -p ${RPC_PORT} -c >${remote_log} 2>&1 < /dev/null &
 echo \$!
 EOF
 }
@@ -170,7 +154,7 @@ set -euo pipefail
 if [[ -n "${pid}" && -e "/proc/${pid}" ]]; then
   kill -9 ${pid} || true
 fi
-pkill -9 -f rpc-server || true
+pkill -9 -f ggml-rpc-server || true
 EOF
 }
 
@@ -201,7 +185,6 @@ run_llama_bench_rpc() {
   local model_path="$1"
   local env="$2"
   local suffix="$3"
-  local mode="$4"
   local model_name
   model_name="$(basename "${model_path}" .gguf)"
   local client_cmd="${CLIENT_CMDS[$env]:-}"
@@ -216,19 +199,11 @@ run_llama_bench_rpc() {
     return
   fi
 
-  if [[ "$env" == rocm* ]]; then
-    if [[ "$mode" == off ]]; then
-      client_cmd="${client_cmd/-- /-- env ROCBLAS_USE_HIPBLASLT=0 }"
-    else
-      client_cmd="${client_cmd/-- /-- env ROCBLAS_USE_HIPBLASLT=1 }"
-    fi
-  fi
-
   local -a client_cmd_ary
   # shellcheck disable=SC2206 # intentional word splitting
   client_cmd_ary=( $client_cmd )
 
-  for ctx in default longctx32768; do
+  for ctx in default longctx32768 longctx65536; do
     local ctx_suffix=""
     local ctx_reps=3
     local -a ctx_args=()
@@ -236,6 +211,15 @@ run_llama_bench_rpc() {
       ctx_suffix="__longctx32768"
       ctx_reps=1
       ctx_args=( -p 2048 -n 32 -d 32768 )
+      if [[ "$env" == *vulkan* ]]; then
+        ctx_args+=( -ub 512 )
+      else
+        ctx_args+=( -ub 2048 )
+      fi
+    elif [[ "$ctx" == longctx65536 ]]; then
+      ctx_suffix="__longctx65536"
+      ctx_reps=1
+      ctx_args=( -p 2048 -n 32 -d 65536 )
       if [[ "$env" == *vulkan* ]]; then
         ctx_args+=( -ub 512 )
       else
@@ -284,13 +268,7 @@ run_all() {
       continue
     fi
 
-    mapfile -t hblt_modes < <(get_hblt_modes "$env")
-
-    for mode in "${hblt_modes[@]}"; do
       local suffix=""
-      if [[ "$mode" == off ]]; then
-        suffix="__hblt0"
-      fi
 
       echo
       echo "==== ${env}${suffix} -> ${image} ===="
@@ -302,7 +280,7 @@ run_all() {
 
       CURRENT_REMOTE_ENV="${env}${suffix}"
       local remote_pid
-      remote_pid="$(start_remote_rpc "$env" "$image" "$mode" "$suffix" | tr -d '\r')"
+      remote_pid="$(start_remote_rpc "$env" "$image" "$suffix" | tr -d '\r')"
 
       if [[ -z "$remote_pid" ]]; then
         echo "[ERROR] Failed to start RPC server for ${env}${suffix}"
@@ -311,7 +289,7 @@ run_all() {
       fi
 
       CURRENT_REMOTE_PID="$remote_pid"
-      echo "  Remote rpc-server PID: ${remote_pid}"
+      echo "  Remote ggml-rpc-server PID: ${remote_pid}"
 
       if ! wait_for_rpc "$RPC_HOST" "$RPC_PORT"; then
         echo "[ERROR] RPC server on ${RPC_HOST}:${RPC_PORT} did not become ready."
@@ -322,13 +300,12 @@ run_all() {
       fi
 
       for model in "${RESOLVED_MODELS[@]}"; do
-        run_llama_bench_rpc "$model" "$env" "$suffix" "$mode"
+        run_llama_bench_rpc "$model" "$env" "$suffix"
       done
 
       stop_remote_rpc "$env" "$remote_pid" || true
       CURRENT_REMOTE_PID=""
       CURRENT_REMOTE_ENV=""
-    done
   done
 }
 

@@ -34,35 +34,71 @@ This is a hobby project maintained in my spare time. If you find these toolboxes
 ## Stable Configuration
 
 - **OS**: Fedora 42/43
-- **Linux Kernel**: 6.18.6-200
+- **Linux Kernel**: 6.18.9-200.fc43.x86_64
 - **Linux Firmware**: 20260110
 
 This is currently the most stable setup. Kernels older than 6.18.4 have a bug that causes stability issues on gfx1151 and should be avoided. Also, **do NOT use `linux-firmware-20251125`.** It breaks ROCm support on Strix Halo (instability/crashes).
 
 > ⚠️ **Important**: See [Host Configuration](#host-configuration) for critical kernel parameters.
 
-## ROCm 7 Performance Regression Workaround
-
-The performance regression previously observed in ROCm 7+ builds (compared to ROCm 6.4.4) has been **resolved in the toolboxes** via a workaround.
-
-The issue was caused by a compiler regression (llvm/llvm-project#147700) affecting loop unrolling thresholds. We have applied the workaround (`-mllvm --amdgpu-unroll-threshold-local=600`) in the latest toolbox builds, restoring full performance.
-
-This workaround will be removed once the upstream fix lands. For details, see the issue: [kyuz0/amd-strix-halo-toolboxes#45](https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/45)
-
-
 ## Supported Toolboxes
+
+> [!WARNING]
+> **Deprecation Notice for `-mtp` toolboxes**: MTP support was recently merged into the main branch of `llama.cpp`. It is now available with all updates in the standard toolboxes. Please do **not** use the deprecated `-mtp` toolboxes.
 
 You can check the containers on DockerHub: [kyuz0/amd-strix-halo-toolboxes](https://hub.docker.com/r/kyuz0/amd-strix-halo-toolboxes/tags).
 
+### Stable Toolboxes
+
+These are stable, tested containers that are automatically rebuilt whenever the `llama.cpp` master branch is updated.
+
 | Container Tag | Backend/Stack | Purpose / Notes |
 | :--- | :--- | :--- |
-| `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `vulkan-radv` | Vulkan (Mesa RADV) | Most stable and compatible. Recommended for most users and all models. |
+| `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
+| `rocm-7.14` | ROCm 7.14 (Fedora 44) | Latest stable ROCm Core SDK build, using AMD's supported gfx1151 package set. |
 | `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
-| `rocm-7.2` | ROCm 7.2 | Latest stable 7.x build. Includes patch for **kernel 6.18.4+** support. |
-| `rocm7-nightlies` | ROCm 7 Nightly | Tracks nightly builds. Includes patch for **kernel 6.18.4+** support. |
 
-> These containers are **automatically** rebuilt whenever the Llama.cpp master branch is updated. Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from this list.
+### Experimental / Custom Toolboxes
+
+These use nightly or custom backend stacks. Their rebuild policy is noted below.
+
+| Container Tag | Backend/Stack | Purpose / Notes |
+| :--- | :--- | :--- |
+| `vulkan-radv-perfromance` | Vulkan (Mesa RADV, Fedora 44) | Experimental build tracking [`Nathanw1014/llama.cpp:strix-halo-vulkan`](https://github.com/Nathanw1014/llama.cpp/tree/strix-halo-vulkan), with Strix Halo-focused flash-attention, KV-cache, lightning-indexer, and matrix/MoE performance work. Manual build only. |
+| `rocm-7.2.4-rocmfpx` | ROCm 7.2.4 (Custom) | Custom `charlie12345/ROCmFPX` build with ROCmFP3/FP4/FP6/FP8 weight formats, MTP speculative decoding, and agent-aware presets. Auto-built on upstream changes. |
+| `vulkan-rocmfpx` | Vulkan (Custom) | Vulkan-only `charlie12345/ROCmFPX` build with ROCmFPX weight formats. No ROCm dependency. Auto-built on upstream changes. |
+| `rocm-7.2.4-rdma-fix` | ROCm 7.2.4 (Custom) | Test build from `kyuz0/llama.cpp:fix/rpc-rdma-inline-fallback`, which retries RDMA QP creation without inline data. Manual build only. |
+| `rocm-7.2.4-turboquant` | ROCm 7.2.4 (Custom) | Custom TurboQuant build for AMD Strix Halo. Manual build only. |
+| `therock-nightly` | TheRock Nightly | Tracks the latest TheRock multi-arch `gfx1151` nightly tarball using the [official release layout](https://github.com/ROCm/TheRock/blob/main/RELEASES.md). Auto-built on upstream changes. |
+
+> Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from these lists.
+
+### Temporary llama.cpp ROCm Inference Workaround
+
+The `rocm-6.4.4`, `rocm-7.14`, and `therock-nightly` images currently apply a
+temporary workaround for [llama.cpp issue #25992](https://github.com/ggml-org/llama.cpp/issues/25992),
+based on [pull request #25863](https://github.com/ggml-org/llama.cpp/pull/25863).
+It prevents llama.cpp from selecting ROCm host buffers for computation on
+integrated GPUs, which addresses the reported inference failures while retaining
+pinned host memory for transfers.
+
+The workaround is isolated in
+[`toolboxes/llama-cpp-25992-rocm-host-buffer.patch`](toolboxes/llama-cpp-25992-rocm-host-buffer.patch)
+and the corresponding Dockerfile build steps. It is intended to be removed once
+llama.cpp incorporates an equivalent upstream fix.
+
+The images include RDMA support for llama.cpp RPC. On Linux hosts with a
+RoCEv2-capable NIC, llama.cpp automatically negotiates the RDMA transport when
+available and otherwise falls back to TCP.
+
+On Toolbx hosts, `refresh-toolboxes.sh` detects `/dev/infiniband` and adds the
+required device, `rdma` group, and unlimited memlock options automatically.
+For manual Toolbx creation, append:
+
+```sh
+--device /dev/infiniband --group-add rdma --ulimit memlock=-1
+```
 
 ## Quick Start
 
@@ -79,16 +115,17 @@ toolbox enter llama-vulkan-radv
 
 **Option B: ROCm (Recommended for Performance)**
 ```sh
-toolbox create llama-rocm-7.2 \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2 \
-  -- --device /dev/dri --device /dev/kfd \
-  --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined
+toolbox create llama-rocm-7.14 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14 \
+  -- --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo \
+  --security-opt seccomp=unconfined
 
-toolbox enter llama-rocm-7.2
+toolbox enter llama-rocm-7.14
 ```
 
 ### 2. Check GPU Access
 Inside the toolbox:
+
 ```sh
 llama-cli --list-devices
 ```
@@ -152,11 +189,14 @@ This should work on any Strix Halo. For a complete list of available hardware, s
 
 Add these boot parameters to enable unified memory while reserving a minimum of 4 GiB for the OS (max 124 GiB for iGPU):
 
-`iommu=pt amdgpu.gttsize=126976 ttm.pages_limit=32505856`
+> [!WARNING]
+> Based on [benchmarking by Lars Urban (@urbanswelt)](https://github.com/urbanswelt), there is definitive indication that setting `amd_iommu=off` performs better than the previously recommended `iommu=pt`. Key result: `amd_iommu=off` is 5-12% faster than either IOMMU-enabled mode. See [Issue #66](https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/66#issuecomment-4460612951) for details.
+
+`amd_iommu=off amdgpu.gttsize=126976 ttm.pages_limit=32505856`
 
 | Parameter                   | Purpose                                                                                    |
 |-----------------------------|--------------------------------------------------------------------------------------------|
-| `iommu=pt`              | Sets IOMMU to "Pass-Through" mode. This helps performance, reducing overhead for the iGPU unified memory access.               |
+| `amd_iommu=off`             | Disables the AMD IOMMU. This improves performance and stability over `iommu=pt`.           |
 | `amdgpu.gttsize=126976`     | Caps GPU unified memory to 124 GiB; 126976 MiB ÷ 1024 = 124 GiB                            |
 | `ttm.pages_limit=32505856`  | Caps pinned memory to 124 GiB; 32505856 × 4 KiB = 126976 MiB = 124 GiB                     |
 
@@ -209,3 +249,4 @@ Run models across a cluster of Strix Halo machines using `run_distributed_llama.
 
 *   [Strix Halo Home Lab (deseven)](https://strixhalo-homelab.d7.wtf/)
 *   [Strix Halo Testing Builds (lhl)](https://github.com/lhl/strix-halo-testing/tree/main)
+*   [AMD ROCm 7.14 installation guide](https://rocm.docs.amd.com/en/docs-7.14.0/install/rocm.html)

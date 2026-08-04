@@ -1,0 +1,13 @@
+[Unit]
+Description=Manage Framework cooling and power profile for GPU inference workloads
+Wants=tuned.service
+After=multi-user.target tuned.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/gpu-workload-watch
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

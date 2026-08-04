@@ -1,0 +1,294 @@
+.header-links {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.toolbox-heading { margin-top: 16px; }
+
+.toolbox-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.toolbox-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 38px;
+    padding: 8px 12px;
+    color: #475467;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.toolbox-button:hover { border-color: #98a2b3; }
+
+.toolbox-button.active {
+    color: var(--ink);
+    background: #eef4ff;
+    border-color: #84adff;
+}
+
+.toolbox-line-sample {
+    width: 25px;
+    height: 0;
+    color: #475467;
+    border-top: 3px solid currentColor;
+}
+
+.comparison-options {
+    display: flex;
+    align-items: end;
+    gap: 20px;
+    margin-top: 14px;
+}
+
+.comparison-options label {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 250px;
+    gap: 5px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.comparison-options select {
+    width: 100%;
+    padding: 7px 30px 7px 9px;
+    color: #344054;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font: inherit;
+    font-size: 12px;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.calibration-panel {
+    margin-top: 14px;
+    overflow: hidden;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.calibration-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.calibration-heading h3 {
+    margin: 2px 0 0;
+    color: var(--ink);
+    font-size: 14px;
+}
+
+.calibration-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11px;
+    text-align: right;
+}
+
+.calibration-matrix {
+    overflow-x: auto;
+}
+
+.calibration-table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.calibration-table th,
+.calibration-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.calibration-table tr:last-child th,
+.calibration-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.calibration-table thead th {
+    color: var(--muted);
+    background: #f2f4f7;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+.calibration-table thead th:first-child {
+    width: 38%;
+}
+
+.calibration-toolbox-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.calibration-toolbox-heading .toolbox-line-sample {
+    width: 20px;
+}
+
+.calibration-model {
+    color: #344054;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.calibration-model-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.calibration-model-dot {
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.calibration-value {
+    color: var(--ink);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+.calibration-value small {
+    margin-left: 4px;
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.calibration-empty {
+    margin: 0;
+    padding: 14px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.comparison-legend {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(240px, 1fr);
+    gap: 12px 24px;
+    margin-top: 14px;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.data-warning {
+    margin: 12px 0 0;
+    padding: 9px 11px;
+    color: #93370d;
+    background: #fffaeb;
+    border: 1px solid #fedf89;
+    border-radius: 7px;
+    font-size: 12px;
+}
+
+.numeric-cell small {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.provenance-card {
+    margin-top: 18px;
+    padding: 22px 24px;
+}
+
+.toolbox-details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.toolbox-detail {
+    min-width: 0;
+    padding: 14px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.toolbox-detail h3 {
+    margin: 0 0 4px;
+    font-size: 14px;
+}
+
+.toolbox-detail > p {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.toolbox-detail dl {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 5px 10px;
+    margin: 0;
+    font-size: 11px;
+}
+
+.toolbox-detail dt { color: var(--muted); }
+.toolbox-detail dd {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+@media (max-width: 980px) {
+    .comparison-legend { grid-template-columns: 1fr; }
+    .toolbox-details { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+    .header-links { flex-direction: column; gap: 0; }
+    .comparison-options { align-items: stretch; }
+    .comparison-options label { flex-basis: auto; }
+    .calibration-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+    .calibration-heading p { text-align: left; }
+    .calibration-table { min-width: 0; }
+    .calibration-table th, .calibration-table td { padding: 8px; }
+    .calibration-table thead th:first-child { width: 38%; }
+    .calibration-toolbox-heading { align-items: flex-start; gap: 4px; line-height: 1.25; }
+    .calibration-toolbox-heading .toolbox-line-sample { display: none; }
+    .calibration-model { font-size: 10px; overflow-wrap: anywhere; }
+    .calibration-model-label { align-items: flex-start; gap: 5px; }
+    .calibration-model-dot { margin-top: 3px; }
+    .calibration-value { font-size: 13px; }
+    .calibration-value small { display: block; margin: 1px 0 0; }
+    .comparison-legend { display: grid; }
+}

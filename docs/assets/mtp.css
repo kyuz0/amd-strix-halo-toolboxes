@@ -1,0 +1,192 @@
+.description {
+    font-size: 13px;
+    color: var(--ink);
+    max-width: 800px;
+    line-height: 1.5;
+    margin-top: 12px;
+}
+
+.description a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.description a:hover {
+    text-decoration: underline;
+}
+
+.mtp-layout-inner {
+    max-width: 1050px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100%;
+}
+
+.mtp-table {
+    width: 100%;
+    min-width: auto;
+    font-size: 14px;
+}
+
+.mtp-table.hidden {
+    display: none;
+}
+
+.mtp-table th {
+    text-align: left;
+    vertical-align: bottom;
+    padding: 12px 16px;
+    font-size: 13px;
+}
+
+.mtp-table td {
+    padding: 12px 16px;
+}
+
+.mtp-table th.metric-col {
+    text-align: right;
+    width: 120px;
+}
+
+.mtp-table td.metric-col {
+    text-align: right;
+    font-feature-settings: "tnum";
+    font-weight: 600;
+}
+
+.mtp-table td.metric-col .measure {
+    font-size: 15px;
+}
+
+.mtp-table th.model, .mtp-table td.model {
+    width: 320px;
+}
+
+.mtp-table th .sub {
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.speedup-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.speedup-high {
+    background: #d7f5e3;
+    color: #025333;
+}
+
+.speedup-med {
+    background: #eef9ff;
+    color: #0a517a;
+}
+
+.speedup-low {
+    background: #fdf2f8;
+    color: #9d174d;
+}
+
+.toolbox-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    background: #f1f5ff;
+    color: #1d4ed8;
+    white-space: nowrap;
+}
+
+.toolbox-pill.radv {
+    background: #fdf2f8;
+    color: #9d174d;
+}
+
+/* Expandable row interactivity */
+.mtp-table tbody tr.main-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.mtp-table tbody tr.main-row:hover {
+    background-color: var(--hover);
+}
+
+.mtp-table tbody tr.main-row td:first-child::before {
+    content: "▶";
+    display: inline-block;
+    font-size: 10px;
+    margin-right: 8px;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+}
+
+.mtp-table tbody tr.main-row.expanded td:first-child::before {
+    transform: rotate(90deg);
+}
+
+/* Details row and sub-table */
+.details-row {
+    background-color: #f8fafc;
+}
+
+.details-row.hidden {
+    display: none;
+}
+
+.details-row td {
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.granular-wrap {
+    padding: 16px 24px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.granular-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.granular-table th, .granular-table td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.granular-table th {
+    background: #f1f5f9;
+    font-weight: 600;
+    color: var(--ink);
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.granular-table td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.granular-table tr:last-child td {
+    border-bottom: none;
+}
+
+.granular-table tbody tr:hover {
+    background-color: var(--hover);
+}

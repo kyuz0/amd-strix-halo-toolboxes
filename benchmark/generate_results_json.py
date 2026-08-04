@@ -44,6 +44,7 @@ LONGCTX_RE = re.compile(r"longctx(\d+)", re.IGNORECASE)
 
 ENV_CANON = {
     "rocm7_1_1": "rocm7.1.1",
+    # Preserve names used by historical benchmark files.
     "rocm7_alpha": "rocm7-nightlies",
     "rocm-7alpha": "rocm7-nightlies",
 }
@@ -65,7 +66,7 @@ def canonicalize_env(env):
 
 def parse_env_flags(basename):
     """
-    pattern: <model>__<env>[__fa1][__hblt0][__longctx32768][__rpc]
+    pattern: <model>__<env>[__fa1][__longctx32768][__rpc]
     Returns (env, fa, context_tag, context_tokens, rpc_flag)
     """
     parts = basename.split("__")
@@ -82,8 +83,7 @@ def parse_env_flags(basename):
         suffix = raw_suffix.lower()
         if suffix == "fa1":
             fa = True
-        elif suffix == "hblt0":
-            env = f"{env}-hblt0"
+
         elif suffix.startswith("longctx"):
             context_tag = suffix
             m = LONGCTX_RE.search(suffix)

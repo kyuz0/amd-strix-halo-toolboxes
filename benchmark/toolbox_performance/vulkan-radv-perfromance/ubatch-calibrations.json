@@ -1,0 +1,3421 @@
+{
+  "profiles": {
+    "strix-halo": {
+      "vulkan": {
+        "DeepSeek-V4-Flash-0731-UD-IQ2_XXS": {
+          "latest_run": {
+            "calibrated_at": "2026-08-04T14:56:22.055203+00:00",
+            "candidates": [
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.7487241772648873,
+                "points": [
+                  {
+                    "avg_ts": 135.522662,
+                    "depth": 0,
+                    "samples_ts": [
+                      148.026,
+                      131.826,
+                      126.716
+                    ],
+                    "stddev_ts": 11.125132
+                  },
+                  {
+                    "avg_ts": 103.941588,
+                    "depth": 8192,
+                    "samples_ts": [
+                      104.413,
+                      103.486,
+                      103.926
+                    ],
+                    "stddev_ts": 0.463639
+                  },
+                  {
+                    "avg_ts": 98.741684,
+                    "depth": 16384,
+                    "samples_ts": [
+                      100.638,
+                      97.8389,
+                      97.7479
+                    ],
+                    "stddev_ts": 1.643083
+                  },
+                  {
+                    "avg_ts": 97.72363,
+                    "depth": 24576,
+                    "samples_ts": [
+                      99.6928,
+                      96.8268,
+                      96.6513
+                    ],
+                    "stddev_ts": 1.707582
+                  },
+                  {
+                    "avg_ts": 96.415855,
+                    "depth": 32768,
+                    "samples_ts": [
+                      98.5858,
+                      95.5356,
+                      95.1262
+                    ],
+                    "stddev_ts": 1.890315
+                  },
+                  {
+                    "avg_ts": 95.388051,
+                    "depth": 40960,
+                    "samples_ts": [
+                      98.3305,
+                      94.2684,
+                      93.5653
+                    ],
+                    "stddev_ts": 2.57236
+                  },
+                  {
+                    "avg_ts": 94.902426,
+                    "depth": 49152,
+                    "samples_ts": [
+                      97.6214,
+                      93.6964,
+                      93.3895
+                    ],
+                    "stddev_ts": 2.359672
+                  },
+                  {
+                    "avg_ts": 90.48636,
+                    "depth": 57344,
+                    "samples_ts": [
+                      91.6876,
+                      90.3454,
+                      89.4261
+                    ],
+                    "stddev_ts": 1.137339
+                  },
+                  {
+                    "avg_ts": 88.761614,
+                    "depth": 65536,
+                    "samples_ts": [
+                      89.7885,
+                      88.0475,
+                      88.4489
+                    ],
+                    "stddev_ts": 0.911653
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                "ubatch": 256
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.892359408392585,
+                "points": [
+                  {
+                    "avg_ts": 189.799863,
+                    "depth": 0,
+                    "samples_ts": [
+                      194.826,
+                      194.295,
+                      180.279
+                    ],
+                    "stddev_ts": 8.250002
+                  },
+                  {
+                    "avg_ts": 135.201741,
+                    "depth": 8192,
+                    "samples_ts": [
+                      136.829,
+                      134.646,
+                      134.13
+                    ],
+                    "stddev_ts": 1.432299
+                  },
+                  {
+                    "avg_ts": 114.970357,
+                    "depth": 16384,
+                    "samples_ts": [
+                      117.178,
+                      114.025,
+                      113.708
+                    ],
+                    "stddev_ts": 1.918527
+                  },
+                  {
+                    "avg_ts": 113.482122,
+                    "depth": 24576,
+                    "samples_ts": [
+                      116.246,
+                      112.043,
+                      112.157
+                    ],
+                    "stddev_ts": 2.394585
+                  },
+                  {
+                    "avg_ts": 111.657277,
+                    "depth": 32768,
+                    "samples_ts": [
+                      114.521,
+                      110.001,
+                      110.45
+                    ],
+                    "stddev_ts": 2.49008
+                  },
+                  {
+                    "avg_ts": 110.380196,
+                    "depth": 40960,
+                    "samples_ts": [
+                      114.294,
+                      108.775,
+                      108.072
+                    ],
+                    "stddev_ts": 3.40733
+                  },
+                  {
+                    "avg_ts": 107.875569,
+                    "depth": 49152,
+                    "samples_ts": [
+                      111.421,
+                      106.199,
+                      106.006
+                    ],
+                    "stddev_ts": 3.072112
+                  },
+                  {
+                    "avg_ts": 106.314091,
+                    "depth": 57344,
+                    "samples_ts": [
+                      109.988,
+                      104.852,
+                      104.102
+                    ],
+                    "stddev_ts": 3.204038
+                  },
+                  {
+                    "avg_ts": 104.570784,
+                    "depth": 65536,
+                    "samples_ts": [
+                      108.563,
+                      102.713,
+                      102.437
+                    ],
+                    "stddev_ts": 3.459823
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                "ubatch": 512
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9529256924040345,
+                "points": [
+                  {
+                    "avg_ts": 234.077716,
+                    "depth": 0,
+                    "samples_ts": [
+                      234.326,
+                      234.047,
+                      233.861
+                    ],
+                    "stddev_ts": 0.233963
+                  },
+                  {
+                    "avg_ts": 161.643166,
+                    "depth": 8192,
+                    "samples_ts": [
+                      164.735,
+                      160.119,
+                      160.076
+                    ],
+                    "stddev_ts": 2.677525
+                  },
+                  {
+                    "avg_ts": 118.075584,
+                    "depth": 16384,
+                    "samples_ts": [
+                      119.386,
+                      117.073,
+                      117.768
+                    ],
+                    "stddev_ts": 1.186598
+                  },
+                  {
+                    "avg_ts": 117.711237,
+                    "depth": 24576,
+                    "samples_ts": [
+                      120.402,
+                      116.54,
+                      116.191
+                    ],
+                    "stddev_ts": 2.337071
+                  },
+                  {
+                    "avg_ts": 115.618176,
+                    "depth": 32768,
+                    "samples_ts": [
+                      119.488,
+                      113.786,
+                      113.58
+                    ],
+                    "stddev_ts": 3.35329
+                  },
+                  {
+                    "avg_ts": 114.051516,
+                    "depth": 40960,
+                    "samples_ts": [
+                      118.353,
+                      112.167,
+                      111.634
+                    ],
+                    "stddev_ts": 3.734998
+                  },
+                  {
+                    "avg_ts": 111.633807,
+                    "depth": 49152,
+                    "samples_ts": [
+                      115.299,
+                      109.822,
+                      109.781
+                    ],
+                    "stddev_ts": 3.174021
+                  },
+                  {
+                    "avg_ts": 110.524143,
+                    "depth": 57344,
+                    "samples_ts": [
+                      114.798,
+                      108.407,
+                      108.367
+                    ],
+                    "stddev_ts": 3.701507
+                  },
+                  {
+                    "avg_ts": 108.145197,
+                    "depth": 65536,
+                    "samples_ts": [
+                      112.173,
+                      106.105,
+                      106.158
+                    ],
+                    "stddev_ts": 3.487924
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                "ubatch": 1024
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9361722670174706,
+                "points": [
+                  {
+                    "avg_ts": 254.931777,
+                    "depth": 0,
+                    "samples_ts": [
+                      254.85,
+                      255.039,
+                      254.907
+                    ],
+                    "stddev_ts": 0.096862
+                  },
+                  {
+                    "avg_ts": 183.971256,
+                    "depth": 8192,
+                    "samples_ts": [
+                      190.546,
+                      181.518,
+                      179.85
+                    ],
+                    "stddev_ts": 5.754392
+                  },
+                  {
+                    "avg_ts": 151.475855,
+                    "depth": 16384,
+                    "samples_ts": [
+                      155.153,
+                      149.718,
+                      149.556
+                    ],
+                    "stddev_ts": 3.185885
+                  },
+                  {
+                    "avg_ts": 104.99956,
+                    "depth": 24576,
+                    "samples_ts": [
+                      106.835,
+                      103.777,
+                      104.387
+                    ],
+                    "stddev_ts": 1.618188
+                  },
+                  {
+                    "avg_ts": 104.364983,
+                    "depth": 32768,
+                    "samples_ts": [
+                      107.191,
+                      102.783,
+                      103.12
+                    ],
+                    "stddev_ts": 2.453514
+                  },
+                  {
+                    "avg_ts": 103.957134,
+                    "depth": 40960,
+                    "samples_ts": [
+                      107.252,
+                      102.224,
+                      102.395
+                    ],
+                    "stddev_ts": 2.854696
+                  },
+                  {
+                    "avg_ts": 100.886055,
+                    "depth": 49152,
+                    "samples_ts": [
+                      102.024,
+                      100.289,
+                      100.345
+                    ],
+                    "stddev_ts": 0.986162
+                  },
+                  {
+                    "avg_ts": 99.634595,
+                    "depth": 57344,
+                    "samples_ts": [
+                      100.846,
+                      98.9925,
+                      99.0656
+                    ],
+                    "stddev_ts": 1.049485
+                  },
+                  {
+                    "avg_ts": 98.864381,
+                    "depth": 65536,
+                    "samples_ts": [
+                      100.029,
+                      98.302,
+                      98.2619
+                    ],
+                    "stddev_ts": 1.008998
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                "ubatch": 2048
+              }
+            ],
+            "depths": [
+              0,
+              8192,
+              16384,
+              24576,
+              32768,
+              40960,
+              49152,
+              57344,
+              65536
+            ],
+            "prefill": 2048,
+            "repetitions": 3,
+            "selected_ubatch": 1024,
+            "toolbox": "llama-vulkan-radv-perfromance"
+          },
+          "runs": [
+            {
+              "calibrated_at": "2026-08-04T14:56:22.055203+00:00",
+              "candidates": [
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.7487241772648873,
+                  "points": [
+                    {
+                      "avg_ts": 135.522662,
+                      "depth": 0,
+                      "samples_ts": [
+                        148.026,
+                        131.826,
+                        126.716
+                      ],
+                      "stddev_ts": 11.125132
+                    },
+                    {
+                      "avg_ts": 103.941588,
+                      "depth": 8192,
+                      "samples_ts": [
+                        104.413,
+                        103.486,
+                        103.926
+                      ],
+                      "stddev_ts": 0.463639
+                    },
+                    {
+                      "avg_ts": 98.741684,
+                      "depth": 16384,
+                      "samples_ts": [
+                        100.638,
+                        97.8389,
+                        97.7479
+                      ],
+                      "stddev_ts": 1.643083
+                    },
+                    {
+                      "avg_ts": 97.72363,
+                      "depth": 24576,
+                      "samples_ts": [
+                        99.6928,
+                        96.8268,
+                        96.6513
+                      ],
+                      "stddev_ts": 1.707582
+                    },
+                    {
+                      "avg_ts": 96.415855,
+                      "depth": 32768,
+                      "samples_ts": [
+                        98.5858,
+                        95.5356,
+                        95.1262
+                      ],
+                      "stddev_ts": 1.890315
+                    },
+                    {
+                      "avg_ts": 95.388051,
+                      "depth": 40960,
+                      "samples_ts": [
+                        98.3305,
+                        94.2684,
+                        93.5653
+                      ],
+                      "stddev_ts": 2.57236
+                    },
+                    {
+                      "avg_ts": 94.902426,
+                      "depth": 49152,
+                      "samples_ts": [
+                        97.6214,
+                        93.6964,
+                        93.3895
+                      ],
+                      "stddev_ts": 2.359672
+                    },
+                    {
+                      "avg_ts": 90.48636,
+                      "depth": 57344,
+                      "samples_ts": [
+                        91.6876,
+                        90.3454,
+                        89.4261
+                      ],
+                      "stddev_ts": 1.137339
+                    },
+                    {
+                      "avg_ts": 88.761614,
+                      "depth": 65536,
+                      "samples_ts": [
+                        89.7885,
+                        88.0475,
+                        88.4489
+                      ],
+                      "stddev_ts": 0.911653
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                  "ubatch": 256
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.892359408392585,
+                  "points": [
+                    {
+                      "avg_ts": 189.799863,
+                      "depth": 0,
+                      "samples_ts": [
+                        194.826,
+                        194.295,
+                        180.279
+                      ],
+                      "stddev_ts": 8.250002
+                    },
+                    {
+                      "avg_ts": 135.201741,
+                      "depth": 8192,
+                      "samples_ts": [
+                        136.829,
+                        134.646,
+                        134.13
+                      ],
+                      "stddev_ts": 1.432299
+                    },
+                    {
+                      "avg_ts": 114.970357,
+                      "depth": 16384,
+                      "samples_ts": [
+                        117.178,
+                        114.025,
+                        113.708
+                      ],
+                      "stddev_ts": 1.918527
+                    },
+                    {
+                      "avg_ts": 113.482122,
+                      "depth": 24576,
+                      "samples_ts": [
+                        116.246,
+                        112.043,
+                        112.157
+                      ],
+                      "stddev_ts": 2.394585
+                    },
+                    {
+                      "avg_ts": 111.657277,
+                      "depth": 32768,
+                      "samples_ts": [
+                        114.521,
+                        110.001,
+                        110.45
+                      ],
+                      "stddev_ts": 2.49008
+                    },
+                    {
+                      "avg_ts": 110.380196,
+                      "depth": 40960,
+                      "samples_ts": [
+                        114.294,
+                        108.775,
+                        108.072
+                      ],
+                      "stddev_ts": 3.40733
+                    },
+                    {
+                      "avg_ts": 107.875569,
+                      "depth": 49152,
+                      "samples_ts": [
+                        111.421,
+                        106.199,
+                        106.006
+                      ],
+                      "stddev_ts": 3.072112
+                    },
+                    {
+                      "avg_ts": 106.314091,
+                      "depth": 57344,
+                      "samples_ts": [
+                        109.988,
+                        104.852,
+                        104.102
+                      ],
+                      "stddev_ts": 3.204038
+                    },
+                    {
+                      "avg_ts": 104.570784,
+                      "depth": 65536,
+                      "samples_ts": [
+                        108.563,
+                        102.713,
+                        102.437
+                      ],
+                      "stddev_ts": 3.459823
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                  "ubatch": 512
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9529256924040345,
+                  "points": [
+                    {
+                      "avg_ts": 234.077716,
+                      "depth": 0,
+                      "samples_ts": [
+                        234.326,
+                        234.047,
+                        233.861
+                      ],
+                      "stddev_ts": 0.233963
+                    },
+                    {
+                      "avg_ts": 161.643166,
+                      "depth": 8192,
+                      "samples_ts": [
+                        164.735,
+                        160.119,
+                        160.076
+                      ],
+                      "stddev_ts": 2.677525
+                    },
+                    {
+                      "avg_ts": 118.075584,
+                      "depth": 16384,
+                      "samples_ts": [
+                        119.386,
+                        117.073,
+                        117.768
+                      ],
+                      "stddev_ts": 1.186598
+                    },
+                    {
+                      "avg_ts": 117.711237,
+                      "depth": 24576,
+                      "samples_ts": [
+                        120.402,
+                        116.54,
+                        116.191
+                      ],
+                      "stddev_ts": 2.337071
+                    },
+                    {
+                      "avg_ts": 115.618176,
+                      "depth": 32768,
+                      "samples_ts": [
+                        119.488,
+                        113.786,
+                        113.58
+                      ],
+                      "stddev_ts": 3.35329
+                    },
+                    {
+                      "avg_ts": 114.051516,
+                      "depth": 40960,
+                      "samples_ts": [
+                        118.353,
+                        112.167,
+                        111.634
+                      ],
+                      "stddev_ts": 3.734998
+                    },
+                    {
+                      "avg_ts": 111.633807,
+                      "depth": 49152,
+                      "samples_ts": [
+                        115.299,
+                        109.822,
+                        109.781
+                      ],
+                      "stddev_ts": 3.174021
+                    },
+                    {
+                      "avg_ts": 110.524143,
+                      "depth": 57344,
+                      "samples_ts": [
+                        114.798,
+                        108.407,
+                        108.367
+                      ],
+                      "stddev_ts": 3.701507
+                    },
+                    {
+                      "avg_ts": 108.145197,
+                      "depth": 65536,
+                      "samples_ts": [
+                        112.173,
+                        106.105,
+                        106.158
+                      ],
+                      "stddev_ts": 3.487924
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                  "ubatch": 1024
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9361722670174706,
+                  "points": [
+                    {
+                      "avg_ts": 254.931777,
+                      "depth": 0,
+                      "samples_ts": [
+                        254.85,
+                        255.039,
+                        254.907
+                      ],
+                      "stddev_ts": 0.096862
+                    },
+                    {
+                      "avg_ts": 183.971256,
+                      "depth": 8192,
+                      "samples_ts": [
+                        190.546,
+                        181.518,
+                        179.85
+                      ],
+                      "stddev_ts": 5.754392
+                    },
+                    {
+                      "avg_ts": 151.475855,
+                      "depth": 16384,
+                      "samples_ts": [
+                        155.153,
+                        149.718,
+                        149.556
+                      ],
+                      "stddev_ts": 3.185885
+                    },
+                    {
+                      "avg_ts": 104.99956,
+                      "depth": 24576,
+                      "samples_ts": [
+                        106.835,
+                        103.777,
+                        104.387
+                      ],
+                      "stddev_ts": 1.618188
+                    },
+                    {
+                      "avg_ts": 104.364983,
+                      "depth": 32768,
+                      "samples_ts": [
+                        107.191,
+                        102.783,
+                        103.12
+                      ],
+                      "stddev_ts": 2.453514
+                    },
+                    {
+                      "avg_ts": 103.957134,
+                      "depth": 40960,
+                      "samples_ts": [
+                        107.252,
+                        102.224,
+                        102.395
+                      ],
+                      "stddev_ts": 2.854696
+                    },
+                    {
+                      "avg_ts": 100.886055,
+                      "depth": 49152,
+                      "samples_ts": [
+                        102.024,
+                        100.289,
+                        100.345
+                      ],
+                      "stddev_ts": 0.986162
+                    },
+                    {
+                      "avg_ts": 99.634595,
+                      "depth": 57344,
+                      "samples_ts": [
+                        100.846,
+                        98.9925,
+                        99.0656
+                      ],
+                      "stddev_ts": 1.049485
+                    },
+                    {
+                      "avg_ts": 98.864381,
+                      "depth": 65536,
+                      "samples_ts": [
+                        100.029,
+                        98.302,
+                        98.2619
+                      ],
+                      "stddev_ts": 1.008998
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                  "ubatch": 2048
+                }
+              ],
+              "depths": [
+                0,
+                8192,
+                16384,
+                24576,
+                32768,
+                40960,
+                49152,
+                57344,
+                65536
+              ],
+              "prefill": 2048,
+              "repetitions": 3,
+              "selected_ubatch": 1024,
+              "toolbox": "llama-vulkan-radv-perfromance"
+            }
+          ],
+          "selected_ubatch": 1024
+        },
+        "Qwen3.6-27B-UD-Q8_K_XL": {
+          "latest_run": {
+            "calibrated_at": "2026-08-04T10:14:33.037411+00:00",
+            "candidates": [
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9986608135928093,
+                "points": [
+                  {
+                    "avg_ts": 289.444339,
+                    "depth": 0,
+                    "samples_ts": [
+                      289.364,
+                      289.503,
+                      289.466
+                    ],
+                    "stddev_ts": 0.071877
+                  },
+                  {
+                    "avg_ts": 269.170331,
+                    "depth": 8192,
+                    "samples_ts": [
+                      269.118,
+                      269.259,
+                      269.134
+                    ],
+                    "stddev_ts": 0.076861
+                  },
+                  {
+                    "avg_ts": 249.900442,
+                    "depth": 16384,
+                    "samples_ts": [
+                      249.323,
+                      250.244,
+                      250.134
+                    ],
+                    "stddev_ts": 0.503399
+                  },
+                  {
+                    "avg_ts": 233.019418,
+                    "depth": 24576,
+                    "samples_ts": [
+                      232.798,
+                      233.078,
+                      233.183
+                    ],
+                    "stddev_ts": 0.199188
+                  },
+                  {
+                    "avg_ts": 218.204495,
+                    "depth": 32768,
+                    "samples_ts": [
+                      217.566,
+                      218.63,
+                      218.418
+                    ],
+                    "stddev_ts": 0.56267
+                  },
+                  {
+                    "avg_ts": 177.189596,
+                    "depth": 40960,
+                    "samples_ts": [
+                      184.593,
+                      173.862,
+                      173.114
+                    ],
+                    "stddev_ts": 6.422066
+                  },
+                  {
+                    "avg_ts": 159.835033,
+                    "depth": 49152,
+                    "samples_ts": [
+                      164.903,
+                      157.535,
+                      157.068
+                    ],
+                    "stddev_ts": 4.394808
+                  },
+                  {
+                    "avg_ts": 146.696567,
+                    "depth": 57344,
+                    "samples_ts": [
+                      149.88,
+                      145.181,
+                      145.028
+                    ],
+                    "stddev_ts": 2.758236
+                  },
+                  {
+                    "avg_ts": 136.334802,
+                    "depth": 65536,
+                    "samples_ts": [
+                      139.057,
+                      135.134,
+                      134.813
+                    ],
+                    "stddev_ts": 2.363055
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                "ubatch": 256
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9034817724861579,
+                "points": [
+                  {
+                    "avg_ts": 288.925402,
+                    "depth": 0,
+                    "samples_ts": [
+                      289.108,
+                      289.034,
+                      288.634
+                    ],
+                    "stddev_ts": 0.25531
+                  },
+                  {
+                    "avg_ts": 229.279205,
+                    "depth": 8192,
+                    "samples_ts": [
+                      239.891,
+                      225.071,
+                      222.875
+                    ],
+                    "stddev_ts": 9.255812
+                  },
+                  {
+                    "avg_ts": 207.768789,
+                    "depth": 16384,
+                    "samples_ts": [
+                      219.141,
+                      202.557,
+                      201.608
+                    ],
+                    "stddev_ts": 9.860212
+                  },
+                  {
+                    "avg_ts": 188.518313,
+                    "depth": 24576,
+                    "samples_ts": [
+                      195.359,
+                      185.574,
+                      184.622
+                    ],
+                    "stddev_ts": 5.943585
+                  },
+                  {
+                    "avg_ts": 175.632231,
+                    "depth": 32768,
+                    "samples_ts": [
+                      184.656,
+                      171.101,
+                      171.14
+                    ],
+                    "stddev_ts": 7.815108
+                  },
+                  {
+                    "avg_ts": 162.324561,
+                    "depth": 40960,
+                    "samples_ts": [
+                      168.843,
+                      159.593,
+                      158.538
+                    ],
+                    "stddev_ts": 5.669655
+                  },
+                  {
+                    "avg_ts": 154.463774,
+                    "depth": 49152,
+                    "samples_ts": [
+                      162.792,
+                      150.416,
+                      150.183
+                    ],
+                    "stddev_ts": 7.213555
+                  },
+                  {
+                    "avg_ts": 143.729655,
+                    "depth": 57344,
+                    "samples_ts": [
+                      147.485,
+                      142.059,
+                      141.645
+                    ],
+                    "stddev_ts": 3.25875
+                  },
+                  {
+                    "avg_ts": 134.392812,
+                    "depth": 65536,
+                    "samples_ts": [
+                      137.581,
+                      132.628,
+                      132.97
+                    ],
+                    "stddev_ts": 2.765977
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                "ubatch": 512
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.8907755036398134,
+                "points": [
+                  {
+                    "avg_ts": 292.975478,
+                    "depth": 0,
+                    "samples_ts": [
+                      292.798,
+                      293.247,
+                      292.881
+                    ],
+                    "stddev_ts": 0.238904
+                  },
+                  {
+                    "avg_ts": 224.209901,
+                    "depth": 8192,
+                    "samples_ts": [
+                      233.446,
+                      220.599,
+                      218.585
+                    ],
+                    "stddev_ts": 8.06162
+                  },
+                  {
+                    "avg_ts": 204.364109,
+                    "depth": 16384,
+                    "samples_ts": [
+                      216.1,
+                      198.821,
+                      198.171
+                    ],
+                    "stddev_ts": 10.168811
+                  },
+                  {
+                    "avg_ts": 185.331887,
+                    "depth": 24576,
+                    "samples_ts": [
+                      193.086,
+                      181.616,
+                      181.294
+                    ],
+                    "stddev_ts": 6.717479
+                  },
+                  {
+                    "avg_ts": 172.841611,
+                    "depth": 32768,
+                    "samples_ts": [
+                      182.085,
+                      168.457,
+                      167.983
+                    ],
+                    "stddev_ts": 8.008534
+                  },
+                  {
+                    "avg_ts": 160.422623,
+                    "depth": 40960,
+                    "samples_ts": [
+                      167.357,
+                      156.935,
+                      156.976
+                    ],
+                    "stddev_ts": 6.005101
+                  },
+                  {
+                    "avg_ts": 151.809142,
+                    "depth": 49152,
+                    "samples_ts": [
+                      160.193,
+                      147.859,
+                      147.376
+                    ],
+                    "stddev_ts": 7.264623
+                  },
+                  {
+                    "avg_ts": 140.445193,
+                    "depth": 57344,
+                    "samples_ts": [
+                      143.767,
+                      138.816,
+                      138.752
+                    ],
+                    "stddev_ts": 2.877061
+                  },
+                  {
+                    "avg_ts": 131.730515,
+                    "depth": 65536,
+                    "samples_ts": [
+                      134.812,
+                      130.122,
+                      130.257
+                    ],
+                    "stddev_ts": 2.669787
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                "ubatch": 1024
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.8766736453035046,
+                "points": [
+                  {
+                    "avg_ts": 292.501937,
+                    "depth": 0,
+                    "samples_ts": [
+                      292.196,
+                      292.806,
+                      292.503
+                    ],
+                    "stddev_ts": 0.304918
+                  },
+                  {
+                    "avg_ts": 219.640496,
+                    "depth": 8192,
+                    "samples_ts": [
+                      229.447,
+                      214.801,
+                      214.674
+                    ],
+                    "stddev_ts": 8.492705
+                  },
+                  {
+                    "avg_ts": 201.408771,
+                    "depth": 16384,
+                    "samples_ts": [
+                      214.154,
+                      195.483,
+                      194.589
+                    ],
+                    "stddev_ts": 11.046494
+                  },
+                  {
+                    "avg_ts": 182.521585,
+                    "depth": 24576,
+                    "samples_ts": [
+                      190.223,
+                      178.736,
+                      178.606
+                    ],
+                    "stddev_ts": 6.669673
+                  },
+                  {
+                    "avg_ts": 170.219943,
+                    "depth": 32768,
+                    "samples_ts": [
+                      178.79,
+                      166.243,
+                      165.627
+                    ],
+                    "stddev_ts": 7.428194
+                  },
+                  {
+                    "avg_ts": 158.346832,
+                    "depth": 40960,
+                    "samples_ts": [
+                      164.616,
+                      155.296,
+                      155.129
+                    ],
+                    "stddev_ts": 5.429829
+                  },
+                  {
+                    "avg_ts": 149.189467,
+                    "depth": 49152,
+                    "samples_ts": [
+                      157.154,
+                      145.331,
+                      145.083
+                    ],
+                    "stddev_ts": 6.89893
+                  },
+                  {
+                    "avg_ts": 137.64471,
+                    "depth": 57344,
+                    "samples_ts": [
+                      140.913,
+                      135.946,
+                      136.075
+                    ],
+                    "stddev_ts": 2.830976
+                  },
+                  {
+                    "avg_ts": 128.291048,
+                    "depth": 65536,
+                    "samples_ts": [
+                      131.097,
+                      126.969,
+                      126.807
+                    ],
+                    "stddev_ts": 2.431624
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                "ubatch": 2048
+              }
+            ],
+            "depths": [
+              0,
+              8192,
+              16384,
+              24576,
+              32768,
+              40960,
+              49152,
+              57344,
+              65536
+            ],
+            "prefill": 2048,
+            "repetitions": 3,
+            "selected_ubatch": 256,
+            "toolbox": "llama-vulkan-radv-perfromance"
+          },
+          "runs": [
+            {
+              "calibrated_at": "2026-08-04T10:14:33.037411+00:00",
+              "candidates": [
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9986608135928093,
+                  "points": [
+                    {
+                      "avg_ts": 289.444339,
+                      "depth": 0,
+                      "samples_ts": [
+                        289.364,
+                        289.503,
+                        289.466
+                      ],
+                      "stddev_ts": 0.071877
+                    },
+                    {
+                      "avg_ts": 269.170331,
+                      "depth": 8192,
+                      "samples_ts": [
+                        269.118,
+                        269.259,
+                        269.134
+                      ],
+                      "stddev_ts": 0.076861
+                    },
+                    {
+                      "avg_ts": 249.900442,
+                      "depth": 16384,
+                      "samples_ts": [
+                        249.323,
+                        250.244,
+                        250.134
+                      ],
+                      "stddev_ts": 0.503399
+                    },
+                    {
+                      "avg_ts": 233.019418,
+                      "depth": 24576,
+                      "samples_ts": [
+                        232.798,
+                        233.078,
+                        233.183
+                      ],
+                      "stddev_ts": 0.199188
+                    },
+                    {
+                      "avg_ts": 218.204495,
+                      "depth": 32768,
+                      "samples_ts": [
+                        217.566,
+                        218.63,
+                        218.418
+                      ],
+                      "stddev_ts": 0.56267
+                    },
+                    {
+                      "avg_ts": 177.189596,
+                      "depth": 40960,
+                      "samples_ts": [
+                        184.593,
+                        173.862,
+                        173.114
+                      ],
+                      "stddev_ts": 6.422066
+                    },
+                    {
+                      "avg_ts": 159.835033,
+                      "depth": 49152,
+                      "samples_ts": [
+                        164.903,
+                        157.535,
+                        157.068
+                      ],
+                      "stddev_ts": 4.394808
+                    },
+                    {
+                      "avg_ts": 146.696567,
+                      "depth": 57344,
+                      "samples_ts": [
+                        149.88,
+                        145.181,
+                        145.028
+                      ],
+                      "stddev_ts": 2.758236
+                    },
+                    {
+                      "avg_ts": 136.334802,
+                      "depth": 65536,
+                      "samples_ts": [
+                        139.057,
+                        135.134,
+                        134.813
+                      ],
+                      "stddev_ts": 2.363055
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                  "ubatch": 256
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9034817724861579,
+                  "points": [
+                    {
+                      "avg_ts": 288.925402,
+                      "depth": 0,
+                      "samples_ts": [
+                        289.108,
+                        289.034,
+                        288.634
+                      ],
+                      "stddev_ts": 0.25531
+                    },
+                    {
+                      "avg_ts": 229.279205,
+                      "depth": 8192,
+                      "samples_ts": [
+                        239.891,
+                        225.071,
+                        222.875
+                      ],
+                      "stddev_ts": 9.255812
+                    },
+                    {
+                      "avg_ts": 207.768789,
+                      "depth": 16384,
+                      "samples_ts": [
+                        219.141,
+                        202.557,
+                        201.608
+                      ],
+                      "stddev_ts": 9.860212
+                    },
+                    {
+                      "avg_ts": 188.518313,
+                      "depth": 24576,
+                      "samples_ts": [
+                        195.359,
+                        185.574,
+                        184.622
+                      ],
+                      "stddev_ts": 5.943585
+                    },
+                    {
+                      "avg_ts": 175.632231,
+                      "depth": 32768,
+                      "samples_ts": [
+                        184.656,
+                        171.101,
+                        171.14
+                      ],
+                      "stddev_ts": 7.815108
+                    },
+                    {
+                      "avg_ts": 162.324561,
+                      "depth": 40960,
+                      "samples_ts": [
+                        168.843,
+                        159.593,
+                        158.538
+                      ],
+                      "stddev_ts": 5.669655
+                    },
+                    {
+                      "avg_ts": 154.463774,
+                      "depth": 49152,
+                      "samples_ts": [
+                        162.792,
+                        150.416,
+                        150.183
+                      ],
+                      "stddev_ts": 7.213555
+                    },
+                    {
+                      "avg_ts": 143.729655,
+                      "depth": 57344,
+                      "samples_ts": [
+                        147.485,
+                        142.059,
+                        141.645
+                      ],
+                      "stddev_ts": 3.25875
+                    },
+                    {
+                      "avg_ts": 134.392812,
+                      "depth": 65536,
+                      "samples_ts": [
+                        137.581,
+                        132.628,
+                        132.97
+                      ],
+                      "stddev_ts": 2.765977
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                  "ubatch": 512
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.8907755036398134,
+                  "points": [
+                    {
+                      "avg_ts": 292.975478,
+                      "depth": 0,
+                      "samples_ts": [
+                        292.798,
+                        293.247,
+                        292.881
+                      ],
+                      "stddev_ts": 0.238904
+                    },
+                    {
+                      "avg_ts": 224.209901,
+                      "depth": 8192,
+                      "samples_ts": [
+                        233.446,
+                        220.599,
+                        218.585
+                      ],
+                      "stddev_ts": 8.06162
+                    },
+                    {
+                      "avg_ts": 204.364109,
+                      "depth": 16384,
+                      "samples_ts": [
+                        216.1,
+                        198.821,
+                        198.171
+                      ],
+                      "stddev_ts": 10.168811
+                    },
+                    {
+                      "avg_ts": 185.331887,
+                      "depth": 24576,
+                      "samples_ts": [
+                        193.086,
+                        181.616,
+                        181.294
+                      ],
+                      "stddev_ts": 6.717479
+                    },
+                    {
+                      "avg_ts": 172.841611,
+                      "depth": 32768,
+                      "samples_ts": [
+                        182.085,
+                        168.457,
+                        167.983
+                      ],
+                      "stddev_ts": 8.008534
+                    },
+                    {
+                      "avg_ts": 160.422623,
+                      "depth": 40960,
+                      "samples_ts": [
+                        167.357,
+                        156.935,
+                        156.976
+                      ],
+                      "stddev_ts": 6.005101
+                    },
+                    {
+                      "avg_ts": 151.809142,
+                      "depth": 49152,
+                      "samples_ts": [
+                        160.193,
+                        147.859,
+                        147.376
+                      ],
+                      "stddev_ts": 7.264623
+                    },
+                    {
+                      "avg_ts": 140.445193,
+                      "depth": 57344,
+                      "samples_ts": [
+                        143.767,
+                        138.816,
+                        138.752
+                      ],
+                      "stddev_ts": 2.877061
+                    },
+                    {
+                      "avg_ts": 131.730515,
+                      "depth": 65536,
+                      "samples_ts": [
+                        134.812,
+                        130.122,
+                        130.257
+                      ],
+                      "stddev_ts": 2.669787
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                  "ubatch": 1024
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.8766736453035046,
+                  "points": [
+                    {
+                      "avg_ts": 292.501937,
+                      "depth": 0,
+                      "samples_ts": [
+                        292.196,
+                        292.806,
+                        292.503
+                      ],
+                      "stddev_ts": 0.304918
+                    },
+                    {
+                      "avg_ts": 219.640496,
+                      "depth": 8192,
+                      "samples_ts": [
+                        229.447,
+                        214.801,
+                        214.674
+                      ],
+                      "stddev_ts": 8.492705
+                    },
+                    {
+                      "avg_ts": 201.408771,
+                      "depth": 16384,
+                      "samples_ts": [
+                        214.154,
+                        195.483,
+                        194.589
+                      ],
+                      "stddev_ts": 11.046494
+                    },
+                    {
+                      "avg_ts": 182.521585,
+                      "depth": 24576,
+                      "samples_ts": [
+                        190.223,
+                        178.736,
+                        178.606
+                      ],
+                      "stddev_ts": 6.669673
+                    },
+                    {
+                      "avg_ts": 170.219943,
+                      "depth": 32768,
+                      "samples_ts": [
+                        178.79,
+                        166.243,
+                        165.627
+                      ],
+                      "stddev_ts": 7.428194
+                    },
+                    {
+                      "avg_ts": 158.346832,
+                      "depth": 40960,
+                      "samples_ts": [
+                        164.616,
+                        155.296,
+                        155.129
+                      ],
+                      "stddev_ts": 5.429829
+                    },
+                    {
+                      "avg_ts": 149.189467,
+                      "depth": 49152,
+                      "samples_ts": [
+                        157.154,
+                        145.331,
+                        145.083
+                      ],
+                      "stddev_ts": 6.89893
+                    },
+                    {
+                      "avg_ts": 137.64471,
+                      "depth": 57344,
+                      "samples_ts": [
+                        140.913,
+                        135.946,
+                        136.075
+                      ],
+                      "stddev_ts": 2.830976
+                    },
+                    {
+                      "avg_ts": 128.291048,
+                      "depth": 65536,
+                      "samples_ts": [
+                        131.097,
+                        126.969,
+                        126.807
+                      ],
+                      "stddev_ts": 2.431624
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                  "ubatch": 2048
+                }
+              ],
+              "depths": [
+                0,
+                8192,
+                16384,
+                24576,
+                32768,
+                40960,
+                49152,
+                57344,
+                65536
+              ],
+              "prefill": 2048,
+              "repetitions": 3,
+              "selected_ubatch": 256,
+              "toolbox": "llama-vulkan-radv-perfromance"
+            }
+          ],
+          "selected_ubatch": 256
+        },
+        "Qwen3.6-35B-A3B-UD-Q4_K_XL": {
+          "latest_run": {
+            "calibrated_at": "2026-08-04T10:50:39.743262+00:00",
+            "candidates": [
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.7498467338710388,
+                "points": [
+                  {
+                    "avg_ts": 1163.886221,
+                    "depth": 0,
+                    "samples_ts": [
+                      1162.54,
+                      1163.73,
+                      1165.39
+                    ],
+                    "stddev_ts": 1.433514
+                  },
+                  {
+                    "avg_ts": 752.704606,
+                    "depth": 8192,
+                    "samples_ts": [
+                      785.968,
+                      739.834,
+                      732.312
+                    ],
+                    "stddev_ts": 29.051018
+                  },
+                  {
+                    "avg_ts": 652.990303,
+                    "depth": 16384,
+                    "samples_ts": [
+                      677.5,
+                      645.877,
+                      635.593
+                    ],
+                    "stddev_ts": 21.840265
+                  },
+                  {
+                    "avg_ts": 588.581116,
+                    "depth": 24576,
+                    "samples_ts": [
+                      611.235,
+                      578.877,
+                      575.631
+                    ],
+                    "stddev_ts": 19.685762
+                  },
+                  {
+                    "avg_ts": 529.933761,
+                    "depth": 32768,
+                    "samples_ts": [
+                      541.265,
+                      524.765,
+                      523.772
+                    ],
+                    "stddev_ts": 9.825639
+                  },
+                  {
+                    "avg_ts": 489.827886,
+                    "depth": 40960,
+                    "samples_ts": [
+                      509.752,
+                      481.269,
+                      478.463
+                    ],
+                    "stddev_ts": 17.311725
+                  },
+                  {
+                    "avg_ts": 447.504657,
+                    "depth": 49152,
+                    "samples_ts": [
+                      463.336,
+                      439.243,
+                      439.935
+                    ],
+                    "stddev_ts": 13.714478
+                  },
+                  {
+                    "avg_ts": 434.239887,
+                    "depth": 57344,
+                    "samples_ts": [
+                      469.573,
+                      419.222,
+                      413.925
+                    ],
+                    "stddev_ts": 30.713501
+                  },
+                  {
+                    "avg_ts": 410.313859,
+                    "depth": 65536,
+                    "samples_ts": [
+                      449.46,
+                      393.725,
+                      387.756
+                    ],
+                    "stddev_ts": 34.032651
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                "ubatch": 256
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.8950539829054426,
+                "points": [
+                  {
+                    "avg_ts": 1331.023299,
+                    "depth": 0,
+                    "samples_ts": [
+                      1327.23,
+                      1333.76,
+                      1332.08
+                    ],
+                    "stddev_ts": 3.388112
+                  },
+                  {
+                    "avg_ts": 1155.392737,
+                    "depth": 8192,
+                    "samples_ts": [
+                      1147.95,
+                      1158.75,
+                      1159.47
+                    ],
+                    "stddev_ts": 6.451912
+                  },
+                  {
+                    "avg_ts": 829.892415,
+                    "depth": 16384,
+                    "samples_ts": [
+                      880.498,
+                      811.205,
+                      797.975
+                    ],
+                    "stddev_ts": 44.322135
+                  },
+                  {
+                    "avg_ts": 708.582567,
+                    "depth": 24576,
+                    "samples_ts": [
+                      747.563,
+                      690.873,
+                      687.312
+                    ],
+                    "stddev_ts": 33.80474
+                  },
+                  {
+                    "avg_ts": 614.869221,
+                    "depth": 32768,
+                    "samples_ts": [
+                      635.049,
+                      605.578,
+                      603.98
+                    ],
+                    "stddev_ts": 17.494799
+                  },
+                  {
+                    "avg_ts": 562.963609,
+                    "depth": 40960,
+                    "samples_ts": [
+                      592.177,
+                      551.915,
+                      544.799
+                    ],
+                    "stddev_ts": 25.548391
+                  },
+                  {
+                    "avg_ts": 506.385947,
+                    "depth": 49152,
+                    "samples_ts": [
+                      525.819,
+                      494.335,
+                      499.004
+                    ],
+                    "stddev_ts": 16.990327
+                  },
+                  {
+                    "avg_ts": 487.154634,
+                    "depth": 57344,
+                    "samples_ts": [
+                      536.11,
+                      465.091,
+                      460.263
+                    ],
+                    "stddev_ts": 42.465424
+                  },
+                  {
+                    "avg_ts": 460.679251,
+                    "depth": 65536,
+                    "samples_ts": [
+                      513.903,
+                      437.363,
+                      430.772
+                    ],
+                    "stddev_ts": 46.210384
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                "ubatch": 512
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9543052280198138,
+                "points": [
+                  {
+                    "avg_ts": 1384.566781,
+                    "depth": 0,
+                    "samples_ts": [
+                      1371.6,
+                      1391.72,
+                      1390.38
+                    ],
+                    "stddev_ts": 11.24861
+                  },
+                  {
+                    "avg_ts": 1197.850744,
+                    "depth": 8192,
+                    "samples_ts": [
+                      1195.5,
+                      1198.59,
+                      1199.45
+                    ],
+                    "stddev_ts": 2.077803
+                  },
+                  {
+                    "avg_ts": 991.569888,
+                    "depth": 16384,
+                    "samples_ts": [
+                      1050.5,
+                      987.538,
+                      936.673
+                    ],
+                    "stddev_ts": 57.019544
+                  },
+                  {
+                    "avg_ts": 768.157712,
+                    "depth": 24576,
+                    "samples_ts": [
+                      813.66,
+                      749.296,
+                      741.518
+                    ],
+                    "stddev_ts": 39.597215
+                  },
+                  {
+                    "avg_ts": 658.506004,
+                    "depth": 32768,
+                    "samples_ts": [
+                      690.459,
+                      642.082,
+                      642.977
+                    ],
+                    "stddev_ts": 27.675852
+                  },
+                  {
+                    "avg_ts": 593.316506,
+                    "depth": 40960,
+                    "samples_ts": [
+                      625.577,
+                      576.877,
+                      577.495
+                    ],
+                    "stddev_ts": 27.940514
+                  },
+                  {
+                    "avg_ts": 529.421212,
+                    "depth": 49152,
+                    "samples_ts": [
+                      551.529,
+                      520.219,
+                      516.516
+                    ],
+                    "stddev_ts": 19.234973
+                  },
+                  {
+                    "avg_ts": 510.856234,
+                    "depth": 57344,
+                    "samples_ts": [
+                      570.535,
+                      484.91,
+                      477.123
+                    ],
+                    "stddev_ts": 51.829639
+                  },
+                  {
+                    "avg_ts": 480.215853,
+                    "depth": 65536,
+                    "samples_ts": [
+                      543.24,
+                      452.077,
+                      445.331
+                    ],
+                    "stddev_ts": 54.684532
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                "ubatch": 1024
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9897023820352933,
+                "points": [
+                  {
+                    "avg_ts": 1310.286838,
+                    "depth": 0,
+                    "samples_ts": [
+                      1307.39,
+                      1310.59,
+                      1312.88
+                    ],
+                    "stddev_ts": 2.757907
+                  },
+                  {
+                    "avg_ts": 1151.098566,
+                    "depth": 8192,
+                    "samples_ts": [
+                      1147.9,
+                      1152.51,
+                      1152.89
+                    ],
+                    "stddev_ts": 2.777035
+                  },
+                  {
+                    "avg_ts": 1028.353027,
+                    "depth": 16384,
+                    "samples_ts": [
+                      1026.37,
+                      1029.5,
+                      1029.19
+                    ],
+                    "stddev_ts": 1.722245
+                  },
+                  {
+                    "avg_ts": 909.891935,
+                    "depth": 24576,
+                    "samples_ts": [
+                      928.243,
+                      914.279,
+                      887.154
+                    ],
+                    "stddev_ts": 20.893062
+                  },
+                  {
+                    "avg_ts": 708.351608,
+                    "depth": 32768,
+                    "samples_ts": [
+                      745.831,
+                      694.465,
+                      684.759
+                    ],
+                    "stddev_ts": 32.81875
+                  },
+                  {
+                    "avg_ts": 624.000183,
+                    "depth": 40960,
+                    "samples_ts": [
+                      663.734,
+                      609.967,
+                      598.299
+                    ],
+                    "stddev_ts": 34.901322
+                  },
+                  {
+                    "avg_ts": 552.284697,
+                    "depth": 49152,
+                    "samples_ts": [
+                      575.611,
+                      541.701,
+                      539.542
+                    ],
+                    "stddev_ts": 20.230113
+                  },
+                  {
+                    "avg_ts": 528.701008,
+                    "depth": 57344,
+                    "samples_ts": [
+                      579.19,
+                      508.005,
+                      498.908
+                    ],
+                    "stddev_ts": 43.960408
+                  },
+                  {
+                    "avg_ts": 492.54043,
+                    "depth": 65536,
+                    "samples_ts": [
+                      553.729,
+                      467.797,
+                      456.095
+                    ],
+                    "stddev_ts": 53.312691
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                "ubatch": 2048
+              }
+            ],
+            "depths": [
+              0,
+              8192,
+              16384,
+              24576,
+              32768,
+              40960,
+              49152,
+              57344,
+              65536
+            ],
+            "prefill": 2048,
+            "repetitions": 3,
+            "selected_ubatch": 2048,
+            "toolbox": "llama-vulkan-radv-perfromance"
+          },
+          "runs": [
+            {
+              "calibrated_at": "2026-08-04T10:50:39.743262+00:00",
+              "candidates": [
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.7498467338710388,
+                  "points": [
+                    {
+                      "avg_ts": 1163.886221,
+                      "depth": 0,
+                      "samples_ts": [
+                        1162.54,
+                        1163.73,
+                        1165.39
+                      ],
+                      "stddev_ts": 1.433514
+                    },
+                    {
+                      "avg_ts": 752.704606,
+                      "depth": 8192,
+                      "samples_ts": [
+                        785.968,
+                        739.834,
+                        732.312
+                      ],
+                      "stddev_ts": 29.051018
+                    },
+                    {
+                      "avg_ts": 652.990303,
+                      "depth": 16384,
+                      "samples_ts": [
+                        677.5,
+                        645.877,
+                        635.593
+                      ],
+                      "stddev_ts": 21.840265
+                    },
+                    {
+                      "avg_ts": 588.581116,
+                      "depth": 24576,
+                      "samples_ts": [
+                        611.235,
+                        578.877,
+                        575.631
+                      ],
+                      "stddev_ts": 19.685762
+                    },
+                    {
+                      "avg_ts": 529.933761,
+                      "depth": 32768,
+                      "samples_ts": [
+                        541.265,
+                        524.765,
+                        523.772
+                      ],
+                      "stddev_ts": 9.825639
+                    },
+                    {
+                      "avg_ts": 489.827886,
+                      "depth": 40960,
+                      "samples_ts": [
+                        509.752,
+                        481.269,
+                        478.463
+                      ],
+                      "stddev_ts": 17.311725
+                    },
+                    {
+                      "avg_ts": 447.504657,
+                      "depth": 49152,
+                      "samples_ts": [
+                        463.336,
+                        439.243,
+                        439.935
+                      ],
+                      "stddev_ts": 13.714478
+                    },
+                    {
+                      "avg_ts": 434.239887,
+                      "depth": 57344,
+                      "samples_ts": [
+                        469.573,
+                        419.222,
+                        413.925
+                      ],
+                      "stddev_ts": 30.713501
+                    },
+                    {
+                      "avg_ts": 410.313859,
+                      "depth": 65536,
+                      "samples_ts": [
+                        449.46,
+                        393.725,
+                        387.756
+                      ],
+                      "stddev_ts": 34.032651
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                  "ubatch": 256
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.8950539829054426,
+                  "points": [
+                    {
+                      "avg_ts": 1331.023299,
+                      "depth": 0,
+                      "samples_ts": [
+                        1327.23,
+                        1333.76,
+                        1332.08
+                      ],
+                      "stddev_ts": 3.388112
+                    },
+                    {
+                      "avg_ts": 1155.392737,
+                      "depth": 8192,
+                      "samples_ts": [
+                        1147.95,
+                        1158.75,
+                        1159.47
+                      ],
+                      "stddev_ts": 6.451912
+                    },
+                    {
+                      "avg_ts": 829.892415,
+                      "depth": 16384,
+                      "samples_ts": [
+                        880.498,
+                        811.205,
+                        797.975
+                      ],
+                      "stddev_ts": 44.322135
+                    },
+                    {
+                      "avg_ts": 708.582567,
+                      "depth": 24576,
+                      "samples_ts": [
+                        747.563,
+                        690.873,
+                        687.312
+                      ],
+                      "stddev_ts": 33.80474
+                    },
+                    {
+                      "avg_ts": 614.869221,
+                      "depth": 32768,
+                      "samples_ts": [
+                        635.049,
+                        605.578,
+                        603.98
+                      ],
+                      "stddev_ts": 17.494799
+                    },
+                    {
+                      "avg_ts": 562.963609,
+                      "depth": 40960,
+                      "samples_ts": [
+                        592.177,
+                        551.915,
+                        544.799
+                      ],
+                      "stddev_ts": 25.548391
+                    },
+                    {
+                      "avg_ts": 506.385947,
+                      "depth": 49152,
+                      "samples_ts": [
+                        525.819,
+                        494.335,
+                        499.004
+                      ],
+                      "stddev_ts": 16.990327
+                    },
+                    {
+                      "avg_ts": 487.154634,
+                      "depth": 57344,
+                      "samples_ts": [
+                        536.11,
+                        465.091,
+                        460.263
+                      ],
+                      "stddev_ts": 42.465424
+                    },
+                    {
+                      "avg_ts": 460.679251,
+                      "depth": 65536,
+                      "samples_ts": [
+                        513.903,
+                        437.363,
+                        430.772
+                      ],
+                      "stddev_ts": 46.210384
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                  "ubatch": 512
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9543052280198138,
+                  "points": [
+                    {
+                      "avg_ts": 1384.566781,
+                      "depth": 0,
+                      "samples_ts": [
+                        1371.6,
+                        1391.72,
+                        1390.38
+                      ],
+                      "stddev_ts": 11.24861
+                    },
+                    {
+                      "avg_ts": 1197.850744,
+                      "depth": 8192,
+                      "samples_ts": [
+                        1195.5,
+                        1198.59,
+                        1199.45
+                      ],
+                      "stddev_ts": 2.077803
+                    },
+                    {
+                      "avg_ts": 991.569888,
+                      "depth": 16384,
+                      "samples_ts": [
+                        1050.5,
+                        987.538,
+                        936.673
+                      ],
+                      "stddev_ts": 57.019544
+                    },
+                    {
+                      "avg_ts": 768.157712,
+                      "depth": 24576,
+                      "samples_ts": [
+                        813.66,
+                        749.296,
+                        741.518
+                      ],
+                      "stddev_ts": 39.597215
+                    },
+                    {
+                      "avg_ts": 658.506004,
+                      "depth": 32768,
+                      "samples_ts": [
+                        690.459,
+                        642.082,
+                        642.977
+                      ],
+                      "stddev_ts": 27.675852
+                    },
+                    {
+                      "avg_ts": 593.316506,
+                      "depth": 40960,
+                      "samples_ts": [
+                        625.577,
+                        576.877,
+                        577.495
+                      ],
+                      "stddev_ts": 27.940514
+                    },
+                    {
+                      "avg_ts": 529.421212,
+                      "depth": 49152,
+                      "samples_ts": [
+                        551.529,
+                        520.219,
+                        516.516
+                      ],
+                      "stddev_ts": 19.234973
+                    },
+                    {
+                      "avg_ts": 510.856234,
+                      "depth": 57344,
+                      "samples_ts": [
+                        570.535,
+                        484.91,
+                        477.123
+                      ],
+                      "stddev_ts": 51.829639
+                    },
+                    {
+                      "avg_ts": 480.215853,
+                      "depth": 65536,
+                      "samples_ts": [
+                        543.24,
+                        452.077,
+                        445.331
+                      ],
+                      "stddev_ts": 54.684532
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                  "ubatch": 1024
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9897023820352933,
+                  "points": [
+                    {
+                      "avg_ts": 1310.286838,
+                      "depth": 0,
+                      "samples_ts": [
+                        1307.39,
+                        1310.59,
+                        1312.88
+                      ],
+                      "stddev_ts": 2.757907
+                    },
+                    {
+                      "avg_ts": 1151.098566,
+                      "depth": 8192,
+                      "samples_ts": [
+                        1147.9,
+                        1152.51,
+                        1152.89
+                      ],
+                      "stddev_ts": 2.777035
+                    },
+                    {
+                      "avg_ts": 1028.353027,
+                      "depth": 16384,
+                      "samples_ts": [
+                        1026.37,
+                        1029.5,
+                        1029.19
+                      ],
+                      "stddev_ts": 1.722245
+                    },
+                    {
+                      "avg_ts": 909.891935,
+                      "depth": 24576,
+                      "samples_ts": [
+                        928.243,
+                        914.279,
+                        887.154
+                      ],
+                      "stddev_ts": 20.893062
+                    },
+                    {
+                      "avg_ts": 708.351608,
+                      "depth": 32768,
+                      "samples_ts": [
+                        745.831,
+                        694.465,
+                        684.759
+                      ],
+                      "stddev_ts": 32.81875
+                    },
+                    {
+                      "avg_ts": 624.000183,
+                      "depth": 40960,
+                      "samples_ts": [
+                        663.734,
+                        609.967,
+                        598.299
+                      ],
+                      "stddev_ts": 34.901322
+                    },
+                    {
+                      "avg_ts": 552.284697,
+                      "depth": 49152,
+                      "samples_ts": [
+                        575.611,
+                        541.701,
+                        539.542
+                      ],
+                      "stddev_ts": 20.230113
+                    },
+                    {
+                      "avg_ts": 528.701008,
+                      "depth": 57344,
+                      "samples_ts": [
+                        579.19,
+                        508.005,
+                        498.908
+                      ],
+                      "stddev_ts": 43.960408
+                    },
+                    {
+                      "avg_ts": 492.54043,
+                      "depth": 65536,
+                      "samples_ts": [
+                        553.729,
+                        467.797,
+                        456.095
+                      ],
+                      "stddev_ts": 53.312691
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                  "ubatch": 2048
+                }
+              ],
+              "depths": [
+                0,
+                8192,
+                16384,
+                24576,
+                32768,
+                40960,
+                49152,
+                57344,
+                65536
+              ],
+              "prefill": 2048,
+              "repetitions": 3,
+              "selected_ubatch": 2048,
+              "toolbox": "llama-vulkan-radv-perfromance"
+            }
+          ],
+          "selected_ubatch": 2048
+        },
+        "Qwen3.6-35B-A3B-UD-Q8_K_XL": {
+          "latest_run": {
+            "calibrated_at": "2026-08-04T11:28:04.687555+00:00",
+            "candidates": [
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.7369454772162705,
+                "points": [
+                  {
+                    "avg_ts": 1061.745272,
+                    "depth": 0,
+                    "samples_ts": [
+                      1053.21,
+                      1062.38,
+                      1069.65
+                    ],
+                    "stddev_ts": 8.239012
+                  },
+                  {
+                    "avg_ts": 874.701991,
+                    "depth": 8192,
+                    "samples_ts": [
+                      919.526,
+                      910.226,
+                      794.354
+                    ],
+                    "stddev_ts": 69.738957
+                  },
+                  {
+                    "avg_ts": 633.909678,
+                    "depth": 16384,
+                    "samples_ts": [
+                      660.118,
+                      622.646,
+                      618.964
+                    ],
+                    "stddev_ts": 22.771827
+                  },
+                  {
+                    "avg_ts": 564.165991,
+                    "depth": 24576,
+                    "samples_ts": [
+                      584.382,
+                      555.172,
+                      552.944
+                    ],
+                    "stddev_ts": 17.542705
+                  },
+                  {
+                    "avg_ts": 506.05111,
+                    "depth": 32768,
+                    "samples_ts": [
+                      518.541,
+                      499.668,
+                      499.944
+                    ],
+                    "stddev_ts": 10.817736
+                  },
+                  {
+                    "avg_ts": 470.104762,
+                    "depth": 40960,
+                    "samples_ts": [
+                      488.322,
+                      463.487,
+                      458.506
+                    ],
+                    "stddev_ts": 15.971701
+                  },
+                  {
+                    "avg_ts": 428.330118,
+                    "depth": 49152,
+                    "samples_ts": [
+                      440.901,
+                      423.254,
+                      420.836
+                    ],
+                    "stddev_ts": 10.953396
+                  },
+                  {
+                    "avg_ts": 415.825767,
+                    "depth": 57344,
+                    "samples_ts": [
+                      449.515,
+                      402.266,
+                      395.696
+                    ],
+                    "stddev_ts": 29.359966
+                  },
+                  {
+                    "avg_ts": 394.409091,
+                    "depth": 65536,
+                    "samples_ts": [
+                      430.784,
+                      379.659,
+                      372.784
+                    ],
+                    "stddev_ts": 31.688892
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                "ubatch": 256
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.8787120156721736,
+                "points": [
+                  {
+                    "avg_ts": 1265.903271,
+                    "depth": 0,
+                    "samples_ts": [
+                      1258.82,
+                      1269.32,
+                      1269.57
+                    ],
+                    "stddev_ts": 6.131714
+                  },
+                  {
+                    "avg_ts": 1101.943299,
+                    "depth": 8192,
+                    "samples_ts": [
+                      1095.91,
+                      1103.05,
+                      1106.87
+                    ],
+                    "stddev_ts": 5.56151
+                  },
+                  {
+                    "avg_ts": 805.355707,
+                    "depth": 16384,
+                    "samples_ts": [
+                      854.101,
+                      789.341,
+                      772.625
+                    ],
+                    "stddev_ts": 43.034388
+                  },
+                  {
+                    "avg_ts": 683.243079,
+                    "depth": 24576,
+                    "samples_ts": [
+                      715.881,
+                      670.299,
+                      663.55
+                    ],
+                    "stddev_ts": 28.465971
+                  },
+                  {
+                    "avg_ts": 600.201972,
+                    "depth": 32768,
+                    "samples_ts": [
+                      622.978,
+                      590.535,
+                      587.093
+                    ],
+                    "stddev_ts": 19.799736
+                  },
+                  {
+                    "avg_ts": 550.145304,
+                    "depth": 40960,
+                    "samples_ts": [
+                      581.899,
+                      534.47,
+                      534.067
+                    ],
+                    "stddev_ts": 27.500383
+                  },
+                  {
+                    "avg_ts": 497.291172,
+                    "depth": 49152,
+                    "samples_ts": [
+                      514.222,
+                      489.286,
+                      488.365
+                    ],
+                    "stddev_ts": 14.669969
+                  },
+                  {
+                    "avg_ts": 480.230583,
+                    "depth": 57344,
+                    "samples_ts": [
+                      530.065,
+                      459.421,
+                      451.205
+                    ],
+                    "stddev_ts": 43.353221
+                  },
+                  {
+                    "avg_ts": 453.017753,
+                    "depth": 65536,
+                    "samples_ts": [
+                      506.742,
+                      429.71,
+                      422.601
+                    ],
+                    "stddev_ts": 46.661988
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                "ubatch": 512
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.949404051032141,
+                "points": [
+                  {
+                    "avg_ts": 1340.815993,
+                    "depth": 0,
+                    "samples_ts": [
+                      1337.1,
+                      1342.49,
+                      1342.86
+                    ],
+                    "stddev_ts": 3.220184
+                  },
+                  {
+                    "avg_ts": 1163.318068,
+                    "depth": 8192,
+                    "samples_ts": [
+                      1161.63,
+                      1162.97,
+                      1165.36
+                    ],
+                    "stddev_ts": 1.889216
+                  },
+                  {
+                    "avg_ts": 996.06561,
+                    "depth": 16384,
+                    "samples_ts": [
+                      1018.39,
+                      1016.3,
+                      953.51
+                    ],
+                    "stddev_ts": 36.869321
+                  },
+                  {
+                    "avg_ts": 752.438097,
+                    "depth": 24576,
+                    "samples_ts": [
+                      793.925,
+                      735.498,
+                      727.891
+                    ],
+                    "stddev_ts": 36.129723
+                  },
+                  {
+                    "avg_ts": 643.078909,
+                    "depth": 32768,
+                    "samples_ts": [
+                      671.777,
+                      627.746,
+                      629.714
+                    ],
+                    "stddev_ts": 24.872504
+                  },
+                  {
+                    "avg_ts": 582.823164,
+                    "depth": 40960,
+                    "samples_ts": [
+                      619.696,
+                      566.184,
+                      562.59
+                    ],
+                    "stddev_ts": 31.98292
+                  },
+                  {
+                    "avg_ts": 524.790337,
+                    "depth": 49152,
+                    "samples_ts": [
+                      545.182,
+                      516.379,
+                      512.81
+                    ],
+                    "stddev_ts": 17.749184
+                  },
+                  {
+                    "avg_ts": 506.223209,
+                    "depth": 57344,
+                    "samples_ts": [
+                      557.043,
+                      484.335,
+                      477.292
+                    ],
+                    "stddev_ts": 44.152052
+                  },
+                  {
+                    "avg_ts": 478.737649,
+                    "depth": 65536,
+                    "samples_ts": [
+                      539.973,
+                      453.386,
+                      442.854
+                    ],
+                    "stddev_ts": 53.292261
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                "ubatch": 1024
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9948396529234148,
+                "points": [
+                  {
+                    "avg_ts": 1298.566447,
+                    "depth": 0,
+                    "samples_ts": [
+                      1296.6,
+                      1299.63,
+                      1299.47
+                    ],
+                    "stddev_ts": 1.700627
+                  },
+                  {
+                    "avg_ts": 1145.946472,
+                    "depth": 8192,
+                    "samples_ts": [
+                      1144.34,
+                      1147.35,
+                      1146.14
+                    ],
+                    "stddev_ts": 1.516228
+                  },
+                  {
+                    "avg_ts": 1023.017357,
+                    "depth": 16384,
+                    "samples_ts": [
+                      1020.97,
+                      1023.67,
+                      1024.42
+                    ],
+                    "stddev_ts": 1.816751
+                  },
+                  {
+                    "avg_ts": 919.18635,
+                    "depth": 24576,
+                    "samples_ts": [
+                      922.88,
+                      924.343,
+                      910.337
+                    ],
+                    "stddev_ts": 7.699037
+                  },
+                  {
+                    "avg_ts": 698.702634,
+                    "depth": 32768,
+                    "samples_ts": [
+                      731.143,
+                      685.163,
+                      679.802
+                    ],
+                    "stddev_ts": 28.22166
+                  },
+                  {
+                    "avg_ts": 617.300845,
+                    "depth": 40960,
+                    "samples_ts": [
+                      653.96,
+                      604.583,
+                      593.36
+                    ],
+                    "stddev_ts": 32.239589
+                  },
+                  {
+                    "avg_ts": 548.355698,
+                    "depth": 49152,
+                    "samples_ts": [
+                      570.49,
+                      537.148,
+                      537.429
+                    ],
+                    "stddev_ts": 19.1695
+                  },
+                  {
+                    "avg_ts": 527.391395,
+                    "depth": 57344,
+                    "samples_ts": [
+                      584.261,
+                      504.285,
+                      493.628
+                    ],
+                    "stddev_ts": 49.537542
+                  },
+                  {
+                    "avg_ts": 493.053564,
+                    "depth": 65536,
+                    "samples_ts": [
+                      558.05,
+                      466.336,
+                      454.774
+                    ],
+                    "stddev_ts": 56.584901
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                "ubatch": 2048
+              }
+            ],
+            "depths": [
+              0,
+              8192,
+              16384,
+              24576,
+              32768,
+              40960,
+              49152,
+              57344,
+              65536
+            ],
+            "prefill": 2048,
+            "repetitions": 3,
+            "selected_ubatch": 2048,
+            "toolbox": "llama-vulkan-radv-perfromance"
+          },
+          "runs": [
+            {
+              "calibrated_at": "2026-08-04T11:28:04.687555+00:00",
+              "candidates": [
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.7369454772162705,
+                  "points": [
+                    {
+                      "avg_ts": 1061.745272,
+                      "depth": 0,
+                      "samples_ts": [
+                        1053.21,
+                        1062.38,
+                        1069.65
+                      ],
+                      "stddev_ts": 8.239012
+                    },
+                    {
+                      "avg_ts": 874.701991,
+                      "depth": 8192,
+                      "samples_ts": [
+                        919.526,
+                        910.226,
+                        794.354
+                      ],
+                      "stddev_ts": 69.738957
+                    },
+                    {
+                      "avg_ts": 633.909678,
+                      "depth": 16384,
+                      "samples_ts": [
+                        660.118,
+                        622.646,
+                        618.964
+                      ],
+                      "stddev_ts": 22.771827
+                    },
+                    {
+                      "avg_ts": 564.165991,
+                      "depth": 24576,
+                      "samples_ts": [
+                        584.382,
+                        555.172,
+                        552.944
+                      ],
+                      "stddev_ts": 17.542705
+                    },
+                    {
+                      "avg_ts": 506.05111,
+                      "depth": 32768,
+                      "samples_ts": [
+                        518.541,
+                        499.668,
+                        499.944
+                      ],
+                      "stddev_ts": 10.817736
+                    },
+                    {
+                      "avg_ts": 470.104762,
+                      "depth": 40960,
+                      "samples_ts": [
+                        488.322,
+                        463.487,
+                        458.506
+                      ],
+                      "stddev_ts": 15.971701
+                    },
+                    {
+                      "avg_ts": 428.330118,
+                      "depth": 49152,
+                      "samples_ts": [
+                        440.901,
+                        423.254,
+                        420.836
+                      ],
+                      "stddev_ts": 10.953396
+                    },
+                    {
+                      "avg_ts": 415.825767,
+                      "depth": 57344,
+                      "samples_ts": [
+                        449.515,
+                        402.266,
+                        395.696
+                      ],
+                      "stddev_ts": 29.359966
+                    },
+                    {
+                      "avg_ts": 394.409091,
+                      "depth": 65536,
+                      "samples_ts": [
+                        430.784,
+                        379.659,
+                        372.784
+                      ],
+                      "stddev_ts": 31.688892
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                  "ubatch": 256
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.8787120156721736,
+                  "points": [
+                    {
+                      "avg_ts": 1265.903271,
+                      "depth": 0,
+                      "samples_ts": [
+                        1258.82,
+                        1269.32,
+                        1269.57
+                      ],
+                      "stddev_ts": 6.131714
+                    },
+                    {
+                      "avg_ts": 1101.943299,
+                      "depth": 8192,
+                      "samples_ts": [
+                        1095.91,
+                        1103.05,
+                        1106.87
+                      ],
+                      "stddev_ts": 5.56151
+                    },
+                    {
+                      "avg_ts": 805.355707,
+                      "depth": 16384,
+                      "samples_ts": [
+                        854.101,
+                        789.341,
+                        772.625
+                      ],
+                      "stddev_ts": 43.034388
+                    },
+                    {
+                      "avg_ts": 683.243079,
+                      "depth": 24576,
+                      "samples_ts": [
+                        715.881,
+                        670.299,
+                        663.55
+                      ],
+                      "stddev_ts": 28.465971
+                    },
+                    {
+                      "avg_ts": 600.201972,
+                      "depth": 32768,
+                      "samples_ts": [
+                        622.978,
+                        590.535,
+                        587.093
+                      ],
+                      "stddev_ts": 19.799736
+                    },
+                    {
+                      "avg_ts": 550.145304,
+                      "depth": 40960,
+                      "samples_ts": [
+                        581.899,
+                        534.47,
+                        534.067
+                      ],
+                      "stddev_ts": 27.500383
+                    },
+                    {
+                      "avg_ts": 497.291172,
+                      "depth": 49152,
+                      "samples_ts": [
+                        514.222,
+                        489.286,
+                        488.365
+                      ],
+                      "stddev_ts": 14.669969
+                    },
+                    {
+                      "avg_ts": 480.230583,
+                      "depth": 57344,
+                      "samples_ts": [
+                        530.065,
+                        459.421,
+                        451.205
+                      ],
+                      "stddev_ts": 43.353221
+                    },
+                    {
+                      "avg_ts": 453.017753,
+                      "depth": 65536,
+                      "samples_ts": [
+                        506.742,
+                        429.71,
+                        422.601
+                      ],
+                      "stddev_ts": 46.661988
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                  "ubatch": 512
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.949404051032141,
+                  "points": [
+                    {
+                      "avg_ts": 1340.815993,
+                      "depth": 0,
+                      "samples_ts": [
+                        1337.1,
+                        1342.49,
+                        1342.86
+                      ],
+                      "stddev_ts": 3.220184
+                    },
+                    {
+                      "avg_ts": 1163.318068,
+                      "depth": 8192,
+                      "samples_ts": [
+                        1161.63,
+                        1162.97,
+                        1165.36
+                      ],
+                      "stddev_ts": 1.889216
+                    },
+                    {
+                      "avg_ts": 996.06561,
+                      "depth": 16384,
+                      "samples_ts": [
+                        1018.39,
+                        1016.3,
+                        953.51
+                      ],
+                      "stddev_ts": 36.869321
+                    },
+                    {
+                      "avg_ts": 752.438097,
+                      "depth": 24576,
+                      "samples_ts": [
+                        793.925,
+                        735.498,
+                        727.891
+                      ],
+                      "stddev_ts": 36.129723
+                    },
+                    {
+                      "avg_ts": 643.078909,
+                      "depth": 32768,
+                      "samples_ts": [
+                        671.777,
+                        627.746,
+                        629.714
+                      ],
+                      "stddev_ts": 24.872504
+                    },
+                    {
+                      "avg_ts": 582.823164,
+                      "depth": 40960,
+                      "samples_ts": [
+                        619.696,
+                        566.184,
+                        562.59
+                      ],
+                      "stddev_ts": 31.98292
+                    },
+                    {
+                      "avg_ts": 524.790337,
+                      "depth": 49152,
+                      "samples_ts": [
+                        545.182,
+                        516.379,
+                        512.81
+                      ],
+                      "stddev_ts": 17.749184
+                    },
+                    {
+                      "avg_ts": 506.223209,
+                      "depth": 57344,
+                      "samples_ts": [
+                        557.043,
+                        484.335,
+                        477.292
+                      ],
+                      "stddev_ts": 44.152052
+                    },
+                    {
+                      "avg_ts": 478.737649,
+                      "depth": 65536,
+                      "samples_ts": [
+                        539.973,
+                        453.386,
+                        442.854
+                      ],
+                      "stddev_ts": 53.292261
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                  "ubatch": 1024
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9948396529234148,
+                  "points": [
+                    {
+                      "avg_ts": 1298.566447,
+                      "depth": 0,
+                      "samples_ts": [
+                        1296.6,
+                        1299.63,
+                        1299.47
+                      ],
+                      "stddev_ts": 1.700627
+                    },
+                    {
+                      "avg_ts": 1145.946472,
+                      "depth": 8192,
+                      "samples_ts": [
+                        1144.34,
+                        1147.35,
+                        1146.14
+                      ],
+                      "stddev_ts": 1.516228
+                    },
+                    {
+                      "avg_ts": 1023.017357,
+                      "depth": 16384,
+                      "samples_ts": [
+                        1020.97,
+                        1023.67,
+                        1024.42
+                      ],
+                      "stddev_ts": 1.816751
+                    },
+                    {
+                      "avg_ts": 919.18635,
+                      "depth": 24576,
+                      "samples_ts": [
+                        922.88,
+                        924.343,
+                        910.337
+                      ],
+                      "stddev_ts": 7.699037
+                    },
+                    {
+                      "avg_ts": 698.702634,
+                      "depth": 32768,
+                      "samples_ts": [
+                        731.143,
+                        685.163,
+                        679.802
+                      ],
+                      "stddev_ts": 28.22166
+                    },
+                    {
+                      "avg_ts": 617.300845,
+                      "depth": 40960,
+                      "samples_ts": [
+                        653.96,
+                        604.583,
+                        593.36
+                      ],
+                      "stddev_ts": 32.239589
+                    },
+                    {
+                      "avg_ts": 548.355698,
+                      "depth": 49152,
+                      "samples_ts": [
+                        570.49,
+                        537.148,
+                        537.429
+                      ],
+                      "stddev_ts": 19.1695
+                    },
+                    {
+                      "avg_ts": 527.391395,
+                      "depth": 57344,
+                      "samples_ts": [
+                        584.261,
+                        504.285,
+                        493.628
+                      ],
+                      "stddev_ts": 49.537542
+                    },
+                    {
+                      "avg_ts": 493.053564,
+                      "depth": 65536,
+                      "samples_ts": [
+                        558.05,
+                        466.336,
+                        454.774
+                      ],
+                      "stddev_ts": 56.584901
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                  "ubatch": 2048
+                }
+              ],
+              "depths": [
+                0,
+                8192,
+                16384,
+                24576,
+                32768,
+                40960,
+                49152,
+                57344,
+                65536
+              ],
+              "prefill": 2048,
+              "repetitions": 3,
+              "selected_ubatch": 2048,
+              "toolbox": "llama-vulkan-radv-perfromance"
+            }
+          ],
+          "selected_ubatch": 2048
+        }
+      }
+    }
+  },
+  "schema_version": 1
+}

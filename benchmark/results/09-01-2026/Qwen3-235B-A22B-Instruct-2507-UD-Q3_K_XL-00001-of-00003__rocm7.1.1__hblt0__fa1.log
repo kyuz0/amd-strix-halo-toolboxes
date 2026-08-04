@@ -1,7 +1,0 @@
-ggml_cuda_init: failed to initialize ROCm: no ROCm-capable device is detected
-| model                          |       size |     params | backend    | ngl | fa | mmap |            test |                  t/s |
-| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | ---: | --------------: | -------------------: |
-| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |  1 |    0 |           pp512 |         17.92 ± 2.98 |
-| qwen3moe 235B.A22B Q3_K - Medium |  96.99 GiB |   235.09 B | ROCm       |  99 |  1 |    0 |           tg128 |          7.99 ± 0.19 |
-
-build: 9c142e3a2 (7670)

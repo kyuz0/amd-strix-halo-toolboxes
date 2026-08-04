@@ -1,0 +1,99 @@
+{
+  "model": "Qwen3.6-27B-UD-Q8_K_XL",
+  "gguf": "Qwen3.6-27B-MTP-GGUF/Qwen3.6-27B-UD-Q8_K_XL.gguf",
+  "toolbox": "rocm-7.2.3-mtp",
+  "mode": "mtp-3",
+  "spec_flags": "--spec-type draft-mtp --spec-draft-n-max 3 -np 1",
+  "timestamp": "2026-05-15T10:40:12.760327",
+  "results": [
+    {
+      "name": "code_python",
+      "wall_s": 13.774,
+      "predicted_n": 192,
+      "predicted_per_second": 14.54,
+      "draft_n": 163,
+      "draft_n_accepted": 136,
+      "accept_rate": 0.8344
+    },
+    {
+      "name": "code_cpp",
+      "wall_s": 15.093,
+      "predicted_n": 192,
+      "predicted_per_second": 13.19,
+      "draft_n": 181,
+      "draft_n_accepted": 130,
+      "accept_rate": 0.7182
+    },
+    {
+      "name": "explain_concept",
+      "wall_s": 14.643,
+      "predicted_n": 192,
+      "predicted_per_second": 13.63,
+      "draft_n": 175,
+      "draft_n_accepted": 132,
+      "accept_rate": 0.7543
+    },
+    {
+      "name": "summarize",
+      "wall_s": 14.134,
+      "predicted_n": 192,
+      "predicted_per_second": 14.17,
+      "draft_n": 168,
+      "draft_n_accepted": 134,
+      "accept_rate": 0.7976
+    },
+    {
+      "name": "qa_factual",
+      "wall_s": 14.651,
+      "predicted_n": 192,
+      "predicted_per_second": 13.63,
+      "draft_n": 176,
+      "draft_n_accepted": 132,
+      "accept_rate": 0.75
+    },
+    {
+      "name": "translation",
+      "wall_s": 15.613,
+      "predicted_n": 192,
+      "predicted_per_second": 12.75,
+      "draft_n": 189,
+      "draft_n_accepted": 128,
+      "accept_rate": 0.6772
+    },
+    {
+      "name": "creative_short",
+      "wall_s": 15.599,
+      "predicted_n": 192,
+      "predicted_per_second": 12.76,
+      "draft_n": 187,
+      "draft_n_accepted": 128,
+      "accept_rate": 0.6845
+    },
+    {
+      "name": "stepwise_math",
+      "wall_s": 14.128,
+      "predicted_n": 192,
+      "predicted_per_second": 14.17,
+      "draft_n": 168,
+      "draft_n_accepted": 134,
+      "accept_rate": 0.7976
+    },
+    {
+      "name": "long_code_review",
+      "wall_s": 17.563,
+      "predicted_n": 192,
+      "predicted_per_second": 12.99,
+      "draft_n": 183,
+      "draft_n_accepted": 129,
+      "accept_rate": 0.7049
+    }
+  ],
+  "aggregate": {
+    "n_requests": 9,
+    "total_predicted": 1728,
+    "total_draft": 1590,
+    "total_draft_accepted": 1183,
+    "aggregate_accept_rate": 0.744,
+    "wall_s_total": 135.2
+  }
+}

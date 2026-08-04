@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Strix Halo — Toolbox Performance Comparison</title>
+    <link rel="stylesheet" href="assets/ryzen-ai-halo.css">
+    <link rel="stylesheet" href="assets/toolbox-performance.css">
+    <script defer data-domain="kyuz0.github.io/amd-strix-halo-toolboxes" src="https://plausible.skybound.link/js/plausible.js"></script>
+</head>
+
+<body>
+    <header class="page-header">
+        <div class="layout">
+            <div class="header-links">
+                <a class="back-link" href="index.html">← Main benchmarks</a>
+                <a class="back-link" href="ryzen-ai-halo.html">System profile curves</a>
+            </div>
+            <h1>Strix Halo — Toolbox Performance</h1>
+            <p id="system-info">AMD Ryzen AI Max+ reference systems · Loading results…</p>
+            <p class="intro">Compare llama.cpp backends and toolbox builds at identical starting context depths.</p>
+        </div>
+    </header>
+
+    <main class="layout">
+        <section class="card controls-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Choose comparisons</span>
+                    <h2>Models and toolboxes</h2>
+                </div>
+                <span id="result-count" class="result-count">Loading…</span>
+            </div>
+
+            <div class="selector-heading">
+                <strong>Models</strong>
+                <span><button id="models-all" type="button" class="text-button">All</button><button id="models-none" type="button" class="text-button">None</button></span>
+            </div>
+            <div id="model-selector" class="model-selector" role="group" aria-label="Select models"></div>
+
+            <div class="selector-heading toolbox-heading">
+                <strong>Toolboxes</strong>
+                <span><button id="toolboxes-all" type="button" class="text-button">All</button><button id="toolboxes-none" type="button" class="text-button">None</button></span>
+            </div>
+            <div id="toolbox-selector" class="toolbox-selector" role="group" aria-label="Select toolboxes"></div>
+
+            <div class="comparison-options">
+                <label for="baseline-selector">
+                    Comparison baseline
+                    <select id="baseline-selector"></select>
+                </label>
+            </div>
+
+            <section class="calibration-panel" aria-labelledby="calibration-title">
+                <div class="calibration-heading">
+                    <div>
+                        <span class="eyebrow">Benchmark tuning</span>
+                        <h3 id="calibration-title">Calibrated settings</h3>
+                    </div>
+                    <p id="calibration-summary"></p>
+                </div>
+                <div id="model-config" class="calibration-matrix" aria-live="polite"></div>
+            </section>
+
+            <div id="comparison-legend" class="comparison-legend"></div>
+            <p id="data-warning" class="data-warning" hidden></p>
+
+            <div class="scale-control" role="group" aria-label="Chart scale">
+                <span>Chart view</span>
+                <button type="button" class="scale-button active" data-scale="absolute">Tokens/s</button>
+                <button type="button" class="scale-button" data-scale="retention">Depth retention</button>
+                <button type="button" class="scale-button" data-scale="gain">Gain vs baseline</button>
+            </div>
+        </section>
+
+        <section class="chart-grid" aria-live="polite">
+            <article class="card chart-card">
+                <div class="chart-heading">
+                    <div>
+                        <span class="eyebrow">Prompt processing</span>
+                        <h2>Prefill throughput</h2>
+                    </div>
+                    <span class="unit">tokens/s</span>
+                </div>
+                <div id="prefill-chart" class="curve-chart"></div>
+            </article>
+
+            <article class="card chart-card">
+                <div class="chart-heading">
+                    <div>
+                        <span class="eyebrow">Text generation</span>
+                        <h2>Generation throughput</h2>
+                    </div>
+                    <span class="unit">tokens/s</span>
+                </div>
+                <div id="generation-chart" class="curve-chart"></div>
+            </article>
+        </section>
+
+        <section class="card data-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Exact measurements</span>
+                    <h2>Selected results</h2>
+                </div>
+                <div class="metric-tabs" role="group" aria-label="Table metric">
+                    <button type="button" class="metric-button active" data-metric="prefill">Prefill</button>
+                    <button type="button" class="metric-button" data-metric="generation">Generation</button>
+                </div>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead id="results-head"></thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+            </div>
+            <p class="method-note">Each point measures a 2,048-token prefill or 128-token generation after the listed starting depth. The KV-cache fill is not timed. Values after ± are standard deviations; percentages compare against the selected baseline toolbox.</p>
+        </section>
+
+        <section class="card provenance-card">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">Reproducibility</span>
+                    <h2>Toolbox builds</h2>
+                </div>
+            </div>
+            <div id="toolbox-details" class="toolbox-details"></div>
+        </section>
+    </main>
+
+    <script src="assets/toolbox-performance.js" type="module"></script>
+</body>
+
+</html>

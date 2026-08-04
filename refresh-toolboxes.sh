@@ -7,40 +7,63 @@ declare -A TOOLBOXES
 
 TOOLBOXES["llama-vulkan-amdvlk"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-amdvlk --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-vulkan-radv"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv --device /dev/dri --group-add video --security-opt seccomp=unconfined"
+TOOLBOXES["llama-vulkan-radv-perfromance"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-perfromance --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-6.4.4"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-6.4.4 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
-TOOLBOXES["llama-rocm-7.2"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
-TOOLBOXES["llama-rocm7-nightlies"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm7-nightlies --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7.14"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7.2.4-rdma-fix"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4-rdma-fix --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7.2.4-turboquant"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4-turboquant --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-7.2.4-rocmfpx"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4-rocmfpx --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-vulkan-rocmfpx"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-rocmfpx --device /dev/dri --group-add video --security-opt seccomp=unconfined"
+TOOLBOXES["llama-therock-nightly"]="docker.io/kyuz0/amd-strix-halo-toolboxes:therock-nightly --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 
 function usage() {
   echo "Usage: $0 [all|toolbox-name1 toolbox-name2 ...]"
   echo "Available toolboxes:"
-  for name in "${!TOOLBOXES[@]}"; do
-    echo "  - $name"  
-  done
+  echo
+  echo "Stable:"
+  echo "  - llama-vulkan-radv"
+  echo "  - llama-vulkan-amdvlk"
+  echo "  - llama-rocm-7.14"
+  echo "  - llama-rocm-6.4.4"
+  echo
+  echo "Experimental / Custom:"
+  echo "  - llama-vulkan-radv-perfromance"
+  echo "  - llama-rocm-7.2.4-rdma-fix"
+  echo "  - llama-rocm-7.2.4-rocmfpx"
+  echo "  - llama-vulkan-rocmfpx"
+  echo "  - llama-rocm-7.2.4-turboquant"
+  echo "  - llama-therock-nightly"
   exit 1
 }
 
 # Check OS and set appropriate toolbox command
-IS_UBUNTU=false
 if [ -f /etc/os-release ]; then
   . /etc/os-release
-  if [ "$ID" = "ubuntu" ]; then
-    IS_UBUNTU=true
+  if [ "$ID" = "ubuntu" ] || [ "$ID" = "debian" ]; then
+    TOOLBOX_CMD="distrobox"
+  else
+    TOOLBOX_CMD="toolbox"
   fi
 fi
 
-if [ "$IS_UBUNTU" = true ]; then
-  TOOLBOX_CMD="distrobox"
-else
-  TOOLBOX_CMD="toolbox"
+# Match the known-good RDMA setup used by the vLLM Toolbx project.
+# Distrobox already manages host device integration and is left unchanged.
+RDMA_OPTIONS=""
+if [ "$TOOLBOX_CMD" = "toolbox" ]; then
+  if [ -d /dev/infiniband ]; then
+    echo "🔎 InfiniBand devices detected. Enabling RDMA for Toolbx."
+    RDMA_OPTIONS="--device /dev/infiniband --group-add rdma --ulimit memlock=-1"
+  else
+    echo "ℹ️  No InfiniBand devices detected."
+  fi
 fi
 
 # Check dependencies
 DEPENDENCIES=("podman" "$TOOLBOX_CMD")
 for cmd in "${DEPENDENCIES[@]}"; do
   if ! command -v "$cmd" > /dev/null; then
-    if [ "$cmd" = "distrobox" ] && [ "$IS_UBUNTU" = true ]; then
-      echo "Error: 'distrobox' is not installed. Ubuntu users must use distrobox instead of toolbox." >&2
+    if [ "$cmd" = "distrobox" ]; then
+      echo "Error: 'distrobox' is not installed. Debian-based distributions (like Ubuntu) must use distrobox instead of toolbox." >&2
       echo "Please install distrobox (e.g., sudo apt install distrobox) and try again." >&2
     else
       echo "Error: '$cmd' is not installed." >&2
@@ -73,6 +96,9 @@ for name in "${SELECTED_TOOLBOXES[@]}"; do
   config="${TOOLBOXES[$name]}"
   image=$(echo "$config" | awk '{print $1}')
   options="${config#* }"
+  if [ -n "$RDMA_OPTIONS" ]; then
+    options="$options $RDMA_OPTIONS"
+  fi
 
   echo "🔄 Refreshing $name (image: $image)"
 
@@ -84,8 +110,6 @@ for name in "${SELECTED_TOOLBOXES[@]}"; do
 
   echo "⬇️ Pulling latest image: $image"
   podman pull "$image"
-
-
 
   echo "📦 Recreating toolbox: $name"
   $TOOLBOX_CMD create "$name" --image "$image" -- $options

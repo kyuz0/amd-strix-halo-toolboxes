@@ -1,0 +1,200 @@
+#!/usr/bin/env bash
+
+set -u
+
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+load_threshold=20
+idle_threshold=10
+load_seconds=2
+idle_seconds=60
+
+ectool_bin="$(command -v ectool)" || exit 1
+tuned_adm_bin="$(command -v tuned-adm)" || exit 1
+
+fan_mode="unknown"
+tuned_mode="unknown"
+load_count=0
+idle_count=0
+no_workload_count=0
+gpu_busy_file=""
+
+for candidate in /sys/class/drm/card*/device/gpu_busy_percent; do
+    if [[ -r "${candidate}" ]] && [[ "$(< "${candidate%/gpu_busy_percent}/vendor")" == "0x1002" ]]; then
+        gpu_busy_file="${candidate}"
+        break
+    fi
+done
+
+if [[ -z "${gpu_busy_file}" ]]; then
+    echo "No AMDGPU gpu_busy_percent counter found" >&2
+    exit 1
+fi
+
+gpu_workload_is_running() {
+    local proc comm executable lower module
+    local -a argv
+
+    for proc in /proc/[0-9]*; do
+        [[ -r "${proc}/comm" && -r "${proc}/cmdline" ]] || continue
+
+        read -r comm < "${proc}/comm" || continue
+        lower="${comm,,}"
+        case "${lower}" in
+            llama-*|ds4-*|*hipfire*|*vllm*)
+                return 0
+                ;;
+        esac
+
+        argv=()
+        mapfile -d '' -t argv < "${proc}/cmdline" 2>/dev/null || continue
+        (( ${#argv[@]} > 0 )) || continue
+
+        executable="${argv[0]##*/}"
+        lower="${executable,,}"
+        case "${lower}" in
+            llama-*|ds4-*|*hipfire*|*vllm*)
+                return 0
+                ;;
+        esac
+
+        case "${lower}" in
+            python*)
+                if (( ${#argv[@]} > 2 )) && [[ "${argv[1]}" == "-m" ]]; then
+                    module="${argv[2],,}"
+                    case "${module}" in
+                        llama-*|ds4-*|hipfire*|vllm*)
+                            return 0
+                            ;;
+                    esac
+                elif (( ${#argv[@]} > 1 )); then
+                    lower="${argv[1],,}"
+                    lower="${lower##*/}"
+                    case "${lower}" in
+                        llama-*|ds4-*|*hipfire*|*vllm*)
+                            return 0
+                            ;;
+                    esac
+                fi
+                ;;
+        esac
+    done
+
+    return 1
+}
+
+gpu_busy_percent() {
+    local busy
+
+    if read -r busy < "${gpu_busy_file}" && [[ "${busy}" =~ ^[0-9]+$ ]]; then
+        printf '%s\n' "${busy}"
+    else
+        printf '100\n'
+    fi
+}
+
+set_fan_max() {
+    if "${ectool_bin}" fanduty 100; then
+        fan_mode="max"
+        echo "GPU workload detected: fan set to maximum"
+    fi
+}
+
+set_fan_auto() {
+    if "${ectool_bin}" autofanctrl; then
+        fan_mode="auto"
+        echo "GPU workload idle: automatic fan control restored"
+    fi
+}
+
+set_tuned_accelerator() {
+    if "${tuned_adm_bin}" profile accelerator-performance; then
+        tuned_mode="accelerator-performance"
+        echo "GPU workload detected: accelerator-performance profile enabled"
+    fi
+}
+
+set_tuned_balanced() {
+    if "${tuned_adm_bin}" profile balanced; then
+        tuned_mode="balanced"
+        echo "no GPU workload detected: balanced profile enabled"
+    fi
+}
+
+restore_defaults() {
+    "${ectool_bin}" autofanctrl || true
+    "${tuned_adm_bin}" profile balanced || true
+}
+
+stop_watcher() {
+    trap - EXIT INT TERM HUP
+    restore_defaults
+    exit 0
+}
+
+trap restore_defaults EXIT
+trap stop_watcher INT TERM HUP
+
+while true; do
+    gpu_busy="$(gpu_busy_percent)"
+
+    if ! gpu_workload_is_running; then
+        load_count=0
+        idle_count=0
+
+        if [[ "${fan_mode}" == "max" || "${tuned_mode}" == "accelerator-performance" ]]; then
+            if (( gpu_busy < idle_threshold )); then
+                ((no_workload_count += 1))
+            else
+                no_workload_count=0
+            fi
+
+            if (( no_workload_count < idle_seconds )); then
+                sleep 1
+                continue
+            fi
+        fi
+
+        no_workload_count=0
+        if [[ "${fan_mode}" != "auto" ]]; then
+            set_fan_auto
+        fi
+        if [[ "${tuned_mode}" != "balanced" ]]; then
+            set_tuned_balanced
+        fi
+        sleep 1
+        continue
+    fi
+
+    no_workload_count=0
+
+    if [[ "${tuned_mode}" != "accelerator-performance" ]]; then
+        set_tuned_accelerator
+    fi
+
+    if [[ "${fan_mode}" != "max" ]]; then
+        idle_count=0
+        if (( gpu_busy >= load_threshold )); then
+            ((load_count += 1))
+            if (( load_count >= load_seconds )); then
+                set_fan_max
+                load_count=0
+            fi
+        else
+            load_count=0
+        fi
+    else
+        load_count=0
+        if (( gpu_busy < idle_threshold )); then
+            ((idle_count += 1))
+            if (( idle_count >= idle_seconds )); then
+                set_fan_auto
+                idle_count=0
+            fi
+        else
+            idle_count=0
+        fi
+    fi
+
+    sleep 1
+done

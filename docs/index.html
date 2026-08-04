@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AMD Strix Halo — Backend Benchmarks (Grid View)</title>
     <link rel="stylesheet" href="assets/index2.css">
+    <script defer data-domain="kyuz0.github.io/amd-strix-halo-toolboxes" src="https://plausible.skybound.link/js/plausible.js"></script>
 </head>
 
 <body>
@@ -19,15 +20,22 @@
         <div class="legend">
             <label>Legend</label>
             <div class="legend-pills">
-                <button id="hipblas-modal-open" type="button" class="chip small legend-pill legend-pill-default">
-                    hipBLASLt vs hblt0
-                </button>
+
                 <button id="rpc-modal-open" type="button" class="chip small legend-pill legend-pill-rpc">
                     RPC · dual server
                 </button>
                 <button id="rocwmma-modal-open" type="button" class="chip small legend-pill legend-pill-rocwmma">
                     rocWMMA
                 </button>
+                <a href="mtp.html" class="chip small legend-pill" style="text-decoration: none; background: #eef9ff; color: #0a517a; border: 1px solid #c7e9ff; font-weight: 600;">
+                    ★ View Experimental MTP Benchmarks
+                </a>
+                <a href="ryzen-ai-halo.html" class="chip small legend-pill" style="text-decoration: none; background: #ecfdf3; color: #067647; border: 1px solid #abefc6; font-weight: 600;">
+                    ★ View Ryzen AI Halo Benchmarks
+                </a>
+                <a href="toolbox-performance.html" class="chip small legend-pill" style="text-decoration: none; background: #eef4ff; color: #1849a9; border: 1px solid #b2ccff; font-weight: 600;">
+                    ★ Compare Toolbox Performance
+                </a>
             </div>
         </div>
     </header>
@@ -83,26 +91,6 @@
         <div id="tables"></div>
     </section>
 
-    <div id="hipblas-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="hipblas-title">
-        <div class="modal-content">
-            <button id="hipblas-modal-close" class="modal-close" aria-label="Close dialog">×</button>
-            <h2 id="hipblas-title">hipBLASLt &amp; hblt0 explained</h2>
-            <p>The ROCm toolboxes ship with <code>ROCBLAS_USE_HIPBLASLT=1</code> by default. This forces rocBLAS to
-                prefer
-                the hipBLASLt kernel library, which historically delivered the best throughput on gfx1151 (Strix Halo).
-            </p>
-            <p>Rows tagged with <code>__hblt0</code> were re-run with <code>ROCBLAS_USE_HIPBLASLT=0</code>, letting
-                rocBLAS
-                auto-select between hipBLASLt, Tensile, or other kernel providers. These runs show how performance
-                shifts when
-                the tuned hipBLASLt path is disabled.</p>
-            <p>hipBLASLt is AMD's LT (low-level tuned) matmul backend, optimized for transformer workloads. Disabling it
-                can
-                expose regressions or improvements depending on driver versions, so both configurations are published
-                for
-                comparison.</p>
-        </div>
-    </div>
 
     <div id="rpc-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="rpc-title">
         <div class="modal-content">
@@ -111,7 +99,7 @@
             <p>These results were produced with two Strix Halo systems (Framework Desktops, each
                 128&nbsp;GB)
                 connected over 50&nbsp;Gbps Ethernet (likely bandwidth is not the limiting factor here, but latency).
-                One runs <code>rpc-server</code> from llama.cpp; the other runs
+                One runs <code>ggml-rpc-server</code> from llama.cpp; the other runs
                 <code>llama-bench --rpc</code>.
             </p>
             <p>This setup allows distributed inference, splitting large GGUF models across both machines. The metric
