@@ -279,7 +279,18 @@ function renderConfigSummary(points) {
             const [batch, ubatch] = configurations[0].split("|").map(Number);
             summaries.push(`${displayModel(model)}: batch ${batch.toLocaleString()}, ubatch ${ubatch.toLocaleString()}`);
         } else {
-            summaries.push(`${displayModel(model)}: settings vary by toolbox`);
+            const batches = [...new Set(modelPoints.map((point) => point.batch))];
+            const ubatches = state.data.meta.toolboxes
+                .filter((toolbox) => state.selectedToolboxes.has(toolbox.id))
+                .map((toolbox) => {
+                    const point = modelPoints.find((candidate) => candidate.toolbox === toolbox.id);
+                    return point ? `${toolbox.label} ${point.ubatch.toLocaleString()}` : null;
+                })
+                .filter(Boolean);
+            const batch = batches.length === 1
+                ? `batch ${batches[0].toLocaleString()}`
+                : "batch varies";
+            summaries.push(`${displayModel(model)}: ${batch}; calibrated ubatch ${ubatches.join(", ")}`);
         }
     });
     document.getElementById("model-config").textContent = summaries.join(" · ");

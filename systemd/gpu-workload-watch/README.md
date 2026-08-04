@@ -6,12 +6,12 @@ This systemd service manages cooling and the TuneD power profile on a Framework 
 
 - Detects `llama-*`, `ds4-*`, `hipfire`, and vLLM executables, process names, and Python entry points. Idle containers whose names contain these strings do not trigger the watcher.
 - Selects the TuneD `accelerator-performance` profile as soon as a matching process starts, even while the GPU is idle.
-- Selects the TuneD `balanced` profile when no matching process remains.
+- Keeps the TuneD `accelerator-performance` profile until both the matching process is gone and GPU utilization has remained below 10% for 60 seconds, then selects `balanced` if no workload has returned.
 - Sets the fans to 100% after AMDGPU utilization is at least 20% for two seconds.
-- Restores automatic fan control after utilization remains below 10% for 30 seconds, or immediately when the workload exits.
+- Restores automatic fan control after utilization remains below 10% for 60 seconds. If the workload exits while the fans are at maximum, they remain there for the same 60-second grace period.
 - Restores automatic fans and the `balanced` profile when the service stops.
 
-The utilization delay and hysteresis prevent fan changes during short GPU bursts or pauses.
+The utilization delay, hysteresis, and one-minute idle grace period prevent fan and power-profile changes during short GPU bursts, pauses, or gaps between benchmark processes.
 
 `balanced` is the general-purpose TuneD baseline and the profile recommended on the tested Framework Desktop. It is not identical to disabling TuneD: with TuneD disabled, the operating system's native defaults remain in control and no TuneD profile is applied.
 

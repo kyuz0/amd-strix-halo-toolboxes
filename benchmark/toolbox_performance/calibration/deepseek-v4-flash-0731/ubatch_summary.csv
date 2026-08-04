@@ -1,0 +1,13 @@
+toolbox,ubatch,avg_ts,stddev_ts
+llama-rocm-7.14,256,119.063409,1.125068
+llama-rocm-7.14,512,164.215083,3.292632
+llama-rocm-7.14,1024,201.487218,2.189448
+llama-rocm-7.14,2048,213.698937,0.378827
+llama-vulkan-radv,256,109.874843,0.253333
+llama-vulkan-radv,512,142.501007,0.485583
+llama-vulkan-radv,1024,144.448325,0.520941
+llama-vulkan-radv,2048,129.219653,0.088395
+llama-vulkan-radv-perfromance,256,157.539771,0.165320
+llama-vulkan-radv-perfromance,512,197.493035,0.393582
+llama-vulkan-radv-perfromance,1024,235.278119,0.188284
+llama-vulkan-radv-perfromance,2048,255.139836,0.178443

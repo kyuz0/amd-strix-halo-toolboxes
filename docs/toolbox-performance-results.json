@@ -4,31 +4,10 @@
     "cpu_info": null,
     "system_memory_gb": 128,
     "host_profiles": [
-      "performance, amd_iommu=off"
+      "gpu-workload-watch (accelerator-performance and maximum fans), amd_iommu=off"
     ],
-    "default_toolbox": "vulkan-radv",
+    "default_toolbox": "vulkan-radv-perfromance",
     "toolboxes": [
-      {
-        "id": "vulkan-radv",
-        "label": "Vulkan RADV (stock)",
-        "description": "Upstream llama.cpp with the stock RADV toolbox",
-        "toolbox_name": "llama-vulkan-radv",
-        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv",
-        "image_digest": "sha256:8f6558e0dca2e2003e82f137c64ed61f458a591107426ea5cbd9cbb2fdb0bfdd",
-        "host": "fw2",
-        "host_profile": "performance, amd_iommu=off",
-        "kernel": "7.1.3-100.fc43.x86_64",
-        "builds": [
-          {
-            "hash": "11924d4c1",
-            "number": 10223
-          }
-        ],
-        "gpu_names": [
-          "AMD Radeon 8060S Graphics (RADV GFX1151)"
-        ],
-        "cpu_info": "AMD Eng Sample: 100-000001243-50_Y"
-      },
       {
         "id": "vulkan-radv-perfromance",
         "label": "Vulkan RADV Performance",
@@ -37,7 +16,7 @@
         "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-perfromance",
         "image_digest": "sha256:24756827094e7db79103f5e61943772d6e098f04c2fbac9da09fe86a69be6bd2",
         "host": "fw2",
-        "host_profile": "performance, amd_iommu=off",
+        "host_profile": "gpu-workload-watch (accelerator-performance and maximum fans), amd_iommu=off",
         "kernel": "7.1.3-100.fc43.x86_64",
         "builds": [
           {
@@ -48,7 +27,13 @@
         "gpu_names": [
           "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
         ],
-        "cpu_info": "AMD Eng Sample: 100-000001243-50_Y"
+        "cpu_info": "AMD Eng Sample: 100-000001243-50_Y",
+        "result_statuses": {
+          "Qwen3.6-27B-UD-Q8_K_XL": "complete",
+          "Qwen3.6-35B-A3B-UD-Q4_K_XL": "complete",
+          "Qwen3.6-35B-A3B-UD-Q8_K_XL": "complete",
+          "DeepSeek-V4-Flash-0731-UD-IQ2_XXS": "complete"
+        }
       },
       {
         "id": "rocm-7.14",
@@ -56,20 +41,26 @@
         "description": "Upstream llama.cpp with the ROCm 7.14 toolbox",
         "toolbox_name": "llama-rocm-7.14",
         "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14",
-        "image_digest": "sha256:f4bbfdff02e1cd3aa5372a47bb188a54e5af7f0832d4bd27bea9dc582697708b",
+        "image_digest": "sha256:39ec88545552ddbef34f6072ec3606a3a3e550a07c1bb950c924d93ae6c1df45",
         "host": "fw1",
-        "host_profile": "performance, amd_iommu=off",
+        "host_profile": "gpu-workload-watch (accelerator-performance and maximum fans), amd_iommu=off",
         "kernel": "7.1.3-100.fc43.x86_64",
         "builds": [
           {
-            "hash": "7a2db1a0c",
-            "number": 10224
+            "hash": "39eab74a0",
+            "number": 10246
           }
         ],
         "gpu_names": [
           "AMD Radeon 8060S Graphics"
         ],
-        "cpu_info": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S"
+        "cpu_info": "AMD RYZEN AI MAX+ 395 w/ Radeon 8060S",
+        "result_statuses": {
+          "Qwen3.6-27B-UD-Q8_K_XL": "complete",
+          "Qwen3.6-35B-A3B-UD-Q4_K_XL": "complete",
+          "Qwen3.6-35B-A3B-UD-Q8_K_XL": "complete",
+          "DeepSeek-V4-Flash-0731-UD-IQ2_XXS": "complete"
+        }
       }
     ],
     "depths": [
@@ -86,6 +77,7 @@
     "warnings": []
   },
   "models": [
+    "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
     "Qwen3.6-27B-UD-Q8_K_XL",
     "Qwen3.6-35B-A3B-UD-Q4_K_XL",
     "Qwen3.6-35B-A3B-UD-Q8_K_XL"
@@ -94,6 +86,834 @@
     {
       "toolbox": "rocm-7.14",
       "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 0,
+      "ending_context": 128,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 16.219557,
+      "stddev": 0.296334,
+      "samples": [
+        15.9454,
+        16.1793,
+        16.534
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 8192,
+      "ending_context": 8320,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 14.691,
+      "stddev": 0.391481,
+      "samples": [
+        14.2421,
+        14.9615,
+        14.8694
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 16384,
+      "ending_context": 16512,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 14.11325,
+      "stddev": 0.357987,
+      "samples": [
+        13.7006,
+        14.3408,
+        14.2983
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 24576,
+      "ending_context": 24704,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 13.279047,
+      "stddev": 0.425912,
+      "samples": [
+        12.7897,
+        13.5661,
+        13.4813
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 32768,
+      "ending_context": 32896,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 12.845509,
+      "stddev": 0.292647,
+      "samples": [
+        12.5087,
+        13.0374,
+        12.9904
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 40960,
+      "ending_context": 41088,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 12.392089,
+      "stddev": 0.267188,
+      "samples": [
+        12.0853,
+        12.5738,
+        12.5172
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 49152,
+      "ending_context": 49280,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 11.913178,
+      "stddev": 0.268306,
+      "samples": [
+        11.6045,
+        12.0904,
+        12.0447
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 57344,
+      "ending_context": 57472,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 11.540253,
+      "stddev": 0.25117,
+      "samples": [
+        11.2525,
+        11.7157,
+        11.6525
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 65536,
+      "ending_context": 65664,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 11.371539,
+      "stddev": 0.219345,
+      "samples": [
+        11.1183,
+        11.503,
+        11.4933
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 0,
+      "ending_context": 128,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 13.077032,
+      "stddev": 0.007126,
+      "samples": [
+        13.0852,
+        13.0735,
+        13.0723
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 8192,
+      "ending_context": 8320,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 12.483338,
+      "stddev": 0.069395,
+      "samples": [
+        12.4032,
+        12.5228,
+        12.524
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 16384,
+      "ending_context": 16512,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 12.138796,
+      "stddev": 0.067082,
+      "samples": [
+        12.0613,
+        12.1771,
+        12.178
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 24576,
+      "ending_context": 24704,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 11.908373,
+      "stddev": 0.059606,
+      "samples": [
+        11.8399,
+        11.937,
+        11.9483
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 32768,
+      "ending_context": 32896,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 11.643902,
+      "stddev": 0.060756,
+      "samples": [
+        11.5739,
+        11.6753,
+        11.6826
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 40960,
+      "ending_context": 41088,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 11.486285,
+      "stddev": 0.054472,
+      "samples": [
+        11.4234,
+        11.5173,
+        11.5182
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 49152,
+      "ending_context": 49280,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 11.327719,
+      "stddev": 0.058392,
+      "samples": [
+        11.2604,
+        11.3647,
+        11.358
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 57344,
+      "ending_context": 57472,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 11.191262,
+      "stddev": 0.057673,
+      "samples": [
+        11.1277,
+        11.2402,
+        11.2059
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "generation",
+      "starting_depth": 65536,
+      "ending_context": 65664,
+      "prompt_tokens": 0,
+      "generation_tokens": 128,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 10.985262,
+      "stddev": 0.049505,
+      "samples": [
+        10.9287,
+        11.0065,
+        11.0206
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 0,
+      "ending_context": 2048,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 229.112801,
+      "stddev": 0.348781,
+      "samples": [
+        229.181,
+        228.735,
+        229.423
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 8192,
+      "ending_context": 10240,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 170.592929,
+      "stddev": 0.282667,
+      "samples": [
+        170.396,
+        170.917,
+        170.466
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 16384,
+      "ending_context": 18432,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 137.562689,
+      "stddev": 0.129942,
+      "samples": [
+        137.685,
+        137.426,
+        137.577
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 24576,
+      "ending_context": 26624,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 118.570194,
+      "stddev": 0.246139,
+      "samples": [
+        118.849,
+        118.384,
+        118.478
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 32768,
+      "ending_context": 34816,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 102.543277,
+      "stddev": 0.112239,
+      "samples": [
+        102.432,
+        102.657,
+        102.541
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 40960,
+      "ending_context": 43008,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 92.337436,
+      "stddev": 0.187652,
+      "samples": [
+        92.3434,
+        92.1469,
+        92.522
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 49152,
+      "ending_context": 51200,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 83.503372,
+      "stddev": 0.326172,
+      "samples": [
+        83.2912,
+        83.879,
+        83.3399
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 57344,
+      "ending_context": 59392,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 77.002383,
+      "stddev": 0.088757,
+      "samples": [
+        77.1048,
+        76.9469,
+        76.9555
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 65536,
+      "ending_context": 67584,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 2048,
+      "mean": 70.460603,
+      "stddev": 0.158454,
+      "samples": [
+        70.3673,
+        70.371,
+        70.6436
+      ],
+      "build_commit": "39eab74a0",
+      "gpu_info": "AMD Radeon 8060S Graphics"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 0,
+      "ending_context": 2048,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 234.077716,
+      "stddev": 0.233963,
+      "samples": [
+        234.326,
+        234.047,
+        233.861
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 8192,
+      "ending_context": 10240,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 161.643166,
+      "stddev": 2.677525,
+      "samples": [
+        164.735,
+        160.119,
+        160.076
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 16384,
+      "ending_context": 18432,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 118.075584,
+      "stddev": 1.186598,
+      "samples": [
+        119.386,
+        117.073,
+        117.768
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 24576,
+      "ending_context": 26624,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 117.711237,
+      "stddev": 2.337071,
+      "samples": [
+        120.402,
+        116.54,
+        116.191
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 32768,
+      "ending_context": 34816,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 115.618176,
+      "stddev": 3.35329,
+      "samples": [
+        119.488,
+        113.786,
+        113.58
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 40960,
+      "ending_context": 43008,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 114.051516,
+      "stddev": 3.734998,
+      "samples": [
+        118.353,
+        112.167,
+        111.634
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 49152,
+      "ending_context": 51200,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 111.633807,
+      "stddev": 3.174021,
+      "samples": [
+        115.299,
+        109.822,
+        109.781
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 57344,
+      "ending_context": 59392,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 110.524143,
+      "stddev": 3.701507,
+      "samples": [
+        114.798,
+        108.407,
+        108.367
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "vulkan-radv-perfromance",
+      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
+      "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
+      "quant": "Q2_XXS",
+      "series": "prefill",
+      "starting_depth": 65536,
+      "ending_context": 67584,
+      "prompt_tokens": 2048,
+      "generation_tokens": 0,
+      "batch": 2048,
+      "ubatch": 1024,
+      "mean": 108.145197,
+      "stddev": 3.487924,
+      "samples": [
+        112.173,
+        106.105,
+        106.158
+      ],
+      "build_commit": "aaf4fba83",
+      "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
+    },
+    {
+      "toolbox": "rocm-7.14",
+      "toolbox_name": "llama-rocm-7.14",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -103,15 +923,15 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 6.283979,
-      "stddev": 0.330244,
+      "ubatch": 1024,
+      "mean": 6.56346,
+      "stddev": 0.002285,
       "samples": [
-        6.55315,
-        6.38333,
-        5.91547
+        6.56082,
+        6.5648,
+        6.56476
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -126,15 +946,15 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 5.304719,
-      "stddev": 0.154452,
+      "ubatch": 1024,
+      "mean": 6.463654,
+      "stddev": 0.003921,
       "samples": [
-        5.22703,
-        5.20453,
-        5.48259
+        6.45913,
+        6.46589,
+        6.46595
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -149,15 +969,15 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 5.229722,
-      "stddev": 0.119669,
+      "ubatch": 1024,
+      "mean": 6.372024,
+      "stddev": 0.003598,
       "samples": [
-        5.30017,
-        5.09155,
-        5.29745
+        6.36788,
+        6.37391,
+        6.37429
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -172,15 +992,15 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 5.257706,
-      "stddev": 0.192812,
+      "ubatch": 1024,
+      "mean": 6.281954,
+      "stddev": 0.00365,
       "samples": [
-        5.46554,
-        5.08464,
-        5.22294
+        6.27774,
+        6.28407,
+        6.28405
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -195,15 +1015,15 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 5.074233,
-      "stddev": 0.279713,
+      "ubatch": 1024,
+      "mean": 6.193379,
+      "stddev": 0.003614,
       "samples": [
-        5.37555,
-        4.82284,
-        5.02431
+        6.18921,
+        6.19547,
+        6.19546
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -218,15 +1038,15 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 5.018555,
-      "stddev": 0.330932,
+      "ubatch": 1024,
+      "mean": 6.109767,
+      "stddev": 0.003251,
       "samples": [
-        5.38932,
-        4.75307,
-        4.91328
+        6.10602,
+        6.11153,
+        6.11176
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -241,15 +1061,15 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 4.997715,
-      "stddev": 0.300988,
+      "ubatch": 1024,
+      "mean": 6.027531,
+      "stddev": 0.003207,
       "samples": [
-        5.32106,
-        4.72569,
-        4.94639
+        6.02383,
+        6.02946,
+        6.0293
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -264,15 +1084,15 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 4.992609,
-      "stddev": 0.353544,
+      "ubatch": 1024,
+      "mean": 5.94757,
+      "stddev": 0.003214,
       "samples": [
-        5.39544,
-        4.73384,
-        4.84856
+        5.94386,
+        5.94932,
+        5.94953
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -287,223 +1107,16 @@
       "prompt_tokens": 0,
       "generation_tokens": 128,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 4.92907,
-      "stddev": 0.34843,
+      "ubatch": 1024,
+      "mean": 5.868191,
+      "stddev": 0.003112,
       "samples": [
-        5.32607,
-        4.67402,
-        4.78713
+        5.8646,
+        5.8699,
+        5.87007
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 0,
-      "ending_context": 128,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 6.588765,
-      "stddev": 9.1e-05,
-      "samples": [
-        6.58887,
-        6.58869,
-        6.58874
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 8192,
-      "ending_context": 8320,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 6.47523,
-      "stddev": 0.000402,
-      "samples": [
-        6.47485,
-        6.47565,
-        6.47518
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 16384,
-      "ending_context": 16512,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 6.368565,
-      "stddev": 0.000482,
-      "samples": [
-        6.36805,
-        6.36864,
-        6.36901
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 24576,
-      "ending_context": 24704,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 6.270558,
-      "stddev": 0.00055,
-      "samples": [
-        6.26993,
-        6.27081,
-        6.27094
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 32768,
-      "ending_context": 32896,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 6.178952,
-      "stddev": 0.000369,
-      "samples": [
-        6.17882,
-        6.17866,
-        6.17937
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 40960,
-      "ending_context": 41088,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 6.087647,
-      "stddev": 0.000508,
-      "samples": [
-        6.08761,
-        6.08716,
-        6.08817
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 49152,
-      "ending_context": 49280,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 6.000092,
-      "stddev": 0.000757,
-      "samples": [
-        5.99924,
-        6.00068,
-        6.00036
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 57344,
-      "ending_context": 57472,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 5.91469,
-      "stddev": 0.000357,
-      "samples": [
-        5.91481,
-        5.91429,
-        5.91497
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 65536,
-      "ending_context": 65664,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 5.83125,
-      "stddev": 0.001017,
-      "samples": [
-        5.83014,
-        5.83214,
-        5.83147
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
     },
     {
       "toolbox": "vulkan-radv-perfromance",
@@ -518,12 +1131,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 6.583688,
-      "stddev": 5.2e-05,
+      "mean": 6.583676,
+      "stddev": 0.000503,
       "samples": [
-        6.58363,
-        6.5837,
-        6.58374
+        6.58425,
+        6.5833,
+        6.58348
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -541,12 +1154,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 6.467201,
-      "stddev": 0.000496,
+      "mean": 6.466263,
+      "stddev": 0.000681,
       "samples": [
-        6.46663,
-        6.46744,
-        6.46753
+        6.46553,
+        6.46639,
+        6.46687
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -564,12 +1177,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 6.362978,
-      "stddev": 0.000326,
+      "mean": 6.361975,
+      "stddev": 0.000472,
       "samples": [
-        6.3627,
-        6.36289,
-        6.36334
+        6.36144,
+        6.36216,
+        6.36232
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -587,12 +1200,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 6.264128,
-      "stddev": 0.000539,
+      "mean": 6.262237,
+      "stddev": 0.000518,
       "samples": [
-        6.26351,
-        6.26444,
-        6.26444
+        6.26181,
+        6.26209,
+        6.26281
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -610,12 +1223,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 6.171503,
-      "stddev": 0.000228,
+      "mean": 6.171105,
+      "stddev": 0.000403,
       "samples": [
+        6.17064,
         6.17129,
-        6.17147,
-        6.17174
+        6.17138
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -633,12 +1246,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 6.079561,
-      "stddev": 0.000492,
+      "mean": 6.078692,
+      "stddev": 0.000693,
       "samples": [
-        6.07899,
-        6.07986,
-        6.07984
+        6.07804,
+        6.07862,
+        6.07942
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -656,12 +1269,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 5.991903,
-      "stddev": 0.000258,
+      "mean": 5.990882,
+      "stddev": 0.000478,
       "samples": [
-        5.99167,
-        5.99185,
-        5.99218
+        5.99048,
+        5.99076,
+        5.99141
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -679,12 +1292,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 5.906858,
-      "stddev": 0.000412,
+      "mean": 5.905605,
+      "stddev": 0.000523,
       "samples": [
-        5.90645,
-        5.90684,
-        5.90728
+        5.90505,
+        5.90609,
+        5.90567
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -702,12 +1315,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 5.822457,
-      "stddev": 0.000459,
+      "mean": 5.82174,
+      "stddev": 0.000379,
       "samples": [
-        5.82198,
-        5.8225,
-        5.82289
+        5.82132,
+        5.82206,
+        5.82184
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -724,15 +1337,15 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 374.612038,
-      "stddev": 0.075257,
+      "ubatch": 1024,
+      "mean": 391.15094,
+      "stddev": 1.116401,
       "samples": [
-        374.533,
-        374.619,
-        374.683
+        391.976,
+        391.596,
+        389.881
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -747,15 +1360,15 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 321.874422,
-      "stddev": 0.040917,
+      "ubatch": 1024,
+      "mean": 332.498009,
+      "stddev": 2.226733,
       "samples": [
-        321.91,
-        321.83,
-        321.884
+        334.386,
+        333.066,
+        330.042
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -770,15 +1383,15 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 271.860779,
-      "stddev": 1.820358,
+      "ubatch": 1024,
+      "mean": 283.542989,
+      "stddev": 0.610318,
       "samples": [
-        273.726,
-        271.768,
-        270.088
+        284.201,
+        283.432,
+        282.996
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -793,15 +1406,15 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 164.081607,
-      "stddev": 2.052857,
+      "ubatch": 1024,
+      "mean": 251.947668,
+      "stddev": 0.505612,
       "samples": [
-        166.451,
-        162.835,
-        162.959
+        252.527,
+        251.721,
+        251.595
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -816,15 +1429,15 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 143.977424,
-      "stddev": 0.488707,
+      "ubatch": 1024,
+      "mean": 226.875764,
+      "stddev": 0.315965,
       "samples": [
-        144.514,
-        143.862,
-        143.557
+        227.235,
+        226.642,
+        226.75
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -839,15 +1452,15 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 129.73298,
-      "stddev": 2.252187,
+      "ubatch": 1024,
+      "mean": 205.824686,
+      "stddev": 0.552656,
       "samples": [
-        132.32,
-        128.21,
-        128.669
+        206.459,
+        205.572,
+        205.444
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -862,15 +1475,15 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 116.553673,
-      "stddev": 0.554586,
+      "ubatch": 1024,
+      "mean": 188.563199,
+      "stddev": 0.189712,
       "samples": [
-        117.192,
-        116.194,
-        116.275
+        188.68,
+        188.344,
+        188.665
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -885,15 +1498,15 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 107.092322,
-      "stddev": 0.240126,
+      "ubatch": 1024,
+      "mean": 173.666738,
+      "stddev": 0.330256,
       "samples": [
-        107.351,
-        107.051,
-        106.876
+        173.334,
+        173.995,
+        173.671
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -908,223 +1521,16 @@
       "prompt_tokens": 2048,
       "generation_tokens": 0,
       "batch": 2048,
-      "ubatch": 256,
-      "mean": 99.230715,
-      "stddev": 0.35187,
+      "ubatch": 1024,
+      "mean": 160.807498,
+      "stddev": 0.129334,
       "samples": [
-        99.6161,
-        98.9267,
-        99.1493
+        160.698,
+        160.95,
+        160.775
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 0,
-      "ending_context": 2048,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 275.170774,
-      "stddev": 0.271644,
-      "samples": [
-        275.371,
-        275.279,
-        274.862
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 8192,
-      "ending_context": 10240,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 250.417385,
-      "stddev": 0.224165,
-      "samples": [
-        250.606,
-        250.477,
-        250.17
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 16384,
-      "ending_context": 18432,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 216.761633,
-      "stddev": 0.544828,
-      "samples": [
-        217.09,
-        216.133,
-        217.062
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 24576,
-      "ending_context": 26624,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 187.280082,
-      "stddev": 0.232101,
-      "samples": [
-        187.336,
-        187.025,
-        187.479
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 32768,
-      "ending_context": 34816,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 158.733444,
-      "stddev": 0.591109,
-      "samples": [
-        158.438,
-        158.348,
-        159.414
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 40960,
-      "ending_context": 43008,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 135.043381,
-      "stddev": 0.5031,
-      "samples": [
-        135.484,
-        135.151,
-        134.495
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 49152,
-      "ending_context": 51200,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 116.346385,
-      "stddev": 0.235189,
-      "samples": [
-        116.493,
-        116.075,
-        116.471
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 57344,
-      "ending_context": 59392,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 100.937477,
-      "stddev": 0.227345,
-      "samples": [
-        100.685,
-        101.126,
-        101.001
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-27B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 65536,
-      "ending_context": 67584,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 256,
-      "mean": 89.024251,
-      "stddev": 0.257061,
-      "samples": [
-        89.321,
-        88.8684,
-        88.8834
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
     },
     {
       "toolbox": "vulkan-radv-perfromance",
@@ -1139,12 +1545,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 289.298656,
-      "stddev": 0.383307,
+      "mean": 289.444339,
+      "stddev": 0.071877,
       "samples": [
-        289.727,
-        288.989,
-        289.18
+        289.364,
+        289.503,
+        289.466
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1162,12 +1568,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 269.156464,
-      "stddev": 0.412008,
+      "mean": 269.170331,
+      "stddev": 0.076861,
       "samples": [
-        268.685,
-        269.335,
-        269.449
+        269.118,
+        269.259,
+        269.134
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1185,12 +1591,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 249.935854,
-      "stddev": 0.547487,
+      "mean": 249.900442,
+      "stddev": 0.503399,
       "samples": [
-        249.304,
-        250.228,
-        250.275
+        249.323,
+        250.244,
+        250.134
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1208,12 +1614,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 233.284433,
-      "stddev": 0.311914,
+      "mean": 233.019418,
+      "stddev": 0.199188,
       "samples": [
-        232.935,
-        233.533,
-        233.385
+        232.798,
+        233.078,
+        233.183
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1231,12 +1637,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 218.40672,
-      "stddev": 0.683713,
+      "mean": 218.204495,
+      "stddev": 0.56267,
       "samples": [
-        217.619,
-        218.843,
-        218.759
+        217.566,
+        218.63,
+        218.418
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1254,12 +1660,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 205.810918,
-      "stddev": 0.326109,
+      "mean": 177.189596,
+      "stddev": 6.422066,
       "samples": [
-        205.442,
-        205.932,
-        206.059
+        184.593,
+        173.862,
+        173.114
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1277,12 +1683,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 194.183314,
-      "stddev": 0.771016,
+      "mean": 159.835033,
+      "stddev": 4.394808,
       "samples": [
-        193.295,
-        194.674,
-        194.581
+        164.903,
+        157.535,
+        157.068
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1300,12 +1706,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 182.470926,
-      "stddev": 0.437782,
+      "mean": 146.696567,
+      "stddev": 2.758236,
       "samples": [
-        181.999,
-        182.864,
-        182.55
+        149.88,
+        145.181,
+        145.028
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1323,12 +1729,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 256,
-      "mean": 172.708388,
-      "stddev": 0.569972,
+      "mean": 136.334802,
+      "stddev": 2.363055,
       "samples": [
-        172.074,
-        173.178,
-        172.873
+        139.057,
+        135.134,
+        134.813
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1346,14 +1752,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 53.416742,
-      "stddev": 0.138517,
+      "mean": 53.546024,
+      "stddev": 0.163749,
       "samples": [
-        53.2568,
-        53.4944,
-        53.499
+        53.3569,
+        53.64,
+        53.6411
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1369,14 +1775,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 51.547792,
-      "stddev": 0.212005,
+      "mean": 51.67106,
+      "stddev": 0.215964,
       "samples": [
-        51.3031,
-        51.6647,
-        51.6757
+        51.4219,
+        51.8046,
+        51.7867
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1392,14 +1798,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 49.605813,
-      "stddev": 0.214639,
+      "mean": 49.73932,
+      "stddev": 0.202164,
       "samples": [
-        49.3581,
-        49.7217,
-        49.7376
+        49.5059,
+        49.853,
+        49.8591
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1415,14 +1821,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 47.906803,
-      "stddev": 0.18934,
+      "mean": 48.02524,
+      "stddev": 0.186247,
       "samples": [
-        47.6882,
-        48.0173,
-        48.0149
+        47.8102,
+        48.1341,
+        48.1315
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1438,14 +1844,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 46.239328,
-      "stddev": 0.194847,
+      "mean": 46.364017,
+      "stddev": 0.169333,
       "samples": [
-        46.0145,
-        46.3448,
-        46.3587
+        46.1687,
+        46.453,
+        46.4703
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1461,14 +1867,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 44.802969,
-      "stddev": 0.185264,
+      "mean": 44.914344,
+      "stddev": 0.168658,
       "samples": [
-        44.5891,
-        44.915,
-        44.9048
+        44.72,
+        45.023,
+        45.0
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1484,14 +1890,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 43.299892,
-      "stddev": 0.156823,
+      "mean": 43.432392,
+      "stddev": 0.162545,
       "samples": [
-        43.1188,
-        43.3909,
-        43.3899
+        43.2453,
+        43.5131,
+        43.5388
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1507,14 +1913,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 42.052501,
-      "stddev": 0.150955,
+      "mean": 42.110465,
+      "stddev": 0.16695,
       "samples": [
-        41.8783,
-        42.1346,
-        42.1446
+        41.9181,
+        42.1954,
+        42.2179
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1530,222 +1936,15 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 40.553587,
-      "stddev": 0.129516,
+      "mean": 40.639422,
+      "stddev": 0.178113,
       "samples": [
-        40.4042,
-        40.6348,
-        40.6217
+        40.4338,
+        40.7401,
+        40.7444
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 0,
-      "ending_context": 128,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 62.282311,
-      "stddev": 0.209938,
-      "samples": [
-        62.1724,
-        62.1501,
-        62.5244
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 8192,
-      "ending_context": 8320,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 58.524428,
-      "stddev": 0.134238,
-      "samples": [
-        58.406,
-        58.4971,
-        58.6702
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 16384,
-      "ending_context": 16512,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 55.739541,
-      "stddev": 0.025062,
-      "samples": [
-        55.7166,
-        55.7663,
-        55.7357
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 24576,
-      "ending_context": 24704,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 53.341361,
-      "stddev": 0.027356,
-      "samples": [
-        53.3118,
-        53.3465,
-        53.3658
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 32768,
-      "ending_context": 32896,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 50.966162,
-      "stddev": 0.029164,
-      "samples": [
-        50.9325,
-        50.9846,
-        50.9813
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 40960,
-      "ending_context": 41088,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 49.377125,
-      "stddev": 0.019685,
-      "samples": [
-        49.3571,
-        49.3778,
-        49.3964
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 49152,
-      "ending_context": 49280,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 47.50463,
-      "stddev": 0.028422,
-      "samples": [
-        47.4719,
-        47.5229,
-        47.5191
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 57344,
-      "ending_context": 57472,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 45.737284,
-      "stddev": 0.018643,
-      "samples": [
-        45.7159,
-        45.7459,
-        45.75
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "generation",
-      "starting_depth": 65536,
-      "ending_context": 65664,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 44.233298,
-      "stddev": 0.017045,
-      "samples": [
-        44.2142,
-        44.2388,
-        44.2469
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
     },
     {
       "toolbox": "vulkan-radv-perfromance",
@@ -1760,12 +1959,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 62.548637,
-      "stddev": 0.112395,
+      "mean": 62.161827,
+      "stddev": 0.016438,
       "samples": [
-        62.6263,
-        62.5999,
-        62.4198
+        62.1806,
+        62.1548,
+        62.1501
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1783,12 +1982,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 58.597781,
-      "stddev": 0.051237,
+      "mean": 58.652708,
+      "stddev": 0.040945,
       "samples": [
-        58.5388,
-        58.6236,
-        58.631
+        58.6899,
+        58.6088,
+        58.6594
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1806,12 +2005,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 55.872277,
-      "stddev": 0.018711,
+      "mean": 55.913313,
+      "stddev": 0.009793,
       "samples": [
-        55.8586,
-        55.8936,
-        55.8646
+        55.9048,
+        55.9111,
+        55.924
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1829,12 +2028,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 53.560688,
-      "stddev": 0.012302,
+      "mean": 53.435572,
+      "stddev": 0.013712,
       "samples": [
-        53.5713,
-        53.5636,
-        53.5472
+        53.4394,
+        53.4204,
+        53.447
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1852,12 +2051,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 51.153669,
-      "stddev": 0.008086,
+      "mean": 51.079763,
+      "stddev": 0.025441,
       "samples": [
-        51.1447,
-        51.1603,
-        51.156
+        51.051,
+        51.0994,
+        51.0889
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1875,12 +2074,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 49.504345,
-      "stddev": 0.030395,
+      "mean": 49.478068,
+      "stddev": 0.046546,
       "samples": [
-        49.4704,
-        49.5136,
-        49.529
+        49.4275,
+        49.4876,
+        49.5191
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1898,12 +2097,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 47.656374,
-      "stddev": 0.020171,
+      "mean": 47.6062,
+      "stddev": 0.021775,
       "samples": [
-        47.6369,
-        47.6772,
-        47.655
+        47.5814,
+        47.6223,
+        47.6149
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1921,12 +2120,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 45.93021,
-      "stddev": 0.026461,
+      "mean": 45.879016,
+      "stddev": 0.013006,
       "samples": [
-        45.8997,
-        45.9441,
-        45.9468
+        45.8645,
+        45.8828,
+        45.8897
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1944,12 +2143,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 44.351368,
-      "stddev": 0.010638,
+      "mean": 44.334463,
+      "stddev": 0.016896,
       "samples": [
-        44.3395,
-        44.3601,
-        44.3545
+        44.3161,
+        44.3493,
+        44.338
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -1967,14 +2166,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1595.470002,
-      "stddev": 4.942262,
+      "mean": 1604.025875,
+      "stddev": 22.535673,
       "samples": [
-        1598.34,
-        1589.76,
-        1598.31
+        1581.3,
+        1604.41,
+        1626.37
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -1990,14 +2189,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1156.680347,
-      "stddev": 85.277571,
+      "mean": 1271.949898,
+      "stddev": 7.40926,
       "samples": [
-        1241.79,
-        1157.01,
-        1071.24
+        1264.34,
+        1272.37,
+        1279.14
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2013,14 +2212,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 706.147546,
-      "stddev": 12.384335,
+      "mean": 1055.731757,
+      "stddev": 2.126119,
       "samples": [
-        720.39,
-        700.137,
-        697.916
+        1055.33,
+        1058.03,
+        1053.84
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2036,14 +2235,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 563.981353,
-      "stddev": 10.801981,
+      "mean": 877.685195,
+      "stddev": 8.6665,
       "samples": [
-        576.432,
-        558.409,
-        557.103
+        887.206,
+        870.255,
+        875.595
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2059,14 +2258,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 481.73223,
-      "stddev": 2.355223,
+      "mean": 752.622046,
+      "stddev": 1.384367,
       "samples": [
-        484.43,
-        480.681,
-        480.085
+        753.162,
+        753.655,
+        751.049
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2082,14 +2281,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 429.275387,
-      "stddev": 9.968594,
+      "mean": 669.599448,
+      "stddev": 3.289771,
       "samples": [
-        440.768,
-        424.083,
-        422.975
+        673.391,
+        667.509,
+        667.898
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2105,14 +2304,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 379.699255,
-      "stddev": 1.774595,
+      "mean": 598.493318,
+      "stddev": 1.038133,
       "samples": [
-        381.68,
-        379.165,
-        378.253
+        599.642,
+        597.621,
+        598.217
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2128,14 +2327,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 342.791909,
-      "stddev": 0.687318,
+      "mean": 543.824174,
+      "stddev": 0.639787,
       "samples": [
-        342.469,
-        343.581,
-        342.325
+        544.562,
+        543.432,
+        543.479
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2151,222 +2350,15 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 316.240187,
-      "stddev": 1.494046,
+      "mean": 497.764576,
+      "stddev": 0.942358,
       "samples": [
-        317.949,
-        315.59,
-        315.182
+        498.01,
+        496.724,
+        498.56
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 0,
-      "ending_context": 2048,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 1158.627808,
-      "stddev": 1.567079,
-      "samples": [
-        1156.88,
-        1159.11,
-        1159.9
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 8192,
-      "ending_context": 10240,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 1005.265148,
-      "stddev": 0.143418,
-      "samples": [
-        1005.16,
-        1005.43,
-        1005.2
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 16384,
-      "ending_context": 18432,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 879.984541,
-      "stddev": 1.325734,
-      "samples": [
-        878.511,
-        881.082,
-        880.361
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 24576,
-      "ending_context": 26624,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 775.698812,
-      "stddev": 0.91476,
-      "samples": [
-        774.718,
-        775.85,
-        776.529
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 32768,
-      "ending_context": 34816,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 662.484989,
-      "stddev": 5.882591,
-      "samples": [
-        655.694,
-        665.741,
-        666.02
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 40960,
-      "ending_context": 43008,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 550.12123,
-      "stddev": 9.392632,
-      "samples": [
-        540.984,
-        549.629,
-        559.75
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 49152,
-      "ending_context": 51200,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 456.136952,
-      "stddev": 9.433189,
-      "samples": [
-        467.025,
-        450.956,
-        450.429
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 57344,
-      "ending_context": 59392,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 378.134304,
-      "stddev": 9.366513,
-      "samples": [
-        368.509,
-        387.218,
-        378.676
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
-      "quant": "Q4_K_XL",
-      "series": "prefill",
-      "starting_depth": 65536,
-      "ending_context": 67584,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 318.090357,
-      "stddev": 4.330769,
-      "samples": [
-        315.253,
-        315.942,
-        323.075
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
     },
     {
       "toolbox": "vulkan-radv-perfromance",
@@ -2381,12 +2373,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1313.756521,
-      "stddev": 2.706843,
+      "mean": 1310.286838,
+      "stddev": 2.757907,
       "samples": [
-        1310.63,
-        1315.38,
-        1315.26
+        1307.39,
+        1310.59,
+        1312.88
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2404,12 +2396,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1151.200673,
-      "stddev": 1.926909,
+      "mean": 1151.098566,
+      "stddev": 2.777035,
       "samples": [
-        1148.99,
-        1152.54,
-        1152.06
+        1147.9,
+        1152.51,
+        1152.89
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2427,12 +2419,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1031.71027,
-      "stddev": 1.565544,
+      "mean": 1028.353027,
+      "stddev": 1.722245,
       "samples": [
-        1029.98,
-        1032.14,
-        1033.02
+        1026.37,
+        1029.5,
+        1029.19
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2450,12 +2442,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 932.123992,
-      "stddev": 0.962823,
+      "mean": 909.891935,
+      "stddev": 20.893062,
       "samples": [
-        931.014,
-        932.627,
-        932.731
+        928.243,
+        914.279,
+        887.154
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2473,12 +2465,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 847.619626,
-      "stddev": 0.722739,
+      "mean": 708.351608,
+      "stddev": 32.81875,
       "samples": [
-        848.451,
-        847.143,
-        847.264
+        745.831,
+        694.465,
+        684.759
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2496,12 +2488,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 778.329702,
-      "stddev": 0.951951,
+      "mean": 624.000183,
+      "stddev": 34.901322,
       "samples": [
-        777.365,
-        779.268,
-        778.357
+        663.734,
+        609.967,
+        598.299
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2519,12 +2511,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 717.751293,
-      "stddev": 0.324435,
+      "mean": 552.284697,
+      "stddev": 20.230113,
       "samples": [
-        718.099,
-        717.698,
-        717.456
+        575.611,
+        541.701,
+        539.542
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2542,12 +2534,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 664.06417,
-      "stddev": 0.50037,
+      "mean": 528.701008,
+      "stddev": 43.960408,
       "samples": [
-        663.872,
-        663.689,
-        664.632
+        579.19,
+        508.005,
+        498.908
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2565,12 +2557,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 611.659351,
-      "stddev": 2.28554,
+      "mean": 492.54043,
+      "stddev": 53.312691,
       "samples": [
-        612.207,
-        609.15,
-        613.621
+        553.729,
+        467.797,
+        456.095
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -2588,14 +2580,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 48.011492,
-      "stddev": 0.001623,
+      "mean": 48.075298,
+      "stddev": 0.005934,
       "samples": [
-        48.0128,
-        48.0097,
-        48.012
+        48.0811,
+        48.0692,
+        48.0756
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2611,14 +2603,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 46.295039,
-      "stddev": 0.008404,
+      "mean": 46.333435,
+      "stddev": 0.005938,
       "samples": [
-        46.2856,
-        46.2977,
-        46.3018
+        46.3287,
+        46.3401,
+        46.3315
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2634,14 +2626,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 44.767919,
-      "stddev": 0.00416,
+      "mean": 44.799889,
+      "stddev": 0.017376,
       "samples": [
-        44.764,
-        44.7675,
-        44.7723
+        44.7801,
+        44.8128,
+        44.8067
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2657,14 +2649,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 43.348419,
-      "stddev": 0.010244,
+      "mean": 43.396343,
+      "stddev": 0.005984,
       "samples": [
-        43.3366,
-        43.3534,
-        43.3552
+        43.3897,
+        43.3981,
+        43.4013
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2680,14 +2672,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 42.00585,
-      "stddev": 0.00279,
+      "mean": 42.057623,
+      "stddev": 0.005442,
       "samples": [
-        42.0026,
-        42.0077,
-        42.0072
+        42.0514,
+        42.0599,
+        42.0615
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2703,14 +2695,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 40.713508,
-      "stddev": 0.012937,
+      "mean": 40.788703,
+      "stddev": 0.009534,
       "samples": [
-        40.7097,
-        40.7029,
-        40.7279
+        40.7801,
+        40.799,
+        40.787
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2726,14 +2718,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 39.495114,
-      "stddev": 0.017793,
+      "mean": 39.526998,
+      "stddev": 0.027451,
       "samples": [
-        39.4773,
-        39.4953,
-        39.5128
+        39.4971,
+        39.5511,
+        39.5328
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2749,14 +2741,14 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 38.367483,
-      "stddev": 0.026494,
+      "mean": 38.430473,
+      "stddev": 0.002773,
       "samples": [
-        38.3381,
-        38.3749,
-        38.3895
+        38.4307,
+        38.4331,
+        38.4276
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -2772,222 +2764,15 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 37.256903,
-      "stddev": 0.014028,
+      "mean": 37.280164,
+      "stddev": 0.004132,
       "samples": [
-        37.2414,
-        37.2688,
-        37.2605
+        37.2811,
+        37.2837,
+        37.2756
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 0,
-      "ending_context": 128,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 49.129949,
-      "stddev": 0.037566,
-      "samples": [
-        49.1451,
-        49.1576,
-        49.0872
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 8192,
-      "ending_context": 8320,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 46.78987,
-      "stddev": 0.026553,
-      "samples": [
-        46.7944,
-        46.7613,
-        46.8139
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 16384,
-      "ending_context": 16512,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 45.10161,
-      "stddev": 0.049258,
-      "samples": [
-        45.046,
-        45.1192,
-        45.1397
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 24576,
-      "ending_context": 24704,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 43.575538,
-      "stddev": 0.040198,
-      "samples": [
-        43.5298,
-        43.6052,
-        43.5916
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 32768,
-      "ending_context": 32896,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 42.055896,
-      "stddev": 0.045735,
-      "samples": [
-        42.0036,
-        42.0758,
-        42.0883
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 40960,
-      "ending_context": 41088,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 40.915923,
-      "stddev": 0.00614,
-      "samples": [
-        40.9091,
-        40.921,
-        40.9177
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 49152,
-      "ending_context": 49280,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 39.627847,
-      "stddev": 0.020807,
-      "samples": [
-        39.6039,
-        39.6382,
-        39.6414
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 57344,
-      "ending_context": 57472,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 38.418084,
-      "stddev": 0.013936,
-      "samples": [
-        38.4026,
-        38.4219,
-        38.4297
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "generation",
-      "starting_depth": 65536,
-      "ending_context": 65664,
-      "prompt_tokens": 0,
-      "generation_tokens": 128,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 37.313698,
-      "stddev": 0.003047,
-      "samples": [
-        37.3151,
-        37.3102,
-        37.3158
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
     },
     {
       "toolbox": "vulkan-radv-perfromance",
@@ -3002,12 +2787,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 49.011847,
-      "stddev": 0.067567,
+      "mean": 48.911833,
+      "stddev": 0.108637,
       "samples": [
-        49.0876,
-        48.99,
-        48.9579
+        48.7914,
+        49.0024,
+        48.9418
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3025,12 +2810,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 46.635544,
-      "stddev": 0.048113,
+      "mean": 46.668729,
+      "stddev": 0.036737,
       "samples": [
-        46.6122,
-        46.6036,
-        46.6909
+        46.6304,
+        46.7037,
+        46.6721
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3048,12 +2833,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 45.000929,
-      "stddev": 0.022164,
+      "mean": 44.970117,
+      "stddev": 0.025037,
       "samples": [
-        44.9987,
-        45.0241,
-        44.98
+        44.9416,
+        44.9883,
+        44.9805
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3071,12 +2856,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 43.4918,
-      "stddev": 0.019963,
+      "mean": 43.454305,
+      "stddev": 0.022858,
       "samples": [
-        43.4704,
-        43.5099,
-        43.4951
+        43.4558,
+        43.4764,
+        43.4307
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3094,12 +2879,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 41.979041,
-      "stddev": 0.012204,
+      "mean": 41.969152,
+      "stddev": 0.025321,
       "samples": [
-        41.973,
-        41.9931,
-        41.9711
+        41.9435,
+        41.9699,
+        41.9941
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3117,12 +2902,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 40.841377,
-      "stddev": 0.045872,
+      "mean": 40.822116,
+      "stddev": 0.008571,
       "samples": [
-        40.7886,
-        40.8636,
-        40.8719
+        40.8237,
+        40.8298,
+        40.8129
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3140,12 +2925,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 39.585093,
-      "stddev": 0.02492,
+      "mean": 39.568349,
+      "stddev": 0.023062,
       "samples": [
-        39.5603,
-        39.6101,
-        39.5849
+        39.5424,
+        39.5864,
+        39.5763
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3163,12 +2948,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 38.385272,
-      "stddev": 0.014809,
+      "mean": 38.385921,
+      "stddev": 0.007605,
       "samples": [
-        38.3682,
-        38.3945,
-        38.3931
+        38.3805,
+        38.3946,
+        38.3827
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3186,12 +2971,12 @@
       "generation_tokens": 128,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 37.320398,
-      "stddev": 0.002425,
+      "mean": 37.294139,
+      "stddev": 0.004412,
       "samples": [
-        37.3222,
-        37.3176,
-        37.3214
+        37.2925,
+        37.2991,
+        37.2908
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3209,14 +2994,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1497.011412,
-      "stddev": 4.096788,
+      "mean": 1482.635059,
+      "stddev": 9.238649,
       "samples": [
-        1501.3,
-        1493.13,
-        1496.61
+        1493.09,
+        1479.25,
+        1475.57
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -3232,14 +3017,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1042.943814,
-      "stddev": 53.774938,
+      "mean": 1231.523926,
+      "stddev": 7.685501,
       "samples": [
-        1102.23,
-        1029.3,
-        997.307
+        1235.35,
+        1236.55,
+        1222.68
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -3255,14 +3040,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 696.623796,
-      "stddev": 11.656156,
+      "mean": 1017.123251,
+      "stddev": 4.223935,
       "samples": [
-        709.668,
-        692.974,
-        687.23
+        1014.0,
+        1015.44,
+        1021.93
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -3278,14 +3063,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 564.178242,
-      "stddev": 8.63664,
+      "mean": 880.57637,
+      "stddev": 1.48141,
       "samples": [
-        574.14,
-        558.794,
-        559.601
+        879.107,
+        882.069,
+        880.553
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -3301,14 +3086,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 485.197143,
-      "stddev": 1.689513,
+      "mean": 736.217163,
+      "stddev": 1.499401,
       "samples": [
-        483.288,
-        486.5,
-        485.803
+        737.92,
+        735.095,
+        735.637
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -3324,14 +3109,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 431.211974,
-      "stddev": 9.748069,
+      "mean": 653.928798,
+      "stddev": 4.728002,
       "samples": [
-        442.394,
-        424.507,
-        426.734
+        659.308,
+        652.046,
+        650.432
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -3347,14 +3132,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 383.158318,
-      "stddev": 0.321541,
+      "mean": 581.277433,
+      "stddev": 0.978266,
       "samples": [
-        383.445,
-        383.219,
-        382.811
+        581.826,
+        580.148,
+        581.859
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -3370,14 +3155,14 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 347.828149,
-      "stddev": 0.891831,
+      "mean": 533.742124,
+      "stddev": 1.259064,
       "samples": [
-        348.592,
-        348.045,
-        346.848
+        535.195,
+        532.974,
+        533.057
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
@@ -3393,222 +3178,15 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 318.20833,
-      "stddev": 0.145779,
+      "mean": 485.422555,
+      "stddev": 1.202389,
       "samples": [
-        318.153,
-        318.099,
-        318.374
+        486.649,
+        485.374,
+        484.245
       ],
-      "build_commit": "7a2db1a0c",
+      "build_commit": "39eab74a0",
       "gpu_info": "AMD Radeon 8060S Graphics"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 0,
-      "ending_context": 2048,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 1093.657502,
-      "stddev": 3.578413,
-      "samples": [
-        1089.57,
-        1095.17,
-        1096.23
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 8192,
-      "ending_context": 10240,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 952.083714,
-      "stddev": 2.937576,
-      "samples": [
-        949.025,
-        952.344,
-        954.882
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 16384,
-      "ending_context": 18432,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 841.891158,
-      "stddev": 2.31353,
-      "samples": [
-        839.669,
-        841.718,
-        844.287
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 24576,
-      "ending_context": 26624,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 745.003519,
-      "stddev": 1.243293,
-      "samples": [
-        746.146,
-        745.184,
-        743.68
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 32768,
-      "ending_context": 34816,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 643.980498,
-      "stddev": 1.811655,
-      "samples": [
-        645.593,
-        642.02,
-        644.329
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 40960,
-      "ending_context": 43008,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 532.38549,
-      "stddev": 6.256142,
-      "samples": [
-        526.341,
-        538.834,
-        531.982
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 49152,
-      "ending_context": 51200,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 443.425985,
-      "stddev": 3.316628,
-      "samples": [
-        441.252,
-        441.782,
-        447.243
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 57344,
-      "ending_context": 59392,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 376.010133,
-      "stddev": 8.322536,
-      "samples": [
-        385.484,
-        369.878,
-        372.668
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
-    },
-    {
-      "toolbox": "vulkan-radv",
-      "toolbox_name": "llama-vulkan-radv",
-      "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
-      "quant": "Q8_K_XL",
-      "series": "prefill",
-      "starting_depth": 65536,
-      "ending_context": 67584,
-      "prompt_tokens": 2048,
-      "generation_tokens": 0,
-      "batch": 2048,
-      "ubatch": 2048,
-      "mean": 319.07048,
-      "stddev": 2.377798,
-      "samples": [
-        316.449,
-        319.674,
-        321.088
-      ],
-      "build_commit": "11924d4c1",
-      "gpu_info": "AMD Radeon 8060S Graphics (RADV GFX1151)"
     },
     {
       "toolbox": "vulkan-radv-perfromance",
@@ -3623,12 +3201,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1292.661885,
-      "stddev": 1.149874,
+      "mean": 1298.566447,
+      "stddev": 1.700627,
       "samples": [
-        1291.4,
-        1293.65,
-        1292.94
+        1296.6,
+        1299.63,
+        1299.47
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3646,12 +3224,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1148.550152,
-      "stddev": 1.681722,
+      "mean": 1145.946472,
+      "stddev": 1.516228,
       "samples": [
-        1146.62,
-        1149.36,
-        1149.67
+        1144.34,
+        1147.35,
+        1146.14
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3669,12 +3247,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 1027.186124,
-      "stddev": 1.897913,
+      "mean": 1023.017357,
+      "stddev": 1.816751,
       "samples": [
-        1025.0,
-        1028.11,
-        1028.44
+        1020.97,
+        1023.67,
+        1024.42
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3692,12 +3270,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 930.342402,
-      "stddev": 1.195634,
+      "mean": 919.18635,
+      "stddev": 7.699037,
       "samples": [
-        928.979,
-        930.834,
-        931.214
+        922.88,
+        924.343,
+        910.337
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3715,12 +3293,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 845.993101,
-      "stddev": 1.48836,
+      "mean": 698.702634,
+      "stddev": 28.22166,
       "samples": [
-        844.656,
-        847.597,
-        845.727
+        731.143,
+        685.163,
+        679.802
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3738,12 +3316,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 777.303034,
-      "stddev": 0.953908,
+      "mean": 617.300845,
+      "stddev": 32.239589,
       "samples": [
-        776.219,
-        778.014,
-        777.676
+        653.96,
+        604.583,
+        593.36
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3761,12 +3339,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 717.688958,
-      "stddev": 0.420069,
+      "mean": 548.355698,
+      "stddev": 19.1695,
       "samples": [
-        718.002,
-        717.853,
-        717.212
+        570.49,
+        537.148,
+        537.429
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3784,12 +3362,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 663.665365,
-      "stddev": 0.347969,
+      "mean": 527.391395,
+      "stddev": 49.537542,
       "samples": [
-        663.935,
-        663.272,
-        663.789
+        584.261,
+        504.285,
+        493.628
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
@@ -3807,12 +3385,12 @@
       "generation_tokens": 0,
       "batch": 2048,
       "ubatch": 2048,
-      "mean": 606.685882,
-      "stddev": 1.456955,
+      "mean": 493.053564,
+      "stddev": 56.584901,
       "samples": [
-        605.318,
-        608.218,
-        606.521
+        558.05,
+        466.336,
+        454.774
       ],
       "build_commit": "aaf4fba83",
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
