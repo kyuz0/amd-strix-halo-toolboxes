@@ -10,9 +10,13 @@ MODEL_PATH=""
 API_KEY=""
 IMAGE="docker.io/st3v0rr/amd-strix-halo-toolboxes:vulkan-radv"
 MODELS_DIR="./models"
-# Auf Strix Halo laut Upstream-README zwingend: Flash Attention + no-mmap,
-# sonst drohen Abstuerze und Einbrueche bei der Geschwindigkeit.
-EXTRA_ARGS="-fa 1 --no-mmap"
+# Auf Strix Halo laut Upstream-README zwingend: Flash Attention und kein
+# mmap, sonst drohen Abstuerze und Einbrueche bei der Geschwindigkeit.
+#
+# Die README nennt dafuer noch "-fa 1 --no-mmap". Beide Schreibweisen sind in
+# aktuellem llama.cpp veraltet: --no-mmap warnt beim Start und entspricht
+# "--load-mode none", -fa erwartet inzwischen on|off|auto.
+EXTRA_ARGS="-fa on --load-mode none"
 
 # Hilfe-Funktion
 show_help() {
