@@ -5,8 +5,9 @@ on:
     inputs:
       backends:
         description: >
-          Comma-separated backends to build (e.g. "rocm-7.14", "therock-nightly", "vulkan-radv-perfromance").
+          Comma-separated backends to build (e.g. "rocm-7.14", "vulkan-radv").
           Use "all" to build the standard auto-built set.
+          Only backends with a Dockerfile in toolboxes_llama_server/ can be built.
         required: false
         default: all
 
@@ -28,7 +29,7 @@ jobs:
           IN='${{ inputs.backends }}'
 
           if [[ "$IN" == "all" || -z "$IN" ]]; then
-            JSON='["rocm-6.4.4","rocm-7.14","therock-nightly","vulkan-amdvlk","vulkan-radv"]'
+            JSON='["rocm-6.4.4","rocm-7.14","vulkan-amdvlk","vulkan-radv"]'
           else
             # Remove spaces and build JSON array from comma list
             IN_CLEAN=$(echo "$IN" | tr -d '[:space:]')
