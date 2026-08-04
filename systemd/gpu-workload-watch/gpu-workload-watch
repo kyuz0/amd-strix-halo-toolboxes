@@ -7,7 +7,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 load_threshold=20
 idle_threshold=10
 load_seconds=2
-idle_seconds=30
+idle_seconds=60
 
 ectool_bin="$(command -v ectool)" || exit 1
 tuned_adm_bin="$(command -v tuned-adm)" || exit 1
@@ -16,6 +16,7 @@ fan_mode="unknown"
 tuned_mode="unknown"
 load_count=0
 idle_count=0
+no_workload_count=0
 gpu_busy_file=""
 
 for candidate in /sys/class/drm/card*/device/gpu_busy_percent; do
@@ -135,9 +136,26 @@ trap restore_defaults EXIT
 trap stop_watcher INT TERM HUP
 
 while true; do
+    gpu_busy="$(gpu_busy_percent)"
+
     if ! gpu_workload_is_running; then
         load_count=0
         idle_count=0
+
+        if [[ "${fan_mode}" == "max" || "${tuned_mode}" == "accelerator-performance" ]]; then
+            if (( gpu_busy < idle_threshold )); then
+                ((no_workload_count += 1))
+            else
+                no_workload_count=0
+            fi
+
+            if (( no_workload_count < idle_seconds )); then
+                sleep 1
+                continue
+            fi
+        fi
+
+        no_workload_count=0
         if [[ "${fan_mode}" != "auto" ]]; then
             set_fan_auto
         fi
@@ -148,11 +166,11 @@ while true; do
         continue
     fi
 
+    no_workload_count=0
+
     if [[ "${tuned_mode}" != "accelerator-performance" ]]; then
         set_tuned_accelerator
     fi
-
-    gpu_busy="$(gpu_busy_percent)"
 
     if [[ "${fan_mode}" != "max" ]]; then
         idle_count=0
