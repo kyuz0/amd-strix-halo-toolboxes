@@ -2,8 +2,8 @@ campaign: 20260804-cooling-fixed-v1
 host: fw2
 host_profile: gpu-workload-watch (accelerator-performance and maximum fans), amd_iommu=off
 kernel: 7.1.3-100.fc43.x86_64
-toolbox: llama-vulkan-radv-perfromance
-image: docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-perfromance
+toolbox: llama-vulkan-radv-performance
+image: docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-performance
 image_digest: sha256:24756827094e7db79103f5e61943772d6e098f04c2fbac9da09fe86a69be6bd2
 llama_build: 10249 (aaf4fba83)
 cockpit_package: llama-cockpit 2026.8.4.756

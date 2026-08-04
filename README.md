@@ -65,7 +65,7 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 
 | Container Tag | Backend/Stack | Purpose / Notes |
 | :--- | :--- | :--- |
-| `vulkan-radv-perfromance` | Vulkan (Mesa RADV, Fedora 44) | Experimental build tracking [`Nathanw1014/llama.cpp:strix-halo-vulkan`](https://github.com/Nathanw1014/llama.cpp/tree/strix-halo-vulkan), with Strix Halo-focused flash-attention, KV-cache, lightning-indexer, and matrix/MoE performance work. Manual build only. |
+| `vulkan-radv-performance` | Vulkan (Mesa RADV, Fedora 44) | Experimental build tracking [`Nathanw1014/llama.cpp:strix-halo-vulkan`](https://github.com/Nathanw1014/llama.cpp/tree/strix-halo-vulkan), with Strix Halo-focused flash-attention, KV-cache, lightning-indexer, and matrix/MoE performance work. Manual build only. |
 | `rocm-7.2.4-rocmfpx` | ROCm 7.2.4 (Custom) | Custom `charlie12345/ROCmFPX` build with ROCmFP3/FP4/FP6/FP8 weight formats, MTP speculative decoding, and agent-aware presets. Auto-built on upstream changes. |
 | `vulkan-rocmfpx` | Vulkan (Custom) | Vulkan-only `charlie12345/ROCmFPX` build with ROCmFPX weight formats. No ROCm dependency. Auto-built on upstream changes. |
 | `rocm-7.2.4-rdma-fix` | ROCm 7.2.4 (Custom) | Test build from `kyuz0/llama.cpp:fix/rpc-rdma-inline-fallback`, which retries RDMA QP creation without inline data. Manual build only. |
@@ -209,9 +209,15 @@ sudo reboot
 ### Ubuntu 24.04
 See [TechnigmaAI's Guide](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29).
 
+### GPU Workload Cooling and Power Profiles
+
+Framework Desktop users can install the [GPU workload watcher](systemd/gpu-workload-watch/README.md) to select performance or power-saving TuneD profiles automatically and increase cooling only during active GPU inference.
+
 ## Performance Benchmarks
 
 🌐 **Interactive Viewer**: [https://kyuz0.github.io/amd-strix-halo-toolboxes/](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
+
+🔬 **Toolbox Comparison**: [Compare depth curves across Vulkan RADV, ROCm, and experimental toolbox builds](https://kyuz0.github.io/amd-strix-halo-toolboxes/toolbox-performance.html)
 
 See [docs/benchmarks.md](docs/benchmarks.md) for full logs.
 

@@ -26,7 +26,7 @@
         "toolbox",
         "run",
         "-c",
-        "llama-vulkan-radv-perfromance",
+        "llama-vulkan-radv-performance",
         "--",
         "llama-bench",
         "-ngl",
@@ -62,7 +62,7 @@
         "toolbox",
         "run",
         "-c",
-        "llama-vulkan-radv-perfromance",
+        "llama-vulkan-radv-performance",
         "--",
         "llama-bench",
         "-ngl",
@@ -98,7 +98,7 @@
         "toolbox",
         "run",
         "-c",
-        "llama-vulkan-radv-perfromance",
+        "llama-vulkan-radv-performance",
         "--",
         "llama-bench",
         "-ngl",
@@ -134,7 +134,7 @@
         "toolbox",
         "run",
         "-c",
-        "llama-vulkan-radv-perfromance",
+        "llama-vulkan-radv-performance",
         "--",
         "llama-bench",
         "-ngl",
@@ -167,5 +167,5 @@
     }
   ],
   "summary_rows": 72,
-  "toolbox": "llama-vulkan-radv-perfromance"
+  "toolbox": "llama-vulkan-radv-performance"
 }

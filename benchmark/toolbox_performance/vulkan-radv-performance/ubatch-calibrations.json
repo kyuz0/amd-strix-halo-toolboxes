@@ -101,10 +101,10 @@
                     "stddev_ts": 0.911653
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.stderr.log",
                 "ubatch": 256
               },
               {
@@ -202,10 +202,10 @@
                     "stddev_ts": 3.459823
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.stderr.log",
                 "ubatch": 512
               },
               {
@@ -303,10 +303,10 @@
                     "stddev_ts": 3.487924
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.stderr.log",
                 "ubatch": 1024
               },
               {
@@ -404,10 +404,10 @@
                     "stddev_ts": 1.008998
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.stderr.log",
                 "ubatch": 2048
               }
             ],
@@ -425,7 +425,7 @@
             "prefill": 2048,
             "repetitions": 3,
             "selected_ubatch": 1024,
-            "toolbox": "llama-vulkan-radv-perfromance"
+            "toolbox": "llama-vulkan-radv-performance"
           },
           "runs": [
             {
@@ -526,10 +526,10 @@
                       "stddev_ts": 0.911653
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.stderr.log",
                   "ubatch": 256
                 },
                 {
@@ -627,10 +627,10 @@
                       "stddev_ts": 3.459823
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.stderr.log",
                   "ubatch": 512
                 },
                 {
@@ -728,10 +728,10 @@
                       "stddev_ts": 3.487924
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.stderr.log",
                   "ubatch": 1024
                 },
                 {
@@ -829,10 +829,10 @@
                       "stddev_ts": 1.008998
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-perfromance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ2_XXS/llama-vulkan-radv-performance/20260804T112804Z/DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.stderr.log",
                   "ubatch": 2048
                 }
               ],
@@ -850,7 +850,7 @@
               "prefill": 2048,
               "repetitions": 3,
               "selected_ubatch": 1024,
-              "toolbox": "llama-vulkan-radv-perfromance"
+              "toolbox": "llama-vulkan-radv-performance"
             }
           ],
           "selected_ubatch": 1024
@@ -954,10 +954,10 @@
                     "stddev_ts": 2.363055
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.stderr.log",
                 "ubatch": 256
               },
               {
@@ -1055,10 +1055,10 @@
                     "stddev_ts": 2.765977
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.stderr.log",
                 "ubatch": 512
               },
               {
@@ -1156,10 +1156,10 @@
                     "stddev_ts": 2.669787
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.stderr.log",
                 "ubatch": 1024
               },
               {
@@ -1257,10 +1257,10 @@
                     "stddev_ts": 2.431624
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.stderr.log",
                 "ubatch": 2048
               }
             ],
@@ -1278,7 +1278,7 @@
             "prefill": 2048,
             "repetitions": 3,
             "selected_ubatch": 256,
-            "toolbox": "llama-vulkan-radv-perfromance"
+            "toolbox": "llama-vulkan-radv-performance"
           },
           "runs": [
             {
@@ -1379,10 +1379,10 @@
                       "stddev_ts": 2.363055
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.stderr.log",
                   "ubatch": 256
                 },
                 {
@@ -1480,10 +1480,10 @@
                       "stddev_ts": 2.765977
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.stderr.log",
                   "ubatch": 512
                 },
                 {
@@ -1581,10 +1581,10 @@
                       "stddev_ts": 2.669787
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.stderr.log",
                   "ubatch": 1024
                 },
                 {
@@ -1682,10 +1682,10 @@
                       "stddev_ts": 2.431624
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-27B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T080317Z/Qwen3.6-27B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.stderr.log",
                   "ubatch": 2048
                 }
               ],
@@ -1703,7 +1703,7 @@
               "prefill": 2048,
               "repetitions": 3,
               "selected_ubatch": 256,
-              "toolbox": "llama-vulkan-radv-perfromance"
+              "toolbox": "llama-vulkan-radv-performance"
             }
           ],
           "selected_ubatch": 256
@@ -1807,10 +1807,10 @@
                     "stddev_ts": 34.032651
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.stderr.log",
                 "ubatch": 256
               },
               {
@@ -1908,10 +1908,10 @@
                     "stddev_ts": 46.210384
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.stderr.log",
                 "ubatch": 512
               },
               {
@@ -2009,10 +2009,10 @@
                     "stddev_ts": 54.684532
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.stderr.log",
                 "ubatch": 1024
               },
               {
@@ -2110,10 +2110,10 @@
                     "stddev_ts": 53.312691
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.stderr.log",
                 "ubatch": 2048
               }
             ],
@@ -2131,7 +2131,7 @@
             "prefill": 2048,
             "repetitions": 3,
             "selected_ubatch": 2048,
-            "toolbox": "llama-vulkan-radv-perfromance"
+            "toolbox": "llama-vulkan-radv-performance"
           },
           "runs": [
             {
@@ -2232,10 +2232,10 @@
                       "stddev_ts": 34.032651
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.stderr.log",
                   "ubatch": 256
                 },
                 {
@@ -2333,10 +2333,10 @@
                       "stddev_ts": 46.210384
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.stderr.log",
                   "ubatch": 512
                 },
                 {
@@ -2434,10 +2434,10 @@
                       "stddev_ts": 54.684532
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.stderr.log",
                   "ubatch": 1024
                 },
                 {
@@ -2535,10 +2535,10 @@
                       "stddev_ts": 53.312691
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-perfromance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q4_K_XL/llama-vulkan-radv-performance/20260804T101433Z/Qwen3.6-35B-A3B-UD-Q4_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.stderr.log",
                   "ubatch": 2048
                 }
               ],
@@ -2556,7 +2556,7 @@
               "prefill": 2048,
               "repetitions": 3,
               "selected_ubatch": 2048,
-              "toolbox": "llama-vulkan-radv-perfromance"
+              "toolbox": "llama-vulkan-radv-performance"
             }
           ],
           "selected_ubatch": 2048
@@ -2660,10 +2660,10 @@
                     "stddev_ts": 31.688892
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.stderr.log",
                 "ubatch": 256
               },
               {
@@ -2761,10 +2761,10 @@
                     "stddev_ts": 46.661988
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.stderr.log",
                 "ubatch": 512
               },
               {
@@ -2862,10 +2862,10 @@
                     "stddev_ts": 53.292261
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.stderr.log",
                 "ubatch": 1024
               },
               {
@@ -2963,10 +2963,10 @@
                     "stddev_ts": 56.584901
                   }
                 ],
-                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.jsonl",
                 "return_code": 0,
                 "status": "completed",
-                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.stderr.log",
                 "ubatch": 2048
               }
             ],
@@ -2984,7 +2984,7 @@
             "prefill": 2048,
             "repetitions": 3,
             "selected_ubatch": 2048,
-            "toolbox": "llama-vulkan-radv-perfromance"
+            "toolbox": "llama-vulkan-radv-performance"
           },
           "runs": [
             {
@@ -3085,10 +3085,10 @@
                       "stddev_ts": 31.688892
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub256.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub256.stderr.log",
                   "ubatch": 256
                 },
                 {
@@ -3186,10 +3186,10 @@
                       "stddev_ts": 46.661988
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub512.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub512.stderr.log",
                   "ubatch": 512
                 },
                 {
@@ -3287,10 +3287,10 @@
                       "stddev_ts": 53.292261
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub1024.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub1024.stderr.log",
                   "ubatch": 1024
                 },
                 {
@@ -3388,10 +3388,10 @@
                       "stddev_ts": 56.584901
                     }
                   ],
-                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.jsonl",
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.jsonl",
                   "return_code": 0,
                   "status": "completed",
-                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-perfromance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-perfromance__curve-prefill__fa1__ub2048.stderr.log",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804-cooling-fixed-v1/calibration/strix-halo/vulkan/Qwen3.6-35B-A3B-UD-Q8_K_XL/llama-vulkan-radv-performance/20260804T105039Z/Qwen3.6-35B-A3B-UD-Q8_K_XL__llama-vulkan-radv-performance__curve-prefill__fa1__ub2048.stderr.log",
                   "ubatch": 2048
                 }
               ],
@@ -3409,7 +3409,7 @@
               "prefill": 2048,
               "repetitions": 3,
               "selected_ubatch": 2048,
-              "toolbox": "llama-vulkan-radv-perfromance"
+              "toolbox": "llama-vulkan-radv-performance"
             }
           ],
           "selected_ubatch": 2048

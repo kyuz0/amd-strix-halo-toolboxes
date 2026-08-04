@@ -6,14 +6,14 @@
     "host_profiles": [
       "gpu-workload-watch (accelerator-performance and maximum fans), amd_iommu=off"
     ],
-    "default_toolbox": "vulkan-radv-perfromance",
+    "default_toolbox": "vulkan-radv-performance",
     "toolboxes": [
       {
-        "id": "vulkan-radv-perfromance",
+        "id": "vulkan-radv-performance",
         "label": "Vulkan RADV Performance",
         "description": "Strix Halo Vulkan performance fork",
-        "toolbox_name": "llama-vulkan-radv-perfromance",
-        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-perfromance",
+        "toolbox_name": "llama-vulkan-radv-performance",
+        "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-performance",
         "image_digest": "sha256:24756827094e7db79103f5e61943772d6e098f04c2fbac9da09fe86a69be6bd2",
         "host": "fw2",
         "host_profile": "gpu-workload-watch (accelerator-performance and maximum fans), amd_iommu=off",
@@ -291,8 +291,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -314,8 +314,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -337,8 +337,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -360,8 +360,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -383,8 +383,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -406,8 +406,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -429,8 +429,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -452,8 +452,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -475,8 +475,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -705,8 +705,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -728,8 +728,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -751,8 +751,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -774,8 +774,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -797,8 +797,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -820,8 +820,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -843,8 +843,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -866,8 +866,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -889,8 +889,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS",
       "model_source": "DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003",
       "quant": "Q2_XXS",
@@ -1119,8 +1119,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1142,8 +1142,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1165,8 +1165,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1188,8 +1188,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1211,8 +1211,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1234,8 +1234,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1257,8 +1257,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1280,8 +1280,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1303,8 +1303,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1533,8 +1533,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1556,8 +1556,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1579,8 +1579,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1602,8 +1602,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1625,8 +1625,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1648,8 +1648,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1671,8 +1671,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1694,8 +1694,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1717,8 +1717,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-27B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-27B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -1947,8 +1947,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -1970,8 +1970,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -1993,8 +1993,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2016,8 +2016,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2039,8 +2039,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2062,8 +2062,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2085,8 +2085,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2108,8 +2108,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2131,8 +2131,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2361,8 +2361,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2384,8 +2384,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2407,8 +2407,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2430,8 +2430,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2453,8 +2453,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2476,8 +2476,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2499,8 +2499,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2522,8 +2522,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2545,8 +2545,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q4_K_XL",
       "quant": "Q4_K_XL",
@@ -2775,8 +2775,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -2798,8 +2798,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -2821,8 +2821,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -2844,8 +2844,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -2867,8 +2867,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -2890,8 +2890,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -2913,8 +2913,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -2936,8 +2936,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -2959,8 +2959,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3189,8 +3189,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3212,8 +3212,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3235,8 +3235,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3258,8 +3258,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3281,8 +3281,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3304,8 +3304,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3327,8 +3327,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3350,8 +3350,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
@@ -3373,8 +3373,8 @@
       "gpu_info": "AMD Radeon 8060S Graphics (RADV STRIX_HALO)"
     },
     {
-      "toolbox": "vulkan-radv-perfromance",
-      "toolbox_name": "llama-vulkan-radv-perfromance",
+      "toolbox": "vulkan-radv-performance",
+      "toolbox_name": "llama-vulkan-radv-performance",
       "model": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "model_source": "Qwen3.6-35B-A3B-UD-Q8_K_XL",
       "quant": "Q8_K_XL",
