@@ -270,30 +270,85 @@ function renderResults() {
 }
 
 function renderConfigSummary(points) {
-    const summaries = [];
-    state.data.models.filter((model) => state.selectedModels.has(model)).forEach((model) => {
-        const modelPoints = points.filter((point) => point.model === model);
-        if (!modelPoints.length) return;
-        const configurations = [...new Set(modelPoints.map((point) => `${point.batch}|${point.ubatch}`))];
-        if (configurations.length === 1) {
-            const [batch, ubatch] = configurations[0].split("|").map(Number);
-            summaries.push(`${displayModel(model)}: batch ${batch.toLocaleString()}, ubatch ${ubatch.toLocaleString()}`);
-        } else {
-            const batches = [...new Set(modelPoints.map((point) => point.batch))];
-            const ubatches = state.data.meta.toolboxes
-                .filter((toolbox) => state.selectedToolboxes.has(toolbox.id))
-                .map((toolbox) => {
-                    const point = modelPoints.find((candidate) => candidate.toolbox === toolbox.id);
-                    return point ? `${toolbox.label} ${point.ubatch.toLocaleString()}` : null;
-                })
-                .filter(Boolean);
-            const batch = batches.length === 1
-                ? `batch ${batches[0].toLocaleString()}`
-                : "batch varies";
-            summaries.push(`${displayModel(model)}: ${batch}; calibrated ubatch ${ubatches.join(", ")}`);
-        }
+    const container = document.getElementById("model-config");
+    const summary = document.getElementById("calibration-summary");
+    const models = state.data.models.filter((model) => state.selectedModels.has(model));
+    const toolboxes = state.data.meta.toolboxes.filter((toolbox) =>
+        state.selectedToolboxes.has(toolbox.id)
+    );
+    container.innerHTML = "";
+
+    if (!models.length || !toolboxes.length || !points.length) {
+        summary.textContent = "Ubatch is selected per model and backend";
+        const empty = document.createElement("p");
+        empty.className = "calibration-empty";
+        empty.textContent = "Select at least one model and toolbox to inspect its calibrated settings.";
+        container.appendChild(empty);
+        return;
+    }
+
+    const batches = [...new Set(points.map((point) => point.batch))];
+    const depthCount = state.data.meta.depths.length;
+    const batchText = batches.length === 1
+        ? `batch ${batches[0].toLocaleString()}`
+        : "batch varies by run";
+    summary.textContent = `${depthCount}-depth calibration · ${batchText} · ubatch selected per model/backend`;
+
+    const table = document.createElement("table");
+    table.className = "calibration-table";
+    const head = table.createTHead();
+    const headRow = head.insertRow();
+    const modelHeading = document.createElement("th");
+    modelHeading.scope = "col";
+    modelHeading.textContent = "Model";
+    headRow.appendChild(modelHeading);
+    toolboxes.forEach((toolbox) => {
+        const heading = document.createElement("th");
+        heading.scope = "col";
+        const content = document.createElement("span");
+        content.className = "calibration-toolbox-heading";
+        const sample = document.createElement("i");
+        sample.className = "toolbox-line-sample";
+        sample.style.borderTopStyle = toolboxStyle(toolbox.id).cssLine;
+        content.append(sample, document.createTextNode(toolbox.label));
+        heading.appendChild(content);
+        headRow.appendChild(heading);
     });
-    document.getElementById("model-config").textContent = summaries.join(" · ");
+
+    const body = table.createTBody();
+    models.forEach((model) => {
+        const row = body.insertRow();
+        const modelCell = document.createElement("th");
+        modelCell.scope = "row";
+        modelCell.className = "calibration-model";
+        modelCell.title = model;
+        const label = document.createElement("span");
+        label.className = "calibration-model-label";
+        const dot = document.createElement("i");
+        dot.className = "calibration-model-dot";
+        dot.style.backgroundColor = modelColor(model);
+        label.append(dot, document.createTextNode(displayModel(model)));
+        modelCell.appendChild(label);
+        row.appendChild(modelCell);
+
+        toolboxes.forEach((toolbox) => {
+            const cell = row.insertCell();
+            const settings = points.filter((point) =>
+                point.model === model && point.toolbox === toolbox.id
+            );
+            const ubatches = [...new Set(settings.map((point) => point.ubatch))];
+            const value = document.createElement("span");
+            value.className = "calibration-value";
+            value.textContent = ubatches.length === 1
+                ? ubatches[0].toLocaleString()
+                : ubatches.length ? "Varies" : "—";
+            const unit = document.createElement("small");
+            unit.textContent = "ubatch";
+            value.appendChild(unit);
+            cell.appendChild(value);
+        });
+    });
+    container.appendChild(table);
 }
 
 function renderCurve(containerId, series, points) {

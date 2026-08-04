@@ -50,8 +50,18 @@
                     Comparison baseline
                     <select id="baseline-selector"></select>
                 </label>
-                <p id="model-config" class="model-config"></p>
             </div>
+
+            <section class="calibration-panel" aria-labelledby="calibration-title">
+                <div class="calibration-heading">
+                    <div>
+                        <span class="eyebrow">Benchmark tuning</span>
+                        <h3 id="calibration-title">Calibrated settings</h3>
+                    </div>
+                    <p id="calibration-summary"></p>
+                </div>
+                <div id="model-config" class="calibration-matrix" aria-live="polite"></div>
+            </section>
 
             <div id="comparison-legend" class="comparison-legend"></div>
             <p id="data-warning" class="data-warning" hidden></p>
