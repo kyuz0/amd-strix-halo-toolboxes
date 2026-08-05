@@ -37,11 +37,30 @@
     border-color: #84adff;
 }
 
-.toolbox-line-sample {
-    width: 25px;
-    height: 0;
+.toolbox-style-sample {
+    width: 30px;
+    height: 12px;
+    flex: 0 0 auto;
+    overflow: visible;
     color: #475467;
-    border-top: 3px solid currentColor;
+}
+
+.toolbox-sample-line {
+    stroke: currentColor;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.toolbox-sample-marker {
+    fill: currentColor;
+    stroke: #fff;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+}
+
+.legend-toolbox-sample {
+    width: 27px;
 }
 
 .comparison-options {
@@ -150,7 +169,7 @@
 }
 
 .calibration-toolbox-heading .toolbox-line-sample {
-    width: 20px;
+    width: 26px;
 }
 
 .calibration-model {

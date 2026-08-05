@@ -4267,6 +4267,455 @@
           ],
           "selected_ubatch": 2048
         }
+      },
+      "vulkan": {
+        "DeepSeek-V4-Flash-0731-UD-IQ3_XXS": {
+          "latest_run": {
+            "calibrated_at": "2026-08-05T02:11:10.791748+00:00",
+            "candidates": [
+              {
+                "complete": true,
+                "mean_relative_throughput": 1.0,
+                "points": [
+                  {
+                    "avg_ts": 102.446602,
+                    "depth": 0,
+                    "samples_ts": [
+                      102.365,
+                      102.027,
+                      102.947
+                    ],
+                    "stddev_ts": 0.465524
+                  },
+                  {
+                    "avg_ts": 65.355933,
+                    "depth": 8192,
+                    "samples_ts": [
+                      65.1913,
+                      65.3759,
+                      65.5007
+                    ],
+                    "stddev_ts": 0.155673
+                  },
+                  {
+                    "avg_ts": 49.622905,
+                    "depth": 16384,
+                    "samples_ts": [
+                      49.7009,
+                      49.6,
+                      49.5677
+                    ],
+                    "stddev_ts": 0.069482
+                  },
+                  {
+                    "avg_ts": 41.407459,
+                    "depth": 24576,
+                    "samples_ts": [
+                      41.4631,
+                      41.4359,
+                      41.3233
+                    ],
+                    "stddev_ts": 0.074117
+                  },
+                  {
+                    "avg_ts": 34.005771,
+                    "depth": 32768,
+                    "samples_ts": [
+                      34.0031,
+                      34.0355,
+                      33.9788
+                    ],
+                    "stddev_ts": 0.028429
+                  },
+                  {
+                    "avg_ts": 37.348113,
+                    "depth": 40960,
+                    "samples_ts": [
+                      37.3775,
+                      37.4202,
+                      37.2466
+                    ],
+                    "stddev_ts": 0.090437
+                  },
+                  {
+                    "avg_ts": 33.315655,
+                    "depth": 49152,
+                    "samples_ts": [
+                      33.33,
+                      33.3401,
+                      33.2769
+                    ],
+                    "stddev_ts": 0.033982
+                  },
+                  {
+                    "avg_ts": 30.908217,
+                    "depth": 57344,
+                    "samples_ts": [
+                      30.9456,
+                      30.9181,
+                      30.8609
+                    ],
+                    "stddev_ts": 0.043178
+                  },
+                  {
+                    "avg_ts": 28.134755,
+                    "depth": 65536,
+                    "samples_ts": [
+                      28.1289,
+                      28.1346,
+                      28.1408
+                    ],
+                    "stddev_ts": 0.005965
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub256.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub256.stderr.log",
+                "ubatch": 256
+              },
+              {
+                "complete": false,
+                "points": [
+                  {
+                    "avg_ts": 130.209224,
+                    "depth": 0,
+                    "samples_ts": [
+                      130.264,
+                      129.953,
+                      130.411
+                    ],
+                    "stddev_ts": 0.233571
+                  },
+                  {
+                    "avg_ts": 77.142011,
+                    "depth": 8192,
+                    "samples_ts": [
+                      77.0293,
+                      77.1429,
+                      77.2538
+                    ],
+                    "stddev_ts": 0.112249
+                  },
+                  {
+                    "avg_ts": 53.861616,
+                    "depth": 16384,
+                    "samples_ts": [
+                      53.8887,
+                      53.8964,
+                      53.7998
+                    ],
+                    "stddev_ts": 0.053671
+                  },
+                  {
+                    "avg_ts": 44.634217,
+                    "depth": 24576,
+                    "samples_ts": [
+                      44.6535,
+                      44.6322,
+                      44.6169
+                    ],
+                    "stddev_ts": 0.018405
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub512.jsonl",
+                "return_code": 134,
+                "status": "failed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub512.stderr.log",
+                "ubatch": 512
+              },
+              {
+                "complete": false,
+                "points": [
+                  {
+                    "avg_ts": 136.385286,
+                    "depth": 0,
+                    "samples_ts": [
+                      136.24,
+                      136.455,
+                      136.461
+                    ],
+                    "stddev_ts": 0.126077
+                  },
+                  {
+                    "avg_ts": 57.274842,
+                    "depth": 8192,
+                    "samples_ts": [
+                      57.2296,
+                      57.2887,
+                      57.3063
+                    ],
+                    "stddev_ts": 0.040177
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub1024.jsonl",
+                "return_code": 134,
+                "status": "failed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub1024.stderr.log",
+                "ubatch": 1024
+              },
+              {
+                "complete": false,
+                "points": [
+                  {
+                    "avg_ts": 127.632722,
+                    "depth": 0,
+                    "samples_ts": [
+                      127.629,
+                      127.693,
+                      127.576
+                    ],
+                    "stddev_ts": 0.058786
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub2048.jsonl",
+                "return_code": 134,
+                "status": "failed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub2048.stderr.log",
+                "ubatch": 2048
+              }
+            ],
+            "depths": [
+              0,
+              8192,
+              16384,
+              24576,
+              32768,
+              40960,
+              49152,
+              57344,
+              65536
+            ],
+            "prefill": 2048,
+            "repetitions": 3,
+            "selected_ubatch": 256,
+            "toolbox": "llama-vulkan-radv"
+          },
+          "runs": [
+            {
+              "calibrated_at": "2026-08-05T02:11:10.791748+00:00",
+              "candidates": [
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 1.0,
+                  "points": [
+                    {
+                      "avg_ts": 102.446602,
+                      "depth": 0,
+                      "samples_ts": [
+                        102.365,
+                        102.027,
+                        102.947
+                      ],
+                      "stddev_ts": 0.465524
+                    },
+                    {
+                      "avg_ts": 65.355933,
+                      "depth": 8192,
+                      "samples_ts": [
+                        65.1913,
+                        65.3759,
+                        65.5007
+                      ],
+                      "stddev_ts": 0.155673
+                    },
+                    {
+                      "avg_ts": 49.622905,
+                      "depth": 16384,
+                      "samples_ts": [
+                        49.7009,
+                        49.6,
+                        49.5677
+                      ],
+                      "stddev_ts": 0.069482
+                    },
+                    {
+                      "avg_ts": 41.407459,
+                      "depth": 24576,
+                      "samples_ts": [
+                        41.4631,
+                        41.4359,
+                        41.3233
+                      ],
+                      "stddev_ts": 0.074117
+                    },
+                    {
+                      "avg_ts": 34.005771,
+                      "depth": 32768,
+                      "samples_ts": [
+                        34.0031,
+                        34.0355,
+                        33.9788
+                      ],
+                      "stddev_ts": 0.028429
+                    },
+                    {
+                      "avg_ts": 37.348113,
+                      "depth": 40960,
+                      "samples_ts": [
+                        37.3775,
+                        37.4202,
+                        37.2466
+                      ],
+                      "stddev_ts": 0.090437
+                    },
+                    {
+                      "avg_ts": 33.315655,
+                      "depth": 49152,
+                      "samples_ts": [
+                        33.33,
+                        33.3401,
+                        33.2769
+                      ],
+                      "stddev_ts": 0.033982
+                    },
+                    {
+                      "avg_ts": 30.908217,
+                      "depth": 57344,
+                      "samples_ts": [
+                        30.9456,
+                        30.9181,
+                        30.8609
+                      ],
+                      "stddev_ts": 0.043178
+                    },
+                    {
+                      "avg_ts": 28.134755,
+                      "depth": 65536,
+                      "samples_ts": [
+                        28.1289,
+                        28.1346,
+                        28.1408
+                      ],
+                      "stddev_ts": 0.005965
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub256.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub256.stderr.log",
+                  "ubatch": 256
+                },
+                {
+                  "complete": false,
+                  "points": [
+                    {
+                      "avg_ts": 130.209224,
+                      "depth": 0,
+                      "samples_ts": [
+                        130.264,
+                        129.953,
+                        130.411
+                      ],
+                      "stddev_ts": 0.233571
+                    },
+                    {
+                      "avg_ts": 77.142011,
+                      "depth": 8192,
+                      "samples_ts": [
+                        77.0293,
+                        77.1429,
+                        77.2538
+                      ],
+                      "stddev_ts": 0.112249
+                    },
+                    {
+                      "avg_ts": 53.861616,
+                      "depth": 16384,
+                      "samples_ts": [
+                        53.8887,
+                        53.8964,
+                        53.7998
+                      ],
+                      "stddev_ts": 0.053671
+                    },
+                    {
+                      "avg_ts": 44.634217,
+                      "depth": 24576,
+                      "samples_ts": [
+                        44.6535,
+                        44.6322,
+                        44.6169
+                      ],
+                      "stddev_ts": 0.018405
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub512.jsonl",
+                  "return_code": 134,
+                  "status": "failed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub512.stderr.log",
+                  "ubatch": 512
+                },
+                {
+                  "complete": false,
+                  "points": [
+                    {
+                      "avg_ts": 136.385286,
+                      "depth": 0,
+                      "samples_ts": [
+                        136.24,
+                        136.455,
+                        136.461
+                      ],
+                      "stddev_ts": 0.126077
+                    },
+                    {
+                      "avg_ts": 57.274842,
+                      "depth": 8192,
+                      "samples_ts": [
+                        57.2296,
+                        57.2887,
+                        57.3063
+                      ],
+                      "stddev_ts": 0.040177
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub1024.jsonl",
+                  "return_code": 134,
+                  "status": "failed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub1024.stderr.log",
+                  "ubatch": 1024
+                },
+                {
+                  "complete": false,
+                  "points": [
+                    {
+                      "avg_ts": 127.632722,
+                      "depth": 0,
+                      "samples_ts": [
+                        127.629,
+                        127.693,
+                        127.576
+                      ],
+                      "stddev_ts": 0.058786
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub2048.jsonl",
+                  "return_code": 134,
+                  "status": "failed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/vulkan-radv/strix-halo/vulkan/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-vulkan-radv/20260804T230538Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-vulkan-radv__curve-prefill__fa1__ub2048.stderr.log",
+                  "ubatch": 2048
+                }
+              ],
+              "depths": [
+                0,
+                8192,
+                16384,
+                24576,
+                32768,
+                40960,
+                49152,
+                57344,
+                65536
+              ],
+              "prefill": 2048,
+              "repetitions": 3,
+              "selected_ubatch": 256,
+              "toolbox": "llama-vulkan-radv"
+            }
+          ],
+          "selected_ubatch": 256
+        }
       }
     }
   },

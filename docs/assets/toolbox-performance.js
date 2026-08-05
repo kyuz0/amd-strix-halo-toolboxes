@@ -1,9 +1,14 @@
 const MODEL_COLORS = ["#2563eb", "#e5484d", "#12a594", "#f59e0b", "#8b5cf6"];
-const TOOLBOX_STYLES = [
-    { dash: "", marker: "circle", cssLine: "solid" },
-    { dash: "8 5", marker: "square", cssLine: "dashed" },
-    { dash: "2 4", marker: "diamond", cssLine: "dotted" },
-    { dash: "10 4 2 4", marker: "circle", cssLine: "dashed" },
+const TOOLBOX_STYLES = {
+    "vulkan-radv": { dash: "", marker: "circle" },
+    "vulkan-radv-performance": { dash: "12 5", marker: "square" },
+    "rocm-7.14": { dash: "2 5", marker: "diamond" },
+    "rocm-7.14-pr26592": { dash: "12 4 2 4", marker: "triangle" },
+};
+const FALLBACK_TOOLBOX_STYLES = [
+    { dash: "6 4", marker: "square" },
+    { dash: "2 4", marker: "diamond" },
+    { dash: "10 4 2 4", marker: "triangle" },
 ];
 const SVG_NS = "http://www.w3.org/2000/svg";
 
@@ -21,9 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const response = await fetch("toolbox-performance-results.json");
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         state.data = await response.json();
-        state.selectedModels.add(state.data.models[0]);
-        state.data.meta.toolboxes.forEach((toolbox) => state.selectedToolboxes.add(toolbox.id));
-        state.baselineToolbox = state.data.meta.default_toolbox || state.data.meta.toolboxes[0]?.id;
+        initializeState();
         bindStaticControls();
         renderHeader();
         renderSelectors();
@@ -31,11 +34,63 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderWarnings();
         renderToolboxDetails();
         renderResults();
+        syncUrlState();
+        window.addEventListener("hashchange", () => {
+            initializeState();
+            renderSelectors();
+            renderResults();
+            syncUrlState();
+        });
     } catch (error) {
         console.error("Failed to load toolbox performance results", error);
         document.getElementById("result-count").textContent = "Failed to load results";
     }
 });
+
+function initializeState() {
+    const toolboxIds = state.data.meta.toolboxes.map((toolbox) => toolbox.id);
+    state.selectedModels = new Set(state.data.models[0] ? [state.data.models[0]] : []);
+    state.selectedToolboxes = new Set(toolboxIds);
+    state.baselineToolbox = state.data.meta.default_toolbox || toolboxIds[0] || null;
+    state.scaleMode = "absolute";
+    state.tableMetric = "prefill";
+
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    if (params.has("models")) {
+        state.selectedModels = selectionFromParam(params.get("models"), state.data.models);
+    }
+    if (params.has("toolboxes")) {
+        state.selectedToolboxes = selectionFromParam(params.get("toolboxes"), toolboxIds);
+    }
+    if (toolboxIds.includes(params.get("baseline"))) {
+        state.baselineToolbox = params.get("baseline");
+    }
+    if (["absolute", "retention", "gain"].includes(params.get("view"))) {
+        state.scaleMode = params.get("view");
+    }
+    if (["prefill", "generation"].includes(params.get("metric"))) {
+        state.tableMetric = params.get("metric");
+    }
+}
+
+function selectionFromParam(value, validValues) {
+    const valid = new Set(validValues);
+    return new Set((value || "").split(",").filter((item) => valid.has(item)));
+}
+
+function syncUrlState() {
+    const params = new URLSearchParams();
+    params.set("models", state.data.models.filter((model) => state.selectedModels.has(model)).join(","));
+    params.set("toolboxes", state.data.meta.toolboxes
+        .map((toolbox) => toolbox.id)
+        .filter((toolbox) => state.selectedToolboxes.has(toolbox))
+        .join(","));
+    params.set("baseline", state.baselineToolbox || "");
+    params.set("view", state.scaleMode);
+    params.set("metric", state.tableMetric);
+    const url = `${window.location.pathname}${window.location.search}#${params.toString()}`;
+    window.history.replaceState(null, "", url);
+}
 
 function bindStaticControls() {
     document.getElementById("models-all").addEventListener("click", () => {
@@ -58,6 +113,7 @@ function bindStaticControls() {
         state.baselineToolbox = event.target.value;
         updateControlStates();
         renderResults();
+        syncUrlState();
     });
     document.querySelectorAll("button[data-scale]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -65,6 +121,7 @@ function bindStaticControls() {
             state.scaleMode = button.dataset.scale;
             updateControlStates();
             renderResults();
+            syncUrlState();
         });
     });
     document.querySelectorAll("button[data-metric]").forEach((button) => {
@@ -72,6 +129,7 @@ function bindStaticControls() {
             state.tableMetric = button.dataset.metric;
             updateControlStates();
             renderTable(selectedPoints());
+            syncUrlState();
         });
     });
 }
@@ -123,10 +181,7 @@ function renderToolboxSelector() {
         button.type = "button";
         button.className = "toolbox-button";
         button.title = toolbox.description;
-        const style = toolboxStyle(toolbox.id);
-        const sample = document.createElement("span");
-        sample.className = "toolbox-line-sample";
-        sample.style.borderTopStyle = style.cssLine;
+        const sample = createToolboxStyleSample(toolbox.id, "toolbox-line-sample");
         const label = document.createElement("span");
         label.textContent = toolbox.label;
         button.append(sample, label);
@@ -181,9 +236,7 @@ function renderLegend() {
     state.data.meta.toolboxes.forEach((toolbox) => {
         const item = document.createElement("span");
         item.className = "compact-legend-item";
-        const sample = document.createElement("i");
-        sample.className = "dash-sample";
-        sample.style.borderTopStyle = toolboxStyle(toolbox.id).cssLine;
+        const sample = createToolboxStyleSample(toolbox.id, "legend-toolbox-sample");
         item.append(sample, document.createTextNode(toolbox.label));
         item.addEventListener("mouseenter", () => highlightMatching("toolbox", toolbox.id, true));
         item.addEventListener("mouseleave", () => highlightMatching("toolbox", toolbox.id, false));
@@ -236,6 +289,7 @@ function rerenderSelection() {
     renderToolboxSelector();
     updateControlStates();
     renderResults();
+    syncUrlState();
 }
 
 function updateControlStates() {
@@ -307,9 +361,7 @@ function renderConfigSummary(points) {
         heading.scope = "col";
         const content = document.createElement("span");
         content.className = "calibration-toolbox-heading";
-        const sample = document.createElement("i");
-        sample.className = "toolbox-line-sample";
-        sample.style.borderTopStyle = toolboxStyle(toolbox.id).cssLine;
+        const sample = createToolboxStyleSample(toolbox.id, "toolbox-line-sample");
         content.append(sample, document.createTextNode(toolbox.label));
         heading.appendChild(content);
         headRow.appendChild(heading);
@@ -575,15 +627,51 @@ function findPoint(points, model, toolbox, series, depth) {
     );
 }
 
-function createMarker(type, cx, cy, color) {
+function createToolboxStyleSample(toolboxId, className) {
+    const style = toolboxStyle(toolboxId);
+    const sample = svgElement("svg", {
+        viewBox: "0 0 36 12",
+        class: `toolbox-style-sample ${className}`,
+        "aria-hidden": "true",
+        focusable: "false",
+    });
+    sample.appendChild(svgElement("line", {
+        x1: 1,
+        y1: 6,
+        x2: 35,
+        y2: 6,
+        class: "toolbox-sample-line",
+        "stroke-dasharray": style.dash,
+    }));
+    sample.appendChild(createMarker(style.marker, 18, 6, "currentColor", false));
+    return sample;
+}
+
+function createMarker(type, cx, cy, color, interactive = true) {
+    const attributes = {
+        class: interactive ? "curve-point" : "toolbox-sample-marker",
+        fill: color,
+    };
+    if (interactive) attributes.tabindex = "0";
     if (type === "square") {
-        return svgElement("rect", { x: cx - 4.3, y: cy - 4.3, width: 8.6, height: 8.6, rx: 1, class: "curve-point", fill: color, tabindex: "0" });
+        return svgElement("rect", {
+            x: cx - 4.3,
+            y: cy - 4.3,
+            width: 8.6,
+            height: 8.6,
+            rx: 1,
+            ...attributes,
+        });
     }
     if (type === "diamond") {
         const points = `${cx},${cy - 5} ${cx + 5},${cy} ${cx},${cy + 5} ${cx - 5},${cy}`;
-        return svgElement("polygon", { points, class: "curve-point", fill: color, tabindex: "0" });
+        return svgElement("polygon", { points, ...attributes });
     }
-    return svgElement("circle", { cx, cy, r: 4.5, class: "curve-point", fill: color, tabindex: "0" });
+    if (type === "triangle") {
+        const points = `${cx},${cy - 5.2} ${cx + 5.2},${cy + 4.5} ${cx - 5.2},${cy + 4.5}`;
+        return svgElement("polygon", { points, ...attributes });
+    }
+    return svgElement("circle", { cx, cy, r: 4.5, ...attributes });
 }
 
 function highlightSeries(key, enabled) {
@@ -622,8 +710,9 @@ function modelColor(model) {
 }
 
 function toolboxStyle(toolboxId) {
+    if (TOOLBOX_STYLES[toolboxId]) return TOOLBOX_STYLES[toolboxId];
     const index = state.data.meta.toolboxes.findIndex((toolbox) => toolbox.id === toolboxId);
-    return TOOLBOX_STYLES[(index < 0 ? 0 : index) % TOOLBOX_STYLES.length];
+    return FALLBACK_TOOLBOX_STYLES[(index < 0 ? 0 : index) % FALLBACK_TOOLBOX_STYLES.length];
 }
 
 function toolboxLabel(toolboxId) {

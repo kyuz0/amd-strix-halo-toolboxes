@@ -9,7 +9,10 @@ cockpit calibration CLI, and the checked-in campaign scripts.
 - Work in `benchmark/toolbox_performance/` in this repository.
 - Keep each image tag in `benchmark/toolbox_performance/<tag>/`.
 - Use a fresh campaign ID and fresh results directory for every run.
-- Never mix results from different image digests in one campaign directory.
+- Keep each remote campaign directory on one image digest. A checked-in tag
+  dataset may combine completed model-only campaigns from different digests
+  when the user explicitly accepts this and model-level image/build provenance
+  is retained.
 - Never run two GPU workloads concurrently on one host.
 - Do not delete or replace existing repository data before validating staged
   replacements and keeping a recoverable backup.
@@ -296,6 +299,17 @@ python benchmark/toolbox_performance/merge_curve_summary.py \
   "$STAGE/$TAG/curve_summary.csv"
 ```
 
+Also merge the new model's selected ubatch, statuses, calibration profile, and
+campaign ID into `campaign_manifest.json`, `ubatch-calibrations.json`, and
+`run_metadata.txt` so the combined tag directory still passes
+`validate_campaign.py`.
+
+Prefer a matching image digest. If a model-only addition uses a different
+digest and the user explicitly approves mixing, do not discard or hide that
+difference. Record the exact image digest and llama.cpp build for each imported
+model in `campaign_manifest.json` under `model_provenance`, mark the aggregate
+image/build metadata as mixed, and report the mixed provenance to the user.
+
 ## 9. Regenerate and inspect the viewer dataset
 
 ```bash
@@ -355,7 +369,8 @@ git diff --check
 
 Report only verified facts:
 
-- host, tag, image digest, cockpit version, and campaign ID
+- host, tag, image digest or model-level digests, cockpit version, and campaign
+  ID
 - selected ubatch per exact model
 - job/marker status
 - validation result and row count
