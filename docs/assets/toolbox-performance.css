@@ -37,12 +37,102 @@
     border-color: #84adff;
 }
 
+.comparison-commit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+
+.comparison-commit.pending {
+    background: #fffaeb;
+    border-color: #fec84b;
+}
+
+.comparison-commit.pending .comparison-commit-copy span {
+    color: #b54708;
+    font-weight: 600;
+}
+
+.comparison-commit-copy {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+}
+
+.comparison-commit-copy strong {
+    color: var(--ink);
+    font-size: 12px;
+}
+
+.comparison-commit-copy span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.comparison-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 8px;
+}
+
+.comparison-apply-button,
+.comparison-reset-button {
+    min-height: 34px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.comparison-apply-button {
+    color: #fff;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+}
+
+.comparison-reset-button {
+    color: #344054;
+    background: #fff;
+    border: 1px solid #d0d5dd;
+}
+
+.comparison-apply-button:hover:not(:disabled) { background: #1d4ed8; }
+.comparison-reset-button:hover:not(:disabled) { border-color: #98a2b3; }
+
+.comparison-apply-button:focus-visible,
+.comparison-reset-button:focus-visible {
+    outline: 3px solid rgb(37 99 235 / .25);
+    outline-offset: 2px;
+}
+
+.comparison-apply-button:disabled,
+.comparison-reset-button:disabled {
+    color: #98a2b3;
+    background: #f2f4f7;
+    border-color: #e4e7ec;
+    cursor: not-allowed;
+}
+
 .toolbox-style-sample {
     width: 30px;
     height: 12px;
     flex: 0 0 auto;
     overflow: visible;
     color: #475467;
+}
+
+.toolbox-style-sample.unassigned {
+    opacity: .28;
 }
 
 .toolbox-sample-line {
@@ -295,6 +385,9 @@
 
 @media (max-width: 600px) {
     .header-links { flex-direction: column; gap: 0; }
+    .comparison-commit { align-items: stretch; flex-direction: column; gap: 10px; }
+    .comparison-actions { width: 100%; }
+    .comparison-actions button { flex: 1; }
     .comparison-options { align-items: stretch; }
     .comparison-options label { flex-basis: auto; }
     .calibration-heading { align-items: flex-start; flex-direction: column; gap: 5px; }

@@ -37,13 +37,24 @@
                 <strong>Models</strong>
                 <span><button id="models-all" type="button" class="text-button">All</button><button id="models-none" type="button" class="text-button">None</button></span>
             </div>
-            <div id="model-selector" class="model-selector" role="group" aria-label="Select models"></div>
+            <div id="model-selector" class="model-selector" role="group" aria-label="Choose models for the comparison"></div>
 
             <div class="selector-heading toolbox-heading">
                 <strong>Toolboxes</strong>
                 <span><button id="toolboxes-all" type="button" class="text-button">All</button><button id="toolboxes-none" type="button" class="text-button">None</button></span>
             </div>
-            <div id="toolbox-selector" class="toolbox-selector" role="group" aria-label="Select toolboxes"></div>
+            <div id="toolbox-selector" class="toolbox-selector" role="group" aria-label="Choose toolboxes for the comparison"></div>
+
+            <div id="comparison-commit" class="comparison-commit">
+                <div class="comparison-commit-copy" aria-live="polite">
+                    <strong id="selection-summary">Choose models and toolboxes</strong>
+                    <span id="selection-status">Charts and URL match this selection.</span>
+                </div>
+                <div class="comparison-actions">
+                    <button id="reset-comparison" type="button" class="comparison-reset-button" disabled>Reset changes</button>
+                    <button id="apply-comparison" type="button" class="comparison-apply-button" disabled>Comparison applied</button>
+                </div>
+            </div>
 
             <div class="comparison-options">
                 <label for="baseline-selector">
