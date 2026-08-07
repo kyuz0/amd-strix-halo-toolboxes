@@ -2,6 +2,7 @@ const MODEL_COLORS = ["#2563eb", "#e5484d", "#12a594", "#f59e0b", "#8b5cf6"];
 const TOOLBOX_STYLES = {
     "vulkan-radv": { dash: "", marker: "circle" },
     "vulkan-radv-performance": { dash: "12 5", marker: "square" },
+    "rocm-7.2.4": { dash: "8 3 2 3", marker: "pentagon" },
     "rocm-7.14": { dash: "2 5", marker: "diamond" },
     "rocm-7.14-pr26592": { dash: "12 4 2 4", marker: "triangle" },
 };
@@ -23,7 +24,7 @@ const state = {
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        const response = await fetch("toolbox-performance-results.json");
+        const response = await fetch("toolbox-performance-results.json", { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         state.data = await response.json();
         initializeState();
@@ -669,6 +670,13 @@ function createMarker(type, cx, cy, color, interactive = true) {
     }
     if (type === "triangle") {
         const points = `${cx},${cy - 5.2} ${cx + 5.2},${cy + 4.5} ${cx - 5.2},${cy + 4.5}`;
+        return svgElement("polygon", { points, ...attributes });
+    }
+    if (type === "pentagon") {
+        const points = Array.from({ length: 5 }, (_, index) => {
+            const angle = (-Math.PI / 2) + (index * 2 * Math.PI / 5);
+            return `${cx + (5 * Math.cos(angle))},${cy + (5 * Math.sin(angle))}`;
+        }).join(" ");
         return svgElement("polygon", { points, ...attributes });
     }
     return svgElement("circle", { cx, cy, r: 4.5, ...attributes });

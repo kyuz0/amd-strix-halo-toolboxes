@@ -22,6 +22,10 @@ TOOLBOX_PRESENTATION = {
         "label": "Vulkan RADV Performance",
         "description": "Strix Halo Vulkan performance fork",
     },
+    "rocm-7.2.4": {
+        "label": "ROCm 7.2.4 (legacy)",
+        "description": "Legacy ROCm 7.2.4 toolbox retained for performance comparison",
+    },
     "rocm-7.14": {
         "label": "ROCm 7.14",
         "description": "Upstream llama.cpp with the ROCm 7.14 toolbox",
@@ -34,6 +38,7 @@ TOOLBOX_PRESENTATION = {
 PREFERRED_ORDER = (
     "vulkan-radv",
     "vulkan-radv-performance",
+    "rocm-7.2.4",
     "rocm-7.14",
     "rocm-7.14-pr26592",
 )
