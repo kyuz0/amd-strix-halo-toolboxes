@@ -1,0 +1,29 @@
+campaign: 20260804T181438Z-toolbox-performance-iq3 + 20260805T070635Z-vulkan-radv-remaining-four
+host: fw1
+host_profile: gpu-workload-watch (accelerator-performance and maximum fans), amd_iommu=off
+kernel: 7.1.3-100.fc43.x86_64
+toolbox: llama-vulkan-radv
+backend: vulkan
+image: docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv
+image_digest: sha256:ceb96cb6a9933f866719d19456eec48243be31ff044ea61c7d0bc8ede936de26
+llama_build: 10269 (1c3c9674d)
+cockpit_package: llama-cockpit 2026.8.4.1743
+depths: 0,8192,16384,24576,32768,40960,49152,57344,65536
+prefill_tokens: 2048
+generation_tokens: 128
+repetitions: 3
+cooldown_seconds: 10
+flash_attention: enabled
+load_mode: none
+kv_cache_quantization: disabled
+ubatch_calibration: 256,512,1024,2048 across all nine depths
+Qwen3.6-27B-UD-Q8_K_XL.gguf ubatch: 256
+Qwen3.6-27B-UD-Q8_K_XL.gguf status: complete
+Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf ubatch: 1024
+Qwen3.6-35B-A3B-UD-Q4_K_XL.gguf status: complete
+Qwen3.6-35B-A3B-UD-Q8_K_XL.gguf ubatch: 1024
+Qwen3.6-35B-A3B-UD-Q8_K_XL.gguf status: complete
+DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003.gguf ubatch: 256
+DeepSeek-V4-Flash-0731-UD-IQ2_XXS-00001-of-00003.gguf status: complete
+DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004.gguf ubatch: 256
+DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004.gguf status: complete

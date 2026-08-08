@@ -27,8 +27,7 @@ PROFILE_DEFINITIONS = (
         "id": "performance-no-iommu",
         "label": "Performance + IOMMU off",
         "description": "tuned performance profile with amd_iommu disabled",
-        # Keep the source directory's original spelling for reproducibility.
-        "directory": "llamacpp_toolboxes_bench_results-profile_perfromance_iommu-off",
+        "directory": "llamacpp_toolboxes_bench_results-profile_performance_iommu-off",
     },
 )
 

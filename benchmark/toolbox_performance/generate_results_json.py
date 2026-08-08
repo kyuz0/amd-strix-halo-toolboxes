@@ -18,16 +18,30 @@ TOOLBOX_PRESENTATION = {
         "label": "Vulkan RADV (stock)",
         "description": "Upstream llama.cpp with the stock RADV toolbox",
     },
-    "vulkan-radv-perfromance": {
+    "vulkan-radv-performance": {
         "label": "Vulkan RADV Performance",
         "description": "Strix Halo Vulkan performance fork",
+    },
+    "rocm-7.2.4": {
+        "label": "ROCm 7.2.4 (legacy)",
+        "description": "Legacy ROCm 7.2.4 toolbox retained for performance comparison",
     },
     "rocm-7.14": {
         "label": "ROCm 7.14",
         "description": "Upstream llama.cpp with the ROCm 7.14 toolbox",
     },
+    "rocm-7.14-pr26592": {
+        "label": "ROCm 7.14 + PR #26592",
+        "description": "ROCm 7.14 with experimental llama.cpp PR #26592 hipCUB support",
+    },
 }
-PREFERRED_ORDER = ("vulkan-radv", "vulkan-radv-perfromance", "rocm-7.14")
+PREFERRED_ORDER = (
+    "vulkan-radv",
+    "vulkan-radv-performance",
+    "rocm-7.2.4",
+    "rocm-7.14",
+    "rocm-7.14-pr26592",
+)
 
 REQUIRED_COLUMNS = {
     "model",

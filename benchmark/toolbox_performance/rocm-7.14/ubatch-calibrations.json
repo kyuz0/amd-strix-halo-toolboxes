@@ -855,6 +855,859 @@
           ],
           "selected_ubatch": 2048
         },
+        "DeepSeek-V4-Flash-0731-UD-IQ3_XXS": {
+          "latest_run": {
+            "calibrated_at": "2026-08-04T22:20:42.846001+00:00",
+            "candidates": [
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.6481267637532793,
+                "points": [
+                  {
+                    "avg_ts": 110.420564,
+                    "depth": 0,
+                    "samples_ts": [
+                      108.49,
+                      113.204,
+                      109.567
+                    ],
+                    "stddev_ts": 2.470331
+                  },
+                  {
+                    "avg_ts": 91.988372,
+                    "depth": 8192,
+                    "samples_ts": [
+                      92.0924,
+                      92.1792,
+                      91.6935
+                    ],
+                    "stddev_ts": 0.259049
+                  },
+                  {
+                    "avg_ts": 82.960587,
+                    "depth": 16384,
+                    "samples_ts": [
+                      82.9824,
+                      83.0499,
+                      82.8495
+                    ],
+                    "stddev_ts": 0.101926
+                  },
+                  {
+                    "avg_ts": 74.292859,
+                    "depth": 24576,
+                    "samples_ts": [
+                      74.0801,
+                      74.3992,
+                      74.3993
+                    ],
+                    "stddev_ts": 0.184283
+                  },
+                  {
+                    "avg_ts": 68.305909,
+                    "depth": 32768,
+                    "samples_ts": [
+                      68.1519,
+                      68.4752,
+                      68.2906
+                    ],
+                    "stddev_ts": 0.162205
+                  },
+                  {
+                    "avg_ts": 63.674456,
+                    "depth": 40960,
+                    "samples_ts": [
+                      63.7948,
+                      63.6155,
+                      63.6131
+                    ],
+                    "stddev_ts": 0.104233
+                  },
+                  {
+                    "avg_ts": 59.562335,
+                    "depth": 49152,
+                    "samples_ts": [
+                      59.5445,
+                      59.5132,
+                      59.6293
+                    ],
+                    "stddev_ts": 0.060111
+                  },
+                  {
+                    "avg_ts": 55.782849,
+                    "depth": 57344,
+                    "samples_ts": [
+                      55.9812,
+                      55.7272,
+                      55.6401
+                    ],
+                    "stddev_ts": 0.177224
+                  },
+                  {
+                    "avg_ts": 52.522814,
+                    "depth": 65536,
+                    "samples_ts": [
+                      52.4989,
+                      52.4846,
+                      52.585
+                    ],
+                    "stddev_ts": 0.054293
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub256.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub256.stderr.log",
+                "ubatch": 256
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.8297999427087137,
+                "points": [
+                  {
+                    "avg_ts": 158.537124,
+                    "depth": 0,
+                    "samples_ts": [
+                      159.151,
+                      158.13,
+                      158.331
+                    ],
+                    "stddev_ts": 0.540974
+                  },
+                  {
+                    "avg_ts": 124.466309,
+                    "depth": 8192,
+                    "samples_ts": [
+                      125.368,
+                      123.731,
+                      124.3
+                    ],
+                    "stddev_ts": 0.831312
+                  },
+                  {
+                    "avg_ts": 108.828147,
+                    "depth": 16384,
+                    "samples_ts": [
+                      108.613,
+                      108.823,
+                      109.048
+                    ],
+                    "stddev_ts": 0.217386
+                  },
+                  {
+                    "avg_ts": 97.155696,
+                    "depth": 24576,
+                    "samples_ts": [
+                      96.9119,
+                      97.0885,
+                      97.4667
+                    ],
+                    "stddev_ts": 0.283471
+                  },
+                  {
+                    "avg_ts": 87.824625,
+                    "depth": 32768,
+                    "samples_ts": [
+                      88.0809,
+                      87.562,
+                      87.831
+                    ],
+                    "stddev_ts": 0.25948
+                  },
+                  {
+                    "avg_ts": 80.026637,
+                    "depth": 40960,
+                    "samples_ts": [
+                      80.0647,
+                      80.1244,
+                      79.8908
+                    ],
+                    "stddev_ts": 0.121391
+                  },
+                  {
+                    "avg_ts": 73.521569,
+                    "depth": 49152,
+                    "samples_ts": [
+                      73.4046,
+                      73.5411,
+                      73.619
+                    ],
+                    "stddev_ts": 0.108544
+                  },
+                  {
+                    "avg_ts": 67.908645,
+                    "depth": 57344,
+                    "samples_ts": [
+                      67.9603,
+                      67.9655,
+                      67.8001
+                    ],
+                    "stddev_ts": 0.094002
+                  },
+                  {
+                    "avg_ts": 62.937125,
+                    "depth": 65536,
+                    "samples_ts": [
+                      62.8211,
+                      63.0238,
+                      62.9665
+                    ],
+                    "stddev_ts": 0.104519
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub512.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub512.stderr.log",
+                "ubatch": 512
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9714643005416206,
+                "points": [
+                  {
+                    "avg_ts": 202.996279,
+                    "depth": 0,
+                    "samples_ts": [
+                      203.975,
+                      203.378,
+                      201.636
+                    ],
+                    "stddev_ts": 1.215309
+                  },
+                  {
+                    "avg_ts": 159.696974,
+                    "depth": 8192,
+                    "samples_ts": [
+                      161.02,
+                      160.534,
+                      157.538
+                    ],
+                    "stddev_ts": 1.885755
+                  },
+                  {
+                    "avg_ts": 131.422578,
+                    "depth": 16384,
+                    "samples_ts": [
+                      131.671,
+                      130.638,
+                      131.958
+                    ],
+                    "stddev_ts": 0.694121
+                  },
+                  {
+                    "avg_ts": 114.693003,
+                    "depth": 24576,
+                    "samples_ts": [
+                      114.538,
+                      114.812,
+                      114.729
+                    ],
+                    "stddev_ts": 0.140239
+                  },
+                  {
+                    "avg_ts": 101.156734,
+                    "depth": 32768,
+                    "samples_ts": [
+                      100.677,
+                      101.416,
+                      101.377
+                    ],
+                    "stddev_ts": 0.41595
+                  },
+                  {
+                    "avg_ts": 90.696928,
+                    "depth": 40960,
+                    "samples_ts": [
+                      90.5305,
+                      90.7327,
+                      90.8276
+                    ],
+                    "stddev_ts": 0.15173
+                  },
+                  {
+                    "avg_ts": 82.519417,
+                    "depth": 49152,
+                    "samples_ts": [
+                      82.4049,
+                      82.4231,
+                      82.7302
+                    ],
+                    "stddev_ts": 0.182804
+                  },
+                  {
+                    "avg_ts": 75.574031,
+                    "depth": 57344,
+                    "samples_ts": [
+                      75.6004,
+                      75.5703,
+                      75.5514
+                    ],
+                    "stddev_ts": 0.024688
+                  },
+                  {
+                    "avg_ts": 69.78679,
+                    "depth": 65536,
+                    "samples_ts": [
+                      69.7465,
+                      69.8408,
+                      69.773
+                    ],
+                    "stddev_ts": 0.048648
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub1024.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub1024.stderr.log",
+                "ubatch": 1024
+              },
+              {
+                "complete": true,
+                "mean_relative_throughput": 0.9999620781462445,
+                "points": [
+                  {
+                    "avg_ts": 222.387387,
+                    "depth": 0,
+                    "samples_ts": [
+                      222.236,
+                      222.145,
+                      222.781
+                    ],
+                    "stddev_ts": 0.343544
+                  },
+                  {
+                    "avg_ts": 168.905203,
+                    "depth": 8192,
+                    "samples_ts": [
+                      168.707,
+                      168.799,
+                      169.21
+                    ],
+                    "stddev_ts": 0.267514
+                  },
+                  {
+                    "avg_ts": 135.722559,
+                    "depth": 16384,
+                    "samples_ts": [
+                      136.353,
+                      135.399,
+                      135.416
+                    ],
+                    "stddev_ts": 0.546125
+                  },
+                  {
+                    "avg_ts": 118.328804,
+                    "depth": 24576,
+                    "samples_ts": [
+                      118.123,
+                      117.866,
+                      118.997
+                    ],
+                    "stddev_ts": 0.593216
+                  },
+                  {
+                    "avg_ts": 103.121681,
+                    "depth": 32768,
+                    "samples_ts": [
+                      102.907,
+                      103.123,
+                      103.335
+                    ],
+                    "stddev_ts": 0.214186
+                  },
+                  {
+                    "avg_ts": 92.122498,
+                    "depth": 40960,
+                    "samples_ts": [
+                      91.8886,
+                      91.7194,
+                      92.7594
+                    ],
+                    "stddev_ts": 0.558048
+                  },
+                  {
+                    "avg_ts": 83.539244,
+                    "depth": 49152,
+                    "samples_ts": [
+                      82.6867,
+                      83.9,
+                      84.0311
+                    ],
+                    "stddev_ts": 0.741269
+                  },
+                  {
+                    "avg_ts": 76.027417,
+                    "depth": 57344,
+                    "samples_ts": [
+                      75.8064,
+                      75.8135,
+                      76.4623
+                    ],
+                    "stddev_ts": 0.376627
+                  },
+                  {
+                    "avg_ts": 69.762972,
+                    "depth": 65536,
+                    "samples_ts": [
+                      69.5679,
+                      68.9003,
+                      70.8208
+                    ],
+                    "stddev_ts": 0.974987
+                  }
+                ],
+                "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub2048.jsonl",
+                "return_code": 0,
+                "status": "completed",
+                "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub2048.stderr.log",
+                "ubatch": 2048
+              }
+            ],
+            "depths": [
+              0,
+              8192,
+              16384,
+              24576,
+              32768,
+              40960,
+              49152,
+              57344,
+              65536
+            ],
+            "prefill": 2048,
+            "repetitions": 3,
+            "selected_ubatch": 2048,
+            "toolbox": "llama-rocm-7.14"
+          },
+          "runs": [
+            {
+              "calibrated_at": "2026-08-04T22:20:42.846001+00:00",
+              "candidates": [
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.6481267637532793,
+                  "points": [
+                    {
+                      "avg_ts": 110.420564,
+                      "depth": 0,
+                      "samples_ts": [
+                        108.49,
+                        113.204,
+                        109.567
+                      ],
+                      "stddev_ts": 2.470331
+                    },
+                    {
+                      "avg_ts": 91.988372,
+                      "depth": 8192,
+                      "samples_ts": [
+                        92.0924,
+                        92.1792,
+                        91.6935
+                      ],
+                      "stddev_ts": 0.259049
+                    },
+                    {
+                      "avg_ts": 82.960587,
+                      "depth": 16384,
+                      "samples_ts": [
+                        82.9824,
+                        83.0499,
+                        82.8495
+                      ],
+                      "stddev_ts": 0.101926
+                    },
+                    {
+                      "avg_ts": 74.292859,
+                      "depth": 24576,
+                      "samples_ts": [
+                        74.0801,
+                        74.3992,
+                        74.3993
+                      ],
+                      "stddev_ts": 0.184283
+                    },
+                    {
+                      "avg_ts": 68.305909,
+                      "depth": 32768,
+                      "samples_ts": [
+                        68.1519,
+                        68.4752,
+                        68.2906
+                      ],
+                      "stddev_ts": 0.162205
+                    },
+                    {
+                      "avg_ts": 63.674456,
+                      "depth": 40960,
+                      "samples_ts": [
+                        63.7948,
+                        63.6155,
+                        63.6131
+                      ],
+                      "stddev_ts": 0.104233
+                    },
+                    {
+                      "avg_ts": 59.562335,
+                      "depth": 49152,
+                      "samples_ts": [
+                        59.5445,
+                        59.5132,
+                        59.6293
+                      ],
+                      "stddev_ts": 0.060111
+                    },
+                    {
+                      "avg_ts": 55.782849,
+                      "depth": 57344,
+                      "samples_ts": [
+                        55.9812,
+                        55.7272,
+                        55.6401
+                      ],
+                      "stddev_ts": 0.177224
+                    },
+                    {
+                      "avg_ts": 52.522814,
+                      "depth": 65536,
+                      "samples_ts": [
+                        52.4989,
+                        52.4846,
+                        52.585
+                      ],
+                      "stddev_ts": 0.054293
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub256.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub256.stderr.log",
+                  "ubatch": 256
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.8297999427087137,
+                  "points": [
+                    {
+                      "avg_ts": 158.537124,
+                      "depth": 0,
+                      "samples_ts": [
+                        159.151,
+                        158.13,
+                        158.331
+                      ],
+                      "stddev_ts": 0.540974
+                    },
+                    {
+                      "avg_ts": 124.466309,
+                      "depth": 8192,
+                      "samples_ts": [
+                        125.368,
+                        123.731,
+                        124.3
+                      ],
+                      "stddev_ts": 0.831312
+                    },
+                    {
+                      "avg_ts": 108.828147,
+                      "depth": 16384,
+                      "samples_ts": [
+                        108.613,
+                        108.823,
+                        109.048
+                      ],
+                      "stddev_ts": 0.217386
+                    },
+                    {
+                      "avg_ts": 97.155696,
+                      "depth": 24576,
+                      "samples_ts": [
+                        96.9119,
+                        97.0885,
+                        97.4667
+                      ],
+                      "stddev_ts": 0.283471
+                    },
+                    {
+                      "avg_ts": 87.824625,
+                      "depth": 32768,
+                      "samples_ts": [
+                        88.0809,
+                        87.562,
+                        87.831
+                      ],
+                      "stddev_ts": 0.25948
+                    },
+                    {
+                      "avg_ts": 80.026637,
+                      "depth": 40960,
+                      "samples_ts": [
+                        80.0647,
+                        80.1244,
+                        79.8908
+                      ],
+                      "stddev_ts": 0.121391
+                    },
+                    {
+                      "avg_ts": 73.521569,
+                      "depth": 49152,
+                      "samples_ts": [
+                        73.4046,
+                        73.5411,
+                        73.619
+                      ],
+                      "stddev_ts": 0.108544
+                    },
+                    {
+                      "avg_ts": 67.908645,
+                      "depth": 57344,
+                      "samples_ts": [
+                        67.9603,
+                        67.9655,
+                        67.8001
+                      ],
+                      "stddev_ts": 0.094002
+                    },
+                    {
+                      "avg_ts": 62.937125,
+                      "depth": 65536,
+                      "samples_ts": [
+                        62.8211,
+                        63.0238,
+                        62.9665
+                      ],
+                      "stddev_ts": 0.104519
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub512.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub512.stderr.log",
+                  "ubatch": 512
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9714643005416206,
+                  "points": [
+                    {
+                      "avg_ts": 202.996279,
+                      "depth": 0,
+                      "samples_ts": [
+                        203.975,
+                        203.378,
+                        201.636
+                      ],
+                      "stddev_ts": 1.215309
+                    },
+                    {
+                      "avg_ts": 159.696974,
+                      "depth": 8192,
+                      "samples_ts": [
+                        161.02,
+                        160.534,
+                        157.538
+                      ],
+                      "stddev_ts": 1.885755
+                    },
+                    {
+                      "avg_ts": 131.422578,
+                      "depth": 16384,
+                      "samples_ts": [
+                        131.671,
+                        130.638,
+                        131.958
+                      ],
+                      "stddev_ts": 0.694121
+                    },
+                    {
+                      "avg_ts": 114.693003,
+                      "depth": 24576,
+                      "samples_ts": [
+                        114.538,
+                        114.812,
+                        114.729
+                      ],
+                      "stddev_ts": 0.140239
+                    },
+                    {
+                      "avg_ts": 101.156734,
+                      "depth": 32768,
+                      "samples_ts": [
+                        100.677,
+                        101.416,
+                        101.377
+                      ],
+                      "stddev_ts": 0.41595
+                    },
+                    {
+                      "avg_ts": 90.696928,
+                      "depth": 40960,
+                      "samples_ts": [
+                        90.5305,
+                        90.7327,
+                        90.8276
+                      ],
+                      "stddev_ts": 0.15173
+                    },
+                    {
+                      "avg_ts": 82.519417,
+                      "depth": 49152,
+                      "samples_ts": [
+                        82.4049,
+                        82.4231,
+                        82.7302
+                      ],
+                      "stddev_ts": 0.182804
+                    },
+                    {
+                      "avg_ts": 75.574031,
+                      "depth": 57344,
+                      "samples_ts": [
+                        75.6004,
+                        75.5703,
+                        75.5514
+                      ],
+                      "stddev_ts": 0.024688
+                    },
+                    {
+                      "avg_ts": 69.78679,
+                      "depth": 65536,
+                      "samples_ts": [
+                        69.7465,
+                        69.8408,
+                        69.773
+                      ],
+                      "stddev_ts": 0.048648
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub1024.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub1024.stderr.log",
+                  "ubatch": 1024
+                },
+                {
+                  "complete": true,
+                  "mean_relative_throughput": 0.9999620781462445,
+                  "points": [
+                    {
+                      "avg_ts": 222.387387,
+                      "depth": 0,
+                      "samples_ts": [
+                        222.236,
+                        222.145,
+                        222.781
+                      ],
+                      "stddev_ts": 0.343544
+                    },
+                    {
+                      "avg_ts": 168.905203,
+                      "depth": 8192,
+                      "samples_ts": [
+                        168.707,
+                        168.799,
+                        169.21
+                      ],
+                      "stddev_ts": 0.267514
+                    },
+                    {
+                      "avg_ts": 135.722559,
+                      "depth": 16384,
+                      "samples_ts": [
+                        136.353,
+                        135.399,
+                        135.416
+                      ],
+                      "stddev_ts": 0.546125
+                    },
+                    {
+                      "avg_ts": 118.328804,
+                      "depth": 24576,
+                      "samples_ts": [
+                        118.123,
+                        117.866,
+                        118.997
+                      ],
+                      "stddev_ts": 0.593216
+                    },
+                    {
+                      "avg_ts": 103.121681,
+                      "depth": 32768,
+                      "samples_ts": [
+                        102.907,
+                        103.123,
+                        103.335
+                      ],
+                      "stddev_ts": 0.214186
+                    },
+                    {
+                      "avg_ts": 92.122498,
+                      "depth": 40960,
+                      "samples_ts": [
+                        91.8886,
+                        91.7194,
+                        92.7594
+                      ],
+                      "stddev_ts": 0.558048
+                    },
+                    {
+                      "avg_ts": 83.539244,
+                      "depth": 49152,
+                      "samples_ts": [
+                        82.6867,
+                        83.9,
+                        84.0311
+                      ],
+                      "stddev_ts": 0.741269
+                    },
+                    {
+                      "avg_ts": 76.027417,
+                      "depth": 57344,
+                      "samples_ts": [
+                        75.8064,
+                        75.8135,
+                        76.4623
+                      ],
+                      "stddev_ts": 0.376627
+                    },
+                    {
+                      "avg_ts": 69.762972,
+                      "depth": 65536,
+                      "samples_ts": [
+                        69.5679,
+                        68.9003,
+                        70.8208
+                      ],
+                      "stddev_ts": 0.974987
+                    }
+                  ],
+                  "raw_jsonl": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub2048.jsonl",
+                  "return_code": 0,
+                  "status": "completed",
+                  "stderr_log": "/home/kyuz0/llamacpp_toolboxes_bench_results/toolbox_performance_calibrated/20260804T181438Z-toolbox-performance-iq3/calibration/rocm-7.14/strix-halo/rocm/DeepSeek-V4-Flash-0731-UD-IQ3_XXS/llama-rocm-7.14/20260804T181530Z/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004__llama-rocm-7.14__curve-prefill__fa1__ub2048.stderr.log",
+                  "ubatch": 2048
+                }
+              ],
+              "depths": [
+                0,
+                8192,
+                16384,
+                24576,
+                32768,
+                40960,
+                49152,
+                57344,
+                65536
+              ],
+              "prefill": 2048,
+              "repetitions": 3,
+              "selected_ubatch": 2048,
+              "toolbox": "llama-rocm-7.14"
+            }
+          ],
+          "selected_ubatch": 2048
+        },
         "Qwen3.6-27B-UD-Q8_K_XL": {
           "latest_run": {
             "calibrated_at": "2026-08-04T09:42:53.625389+00:00",

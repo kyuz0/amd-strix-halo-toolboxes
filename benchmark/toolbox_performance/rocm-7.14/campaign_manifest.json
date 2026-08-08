@@ -1,6 +1,12 @@
 {
   "backend": "rocm",
-  "completed_at": "2026-08-04T16:15:51.937473+00:00",
+  "campaign_id": "20260804-cooling-fixed-v1 + 20260804T181438Z-toolbox-performance-iq3",
+  "campaign_ids": [
+    "20260804-cooling-fixed-v1",
+    "20260804T181438Z-toolbox-performance-iq3"
+  ],
+  "complete": true,
+  "completed_at": "2026-08-04T23:05:38.275995+00:00",
   "depths": [
     0,
     8192,
@@ -12,10 +18,54 @@
     57344,
     65536
   ],
+  "expected_summary_rows": 90,
+  "model_provenance": {
+    "DeepSeek-V4-Flash-0731-UD-IQ2_XXS": {
+      "campaign_id": "20260804-cooling-fixed-v1",
+      "cockpit_package": "llama-cockpit 2026.8.4.756",
+      "host": "fw1",
+      "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14",
+      "image_digest": "sha256:39ec88545552ddbef34f6072ec3606a3a3e550a07c1bb950c924d93ae6c1df45",
+      "llama_build": "10246 (39eab74a0)"
+    },
+    "DeepSeek-V4-Flash-0731-UD-IQ3_XXS": {
+      "campaign_id": "20260804T181438Z-toolbox-performance-iq3",
+      "cockpit_package": "llama-cockpit 2026.8.4.1743",
+      "host": "fw1",
+      "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14",
+      "image_digest": "sha256:39ec88545552ddbef34f6072ec3606a3a3e550a07c1bb950c924d93ae6c1df45",
+      "llama_build": "10246 (39eab74a0)"
+    },
+    "Qwen3.6-27B-UD-Q8_K_XL": {
+      "campaign_id": "20260804-cooling-fixed-v1",
+      "cockpit_package": "llama-cockpit 2026.8.4.756",
+      "host": "fw1",
+      "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14",
+      "image_digest": "sha256:39ec88545552ddbef34f6072ec3606a3a3e550a07c1bb950c924d93ae6c1df45",
+      "llama_build": "10246 (39eab74a0)"
+    },
+    "Qwen3.6-35B-A3B-UD-Q4_K_XL": {
+      "campaign_id": "20260804-cooling-fixed-v1",
+      "cockpit_package": "llama-cockpit 2026.8.4.756",
+      "host": "fw1",
+      "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14",
+      "image_digest": "sha256:39ec88545552ddbef34f6072ec3606a3a3e550a07c1bb950c924d93ae6c1df45",
+      "llama_build": "10246 (39eab74a0)"
+    },
+    "Qwen3.6-35B-A3B-UD-Q8_K_XL": {
+      "campaign_id": "20260804-cooling-fixed-v1",
+      "cockpit_package": "llama-cockpit 2026.8.4.756",
+      "host": "fw1",
+      "image": "docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14",
+      "image_digest": "sha256:39ec88545552ddbef34f6072ec3606a3a3e550a07c1bb950c924d93ae6c1df45",
+      "llama_build": "10246 (39eab74a0)"
+    }
+  },
   "platform": "strix-halo",
   "reused_calibration_prefill": true,
   "selected_ubatches": {
     "DeepSeek-V4-Flash-0731-UD-IQ2_XXS": 2048,
+    "DeepSeek-V4-Flash-0731-UD-IQ3_XXS": 2048,
     "Qwen3.6-27B-UD-Q8_K_XL": 1024,
     "Qwen3.6-35B-A3B-UD-Q4_K_XL": 2048,
     "Qwen3.6-35B-A3B-UD-Q8_K_XL": 2048
@@ -164,8 +214,80 @@
       "return_code": 0,
       "series": "generation",
       "status": "completed"
+    },
+    {
+      "command": [
+        "toolbox",
+        "run",
+        "-c",
+        "llama-rocm-7.14",
+        "--",
+        "llama-bench",
+        "-ngl",
+        "99",
+        "--load-mode",
+        "none",
+        "-m",
+        "/home/kyuz0/models/DeepSeek-V4-Flash-0731-GGUF/UD-IQ3_XXS/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004.gguf",
+        "-fa",
+        "1",
+        "-p",
+        "2048",
+        "-n",
+        "0",
+        "-d",
+        "0,8192,16384,24576,32768,40960,49152,57344,65536",
+        "-b",
+        "2048",
+        "-r",
+        "3",
+        "-o",
+        "jsonl",
+        "-ub",
+        "2048"
+      ],
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ3_XXS",
+      "return_code": 0,
+      "series": "prefill",
+      "status": "reused-calibration"
+    },
+    {
+      "command": [
+        "toolbox",
+        "run",
+        "-c",
+        "llama-rocm-7.14",
+        "--",
+        "llama-bench",
+        "-ngl",
+        "99",
+        "--load-mode",
+        "none",
+        "-m",
+        "/home/kyuz0/models/DeepSeek-V4-Flash-0731-GGUF/UD-IQ3_XXS/DeepSeek-V4-Flash-0731-UD-IQ3_XXS-00001-of-00004.gguf",
+        "-fa",
+        "1",
+        "-p",
+        "0",
+        "-n",
+        "128",
+        "-d",
+        "0,8192,16384,24576,32768,40960,49152,57344,65536",
+        "-b",
+        "2048",
+        "-r",
+        "3",
+        "-o",
+        "jsonl",
+        "-ub",
+        "2048"
+      ],
+      "model": "DeepSeek-V4-Flash-0731-UD-IQ3_XXS",
+      "return_code": 0,
+      "series": "generation",
+      "status": "completed"
     }
   ],
-  "summary_rows": 72,
+  "summary_rows": 90,
   "toolbox": "llama-rocm-7.14"
 }

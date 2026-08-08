@@ -1,16 +1,20 @@
 const MODEL_COLORS = ["#2563eb", "#e5484d", "#12a594", "#f59e0b", "#8b5cf6"];
 const TOOLBOX_STYLES = [
-    { dash: "", marker: "circle", cssLine: "solid" },
-    { dash: "8 5", marker: "square", cssLine: "dashed" },
-    { dash: "2 4", marker: "diamond", cssLine: "dotted" },
-    { dash: "10 4 2 4", marker: "circle", cssLine: "dashed" },
+    { dash: "", marker: "circle" },
+    { dash: "12 5", marker: "square" },
+    { dash: "2 4", marker: "diamond" },
+    { dash: "12 4 2 4", marker: "triangle" },
+    { dash: "8 3 2 3", marker: "pentagon" },
 ];
+const DEFAULT_TOOLBOX_IDS = ["vulkan-radv", "rocm-7.14"];
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 const state = {
     data: null,
     selectedModels: new Set(),
     selectedToolboxes: new Set(),
+    draftModels: new Set(),
+    draftToolboxes: new Set(),
     baselineToolbox: null,
     scaleMode: "absolute",
     tableMetric: "prefill",
@@ -18,12 +22,10 @@ const state = {
 
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        const response = await fetch("toolbox-performance-results.json");
+        const response = await fetch("toolbox-performance-results.json", { cache: "no-store" });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         state.data = await response.json();
-        state.selectedModels.add(state.data.models[0]);
-        state.data.meta.toolboxes.forEach((toolbox) => state.selectedToolboxes.add(toolbox.id));
-        state.baselineToolbox = state.data.meta.default_toolbox || state.data.meta.toolboxes[0]?.id;
+        initializeState();
         bindStaticControls();
         renderHeader();
         renderSelectors();
@@ -31,33 +33,96 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderWarnings();
         renderToolboxDetails();
         renderResults();
+        syncUrlState();
+        window.addEventListener("hashchange", () => {
+            initializeState();
+            renderSelectors();
+            renderLegend();
+            renderToolboxDetails();
+            renderResults();
+            syncUrlState();
+        });
     } catch (error) {
         console.error("Failed to load toolbox performance results", error);
         document.getElementById("result-count").textContent = "Failed to load results";
     }
 });
 
+function initializeState() {
+    const toolboxIds = state.data.meta.toolboxes.map((toolbox) => toolbox.id);
+    state.selectedModels = new Set(state.data.models[0] ? [state.data.models[0]] : []);
+    state.selectedToolboxes = new Set(DEFAULT_TOOLBOX_IDS.filter((id) => toolboxIds.includes(id)));
+    if (!state.selectedToolboxes.size && toolboxIds[0]) state.selectedToolboxes.add(toolboxIds[0]);
+    state.baselineToolbox = state.data.meta.default_toolbox || toolboxIds[0] || null;
+    state.scaleMode = "absolute";
+    state.tableMetric = "prefill";
+
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    if (params.has("models")) {
+        state.selectedModels = selectionFromParam(params.get("models"), state.data.models);
+    }
+    if (params.has("toolboxes")) {
+        state.selectedToolboxes = selectionFromParam(params.get("toolboxes"), toolboxIds);
+    }
+    if (toolboxIds.includes(params.get("baseline"))) {
+        state.baselineToolbox = params.get("baseline");
+    }
+    if (["absolute", "retention", "gain"].includes(params.get("view"))) {
+        state.scaleMode = params.get("view");
+    }
+    if (["prefill", "generation"].includes(params.get("metric"))) {
+        state.tableMetric = params.get("metric");
+    }
+    ensureSelectedBaseline();
+    resetDraftSelection();
+}
+
+function selectionFromParam(value, validValues) {
+    const valid = new Set(validValues);
+    return new Set((value || "").split(",").filter((item) => valid.has(item)));
+}
+
+function syncUrlState() {
+    const params = new URLSearchParams();
+    params.set("models", state.data.models.filter((model) => state.selectedModels.has(model)).join(","));
+    params.set("toolboxes", state.data.meta.toolboxes
+        .map((toolbox) => toolbox.id)
+        .filter((toolbox) => state.selectedToolboxes.has(toolbox))
+        .join(","));
+    params.set("baseline", state.baselineToolbox || "");
+    params.set("view", state.scaleMode);
+    params.set("metric", state.tableMetric);
+    const url = `${window.location.pathname}${window.location.search}#${params.toString()}`;
+    window.history.replaceState(null, "", url);
+}
+
 function bindStaticControls() {
     document.getElementById("models-all").addEventListener("click", () => {
-        state.selectedModels = new Set(state.data.models);
-        rerenderSelection();
+        state.draftModels = new Set(state.data.models);
+        rerenderDraftSelection();
     });
     document.getElementById("models-none").addEventListener("click", () => {
-        state.selectedModels.clear();
-        rerenderSelection();
+        state.draftModels.clear();
+        rerenderDraftSelection();
     });
     document.getElementById("toolboxes-all").addEventListener("click", () => {
-        state.selectedToolboxes = new Set(state.data.meta.toolboxes.map((toolbox) => toolbox.id));
-        rerenderSelection();
+        state.draftToolboxes = new Set(state.data.meta.toolboxes.map((toolbox) => toolbox.id));
+        rerenderDraftSelection();
     });
     document.getElementById("toolboxes-none").addEventListener("click", () => {
-        state.selectedToolboxes.clear();
-        rerenderSelection();
+        state.draftToolboxes.clear();
+        rerenderDraftSelection();
+    });
+    document.getElementById("apply-comparison").addEventListener("click", applyDraftSelection);
+    document.getElementById("reset-comparison").addEventListener("click", () => {
+        resetDraftSelection();
+        rerenderDraftSelection();
     });
     document.getElementById("baseline-selector").addEventListener("change", (event) => {
         state.baselineToolbox = event.target.value;
         updateControlStates();
         renderResults();
+        syncUrlState();
     });
     document.querySelectorAll("button[data-scale]").forEach((button) => {
         button.addEventListener("click", () => {
@@ -65,6 +130,7 @@ function bindStaticControls() {
             state.scaleMode = button.dataset.scale;
             updateControlStates();
             renderResults();
+            syncUrlState();
         });
     });
     document.querySelectorAll("button[data-metric]").forEach((button) => {
@@ -72,6 +138,7 @@ function bindStaticControls() {
             state.tableMetric = button.dataset.metric;
             updateControlStates();
             renderTable(selectedPoints());
+            syncUrlState();
         });
     });
 }
@@ -90,6 +157,7 @@ function renderSelectors() {
     renderModelSelector();
     renderToolboxSelector();
     renderBaselineSelector();
+    updateComparisonBuilder();
     updateControlStates();
 }
 
@@ -100,16 +168,16 @@ function renderModelSelector() {
         const button = document.createElement("button");
         button.type = "button";
         button.className = "model-button";
-        button.style.setProperty("--model-color", modelColor(model));
+        button.style.setProperty("--model-color", modelColor(model, state.draftModels));
         button.textContent = displayModel(model);
         button.title = model;
-        const selected = state.selectedModels.has(model);
+        const selected = state.draftModels.has(model);
         button.setAttribute("aria-pressed", String(selected));
         button.classList.toggle("active", selected);
         button.addEventListener("click", () => {
-            if (state.selectedModels.has(model)) state.selectedModels.delete(model);
-            else state.selectedModels.add(model);
-            rerenderSelection();
+            if (state.draftModels.has(model)) state.draftModels.delete(model);
+            else state.draftModels.add(model);
+            rerenderDraftSelection();
         });
         selector.appendChild(button);
     });
@@ -123,20 +191,18 @@ function renderToolboxSelector() {
         button.type = "button";
         button.className = "toolbox-button";
         button.title = toolbox.description;
-        const style = toolboxStyle(toolbox.id);
-        const sample = document.createElement("span");
-        sample.className = "toolbox-line-sample";
-        sample.style.borderTopStyle = style.cssLine;
+        const selected = state.draftToolboxes.has(toolbox.id);
+        const sample = createToolboxStyleSample(toolbox.id, "toolbox-line-sample", state.draftToolboxes);
+        sample.classList.toggle("unassigned", !selected);
         const label = document.createElement("span");
         label.textContent = toolbox.label;
         button.append(sample, label);
-        const selected = state.selectedToolboxes.has(toolbox.id);
         button.setAttribute("aria-pressed", String(selected));
         button.classList.toggle("active", selected);
         button.addEventListener("click", () => {
-            if (state.selectedToolboxes.has(toolbox.id)) state.selectedToolboxes.delete(toolbox.id);
-            else state.selectedToolboxes.add(toolbox.id);
-            rerenderSelection();
+            if (state.draftToolboxes.has(toolbox.id)) state.draftToolboxes.delete(toolbox.id);
+            else state.draftToolboxes.add(toolbox.id);
+            rerenderDraftSelection();
         });
         selector.appendChild(button);
     });
@@ -145,7 +211,9 @@ function renderToolboxSelector() {
 function renderBaselineSelector() {
     const selector = document.getElementById("baseline-selector");
     selector.innerHTML = "";
-    state.data.meta.toolboxes.forEach((toolbox) => {
+    state.data.meta.toolboxes.filter((toolbox) =>
+        state.selectedToolboxes.has(toolbox.id)
+    ).forEach((toolbox) => {
         const option = document.createElement("option");
         option.value = toolbox.id;
         option.textContent = toolbox.label;
@@ -162,7 +230,7 @@ function renderLegend() {
     const modelTitle = document.createElement("strong");
     modelTitle.textContent = "Model colors";
     models.appendChild(modelTitle);
-    state.data.models.forEach((model) => {
+    state.data.models.filter((model) => state.selectedModels.has(model)).forEach((model) => {
         const item = document.createElement("span");
         item.className = "compact-legend-item";
         const swatch = document.createElement("i");
@@ -178,12 +246,12 @@ function renderLegend() {
     const toolboxTitle = document.createElement("strong");
     toolboxTitle.textContent = "Toolbox styles";
     toolboxes.appendChild(toolboxTitle);
-    state.data.meta.toolboxes.forEach((toolbox) => {
+    state.data.meta.toolboxes.filter((toolbox) =>
+        state.selectedToolboxes.has(toolbox.id)
+    ).forEach((toolbox) => {
         const item = document.createElement("span");
         item.className = "compact-legend-item";
-        const sample = document.createElement("i");
-        sample.className = "dash-sample";
-        sample.style.borderTopStyle = toolboxStyle(toolbox.id).cssLine;
+        const sample = createToolboxStyleSample(toolbox.id, "legend-toolbox-sample");
         item.append(sample, document.createTextNode(toolbox.label));
         item.addEventListener("mouseenter", () => highlightMatching("toolbox", toolbox.id, true));
         item.addEventListener("mouseleave", () => highlightMatching("toolbox", toolbox.id, false));
@@ -202,7 +270,9 @@ function renderWarnings() {
 function renderToolboxDetails() {
     const container = document.getElementById("toolbox-details");
     container.innerHTML = "";
-    state.data.meta.toolboxes.forEach((toolbox) => {
+    state.data.meta.toolboxes.filter((toolbox) =>
+        state.selectedToolboxes.has(toolbox.id)
+    ).forEach((toolbox) => {
         const card = document.createElement("article");
         card.className = "toolbox-detail";
         const title = document.createElement("h3");
@@ -231,11 +301,72 @@ function appendDetail(list, term, value) {
     list.append(dt, dd);
 }
 
-function rerenderSelection() {
+function rerenderDraftSelection() {
     renderModelSelector();
     renderToolboxSelector();
-    updateControlStates();
+    updateComparisonBuilder();
+}
+
+function applyDraftSelection() {
+    if (!state.draftModels.size || !state.draftToolboxes.size) return;
+    state.selectedModels = new Set(state.draftModels);
+    state.selectedToolboxes = new Set(state.draftToolboxes);
+    ensureSelectedBaseline();
+    resetDraftSelection();
+    renderSelectors();
+    renderLegend();
+    renderToolboxDetails();
     renderResults();
+    syncUrlState();
+}
+
+function resetDraftSelection() {
+    state.draftModels = new Set(state.selectedModels);
+    state.draftToolboxes = new Set(state.selectedToolboxes);
+}
+
+function ensureSelectedBaseline() {
+    if (state.selectedToolboxes.has(state.baselineToolbox)) return;
+    state.baselineToolbox = toolboxesIn(state.selectedToolboxes)[0]?.id || null;
+}
+
+function modelsIn(selection) {
+    return state.data.models.filter((model) => selection.has(model));
+}
+
+function toolboxesIn(selection) {
+    return state.data.meta.toolboxes.filter((toolbox) => selection.has(toolbox.id));
+}
+
+function setsEqual(left, right) {
+    return left.size === right.size && [...left].every((value) => right.has(value));
+}
+
+function updateComparisonBuilder() {
+    const modelCount = state.draftModels.size;
+    const toolboxCount = state.draftToolboxes.size;
+    const curveCount = modelCount * toolboxCount;
+    const valid = modelCount > 0 && toolboxCount > 0;
+    const dirty = !setsEqual(state.draftModels, state.selectedModels)
+        || !setsEqual(state.draftToolboxes, state.selectedToolboxes);
+    const summary = document.getElementById("selection-summary");
+    const status = document.getElementById("selection-status");
+    const apply = document.getElementById("apply-comparison");
+    const reset = document.getElementById("reset-comparison");
+    const panel = document.getElementById("comparison-commit");
+
+    summary.textContent = valid
+        ? `${modelCount} ${modelCount === 1 ? "model" : "models"} × ${toolboxCount} ${toolboxCount === 1 ? "toolbox" : "toolboxes"} = ${curveCount} ${curveCount === 1 ? "curve" : "curves"} per chart`
+        : "Choose at least one model and one toolbox";
+    status.textContent = dirty
+        ? valid
+            ? "Selection changed — click Update comparison to see the updated results."
+            : "Selection changed — choose at least one model and one toolbox, then click Update comparison."
+        : "Charts and URL match this selection.";
+    apply.disabled = !valid || !dirty;
+    apply.textContent = dirty ? "Update comparison" : "Comparison applied";
+    reset.disabled = !dirty;
+    panel.classList.toggle("pending", dirty);
 }
 
 function updateControlStates() {
@@ -307,9 +438,7 @@ function renderConfigSummary(points) {
         heading.scope = "col";
         const content = document.createElement("span");
         content.className = "calibration-toolbox-heading";
-        const sample = document.createElement("i");
-        sample.className = "toolbox-line-sample";
-        sample.style.borderTopStyle = toolboxStyle(toolbox.id).cssLine;
+        const sample = createToolboxStyleSample(toolbox.id, "toolbox-line-sample");
         content.append(sample, document.createTextNode(toolbox.label));
         heading.appendChild(content);
         headRow.appendChild(heading);
@@ -575,15 +704,58 @@ function findPoint(points, model, toolbox, series, depth) {
     );
 }
 
-function createMarker(type, cx, cy, color) {
+function createToolboxStyleSample(toolboxId, className, selection = state.selectedToolboxes) {
+    const style = toolboxStyle(toolboxId, selection);
+    const sample = svgElement("svg", {
+        viewBox: "0 0 36 12",
+        class: `toolbox-style-sample ${className}`,
+        "aria-hidden": "true",
+        focusable: "false",
+    });
+    sample.appendChild(svgElement("line", {
+        x1: 1,
+        y1: 6,
+        x2: 35,
+        y2: 6,
+        class: "toolbox-sample-line",
+        "stroke-dasharray": style.dash,
+    }));
+    sample.appendChild(createMarker(style.marker, 18, 6, "currentColor", false));
+    return sample;
+}
+
+function createMarker(type, cx, cy, color, interactive = true) {
+    const attributes = {
+        class: interactive ? "curve-point" : "toolbox-sample-marker",
+        fill: color,
+    };
+    if (interactive) attributes.tabindex = "0";
     if (type === "square") {
-        return svgElement("rect", { x: cx - 4.3, y: cy - 4.3, width: 8.6, height: 8.6, rx: 1, class: "curve-point", fill: color, tabindex: "0" });
+        return svgElement("rect", {
+            x: cx - 4.3,
+            y: cy - 4.3,
+            width: 8.6,
+            height: 8.6,
+            rx: 1,
+            ...attributes,
+        });
     }
     if (type === "diamond") {
         const points = `${cx},${cy - 5} ${cx + 5},${cy} ${cx},${cy + 5} ${cx - 5},${cy}`;
-        return svgElement("polygon", { points, class: "curve-point", fill: color, tabindex: "0" });
+        return svgElement("polygon", { points, ...attributes });
     }
-    return svgElement("circle", { cx, cy, r: 4.5, class: "curve-point", fill: color, tabindex: "0" });
+    if (type === "triangle") {
+        const points = `${cx},${cy - 5.2} ${cx + 5.2},${cy + 4.5} ${cx - 5.2},${cy + 4.5}`;
+        return svgElement("polygon", { points, ...attributes });
+    }
+    if (type === "pentagon") {
+        const points = Array.from({ length: 5 }, (_, index) => {
+            const angle = (-Math.PI / 2) + (index * 2 * Math.PI / 5);
+            return `${cx + (5 * Math.cos(angle))},${cy + (5 * Math.sin(angle))}`;
+        }).join(" ");
+        return svgElement("polygon", { points, ...attributes });
+    }
+    return svgElement("circle", { cx, cy, r: 4.5, ...attributes });
 }
 
 function highlightSeries(key, enabled) {
@@ -617,12 +789,13 @@ function selectTicks(values, maximum) {
     ))];
 }
 
-function modelColor(model) {
-    return MODEL_COLORS[state.data.models.indexOf(model) % MODEL_COLORS.length];
+function modelColor(model, selection = state.selectedModels) {
+    const index = modelsIn(selection).indexOf(model);
+    return MODEL_COLORS[(index < 0 ? 0 : index) % MODEL_COLORS.length];
 }
 
-function toolboxStyle(toolboxId) {
-    const index = state.data.meta.toolboxes.findIndex((toolbox) => toolbox.id === toolboxId);
+function toolboxStyle(toolboxId, selection = state.selectedToolboxes) {
+    const index = toolboxesIn(selection).findIndex((toolbox) => toolbox.id === toolboxId);
     return TOOLBOX_STYLES[(index < 0 ? 0 : index) % TOOLBOX_STYLES.length];
 }
 
