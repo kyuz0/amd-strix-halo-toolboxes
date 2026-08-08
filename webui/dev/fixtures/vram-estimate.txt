@@ -1,0 +1,9 @@
+Model: Qwen3.6-35B-A3B-UD-Q4_K_XL
+Model size: 19.42 GiB
+Max context: 262144
+
+  Context     KV cache      Total (with 1.0 GiB overhead)
+    16384      1.12 GiB      21.54 GiB
+    32768      2.25 GiB      22.67 GiB
+    65536      4.50 GiB      24.92 GiB
+   131072      9.00 GiB      29.42 GiB

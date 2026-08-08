@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Reset the WebUI admin password from a shell on the box.
+set -euo pipefail
+exec node "$(dirname "$(readlink -f "$0")")/../server/src/bin/passwd.js" "$@"

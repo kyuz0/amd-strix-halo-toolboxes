@@ -15,6 +15,11 @@ These mirror the four stable backends of the upstream project
 [`kyuz0/amd-strix-halo-toolboxes`](https://github.com/kyuz0/amd-strix-halo-toolboxes),
 with `llama-server` as the container entrypoint instead of a shell.
 
+> **Prefer a browser?** [`webui/`](webui/README.md) does everything on this page —
+> pulling images, downloading models, starting and stopping servers, live logs —
+> from a JWT-protected web interface that autostarts with the machine.
+> Install it with `cd webui && ./install.sh`.
+
 > The retired tags `rocm-7.1.1`, `rocm-7.2` and `rocm7-nightlies` are no longer
 > built. Upstream dropped them; use `rocm-7.14` instead.
 

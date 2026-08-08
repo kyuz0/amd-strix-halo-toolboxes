@@ -1,0 +1,5 @@
+node_modules/
+web/dist/
+dev/tmp/
+dev/models/
+*.log

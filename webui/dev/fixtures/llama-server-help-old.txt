@@ -1,0 +1,11 @@
+usage: llama-server [options]
+
+common params:
+  -h,    --help, --usage          print usage and exit
+  -m,    --model FNAME            model path
+  -c,    --ctx-size N             size of the prompt context
+  -ngl,  --n-gpu-layers N         number of layers to store in VRAM
+  -fa,   --flash-attn             enable Flash Attention
+         --no-mmap                do not memory-map model
+         --api-key KEY            API key to use for authentication
+         --jinja                  use jinja template for chat

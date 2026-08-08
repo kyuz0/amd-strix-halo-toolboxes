@@ -12,6 +12,7 @@
 *   `/benchmark/`: Shell scripts and Python utilities (like `generate_results_json.py`) to systematically test Llama.cpp throughput, latency, and RPC performance.
 *   `/docs/`: Markdown documents, along with HTML/CSS/JS (e.g., `index.html`, `assets/`) for the GitHub Pages website (`strix-halo-toolboxes.com`), plus interactive benchmark viewers and documentation on VRAM estimation.
 *   `/scripts/`: Python utilities, including `run_distributed_llama.py` for distributed inference across nodes.
+*   `/webui/`: Express + React management interface (JWT-protected) for models, containers, images and app updates. Runs as a `systemd --user` service on the box. Node backend, no native npm modules by design, so `npm ci` stays reliable across Node upgrades.
 *   `.github/workflows/`: GitHub Actions that automatically rebuild containers whenever the upstream `llama.cpp` master branch updates or when triggered manually.
 
 ## Critical Technical Quirks (Important for Development)
@@ -23,3 +24,4 @@
 1.  **Container Builds**: When modifying `Dockerfile.*` files inside `/toolboxes`, ensure the build output remains lean and only necessary runtime dependencies and Llama.cpp binaries are carried over.
 2.  **Documentation Synchronization**: If adding a new backend or feature, ensure `README.md` is updated simultaneously.
 3.  **Scripts**: Benchmarking and utility scripts are expected to integrate with standard `toolbox` execution. Use `/dev/dri` and `/dev/kfd` mounts for device access.
+4.  **WebUI parity**: `webui/server/src/podman/argv.js` reproduces `run-llama-server.sh` exactly. If you change either one, run `npm run test:parity` in `webui/` — it diffs our argv against what the real script executes. Never use `shell: true` there; all subprocesses go through `webui/server/src/lib/exec.js` with argv arrays (enforced by ESLint).

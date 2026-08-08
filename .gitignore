@@ -2,3 +2,9 @@ __pycache__
 *.iml
 .idea
 research
+
+# webui build artefacts and local dev state
+webui/node_modules
+webui/web/dist
+webui/dev/tmp
+webui/dev/models

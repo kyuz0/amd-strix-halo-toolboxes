@@ -1,0 +1,27 @@
+[Unit]
+Description=Strix Halo Toolboxes Web UI
+Documentation=file://%REPO_WEBUI%/README.md
+# Deliberately no Wants=network-online.target: it is not reliably available in
+# the user manager. The app retries network-dependent work (registry checks)
+# instead, and binds regardless.
+After=default.target
+
+[Service]
+Type=simple
+WorkingDirectory=%REPO_WEBUI%
+Environment=NODE_ENV=production
+EnvironmentFile=-%h/.config/strix-halo-webui/env
+ExecStart=%NODE_BIN% server/src/index.js
+Restart=always
+RestartSec=3
+# KillMode=mixed is what lets the self-updater survive: only the main process
+# gets SIGTERM on restart, so a child still running `npm ci` is not killed
+# along with it.
+KillMode=mixed
+TimeoutStopSec=20
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=strix-halo-webui
+
+[Install]
+WantedBy=default.target

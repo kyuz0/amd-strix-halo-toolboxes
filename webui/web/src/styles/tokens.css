@@ -1,0 +1,108 @@
+/*
+ * Dark-first palette, echoing the look of the project's GitHub Pages site.
+ * Light mode is a token swap only — no component ever hardcodes a colour.
+ */
+:root {
+  color-scheme: dark light;
+
+  --bg: #0d1117;
+  --bg-elevated: #151b23;
+  --bg-inset: #0a0e14;
+  --bg-hover: #1c232c;
+  --border: #2a313c;
+  --border-strong: #3d444d;
+
+  --text: #e6edf3;
+  --text-muted: #9198a1;
+  --text-faint: #6b7280;
+
+  --accent: #ff6b35;
+  --accent-hover: #ff8355;
+  --accent-dim: rgba(255, 107, 53, 0.14);
+  --accent-text: #0d1117;
+
+  --ok: #3fb950;
+  --ok-dim: rgba(63, 185, 80, 0.14);
+  --warn: #d29922;
+  --warn-dim: rgba(210, 153, 34, 0.14);
+  --danger: #f85149;
+  --danger-dim: rgba(248, 81, 73, 0.14);
+  --info: #58a6ff;
+  --info-dim: rgba(88, 166, 255, 0.14);
+
+  --radius: 8px;
+  --radius-sm: 5px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.25);
+
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --nav-width: 220px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg: #ffffff;
+    --bg-elevated: #f6f8fa;
+    --bg-inset: #eef1f4;
+    --bg-hover: #eaeef2;
+    --border: #d1d9e0;
+    --border-strong: #b7bfc7;
+
+    --text: #1f2328;
+    --text-muted: #59636e;
+    --text-faint: #818b98;
+
+    --accent: #d94a15;
+    --accent-hover: #b83c0e;
+    --accent-dim: rgba(217, 74, 21, 0.1);
+    --accent-text: #ffffff;
+
+    --ok: #1a7f37;
+    --ok-dim: rgba(26, 127, 55, 0.1);
+    --warn: #9a6700;
+    --warn-dim: rgba(154, 103, 0, 0.1);
+    --danger: #cf222e;
+    --danger-dim: rgba(207, 34, 46, 0.1);
+    --info: #0969da;
+    --info-dim: rgba(9, 105, 218, 0.1);
+
+    --shadow: 0 1px 3px rgba(31, 35, 40, 0.12), 0 8px 24px rgba(31, 35, 40, 0.08);
+  }
+}
+
+:root[data-theme='light'] {
+  --bg: #ffffff;
+  --bg-elevated: #f6f8fa;
+  --bg-inset: #eef1f4;
+  --bg-hover: #eaeef2;
+  --border: #d1d9e0;
+  --border-strong: #b7bfc7;
+
+  --text: #1f2328;
+  --text-muted: #59636e;
+  --text-faint: #818b98;
+
+  --accent: #d94a15;
+  --accent-hover: #b83c0e;
+  --accent-dim: rgba(217, 74, 21, 0.1);
+  --accent-text: #ffffff;
+
+  --ok: #1a7f37;
+  --ok-dim: rgba(26, 127, 55, 0.1);
+  --warn: #9a6700;
+  --warn-dim: rgba(154, 103, 0, 0.1);
+  --danger: #cf222e;
+  --danger-dim: rgba(207, 34, 46, 0.1);
+  --info: #0969da;
+  --info-dim: rgba(9, 105, 218, 0.1);
+
+  --shadow: 0 1px 3px rgba(31, 35, 40, 0.12), 0 8px 24px rgba(31, 35, 40, 0.08);
+}

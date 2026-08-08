@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec node "$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")/hf.mjs" "$@"

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Prints its own argv, one argument per line, and nothing else.
+#
+# Placed first on PATH so the real run-llama-server.sh "runs" without a
+# container runtime, and we can capture exactly what it would have executed.
+#
+# The script also probes the image with `podman run --rm ... llama-server
+# --help`; answer that from a fixture instead of dumping argv, or the probe
+# output would end up in the captured file.
+for arg in "$@"; do
+  if [[ "$arg" == "--help" ]]; then
+    cat "${SHX_PARITY_HELP:-/dev/null}"
+    exit 0
+  fi
+done
+
+printf '%s\n' "$@"

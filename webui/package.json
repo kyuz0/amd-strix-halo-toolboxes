@@ -1,0 +1,31 @@
+{
+  "name": "strix-halo-webui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Web UI to manage llama.cpp toolbox containers and GGUF models on an AMD Strix Halo box",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "workspaces": [
+    "server",
+    "web"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace web",
+    "start": "node server/src/index.js",
+    "dev": "node dev/dev.js",
+    "dev:server": "node --watch server/src/index.js",
+    "dev:web": "npm run dev --workspace web",
+    "test": "node --test server/test/*.test.js",
+    "test:parity": "bash dev/parity/parity.sh",
+    "lint": "eslint server web dev shared"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react": "^7.37.5",
+    "vite": "^6.0.7"
+  }
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Wrapper so the shim can be an .mjs file. Node decides CommonJS vs ESM from the
+# extension, and an extensionless script would be treated as CommonJS — where
+# the shim's `import` statements fail.
+exec node "$(dirname "$(readlink -f "$0" 2>/dev/null || echo "$0")")/podman.mjs" "$@"

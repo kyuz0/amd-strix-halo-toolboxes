@@ -22,6 +22,7 @@ This is a hobby project maintained in my spare time. If you find these toolboxes
 - [ROCm 7 Performance Regression Workaround](#rocm-7-performance-regression-workaround)
 - [Supported Toolboxes](#supported-toolboxes)
 - [Quick Start](#quick-start)
+- [Web Interface](#web-interface)
 - [Host Configuration](#host-configuration)
 - [Performance Benchmarks](#performance-benchmarks)
 - [Memory Planning and VRAM Estimator](#memory-planning-and-vram-estimator)
@@ -171,6 +172,22 @@ Refresh your authenticated toolboxes to the latest nightly/stable builds:
 ```bash
 ./refresh-toolboxes.sh all
 ```
+
+## Web Interface
+
+Everything above can also be done from a browser. [`webui/`](webui/README.md) is
+a JWT-protected management interface for this fork: download and delete models,
+start and stop `llama-server` containers, follow their logs live, watch GPU and
+GTT usage, check for new images, and update the app itself.
+
+```bash
+cd webui
+./install.sh
+```
+
+It installs as a `systemd --user` service, starts with the machine, and can
+bring saved server profiles back up after a reboot. The installer prints the URL
+and a one-time password when it finishes.
 
 ## Host Configuration
 
