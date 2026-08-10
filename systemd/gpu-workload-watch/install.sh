@@ -9,7 +9,7 @@ fi
 
 source_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-for required_command in bash ectool grep systemctl tuned-adm; do
+for required_command in bash ectool grep systemctl systemd-notify timeout tuned-adm; do
     if ! command -v "${required_command}" >/dev/null; then
         echo "Missing required command: ${required_command}" >&2
         exit 1

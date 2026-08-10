@@ -4,10 +4,12 @@ Wants=tuned.service
 After=multi-user.target tuned.service
 
 [Service]
-Type=simple
+Type=notify
+NotifyAccess=main
 ExecStart=/usr/local/sbin/gpu-workload-watch
 Restart=always
 RestartSec=1
+WatchdogSec=30s
 
 [Install]
 WantedBy=multi-user.target

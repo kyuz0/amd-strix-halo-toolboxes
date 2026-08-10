@@ -8,16 +8,28 @@ load_threshold=20
 idle_threshold=10
 load_seconds=2
 idle_seconds=60
+tuned_command_timeout_seconds=20
+tuned_reconcile_seconds=15
+tuned_restart_after_failures=2
+ectool_command_timeout_seconds=10
+fan_reconcile_seconds=15
 
 ectool_bin="$(command -v ectool)" || exit 1
 tuned_adm_bin="$(command -v tuned-adm)" || exit 1
+systemctl_bin="$(command -v systemctl)" || exit 1
+timeout_bin="$(command -v timeout)" || exit 1
+systemd_notify_bin="$(command -v systemd-notify || true)"
 
 fan_mode="unknown"
+fan_reconcile_count=0
 tuned_mode="unknown"
+tuned_failures=0
+tuned_reconcile_count=0
 load_count=0
 idle_count=0
 no_workload_count=0
 gpu_busy_file=""
+tuned_worker_pid=""
 
 for candidate in /sys/class/drm/card*/device/gpu_busy_percent; do
     if [[ -r "${candidate}" ]] && [[ "$(< "${candidate%/gpu_busy_percent}/vendor")" == "0x1002" ]]; then
@@ -94,36 +106,195 @@ gpu_busy_percent() {
 }
 
 set_fan_max() {
-    if "${ectool_bin}" fanduty 100; then
+    if run_ectool fanduty 100; then
+        if [[ "${fan_mode}" != "max" ]]; then
+            echo "GPU workload detected: fan set to maximum"
+        fi
         fan_mode="max"
-        echo "GPU workload detected: fan set to maximum"
+        fan_reconcile_count=0
     fi
 }
 
 set_fan_auto() {
-    if "${ectool_bin}" autofanctrl; then
+    if run_ectool autofanctrl; then
+        if [[ "${fan_mode}" != "auto" ]]; then
+            echo "GPU workload idle: automatic fan control restored"
+        fi
         fan_mode="auto"
-        echo "GPU workload idle: automatic fan control restored"
+        fan_reconcile_count=0
     fi
 }
 
-set_tuned_accelerator() {
-    if "${tuned_adm_bin}" profile accelerator-performance; then
-        tuned_mode="accelerator-performance"
-        echo "GPU workload detected: accelerator-performance profile enabled"
+run_ectool() {
+    "${timeout_bin}" --signal=TERM --kill-after=5s \
+        "${ectool_command_timeout_seconds}s" "${ectool_bin}" "$@"
+}
+
+run_tuned_adm() {
+    "${timeout_bin}" --signal=TERM --kill-after=5s \
+        "${tuned_command_timeout_seconds}s" \
+        "${tuned_adm_bin}" --timeout "${tuned_command_timeout_seconds}" "$@"
+}
+
+active_tuned_profile() {
+    local output profile
+
+    output="$(run_tuned_adm active 2>&1)" || {
+        echo "TuneD active-profile query failed: ${output}" >&2
+        return 1
+    }
+    profile="${output#Current active profile: }"
+    if [[ -z "${profile}" || "${profile}" == "${output}" ]]; then
+        echo "Unexpected tuned-adm active output: ${output}" >&2
+        return 1
+    fi
+    printf '%s\n' "${profile}"
+}
+
+tuned_profile_is_ready() {
+    local expected active verify_output
+
+    expected="$1"
+    active="$(active_tuned_profile)" || return 1
+    if [[ "${active}" != "${expected}" ]]; then
+        echo "TuneD profile mismatch: expected ${expected}, active ${active}" >&2
+        return 1
+    fi
+
+    # TuneD can acknowledge a profile before its asynchronous apply worker
+    # fails. Verify the applied settings for the benchmark-critical profile.
+    if [[ "${expected}" == "accelerator-performance" ]]; then
+        verify_output="$(run_tuned_adm verify 2>&1)" || {
+            echo "TuneD profile verification failed: ${verify_output}" >&2
+            return 1
+        }
     fi
 }
 
-set_tuned_balanced() {
-    if "${tuned_adm_bin}" profile balanced; then
-        tuned_mode="balanced"
-        echo "no GPU workload detected: balanced profile enabled"
+apply_tuned_profile() {
+    local profile output
+
+    profile="$1"
+    output="$(run_tuned_adm profile "${profile}" 2>&1)" || {
+        echo "Failed to request TuneD profile ${profile}: ${output}" >&2
+        return 1
+    }
+
+    # Allow late asynchronous failures to surface before accepting the state.
+    sleep 2
+    tuned_profile_is_ready "${profile}"
+}
+
+restart_tuned() {
+    echo "Restarting tuned.service after repeated profile failures" >&2
+    "${timeout_bin}" --signal=TERM --kill-after=5s \
+        "${tuned_command_timeout_seconds}s" \
+        "${systemctl_bin}" restart tuned.service
+}
+
+ensure_tuned_profile() {
+    local profile reason
+
+    profile="$1"
+    reason="$2"
+    if tuned_profile_is_ready "${profile}" || apply_tuned_profile "${profile}"; then
+        if [[ "${tuned_mode}" != "${profile}" ]]; then
+            echo "${reason}: verified TuneD profile ${profile}"
+        fi
+        tuned_mode="${profile}"
+        tuned_failures=0
+        return 0
     fi
+
+    tuned_mode="unknown"
+    ((tuned_failures += 1))
+    echo "${reason}: TuneD profile ${profile} is not applied (failure ${tuned_failures})" >&2
+    if (( tuned_failures < tuned_restart_after_failures )); then
+        return 1
+    fi
+
+    tuned_failures=0
+    if restart_tuned && apply_tuned_profile "${profile}"; then
+        tuned_mode="${profile}"
+        echo "${reason}: verified TuneD profile ${profile} after daemon restart"
+        return 0
+    fi
+
+    echo "${reason}: TuneD recovery failed; retrying on the next reconciliation" >&2
+    return 1
+}
+
+reconcile_tuned_profile() {
+    local profile reason
+
+    profile="$1"
+    reason="$2"
+    ((tuned_reconcile_count += 1))
+    if [[ "${tuned_mode}" == "${profile}" ]] \
+        && (( tuned_reconcile_count < tuned_reconcile_seconds )); then
+        return 0
+    fi
+
+    tuned_reconcile_count=0
+    ensure_tuned_profile "${profile}" "${reason}" || true
+}
+
+notify_systemd() {
+    local state
+
+    state="$1"
+    if [[ -n "${NOTIFY_SOCKET:-}" && -n "${systemd_notify_bin}" ]]; then
+        "${systemd_notify_bin}" "${state}" || true
+    fi
+}
+
+run_tuned_worker() {
+    local gpu_busy worker_no_workload_count
+
+    trap - EXIT
+    trap 'exit 0' INT TERM HUP
+    worker_no_workload_count=0
+    while true; do
+        if gpu_workload_is_running; then
+            worker_no_workload_count=0
+            reconcile_tuned_profile accelerator-performance "GPU workload detected"
+            sleep 1
+            continue
+        fi
+
+        gpu_busy="$(gpu_busy_percent)"
+        if (( gpu_busy < idle_threshold )); then
+            ((worker_no_workload_count += 1))
+        else
+            worker_no_workload_count=0
+        fi
+        if (( worker_no_workload_count < idle_seconds )); then
+            sleep 1
+            continue
+        fi
+
+        reconcile_tuned_profile balanced "No GPU workload detected"
+        sleep 1
+    done
+}
+
+start_tuned_worker() {
+    run_tuned_worker &
+    tuned_worker_pid="$!"
+}
+
+stop_tuned_worker() {
+    if [[ -n "${tuned_worker_pid}" ]] && kill -0 "${tuned_worker_pid}" 2>/dev/null; then
+        kill "${tuned_worker_pid}" 2>/dev/null || true
+        wait "${tuned_worker_pid}" 2>/dev/null || true
+    fi
+    tuned_worker_pid=""
 }
 
 restore_defaults() {
-    "${ectool_bin}" autofanctrl || true
-    "${tuned_adm_bin}" profile balanced || true
+    stop_tuned_worker
+    run_ectool autofanctrl || true
+    run_tuned_adm profile balanced || true
 }
 
 stop_watcher() {
@@ -135,14 +306,23 @@ stop_watcher() {
 trap restore_defaults EXIT
 trap stop_watcher INT TERM HUP
 
+start_tuned_worker
+notify_systemd --ready
+
 while true; do
+    notify_systemd --watchdog
+    if ! kill -0 "${tuned_worker_pid}" 2>/dev/null; then
+        echo "TuneD reconciliation worker exited; restarting it" >&2
+        wait "${tuned_worker_pid}" 2>/dev/null || true
+        start_tuned_worker
+    fi
     gpu_busy="$(gpu_busy_percent)"
 
     if ! gpu_workload_is_running; then
         load_count=0
         idle_count=0
 
-        if [[ "${fan_mode}" == "max" || "${tuned_mode}" == "accelerator-performance" ]]; then
+        if [[ "${fan_mode}" == "max" ]]; then
             if (( gpu_busy < idle_threshold )); then
                 ((no_workload_count += 1))
             else
@@ -156,21 +336,16 @@ while true; do
         fi
 
         no_workload_count=0
-        if [[ "${fan_mode}" != "auto" ]]; then
+        ((fan_reconcile_count += 1))
+        if [[ "${fan_mode}" != "auto" ]] \
+            || (( fan_reconcile_count >= fan_reconcile_seconds )); then
             set_fan_auto
-        fi
-        if [[ "${tuned_mode}" != "balanced" ]]; then
-            set_tuned_balanced
         fi
         sleep 1
         continue
     fi
 
     no_workload_count=0
-
-    if [[ "${tuned_mode}" != "accelerator-performance" ]]; then
-        set_tuned_accelerator
-    fi
 
     if [[ "${fan_mode}" != "max" ]]; then
         idle_count=0
@@ -193,6 +368,10 @@ while true; do
             fi
         else
             idle_count=0
+            ((fan_reconcile_count += 1))
+            if (( fan_reconcile_count >= fan_reconcile_seconds )); then
+                set_fan_max
+            fi
         fi
     fi
 
