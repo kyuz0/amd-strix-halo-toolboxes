@@ -307,10 +307,10 @@ trap restore_defaults EXIT
 trap stop_watcher INT TERM HUP
 
 start_tuned_worker
-notify_systemd --ready
+notify_systemd READY=1
 
 while true; do
-    notify_systemd --watchdog
+    notify_systemd WATCHDOG=1
     if ! kill -0 "${tuned_worker_pid}" 2>/dev/null; then
         echo "TuneD reconciliation worker exited; restarting it" >&2
         wait "${tuned_worker_pid}" 2>/dev/null || true

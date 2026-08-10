@@ -10,6 +10,8 @@ ExecStart=/usr/local/sbin/gpu-workload-watch
 Restart=always
 RestartSec=1
 WatchdogSec=30s
+WatchdogSignal=TERM
+LimitCORE=0
 
 [Install]
 WantedBy=multi-user.target
