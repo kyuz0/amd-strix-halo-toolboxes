@@ -67,7 +67,7 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 | :--- | :--- | :--- |
 | `rocm-7.14-pr26592` | ROCm 7.14 (Experimental) | Downloads and applies draft [llama.cpp PR #26592](https://github.com/ggml-org/llama.cpp/pull/26592) at build time to enable hipCUB paths for ARGSORT/TOP_K-related operations. Manual build only with the `rocm-7.14-pr26592` workflow argument. |
 | `vulkan-radv-performance` | Vulkan (Mesa RADV, Fedora 44) | Experimental build tracking [`Nathanw1014/llama.cpp:strix-halo-vulkan`](https://github.com/Nathanw1014/llama.cpp/tree/strix-halo-vulkan), with Strix Halo-focused flash-attention, KV-cache, lightning-indexer, and matrix/MoE performance work. Manual build only. |
-| `rocm-7.2.4-rocmfpx` | ROCm 7.2.4 (Custom) | Custom `charlie12345/ROCmFPX` build with ROCmFP3/FP4/FP6/FP8 weight formats, MTP speculative decoding, and agent-aware presets. Auto-built on upstream changes. |
+| `rocm-7.14-rocmfpx` | ROCm 7.14 (Custom) | Custom `charlie12345/ROCmFPX` build with ROCmFP3/FP4/FP6/FP8 weight formats, MTP speculative decoding, and agent-aware presets. Auto-built on upstream changes. |
 | `vulkan-rocmfpx` | Vulkan (Custom) | Vulkan-only `charlie12345/ROCmFPX` build with ROCmFPX weight formats. No ROCm dependency. Auto-built on upstream changes. |
 | `rocm-7.2.4-rdma-fix` | ROCm 7.2.4 (Custom) | Test build from `kyuz0/llama.cpp:fix/rpc-rdma-inline-fallback`, which retries RDMA QP creation without inline data. Manual build only. |
 | `rocm-7.2.4-turboquant` | ROCm 7.2.4 (Custom) | Custom TurboQuant build for AMD Strix Halo. Manual build only. |

@@ -1,36 +1,31 @@
 # build stage
-FROM registry.fedoraproject.org/fedora:43 AS builder
+FROM registry.fedoraproject.org/fedora:44 AS builder
 
-# rocm 7.2.4 repo
+# ROCm 7.14 Core SDK repository (TheRock release stream)
 RUN <<'EOF'
 tee /etc/yum.repos.d/rocm.repo <<REPO
-[ROCm-7.2.4]
-name=ROCm7.2.4
-baseurl=https://repo.radeon.com/rocm/rhel10/7.2.4/main
+[rocm]
+name=ROCm 7.14.0
+baseurl=https://repo.amd.com/rocm/packages-multi-arch/rhel10/x86_64
 enabled=1
 priority=50
 gpgcheck=1
-gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
+gpgkey=https://repo.amd.com/rocm/packages-multi-arch/gpg/rocm.gpg
 REPO
 EOF
 
-# deps
+# Build with AMD's supported gfx1151 development meta-package.
 RUN dnf -y --nodocs --setopt=install_weak_deps=False \
-  --exclude='*sdk*' --exclude='*samples*' --exclude='*-doc*' --exclude='*-docs*' \
   install \
-  make gcc cmake lld clang clang-devel compiler-rt libcurl-devel ninja-build rdma-core-devel \
-  rocm-llvm rocm-device-libs hip-runtime-amd hip-devel \
-  rocblas rocblas-devel hipblas hipblas-devel rocm-cmake libomp-devel libomp \
-  rocminfo radeontop \
+  make gcc gcc-c++ cmake libcurl-devel ninja-build rdma-core-devel \
+  amdrocm-core-devel7.14-gfx1151 \
   git-core vim sudo rsync patch \
   && dnf clean all && rm -rf /var/cache/dnf/*
 
-# rocm env
 ENV ROCM_PATH=/opt/rocm \
   HIP_PATH=/opt/rocm \
-  HIP_CLANG_PATH=/opt/rocm/llvm/bin \
-  HIP_DEVICE_LIB_PATH=/opt/rocm/amdgcn/bitcode \
-  PATH=/opt/rocm/bin:/opt/rocm/llvm/bin:$PATH
+  PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+  LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
 
 # ROCmFPX (llama.cpp fork with ROCmFP3/FP4/FP6/FP8 weight formats)
 WORKDIR /opt/llama.cpp
@@ -49,8 +44,7 @@ RUN git clean -xdf \
   -DGGML_VULKAN=OFF \
   -DGGML_CUDA=OFF \
   -DGGML_HIP_FORCE_MMQ=ON \
-  -DCMAKE_HIP_ARCHITECTURES=gfx1151 \
-  -DGPU_TARGETS=gfx1151 \
+  -DAMDGPU_TARGETS=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
   -DLLAMA_BUILD_SERVER=ON \
@@ -75,29 +69,43 @@ COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
 # runtime stage
-FROM registry.fedoraproject.org/fedora-minimal:43
+FROM registry.fedoraproject.org/fedora-minimal:44
 
-# rocm 7.2.4 repo
+# ROCm 7.14 Core SDK repository (TheRock release stream)
 RUN <<'EOF'
 tee /etc/yum.repos.d/rocm.repo <<REPO
-[ROCm-7.2.4]
-name=ROCm7.2.4
-baseurl=https://repo.radeon.com/rocm/rhel10/7.2.4/main
+[rocm]
+name=ROCm 7.14.0
+baseurl=https://repo.amd.com/rocm/packages-multi-arch/rhel10/x86_64
 enabled=1
 priority=50
 gpgcheck=1
-gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
+gpgkey=https://repo.amd.com/rocm/packages-multi-arch/gpg/rocm.gpg
 REPO
 EOF
 
-# runtime deps
+# Runtime components required by llama.cpp's HIP backend. These remain official
+# AMD packages while avoiding unrelated SDK libraries and developer tools.
 RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
-  --exclude='*sdk*' --exclude='*samples*' --exclude='*-doc*' --exclude='*-docs*' \
   install \
   bash ca-certificates libatomic libstdc++ libgcc libgomp libibverbs sudo \
-  hip-runtime-amd rocblas hipblas \
-  rocminfo radeontop procps-ng \
-  && microdnf clean all && rm -rf /var/cache/dnf/*
+  amdrocm-runtime7.14 amdrocm-blas7.14-gfx1151 \
+  radeontop procps-ng \
+  && microdnf clean all && rm -rf /var/cache/dnf/* \
+  && ln -s core-7.14 /opt/rocm/core \
+  && ln -s core-7.14/bin /opt/rocm/bin \
+  && ln -s core-7.14/include /opt/rocm/include \
+  && ln -s core-7.14/lib /opt/rocm/lib \
+  && ln -s core-7.14/libexec /opt/rocm/libexec \
+  && ln -s core-7.14/lib/llvm /opt/rocm/llvm \
+  && ln -s core-7.14/share /opt/rocm/share \
+  && ln -s core-7.14/lib/llvm/amdgcn /opt/rocm/amdgcn
+
+# ROCm environment
+ENV ROCM_PATH=/opt/rocm \
+  HIP_PATH=/opt/rocm \
+  PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+  LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
 
 # copy
 COPY --from=builder /usr/local/ /usr/local/
@@ -106,19 +114,16 @@ COPY --from=builder /opt/llama.cpp/build/bin/ggml-rpc-* /usr/local/bin/
 # ld
 RUN echo "/usr/local/lib"  > /etc/ld.so.conf.d/local.conf \
   && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+  && echo "/opt/rocm/core/lib" > /etc/ld.so.conf.d/rocm.conf \
+  && echo "/opt/rocm/core/lib/rocm_sysdeps/lib" >> /etc/ld.so.conf.d/rocm.conf \
   && ldconfig \
-  && cp -n /usr/local/lib/libllama*.so* /usr/lib64/ 2>/dev/null || true \
-  && cp -n /usr/local/lib64/libllama*.so* /usr/lib64/ 2>/dev/null || true \
+  && find /usr/local/lib /usr/local/lib64 -maxdepth 1 -type f -name 'libllama*.so*' \
+     -exec cp -n {} /usr/lib64/ \; \
   && ldconfig
 
 # helper
 COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
-
-# profile
-RUN printf '%s\n' \
-  > /etc/profile.d/rocm.sh && chmod +x /etc/profile.d/rocm.sh \
-  && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
 
 # shell
 CMD ["/bin/bash"]

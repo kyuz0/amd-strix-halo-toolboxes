@@ -81,7 +81,7 @@ jobs:
                  -X POST \
                  -H "Accept: application/vnd.github+json" \
                  -H "Authorization: Bearer $GH_TOKEN" \
-                 -d "{\"ref\":\"$REF\",\"inputs\":{\"backends\":\"rocm-7.2.4-rocmfpx,vulkan-rocmfpx\"}}" \
+                 -d "{\"ref\":\"$REF\",\"inputs\":{\"backends\":\"rocm-7.14-rocmfpx,vulkan-rocmfpx\"}}" \
                  "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$WF/dispatches")
           echo "HTTP $CODE"
           if [[ "$CODE" != "204" ]]; then echo "Response:"; cat /tmp/resp; exit 1; fi
