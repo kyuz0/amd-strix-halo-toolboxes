@@ -1,7 +1,15 @@
-diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
 --- a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
 +++ b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
-@@ -331,9 +331,10 @@ void decrement_compile_count(uint32_t * count) {
+@@ -7,6 +7,8 @@
+ #include <vector>
+ #include <map>
+ #include <thread>
++#include <chrono>
++#include <deque>
+ #include <mutex>
+ #include <future>
+ #include <queue>
+@@ -331,9 +333,10 @@
  using compile_count_guard = std::unique_ptr<uint32_t, decltype(&decrement_compile_count)>;
  
  compile_count_guard acquire_compile_slot() {
@@ -10,8 +18,29 @@ diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp b/ggml/s
 -    uint32_t N = std::max(1u, std::min(16u, std::thread::hardware_concurrency()));
 +    // Keep concurrent glslc processes within GitHub-hosted runner memory limits.
 +    // The ROCmFPX shader matrix is materially larger than upstream llama.cpp's.
-+    constexpr uint32_t max_shader_compiles = 2;
++    constexpr uint32_t max_shader_compiles = 1;
 +    uint32_t N = std::max(1u, std::min(max_shader_compiles, std::thread::hardware_concurrency()));
      std::unique_lock<std::mutex> guard(compile_count_mutex);
      compile_count_cond.wait(guard, [N] { return compile_count < N; });
      compile_count++;
+@@ -425,7 +428,7 @@
+     return result;
+ }
+ 
+-static std::vector<std::future<void>> compiles;
++static std::deque<std::future<void>> compiles;
+ void string_to_spv(std::string name, const std::string& source, const std::map<std::string, std::string>& defines, bool fp16 = true, bool coopmat = false, bool coopmat2 = false, bool f16acc = false, const std::string& suffix = "") {
+     name = name + (f16acc ? "_f16acc" : "") + (coopmat ? "_cm1" : "") + (coopmat2 ? "_cm2" : (fp16 ? "" : "_fp32")) + suffix;
+     std::string out_path = join_paths(output_dir, name + ".spv");
+@@ -444,6 +447,11 @@
+         string_to_spv_func, name, input_filepath, out_path, defines, coopmat, generate_dep_file, std::move(slot)));
+     // Don't write the same dep file from multiple processes
+     generate_dep_file = false;
++
++    // Clean up completed futures - don't accumulate virtual memory for completed threads' stacks.
++    while (!compiles.empty() && compiles.front().wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
++        compiles.pop_front();
++    }
+ }
+ 
+ void matmul_shaders(bool fp16, MatMulIdType matmul_id_type, bool coopmat, bool coopmat2, bool f16acc, bool dot2 = false) {
