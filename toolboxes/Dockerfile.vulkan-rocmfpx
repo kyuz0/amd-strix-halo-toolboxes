@@ -19,6 +19,8 @@ COPY llama-grammar.patch /tmp/llama-grammar.patch
 COPY rocmfpx-vulkan-shader-concurrency.patch /tmp/rocmfpx-vulkan-shader-concurrency.patch
 
 # build — Vulkan only
+# The generator caps its own glslc children, but Ninja must also be kept from
+# launching multiple memory-heavy shader-generator targets concurrently.
 RUN git clean -xdf \
   && patch -p1 < /tmp/llama-grammar.patch \
   && patch -p1 < /tmp/rocmfpx-vulkan-shader-concurrency.patch \
@@ -34,7 +36,7 @@ RUN git clean -xdf \
   -DLLAMA_BUILD_WEBUI=OFF \
   -DLLAMA_USE_PREBUILT_WEBUI=OFF \
   -DLLAMA_BUILD_TESTS=OFF \
-  && cmake --build build --config Release \
+  && cmake --build build --config Release --parallel 1 \
   && cmake --install build --config Release
 
 # libs
