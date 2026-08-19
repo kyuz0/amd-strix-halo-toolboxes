@@ -1,0 +1,17 @@
+diff --git a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+--- a/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
++++ b/ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp
+@@ -331,9 +331,10 @@ void decrement_compile_count(uint32_t * count) {
+ using compile_count_guard = std::unique_ptr<uint32_t, decltype(&decrement_compile_count)>;
+ 
+ compile_count_guard acquire_compile_slot() {
+-    // wait until fewer than N compiles are in progress.
+-    // 16 is an arbitrary limit, the goal is to avoid "failed to create pipe" errors.
+-    uint32_t N = std::max(1u, std::min(16u, std::thread::hardware_concurrency()));
++    // Keep concurrent glslc processes within GitHub-hosted runner memory limits.
++    // The ROCmFPX shader matrix is materially larger than upstream llama.cpp's.
++    constexpr uint32_t max_shader_compiles = 2;
++    uint32_t N = std::max(1u, std::min(max_shader_compiles, std::thread::hardware_concurrency()));
+     std::unique_lock<std::mutex> guard(compile_count_mutex);
+     compile_count_cond.wait(guard, [N] { return compile_count < N; });
+     compile_count++;

@@ -16,10 +16,12 @@ ARG BRANCH=main
 RUN git clone -b ${BRANCH} --single-branch ${REPO} .
 
 COPY llama-grammar.patch /tmp/llama-grammar.patch
+COPY rocmfpx-vulkan-shader-concurrency.patch /tmp/rocmfpx-vulkan-shader-concurrency.patch
 
 # build — Vulkan only
 RUN git clean -xdf \
   && patch -p1 < /tmp/llama-grammar.patch \
+  && patch -p1 < /tmp/rocmfpx-vulkan-shader-concurrency.patch \
   && cmake -S . -B build -G Ninja \
   -DGGML_VULKAN=ON \
   -DGGML_HIP=OFF \
