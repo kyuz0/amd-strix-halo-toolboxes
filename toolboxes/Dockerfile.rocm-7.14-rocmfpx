@@ -36,7 +36,9 @@ RUN git clone -b ${BRANCH} --single-branch ${REPO} .
 COPY llama-grammar.patch /tmp/llama-grammar.patch
 
 # build — ROCm/HIP only
-# GGML_HIP_FORCE_MMQ=ON is required for ROCmFP4 MMQ kernels
+# GGML_HIP_FORCE_MMQ=ON is required for ROCmFP4 MMQ kernels.
+# GGML_HIP_ROCMI4_W4A4=ON enables the opt-in gfx1151 IU4 path required to
+# accelerate Q4_0_ROCMI4 prompt processing and MTP target verification.
 RUN git clean -xdf \
   && patch -p1 < /tmp/llama-grammar.patch \
   && cmake -S . -B build \
@@ -44,7 +46,9 @@ RUN git clean -xdf \
   -DGGML_VULKAN=OFF \
   -DGGML_CUDA=OFF \
   -DGGML_HIP_FORCE_MMQ=ON \
+  -DGGML_HIP_ROCMI4_W4A4=ON \
   -DAMDGPU_TARGETS=gfx1151 \
+  -DCMAKE_HIP_ARCHITECTURES=gfx1151 \
   -DCMAKE_BUILD_TYPE=Release \
   -DGGML_RPC=ON \
   -DLLAMA_BUILD_SERVER=ON \
