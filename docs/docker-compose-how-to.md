@@ -1,119 +1,142 @@
-## How to use docker-compose instead of toolbox
+# Running with Docker Compose
 
-## Table of Contents
+The published images can be used directly with Docker Compose. Building a
+local image is only necessary when you are developing a custom llama.cpp build.
 
-1.  [Vulkan AMDVLK](#1-vulkanamdvlk)
-2.  [ROCm-6.4.4+ROCWMMA](#2-rocm-644-rocwmma)
+For Strix Halo, use the stable `rocm-7.14` image as the primary backend and
+keep `vulkan-radv` as a compatibility fallback. The two servers may be running
+at the same time, but **load a model in only one backend at a time**: they
+share the same unified memory pool.
 
-## 1. Vulkan(AMDVLK)  
+## Prerequisites
 
-1.  Select applicable backend Dockerfile from repo. Example:  
-    https://github.com/kyuz0/amd-strix-halo-toolboxes/blob/main/toolboxes/Dockerfile.vulkan-amdvlk
-    
-2.  In the build file, change shell command to:
+* A Strix Halo host with a current kernel and firmware. See the [host
+  configuration](../README.md#host-configuration) section.
+* Docker Engine with Compose v2.
+* A directory containing GGUF models. This guide uses `/home/ai-models`.
 
+The ROCm image requires both `/dev/dri` and `/dev/kfd`; Vulkan requires only
+`/dev/dri`. Do not use `privileged: true`. Grant just the GPU devices and the
+render/video groups instead.
 
-```
-# shell
-CMD ["/bin/bash", "-c", "llama-server --host $HOST --port $PORT -c $CONTEXT_LENGTH --temp $TEMPERATURE --jinja --no-mmap -ngl $NGL -fa $FA -m $MODEL_PATH"]
-```
+Find the host group IDs before creating the compose file:
 
-3.  Build container with:
-
-```
-docker build -f Dockerfile.vulkan-amdvlk -t vulkan-amdvlk:1.0 .
-```
-
-4.  Download your model files to a directory. We will mount this from the container. I use:
-
-```
-/mnt/models
+```sh
+getent group render
+getent group video
 ```
 
-5.  Create your docker compose, using this template. Change the ports and paths as needed.
+The examples below use `991` and `44`, which are common values on Ubuntu. Use
+the values reported by your own host.
 
-```
+`/dev/infiniband`, the `rdma` group, and an unlimited `memlock` ulimit are
+only needed for multi-node llama.cpp RPC over RDMA/RoCE. They are not needed
+for a single-machine server.
+
+## ROCm 7.14
+
+Create `compose.rocm.yaml`:
+
+```yaml
 services:
-  gpt-oss-120b:
-    container_name: gpt-oss-120b
-    image: vulkan-amdvlk:1.0
-    ports:
-      - "8069:8069"
-    volumes:
-      - /mnt/models:/mnt/models
-    devices:
-      - "/dev/dri:/dev/dri"
-    privileged: true
+  llama-rocm:
+    image: docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14
+    container_name: llama-rocm
     restart: unless-stopped
-    environment:
-      - HOST=0.0.0.0
-      - PORT=8069
-      - CONTEXT_LENGTH=120000
-      - TEMPERATURE=0.0
-      - MODEL_PATH=/mnt/models/gpt-oss-120b-UD-Q4_K_XL/gpt-oss-120b-UD-Q4_K_XL-00001-of-00002.gguf
-      - NGL=999
-      - FA=on
+    ports:
+      - "127.0.0.1:8081:8080"
+    devices:
+      - /dev/dri
+      - /dev/kfd
+    group_add: ["991", "44"] # replace with the host render and video GIDs
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - /home/ai-models:/models:ro
+    command:
+      - llama-server
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8080"
+      - --model
+      - /models/my-model.gguf
+      - --ctx-size
+      - "32768"
+      - -ngl
+      - "999"
+      - -fa
+      - "1"
+      - --no-mmap
 ```
 
-6.  Start as usual.
+Start it with:
 
-```
-docker compose up -d
-```
-
-## 2. ROCm-6.4.4-ROCWMMA  
-
-1.  Select applicable backend Dockerfile from repo. Example:  
-    https://github.com/kyuz0/amd-strix-halo-toolboxes/blob/main/toolboxes/Dockerfile.rocm-6.4.4-rocwmma
-    
-3.  In the build file, change shell command to:
-    
-
-```
-# shell
-CMD ["/bin/bash", "-c", "llama-server --host $HOST --port $PORT -c $CONTEXT_LENGTH --temp $TEMPERATURE --jinja --no-mmap -ngl $NGL -fa $FA -m $MODEL_PATH"]
+```sh
+docker compose -f compose.rocm.yaml up -d
 ```
 
-3.  Build container with:
+## Vulkan RADV
 
-```
-docker build -f Dockerfile.rocm-6.4.4-rocwmma -t rocm-6.4.4-rocwmma:1.0 .
-```
+Create `compose.vulkan.yaml`:
 
-4.  Download your model files to a directory. We will mount this from the container. I use:
-
-```
-/mnt/models
-```
-
-5.  Create your docker compose, using this template. Change the ports and paths as needed.
-
-```
+```yaml
 services:
-  gpt-oss-120b:
-    container_name: gpt-oss-120b
-    image: rocm-6.4.4-rocwmma:1.0
-    ports:
-      - "8069:8069"
-    volumes:
-      - /mnt/models:/mnt/models
-    devices:
-      - "/dev/dri:/dev/dri"
-      - "/dev/kfd:/dev/kfd"
-    privileged: true
+  llama-vulkan:
+    image: docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv
+    container_name: llama-vulkan
     restart: unless-stopped
-    environment:
-      - HOST=0.0.0.0
-      - PORT=8069
-      - CONTEXT_LENGTH=120000
-      - TEMPERATURE=0.0
-      - MODEL_PATH=/mnt/models/gpt-oss-120b-UD-Q4_K_XL/gpt-oss-120b-UD-Q4_K_XL-00001-of-00002.gguf
-      - NGL=999
-      - FA=on
+    ports:
+      - "127.0.0.1:8080:8080"
+    devices:
+      - /dev/dri
+    group_add: ["991", "44"] # replace with the host render and video GIDs
+    security_opt:
+      - seccomp=unconfined
+    volumes:
+      - /home/ai-models:/models:ro
+    command:
+      - llama-server
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8080"
+      - --model
+      - /models/my-model.gguf
+      - --ctx-size
+      - "32768"
+      - -ngl
+      - "999"
+      - -fa
+      - "1"
+      - --no-mmap
 ```
 
-6.  Start as usual.
+Start it with:
 
+```sh
+docker compose -f compose.vulkan.yaml up -d
 ```
-docker compose up -d
+
+## Verify GPU access
+
+```sh
+docker exec llama-rocm llama-server --list-devices
+docker exec llama-vulkan llama-server --list-devices
 ```
+
+Both commands should list the Strix Halo GPU. For server inference, always use
+Flash Attention (`-fa 1`) and disable mmap (`--no-mmap`), as shown above.
+
+## Updating images
+
+Toolbx users can use `refresh-toolboxes.sh`. Docker Compose users should pull
+the updated image and recreate only the applicable service:
+
+```sh
+docker compose -f compose.rocm.yaml pull
+docker compose -f compose.rocm.yaml up -d
+```
+
+The images track current llama.cpp builds. Test an updated backend with a
+small model before relying on it for production workloads.
