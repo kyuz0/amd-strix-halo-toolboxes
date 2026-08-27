@@ -1,4 +1,4 @@
-# Experimental ROCm 7.14 Qwen3.8-Flash-Next build from the upstream PR #27742 branch.
+# Experimental ROCm 7.14 Qwen3.8-Flash-Next build from upstream PR #27793.
 
 # build stage
 FROM registry.fedoraproject.org/fedora:44 AS builder
@@ -31,7 +31,7 @@ ENV ROCM_PATH=/opt/rocm \
 
 # llama.cpp
 WORKDIR /opt/llama.cpp
-ARG REPO=https://github.com/unslothai/llama.cpp.git
+ARG REPO=https://github.com/danielhanchen/llama.cpp.git
 ARG BRANCH=qwen4exp/qwen3.8-flash-next
 RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
@@ -40,7 +40,7 @@ COPY llama-cpp-25992-rocm-host-buffer.patch /tmp/llama-cpp-25992-rocm-host-buffe
 
 # build
 # Temporary workaround for ggml-org/llama.cpp#25992, based on PR #25863.
-# Qwen3.8-Flash-Next (qwen4exp) support is already in the Unsloth branch above.
+# Qwen3.8-Flash-Next (qwen4exp) support is provided by upstream PR #27793.
 RUN git clean -xdf \
   && git submodule update --recursive \
   && if git apply --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
