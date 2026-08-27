@@ -1,4 +1,4 @@
-# Experimental ROCm 7.14 Qwen3.8-Flash-Next build with ggml-org/llama.cpp PR #27742 applied.
+# Experimental ROCm 7.14 Qwen3.8-Flash-Next build from the upstream PR #27742 branch.
 
 # build stage
 FROM registry.fedoraproject.org/fedora:44 AS builder
@@ -31,17 +31,16 @@ ENV ROCM_PATH=/opt/rocm \
 
 # llama.cpp
 WORKDIR /opt/llama.cpp
-ARG REPO=https://github.com/ggerganov/llama.cpp.git
-ARG BRANCH=master
+ARG REPO=https://github.com/unslothai/llama.cpp.git
+ARG BRANCH=qwen4exp/qwen3.8-flash-next
 RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
 COPY llama-grammar.patch /tmp/llama-grammar.patch
 COPY llama-cpp-25992-rocm-host-buffer.patch /tmp/llama-cpp-25992-rocm-host-buffer.patch
-ADD https://github.com/ggml-org/llama.cpp/pull/27742.patch /tmp/llama-cpp-27742-qwen4exp.patch
 
 # build
 # Temporary workaround for ggml-org/llama.cpp#25992, based on PR #25863.
-# Experimental Qwen3.8-Flash-Next (qwen4exp) support from PR #27742.
+# Qwen3.8-Flash-Next (qwen4exp) support is already in the Unsloth branch above.
 RUN git clean -xdf \
   && git submodule update --recursive \
   && if git apply --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
@@ -50,14 +49,6 @@ RUN git clean -xdf \
        echo "llama.cpp #25992 workaround is already present upstream"; \
      else \
        echo "ERROR: llama.cpp #25992 workaround no longer applies; review upstream #25863 and #26225"; \
-       exit 1; \
-     fi \
-  && if git apply --check /tmp/llama-cpp-27742-qwen4exp.patch; then \
-       git apply /tmp/llama-cpp-27742-qwen4exp.patch; \
-     elif git apply --reverse --check /tmp/llama-cpp-27742-qwen4exp.patch; then \
-       echo "llama.cpp #27742 is already present upstream"; \
-     else \
-       echo "ERROR: llama.cpp #27742 patch no longer applies; review the upstream PR"; \
        exit 1; \
      fi \
   && patch -p1 < /tmp/llama-grammar.patch \
