@@ -55,9 +55,7 @@ These are stable, tested containers that are automatically rebuilt whenever the 
 | Container Tag | Backend/Stack | Purpose / Notes |
 | :--- | :--- | :--- |
 | `vulkan-radv` | Vulkan (Mesa RADV) | Most stable and compatible. Recommended for most users and all models. |
-| `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
 | `rocm-10.0` | ROCm 10.0 (Fedora 44) | Latest stable ROCm Core SDK build, using AMD's supported gfx1151 package set. |
-| `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
 
 ### Experimental / Custom Toolboxes
 
@@ -67,7 +65,6 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 | :--- | :--- | :--- |
 | `rocm-7.14-performance` | ROCm 7.14 (Experimental) | Build from [`gaetan-puleo/llama-cpp-strix-halo`](https://github.com/gaetan-puleo/llama-cpp-strix-halo) on `master`, retaining the ROCm 7.14 `gfx1151` runtime and build configuration. Auto-built when the fork updates; can also be built manually with the `rocm-7.14-performance` workflow argument. |
 | `rocm-7.14-pr26592` | ROCm 7.14 (Experimental) | Downloads and applies draft [llama.cpp PR #26592](https://github.com/ggml-org/llama.cpp/pull/26592) at build time to enable hipCUB paths for ARGSORT/TOP_K-related operations. Manual build only with the `rocm-7.14-pr26592` workflow argument. |
-| `rocm-7.14-qwen-3.8-flash-next` | ROCm 7.14 (Experimental) | Builds the [`unslothai/llama.cpp:qwen4exp/qwen3.8-flash-next`](https://github.com/unslothai/llama.cpp/tree/qwen4exp/qwen3.8-flash-next) branch, which is the head of [llama.cpp PR #27742](https://github.com/ggml-org/llama.cpp/pull/27742), for Qwen3.8-Flash-Next (`qwen4exp`) model support. Manual build only with the `rocm-7.14-qwen-3.8-flash-next` workflow argument. |
 | `vulkan-radv-performance` | Vulkan (Mesa RADV, Fedora 44) | Experimental build tracking [`Nathanw1014/llama.cpp:strix-halo-vulkan`](https://github.com/Nathanw1014/llama.cpp/tree/strix-halo-vulkan), with Strix Halo-focused flash-attention, KV-cache, lightning-indexer, and matrix/MoE performance work. Manual build only. |
 | `rocm-7.14-rocmfpx` | ROCm 7.14 (Custom) | HIP-only `charlie12345/ROCmFPX` build for `gfx1151` with ROCmI4/W4A4 and ROCmFP3/FP4/FP6/FP8 weight formats, MTP speculative decoding, and agent-aware presets. Auto-built on upstream changes. |
 | `vulkan-rocmfpx` | Vulkan (Custom) | Vulkan-only `charlie12345/ROCmFPX` build with ROCmFPX weight formats. No ROCm dependency. Auto-built on upstream changes. |
@@ -79,7 +76,7 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 
 ### Temporary llama.cpp ROCm Inference Workaround
 
-The `rocm-6.4.4`, `rocm-10.0`, `rocm-7.14-performance`, `rocm-7.14-pr26592`, `rocm-7.14-qwen-3.8-flash-next`, and `therock-nightly` images currently apply a
+The `rocm-10.0`, `rocm-7.14-performance`, `rocm-7.14-pr26592`, and `therock-nightly` images currently apply a
 temporary workaround for [llama.cpp issue #25992](https://github.com/ggml-org/llama.cpp/issues/25992),
 based on [pull request #25863](https://github.com/ggml-org/llama.cpp/pull/25863).
 It prevents llama.cpp from selecting ROCm host buffers for computation on

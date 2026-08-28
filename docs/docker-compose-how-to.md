@@ -2,13 +2,13 @@
 
 ## Table of Contents
 
-1.  [Vulkan AMDVLK](#1-vulkanamdvlk)
+1.  [Vulkan RADV](#1-vulkan-radv)
 2.  [ROCm-6.4.4+ROCWMMA](#2-rocm-644-rocwmma)
 
-## 1. Vulkan(AMDVLK)  
+## 1. Vulkan (RADV)
 
 1.  Select applicable backend Dockerfile from repo. Example:  
-    https://github.com/kyuz0/amd-strix-halo-toolboxes/blob/main/toolboxes/Dockerfile.vulkan-amdvlk
+    https://github.com/kyuz0/amd-strix-halo-toolboxes/blob/main/toolboxes/Dockerfile.vulkan-radv
     
 2.  In the build file, change shell command to:
 
@@ -21,7 +21,7 @@ CMD ["/bin/bash", "-c", "llama-server --host $HOST --port $PORT -c $CONTEXT_LENG
 3.  Build container with:
 
 ```
-docker build -f Dockerfile.vulkan-amdvlk -t vulkan-amdvlk:1.0 .
+docker build -f Dockerfile.vulkan-radv -t vulkan-radv:1.0 .
 ```
 
 4.  Download your model files to a directory. We will mount this from the container. I use:
@@ -36,7 +36,7 @@ docker build -f Dockerfile.vulkan-amdvlk -t vulkan-amdvlk:1.0 .
 services:
   gpt-oss-120b:
     container_name: gpt-oss-120b
-    image: vulkan-amdvlk:1.0
+    image: vulkan-radv:1.0
     ports:
       - "8069:8069"
     volumes:

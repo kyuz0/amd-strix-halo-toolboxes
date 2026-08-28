@@ -21,10 +21,8 @@ LEGACY_BENCH_PREFILL = "512,8192,16384,32768,65536"
 DEFAULT_BENCH_PREFILL_CHUNK = 2048
 DEFAULT_BENCH_UBATCH = 2048
 TOOLBOX_IMAGES = {
-    "rocm-6.4.4": "llama-rocm-6.4.4",
     "rocm-10.0": "llama-rocm-10.0",
     "rocm-7.2.4-rdma-fix": "llama-rocm-7.2.4-rdma-fix",
-    "vulkan-amdvlk": "llama-vulkan-amdvlk",
     "vulkan-radv": "llama-vulkan-radv",
 }
 
