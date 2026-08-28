@@ -56,7 +56,7 @@ These are stable, tested containers that are automatically rebuilt whenever the 
 | :--- | :--- | :--- |
 | `vulkan-radv` | Vulkan (Mesa RADV) | Most stable and compatible. Recommended for most users and all models. |
 | `vulkan-amdvlk` | Vulkan (AMDVLK) | Fastest backend—AMD open-source driver. ≤2 GiB single buffer allocation limit, some large models won't load. |
-| `rocm-7.14` | ROCm 7.14 (Fedora 44) | Latest stable ROCm Core SDK build, using AMD's supported gfx1151 package set. |
+| `rocm-10.0` | ROCm 10.0 (Fedora 44) | Latest stable ROCm Core SDK build, using AMD's supported gfx1151 package set. |
 | `rocm-6.4.4` | ROCm 6.4.4 (Fedora 43) | Latest stable 6.x build. Uses Fedora 43 packages with backported patch for **kernel 6.18.4+** support. |
 
 ### Experimental / Custom Toolboxes
@@ -79,7 +79,7 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 
 ### Temporary llama.cpp ROCm Inference Workaround
 
-The `rocm-6.4.4`, `rocm-7.14`, `rocm-7.14-performance`, `rocm-7.14-pr26592`, `rocm-7.14-qwen-3.8-flash-next`, and `therock-nightly` images currently apply a
+The `rocm-6.4.4`, `rocm-10.0`, `rocm-7.14-performance`, `rocm-7.14-pr26592`, `rocm-7.14-qwen-3.8-flash-next`, and `therock-nightly` images currently apply a
 temporary workaround for [llama.cpp issue #25992](https://github.com/ggml-org/llama.cpp/issues/25992),
 based on [pull request #25863](https://github.com/ggml-org/llama.cpp/pull/25863).
 It prevents llama.cpp from selecting ROCm host buffers for computation on
@@ -118,12 +118,12 @@ toolbox enter llama-vulkan-radv
 
 **Option B: ROCm (Recommended for Performance)**
 ```sh
-toolbox create llama-rocm-7.14 \
-  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14 \
+toolbox create llama-rocm-10.0 \
+  --image docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0 \
   -- --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo \
   --security-opt seccomp=unconfined
 
-toolbox enter llama-rocm-7.14
+toolbox enter llama-rocm-10.0
 ```
 
 ### 2. Check GPU Access
