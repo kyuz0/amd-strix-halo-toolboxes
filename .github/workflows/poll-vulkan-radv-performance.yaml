@@ -13,8 +13,6 @@ jobs:
   poll-and-trigger:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
       - id: fetch
         shell: bash
         run: |
