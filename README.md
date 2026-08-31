@@ -63,20 +63,20 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 
 | Container Tag | Backend/Stack | Purpose / Notes |
 | :--- | :--- | :--- |
-| `rocm-7.14-performance` | ROCm 7.14 (Experimental) | Build from [`gaetan-puleo/llama-cpp-strix-halo`](https://github.com/gaetan-puleo/llama-cpp-strix-halo) on `master`, retaining the ROCm 7.14 `gfx1151` runtime and build configuration. Auto-built when the fork updates; can also be built manually with the `rocm-7.14-performance` workflow argument. |
+| `rocm-10.0-performance` | ROCm 10.0 (Experimental) | Build from [`gaetan-puleo/llama-cpp-strix-halo`](https://github.com/gaetan-puleo/llama-cpp-strix-halo) on `master`, retaining its Strix Halo performance changes on the stable ROCm 10.0 `gfx1151` runtime and build configuration. Auto-built when the fork updates; can also be built manually with the `rocm-10.0-performance` workflow argument. |
 | `rocm-7.14-pr26592` | ROCm 7.14 (Experimental) | Downloads and applies draft [llama.cpp PR #26592](https://github.com/ggml-org/llama.cpp/pull/26592) at build time to enable hipCUB paths for ARGSORT/TOP_K-related operations. Manual build only with the `rocm-7.14-pr26592` workflow argument. |
 | `vulkan-radv-performance` | Vulkan (Mesa RADV, Fedora 44) | Experimental build tracking [`Nathanw1014/llama.cpp:strix-halo-vulkan`](https://github.com/Nathanw1014/llama.cpp/tree/strix-halo-vulkan), with Strix Halo-focused flash-attention, KV-cache, lightning-indexer, and matrix/MoE performance work. Manual build only. |
-| `rocm-7.14-rocmfpx` | ROCm 7.14 (Custom) | HIP-only `charlie12345/ROCmFPX` build for `gfx1151` with ROCmI4/W4A4 and ROCmFP3/FP4/FP6/FP8 weight formats, MTP speculative decoding, and agent-aware presets. Auto-built on upstream changes. |
+| `rocm-10.0-rocmfpx` | ROCm 10.0 (Custom) | HIP-only `charlie12345/ROCmFPX` build for `gfx1151` with ROCmI4/W4A4 and ROCmFP3/FP4/FP6/FP8 weight formats, MTP speculative decoding, and agent-aware presets. Auto-built on upstream changes. |
 | `vulkan-rocmfpx` | Vulkan (Custom) | Vulkan-only `charlie12345/ROCmFPX` build with ROCmFPX weight formats. No ROCm dependency. Auto-built on upstream changes. |
 | `rocm-7.2.4-rdma-fix` | ROCm 7.2.4 (Custom) | Test build from `kyuz0/llama.cpp:fix/rpc-rdma-inline-fallback`, which retries RDMA QP creation without inline data. Manual build only. |
 | `rocm-7.2.4-turboquant` | ROCm 7.2.4 (Custom) | Custom TurboQuant build for AMD Strix Halo. Manual build only. |
-| `therock-nightly` | TheRock Nightly | Tracks the latest TheRock multi-arch `gfx1151` nightly tarball using the [official release layout](https://github.com/ROCm/TheRock/blob/main/RELEASES.md). Auto-built on upstream changes. |
+| `therock-nightly` | TheRock Nightly | Tracks the latest TheRock `gfx1151` nightly tarball from AMD's current `nightly.repo.amd.com` release stream using the [official release layout](https://github.com/ROCm/TheRock/blob/main/RELEASES.md). A dedicated poller auto-builds it when AMD publishes a new tarball. |
 
 > Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from these lists.
 
 ### Temporary llama.cpp ROCm Inference Workaround
 
-The `rocm-10.0`, `rocm-7.14-performance`, `rocm-7.14-pr26592`, and `therock-nightly` images currently apply a
+The `rocm-10.0`, `rocm-10.0-performance`, `rocm-7.14-pr26592`, and `therock-nightly` images currently apply a
 temporary workaround for [llama.cpp issue #25992](https://github.com/ggml-org/llama.cpp/issues/25992),
 based on [pull request #25863](https://github.com/ggml-org/llama.cpp/pull/25863).
 It prevents llama.cpp from selecting ROCm host buffers for computation on

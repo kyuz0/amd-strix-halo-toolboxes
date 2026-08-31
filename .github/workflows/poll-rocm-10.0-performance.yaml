@@ -1,4 +1,4 @@
-name: Poll ROCm 7.14 Performance & Trigger Build
+name: Poll ROCm 10.0 Performance & Trigger Build
 
 on:
   schedule:
@@ -34,21 +34,21 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          echo "Checking for prior artifact 'last-rocm-7.14-performance-sha'..."
+          echo "Checking for prior artifact 'last-rocm-10.0-performance-sha'..."
           ART_ID=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
             "https://api.github.com/repos/${GH_REPO}/actions/artifacts?per_page=100" \
-            | jq -r '.artifacts | map(select(.name=="last-rocm-7.14-performance-sha" and .expired==false)) | sort_by(.created_at) | reverse | .[0].id // empty')
+            | jq -r '.artifacts | map(select(.name=="last-rocm-10.0-performance-sha" and .expired==false)) | sort_by(.created_at) | reverse | .[0].id // empty')
           if [[ -n "$ART_ID" ]]; then
             echo "Found artifact id: $ART_ID (downloading)"
             curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -L \
               "https://api.github.com/repos/${GH_REPO}/actions/artifacts/${ART_ID}/zip" -o artifact.zip
             unzip -l artifact.zip || true
-            unzip -p artifact.zip last_commit_sha > last_commit_sha || true
+            unzip -p artifact.zip source_state > source_state || true
           else
             echo "No prior artifact found"
           fi
           PREV_SHA=""
-          if [[ -f last_commit_sha ]]; then PREV_SHA=$(cat last_commit_sha); fi
+          if [[ -f source_state ]]; then PREV_SHA=$(cat source_state); fi
           echo "Previous SHA: $PREV_SHA"
           echo "previous_sha=$PREV_SHA" >> "$GITHUB_OUTPUT"
 
@@ -76,29 +76,12 @@ jobs:
           set -euo pipefail
           WF="build_and_publish.yml"
           REF="main"
-          echo "Dispatching $WF on $REF for rocm-7.14-performance backend..."
+          echo "Dispatching $WF on $REF for rocm-10.0-performance backend..."
           CODE=$(curl -s -o /tmp/resp -w "%{http_code}" \
                  -X POST \
                  -H "Accept: application/vnd.github+json" \
                  -H "Authorization: Bearer $GH_TOKEN" \
-                 -d "{\"ref\":\"$REF\",\"inputs\":{\"backends\":\"rocm-7.14-performance\"}}" \
+                 -d "{\"ref\":\"$REF\",\"inputs\":{\"backends\":\"rocm-10.0-performance\",\"source_state_name\":\"last-rocm-10.0-performance-sha\",\"source_state_value\":\"${{ steps.fetch.outputs.latest_sha }}\"}}" \
                  "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$WF/dispatches")
           echo "HTTP $CODE"
           if [[ "$CODE" != "204" ]]; then echo "Response:"; cat /tmp/resp; exit 1; fi
-
-      - name: Save new SHA
-        if: steps.compare.outputs.changed == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          printf "%s" "${{ steps.fetch.outputs.latest_sha }}" > last_commit_sha
-          echo "Saved $(wc -c < last_commit_sha) bytes to $(pwd)/last_commit_sha"
-          ls -la last_commit_sha
-
-      - name: Upload last-SHA artifact
-        if: steps.compare.outputs.changed == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: last-rocm-7.14-performance-sha
-          path: last_commit_sha
-          retention-days: 7

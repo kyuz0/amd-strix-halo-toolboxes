@@ -10,7 +10,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
 WORKDIR /tmp
 ARG GFX=gfx1151
 RUN set -euo pipefail; \
-  BASE="https://rocm.nightlies.amd.com/tarball-multi-arch"; \
+  BASE="https://nightly.repo.amd.com/rocm/core/tarball"; \
   KEY="$(curl -fsSL "${BASE}/" \
   | grep -o "therock-dist-linux-${GFX}-[0-9.a]*\.tar\.gz" \
   | sort -V | tail -n1)"; \

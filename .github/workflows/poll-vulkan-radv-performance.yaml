@@ -43,12 +43,12 @@ jobs:
             curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -L \
               "https://api.github.com/repos/${GH_REPO}/actions/artifacts/${ART_ID}/zip" -o artifact.zip
             unzip -l artifact.zip || true
-            unzip -p artifact.zip last_commit_sha > last_commit_sha || true
+            unzip -p artifact.zip source_state > source_state || true
           else
             echo "ℹ️ No prior artifact found"
           fi
           PREV_SHA=""
-          if [[ -f last_commit_sha ]]; then PREV_SHA=$(cat last_commit_sha); fi
+          if [[ -f source_state ]]; then PREV_SHA=$(cat source_state); fi
           echo "🕓 Previous SHA: $PREV_SHA"
           echo "previous_sha=$PREV_SHA" >> "$GITHUB_OUTPUT"
 
@@ -81,24 +81,7 @@ jobs:
                  -X POST \
                  -H "Accept: application/vnd.github+json" \
                  -H "Authorization: Bearer $GH_TOKEN" \
-                 -d "{\"ref\":\"$REF\",\"inputs\":{\"backends\":\"vulkan-radv-performance\"}}" \
+                 -d "{\"ref\":\"$REF\",\"inputs\":{\"backends\":\"vulkan-radv-performance\",\"source_state_name\":\"last-vulkan-radv-performance-sha\",\"source_state_value\":\"${{ steps.fetch.outputs.latest_sha }}\"}}" \
                  "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$WF/dispatches")
           echo "HTTP $CODE"
           if [[ "$CODE" != "204" ]]; then echo "Response:"; cat /tmp/resp; exit 1; fi
-
-      - name: Save new SHA
-        if: steps.compare.outputs.changed == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          printf "%s" "${{ steps.fetch.outputs.latest_sha }}" > last_commit_sha
-          echo "💾 Saved $(wc -c < last_commit_sha) bytes to $(pwd)/last_commit_sha"
-          ls -la last_commit_sha
-
-      - name: Upload last-SHA artifact
-        if: steps.compare.outputs.changed == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: last-vulkan-radv-performance-sha
-          path: last_commit_sha
-          retention-days: 7

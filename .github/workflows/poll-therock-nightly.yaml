@@ -1,0 +1,76 @@
+name: Poll TheRock Nightly & Trigger Build
+
+on:
+  schedule:
+    - cron: '15 */4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  poll-and-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: fetch
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://nightly.repo.amd.com/rocm/core/tarball"
+          GFX="gfx1151"
+          LATEST_KEY=$(curl -fsSL "${BASE}/" \
+            | grep -o "therock-dist-linux-${GFX}-[0-9.a]*\.tar\.gz" \
+            | sort -V \
+            | tail -n1)
+          if [[ -z "$LATEST_KEY" ]]; then echo "No nightly tarball found"; exit 1; fi
+          echo "Latest nightly: $LATEST_KEY"
+          echo "latest_key=$LATEST_KEY" >> "$GITHUB_OUTPUT"
+
+      - id: previous
+        shell: bash
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          ART_ID=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/${GH_REPO}/actions/artifacts?per_page=100" \
+            | jq -r '.artifacts | map(select(.name=="last-therock-nightly-key" and .expired==false)) | sort_by(.created_at) | reverse | .[0].id // empty')
+          if [[ -n "$ART_ID" ]]; then
+            curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -L \
+              "https://api.github.com/repos/${GH_REPO}/actions/artifacts/${ART_ID}/zip" -o artifact.zip
+            unzip -p artifact.zip source_state > source_state || true
+          fi
+          PREVIOUS_KEY=""
+          if [[ -f source_state ]]; then PREVIOUS_KEY=$(cat source_state); fi
+          echo "Previous nightly: $PREVIOUS_KEY"
+          echo "previous_key=$PREVIOUS_KEY" >> "$GITHUB_OUTPUT"
+
+      - id: compare
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ steps.fetch.outputs.latest_key }}" != "${{ steps.previous.outputs.previous_key }}" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger TheRock nightly build on main
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          CODE=$(curl -s -o /tmp/resp -w "%{http_code}" \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -d '{"ref":"main","inputs":{"backends":"therock-nightly","source_state_name":"last-therock-nightly-key","source_state_value":"${{ steps.fetch.outputs.latest_key }}"}}' \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/build_and_publish.yml/dispatches")
+          echo "HTTP $CODE"
+          if [[ "$CODE" != "204" ]]; then cat /tmp/resp; exit 1; fi

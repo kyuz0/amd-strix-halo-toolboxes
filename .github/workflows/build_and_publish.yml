@@ -5,10 +5,18 @@ on:
     inputs:
       backends:
         description: >
-          Comma-separated backends to build (e.g. "rocm-10.0", "rocm-7.14-performance", "vulkan-radv-performance").
+          Comma-separated backends to build (e.g. "rocm-10.0", "rocm-10.0-performance", "vulkan-radv-performance").
           Use "all" to build the standard auto-built set.
         required: false
         default: all
+      source_state_name:
+        description: Artifact name used by an upstream poller after a successful build.
+        required: false
+        default: ''
+      source_state_value:
+        description: Upstream revision recorded after every requested backend builds successfully.
+        required: false
+        default: ''
 
 env:
   DOCKERHUB_REPO: docker.io/kyuz0/amd-strix-halo-toolboxes
@@ -61,10 +69,10 @@ jobs:
           echo "After cleanup:" && df -h /
 
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -100,3 +108,22 @@ jobs:
           echo "→ Tag & push channel → ${CHN}"
           docker tag "${IMM}" "${CHN}"
           docker push "${CHN}"
+
+  # Record a poller's upstream revision only after every requested image was
+  # built, smoke-tested, and pushed successfully.
+  record-source-state:
+    needs: build-and-push
+    if: ${{ needs.build-and-push.result == 'success' && inputs.source_state_name != '' && inputs.source_state_value != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save successful upstream revision
+        env:
+          SOURCE_STATE_VALUE: ${{ inputs.source_state_value }}
+        run: printf '%s' "$SOURCE_STATE_VALUE" > source_state
+
+      - name: Upload successful upstream revision
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.source_state_name }}
+          path: source_state
+          retention-days: 7
