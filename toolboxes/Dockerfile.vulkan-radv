@@ -1,5 +1,5 @@
 # build stage
-FROM registry.fedoraproject.org/fedora:43 AS builder
+FROM registry.fedoraproject.org/fedora:44 AS builder
 
 # deps
 RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
@@ -9,9 +9,9 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
   spirv-headers-devel radeontop glslc patch \
   && dnf clean all && rm -rf /var/cache/dnf/*
 
-# llama.cpp
+# llama.cpp — tracks master; includes Strix Halo Vulkan mat-vec tuning (#27909).
 WORKDIR /opt/llama.cpp
-ARG REPO=https://github.com/ggerganov/llama.cpp.git
+ARG REPO=https://github.com/ggml-org/llama.cpp.git
 ARG BRANCH=master
 RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 
@@ -42,7 +42,7 @@ RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
 
 # runtime stage
-FROM registry.fedoraproject.org/fedora-minimal:43
+FROM registry.fedoraproject.org/fedora-minimal:44
 
 # runtime deps
 RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
