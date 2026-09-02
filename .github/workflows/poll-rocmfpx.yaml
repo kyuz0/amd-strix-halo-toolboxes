@@ -17,7 +17,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          REPO_URL="https://github.com/charlie12345/ROCmFPX.git"
+          REPO_URL="https://github.com/ROCmFPX/ROCmFPX.git"
           DEFAULT_REF=$(git ls-remote --symref "$REPO_URL" HEAD | awk '/^ref:/ {print $2}')
           echo "📌 Default branch: ${DEFAULT_REF#refs/heads/}"
           LATEST_SHA=$(git ls-remote "$REPO_URL" "$DEFAULT_REF" | cut -f1)

@@ -29,7 +29,7 @@ ENV ROCM_PATH=/opt/rocm \
 
 # ROCmFPX (llama.cpp fork with ROCmFP3/FP4/FP6/FP8 weight formats)
 WORKDIR /opt/llama.cpp
-ARG REPO=https://github.com/charlie12345/ROCmFPX.git
+ARG REPO=https://github.com/ROCmFPX/ROCmFPX.git
 ARG BRANCH=main
 RUN git clone -b ${BRANCH} --single-branch ${REPO} .
 
