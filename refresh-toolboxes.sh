@@ -9,6 +9,7 @@ TOOLBOXES["llama-vulkan-radv"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-
 TOOLBOXES["llama-vulkan-radv-performance"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-performance --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-10.0"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-10.0-performance"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-performance --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
+TOOLBOXES["llama-rocm-10.0-qwen-3.8-flash-next"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-qwen-3.8-flash-next --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-7.14-pr26592"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.14-pr26592 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-7.2.4-rdma-fix"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4-rdma-fix --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-7.2.4-turboquant"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-7.2.4-turboquant --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
@@ -26,6 +27,7 @@ function usage() {
   echo
   echo "Experimental / Custom:"
   echo "  - llama-rocm-10.0-performance"
+  echo "  - llama-rocm-10.0-qwen-3.8-flash-next"
   echo "  - llama-rocm-7.14-pr26592"
   echo "  - llama-vulkan-radv-performance"
   echo "  - llama-rocm-7.2.4-rdma-fix"

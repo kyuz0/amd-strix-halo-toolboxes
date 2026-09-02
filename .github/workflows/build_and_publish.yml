@@ -5,7 +5,7 @@ on:
     inputs:
       backends:
         description: >
-          Comma-separated backends to build (e.g. "rocm-10.0", "rocm-10.0-performance", "vulkan-radv-performance").
+          Comma-separated backends to build (e.g. "rocm-10.0", "rocm-10.0-qwen-3.8-flash-next", "vulkan-radv-performance").
           Use "all" to build the standard auto-built set.
         required: false
         default: all
