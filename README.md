@@ -1,12 +1,20 @@
 # AMD Strix Halo Llama.cpp Toolboxes
 
-This project provides pre-built containers (“toolboxes”) for running LLMs on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs. Toolbx is the standard developer container system in Fedora (and now works on Ubuntu, openSUSE, Arch, etc).
+Pre-built `llama.cpp` containers for running LLMs with Vulkan or ROCm acceleration on **AMD Ryzen AI Max “Strix Halo”** integrated GPUs (`gfx1151`).
 
----
+> [!IMPORTANT]
+> This repository is part of the **[Strix Halo AI Toolboxes](https://strix-halo-toolboxes.com/)** project. Follow the central guide for the recommended host setup, including unified-memory allocation and OS-specific configuration.
 
-### 📦 Project Context
+## Recommended setup: AI Toolbox Cockpit
 
-This repository is part of the **[Strix Halo AI Toolboxes](https://strix-halo-toolboxes.com)** project. Check out the website for an overview of all toolboxes, tutorials, and host configuration guides.
+[AI Toolbox Cockpit](https://github.com/kyuz0/ai-toolbox-cockpit) is the preferred way to install, launch, and update these toolboxes. It provides tested, pre-configured profiles; supports Toolbx and Distrobox; and can run supported servers directly with Podman or Docker, so Toolbx is not required.
+
+```bash
+pipx install git+https://github.com/kyuz0/ai-toolbox-cockpit.git
+ai-toolbox-cockpit
+```
+
+The repository's [`refresh-toolboxes.sh`](refresh-toolboxes.sh) remains available for manual Toolbx refreshes. The Cockpit is recommended for normal installation and updates.
 
 ### ❤️ Support
 
@@ -18,11 +26,9 @@ This is a hobby project maintained in my spare time. If you find these toolboxes
 
 ## Table of Contents
 
-- [Stable Configuration](#stable-configuration)
-- [ROCm 7 Performance Regression Workaround](#rocm-7-performance-regression-workaround)
 - [Supported Toolboxes](#supported-toolboxes)
-- [Quick Start](#quick-start)
-- [Host Configuration](#host-configuration)
+- [Temporary llama.cpp ROCm inference workaround](#temporary-llamacpp-rocm-inference-workaround)
+- [Manual container setup](#manual-container-setup)
 - [Performance Benchmarks](#performance-benchmarks)
 - [Memory Planning and VRAM Estimator](#memory-planning-and-vram-estimator)
 - [Building Locally](#building-locally)
@@ -30,16 +36,6 @@ This is a hobby project maintained in my spare time. If you find these toolboxes
 - [More Documentation](#more-documentation)
 - [References](#references)
 
-
-## Stable Configuration
-
-- **OS**: Fedora 42/43
-- **Linux Kernel**: 6.18.9-200.fc43.x86_64
-- **Linux Firmware**: 20260110
-
-This is currently the most stable setup. Kernels older than 6.18.4 have a bug that causes stability issues on gfx1151 and should be avoided. Also, **do NOT use `linux-firmware-20251125`.** It breaks ROCm support on Strix Halo (instability/crashes).
-
-> ⚠️ **Important**: See [Host Configuration](#host-configuration) for critical kernel parameters.
 
 ## Supported Toolboxes
 
@@ -101,9 +97,13 @@ For manual Toolbx creation, append:
 --device /dev/infiniband --group-add rdma --ulimit memlock=-1
 ```
 
-## Quick Start
+## Manual container setup
 
-Create and enter your toolbox of choice. **(Ubuntu users: remember to use `distrobox` instead of `toolbox` in the commands below).** (check [Strix Halo Toolboxes](https://strix-halo-toolboxes.com/#config) for details).
+Use these commands only if you prefer to manage the container yourself. For the guided, tested path across Toolbx, Distrobox, Podman, and Docker, use [AI Toolbox Cockpit](#recommended-setup-ai-toolbox-cockpit).
+
+The examples below use Toolbx. See the [central Strix Halo setup guide](https://strix-halo-toolboxes.com/) for host preparation and other supported container engines.
+
+### 1. Create and enter a container
 
 **Option A: Vulkan (RADV/AMDVLK)** - best for compatibility
 ```sh
@@ -166,53 +166,13 @@ llama-cli --no-mmap -ngl 999 -fa 1 \
   -p "Write a Strix Halo toolkit haiku."
 ```
 
-### 5. Keep Updated
-Refresh your authenticated toolboxes to the latest nightly/stable builds:
+### 5. Manual updates
+
+AI Toolbox Cockpit is the recommended update path. If you created the Toolbx container manually, the repository script can refresh it to the latest nightly or stable build:
+
 ```bash
 ./refresh-toolboxes.sh all
 ```
-
-## Host Configuration
-
-This should work on any Strix Halo. For a complete list of available hardware, see: [Strix Halo Hardware Database](https://strixhalo-homelab.d7.wtf/Hardware)
-
-### Test Configuration
-
-| Component         | Specification                                               |
-| :---------------- | :---------------------------------------------------------- |
-| **Test Machine**  | Framework Desktop                                           |
-| **CPU**           | Ryzen AI MAX+ 395 "Strix Halo"                              |
-| **System Memory** | 128 GB RAM                                                  |
-| **GPU Memory**    | 512 MB allocated in BIOS                                    |
-| **Host OS**       | Fedora 43, Linux 6.18.5-200.fc43.x86_64            |
-
-### Kernel Parameters (tested on Fedora 42)
-
-Add these boot parameters to enable unified memory while reserving a minimum of 4 GiB for the OS (max 124 GiB for iGPU):
-
-> [!WARNING]
-> Based on [benchmarking by Lars Urban (@urbanswelt)](https://github.com/urbanswelt), there is definitive indication that setting `amd_iommu=off` performs better than the previously recommended `iommu=pt`. Key result: `amd_iommu=off` is 5-12% faster than either IOMMU-enabled mode. See [Issue #66](https://github.com/kyuz0/amd-strix-halo-toolboxes/issues/66#issuecomment-4460612951) for details.
-
-`amd_iommu=off amdgpu.gttsize=126976 ttm.pages_limit=32505856`
-
-| Parameter                   | Purpose                                                                                    |
-|-----------------------------|--------------------------------------------------------------------------------------------|
-| `amd_iommu=off`             | Disables the AMD IOMMU. This improves performance and stability over `iommu=pt`.           |
-| `amdgpu.gttsize=126976`     | Caps GPU unified memory to 124 GiB; 126976 MiB ÷ 1024 = 124 GiB                            |
-| `ttm.pages_limit=32505856`  | Caps pinned memory to 124 GiB; 32505856 × 4 KiB = 126976 MiB = 124 GiB                     |
-
-Apply with:
-```bash
-sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-sudo reboot
-```
-
-### Ubuntu 24.04
-See [TechnigmaAI's Guide](https://github.com/technigmaai/technigmaai-wiki/wiki/AMD-Ryzen-AI-Max--395:-GTT--Memory-Step%E2%80%90by%E2%80%90Step-Instructions-%28Ubuntu-24.04%29).
-
-### GPU Workload Cooling and Power Profiles
-
-Framework Desktop users can install the [GPU workload watcher](systemd/gpu-workload-watch/README.md) to select performance or power-saving TuneD profiles automatically and increase cooling only during active GPU inference.
 
 ## Performance Benchmarks
 
