@@ -72,7 +72,7 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 
 > [!IMPORTANT]
 > `rocm-10.0-engramhalo` is the exception to the usual Strix Halo `--no-mmap`
-> guidance. Its SSD-resident engram profile requires `-lm mmap --tensor-read-lazy on`;
+> guidance. Its SSD-resident engram profile requires `-lm mmap --lazy-mode on`;
 > `--no-mmap` disables that path. With the external MTP
 > sidecar, use one slot and at most `-c 163840` until the fork validates larger
 > MTP contexts. AI Toolbox Cockpit includes this tested profile and its notes.
