@@ -39,9 +39,9 @@ RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
 COPY llama-grammar.patch /tmp/llama-grammar.patch
 COPY llama-cpp-25992-rocm-host-buffer.patch /tmp/llama-cpp-25992-rocm-host-buffer.patch
 
-# Preserve the fork's measured loader setup. The per-buffer mmap change is
-# already integrated in the current branch, but the patch is retained so a
-# future rebase that drops it is repaired instead of silently losing SSD mode.
+# Preserve the fork's measured loader setup. Apply its legacy per-buffer mmap
+# patch when needed, or verify the newer lazy-context implementation that made
+# the patch obsolete before continuing.
 # The #25992 workaround prevents multi-slot response mix-ups on gfx1151.
 RUN git clean -xdf \
   && git submodule update --recursive \
@@ -55,10 +55,11 @@ RUN git clean -xdf \
      fi \
   && if git apply --check docs/strix-halo/llama-cpp-qwen38-per-buffer-mmap.patch; then \
        git apply docs/strix-halo/llama-cpp-qwen38-per-buffer-mmap.patch; \
-     elif grep -q 'tensor_uses_mmap' src/llama-model-loader.cpp; then \
-       echo "per-buffer mmap loader behavior is already present upstream"; \
+     elif grep -q 'const bool from_mapping = use_mmap || lazy.has(cur);' src/llama-model-loader.cpp \
+       && grep -q 'const bool is_lazy_mapped = ctx_key.lazy' src/llama-model.cpp; then \
+       echo "lazy-context mmap loader behavior is already present upstream"; \
      else \
-       echo "ERROR: required per-buffer mmap loader behavior is missing"; \
+       echo "ERROR: required SSD-backed lazy loader behavior is missing"; \
        exit 1; \
      fi \
   && patch -p1 < /tmp/llama-grammar.patch \
