@@ -61,6 +61,7 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 | :--- | :--- | :--- |
 | `rocm-10.0-performance` | ROCm 10.0 (Experimental) | Build from [`gaetan-puleo/llama-cpp-strix-halo`](https://github.com/gaetan-puleo/llama-cpp-strix-halo) on `master`, retaining its Strix Halo performance changes on the stable ROCm 10.0 `gfx1151` runtime and build configuration. Auto-built when the fork updates; can also be built manually with the `rocm-10.0-performance` workflow argument. |
 | `rocm-10.0-qwen-3.8-flash-next` | ROCm 10.0 (Experimental) | Tracks [`drluoto/llama.cpp:strix-halo-flash-next`](https://github.com/drluoto/llama.cpp/tree/strix-halo-flash-next) for Qwen3.8-Flash-Next (`qwen4exp`), native MTP, ngram-mod, and GPU TOP_K changes. Uses the fork's required `GGML_HIP_NO_VMM=ON`; it does not use rocWMMA. See the fork's [usage and tuning notes](https://github.com/drluoto/flash-next-strix-halo). Manual build only with the `rocm-10.0-qwen-3.8-flash-next` workflow argument. |
+| `rocm-10.0-engramhalo` | ROCm 10.0 (Experimental) | ROCm 10.0 port of [`Aristo94/EngramHalo.cpp:strix-halo-qwen4exp`](https://github.com/Aristo94/EngramHalo.cpp/tree/strix-halo-qwen4exp), tuned for Qwen3.8-Flash-Next on Strix Halo with sparse QSA gather, SSD-backed engram loading, and a standalone MTP sidecar. The fork's published validation uses ROCm 7.14; this ROCm 10.0 image is experimental and manual-build only. Read the [required configuration and limitations](https://github.com/Aristo94/EngramHalo.cpp/blob/strix-halo-qwen4exp/docs/strix-halo/README.md) before use. |
 | `rocm-7.14-pr26592` | ROCm 7.14 (Experimental) | Downloads and applies draft [llama.cpp PR #26592](https://github.com/ggml-org/llama.cpp/pull/26592) at build time to enable hipCUB paths for ARGSORT/TOP_K-related operations. Manual build only with the `rocm-7.14-pr26592` workflow argument. |
 | `vulkan-radv-performance` | Vulkan (Mesa RADV, Fedora 44) | Experimental build tracking [`Nathanw1014/llama.cpp:strix-halo-vulkan`](https://github.com/Nathanw1014/llama.cpp/tree/strix-halo-vulkan), with Strix Halo-focused flash-attention, KV-cache, lightning-indexer, and matrix/MoE performance work. Manual build only. |
 | `rocm-10.0-rocmfpx` | ROCm 10.0 (Custom) | HIP-only `ROCmFPX/ROCmFPX` build for `gfx1151` with ROCmI4/W4A4 and ROCmFP3/FP4/FP6/FP8 weight formats, MTP speculative decoding, and agent-aware presets. Auto-built on upstream changes. |
@@ -69,11 +70,18 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 | `rocm-7.2.4-turboquant` | ROCm 7.2.4 (Custom) | Custom TurboQuant build for AMD Strix Halo. Manual build only. |
 | `therock-nightly` | TheRock Nightly | Tracks the latest TheRock `gfx1151` nightly tarball from AMD's current `nightly.repo.amd.com` release stream using the [official release layout](https://github.com/ROCm/TheRock/blob/main/RELEASES.md). A dedicated poller auto-builds it when AMD publishes a new tarball. |
 
+> [!IMPORTANT]
+> `rocm-10.0-engramhalo` is the exception to the usual Strix Halo `--no-mmap`
+> guidance. Its SSD-resident engram profile requires `-lm mmap --tensor-read-lazy on`;
+> `--no-mmap` disables that path. With the external MTP
+> sidecar, use one slot and at most `-c 163840` until the fork validates larger
+> MTP contexts. AI Toolbox Cockpit includes this tested profile and its notes.
+
 > Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from these lists.
 
 ### Temporary llama.cpp ROCm Inference Workaround
 
-The `rocm-10.0`, `rocm-10.0-performance`, `rocm-10.0-qwen-3.8-flash-next`, `rocm-7.14-pr26592`, and `therock-nightly` images currently apply a
+The `rocm-10.0`, `rocm-10.0-performance`, `rocm-10.0-qwen-3.8-flash-next`, `rocm-10.0-engramhalo`, `rocm-7.14-pr26592`, and `therock-nightly` images currently apply a
 temporary workaround for [llama.cpp issue #25992](https://github.com/ggml-org/llama.cpp/issues/25992),
 based on [pull request #25863](https://github.com/ggml-org/llama.cpp/pull/25863).
 It prevents llama.cpp from selecting ROCm host buffers for computation on

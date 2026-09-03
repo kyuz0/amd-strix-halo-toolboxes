@@ -1,0 +1,134 @@
+# Experimental ROCm 10.0 build of Aristo94/EngramHalo.cpp for Qwen3.8 Flash-Next.
+# The fork is validated upstream on ROCm 7.14; this image ports that recipe to
+# the stable ROCm 10.0 gfx1151 package set used by this repository.
+
+# build stage
+FROM registry.fedoraproject.org/fedora:44 AS builder
+
+# ROCm 10.0 Core SDK repository (TheRock release stream)
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[amdrocm-stable]
+name=ROCm 10.0.0
+baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg
+REPO
+EOF
+
+# Build with AMD's supported gfx1151 development meta-package.
+RUN dnf -y --nodocs --setopt=install_weak_deps=False \
+  install \
+  make gcc gcc-c++ cmake libcurl-devel ninja-build rdma-core-devel \
+  amdrocm-core-devel10.0-gfx1151 \
+  git-core vim sudo rsync patch \
+  && dnf clean all && rm -rf /var/cache/dnf/*
+
+ENV ROCM_PATH=/opt/rocm \
+  HIP_PATH=/opt/rocm \
+  PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+  LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
+
+WORKDIR /opt/llama.cpp
+ARG REPO=https://github.com/Aristo94/EngramHalo.cpp.git
+ARG BRANCH=strix-halo-qwen4exp
+RUN git clone -b ${BRANCH} --single-branch --recursive ${REPO} .
+
+COPY llama-grammar.patch /tmp/llama-grammar.patch
+COPY llama-cpp-25992-rocm-host-buffer.patch /tmp/llama-cpp-25992-rocm-host-buffer.patch
+
+# Preserve the fork's measured loader setup. The per-buffer mmap change is
+# already integrated in the current branch, but the patch is retained so a
+# future rebase that drops it is repaired instead of silently losing SSD mode.
+# The #25992 workaround prevents multi-slot response mix-ups on gfx1151.
+RUN git clean -xdf \
+  && git submodule update --recursive \
+  && if git apply --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
+       git apply /tmp/llama-cpp-25992-rocm-host-buffer.patch; \
+     elif git apply --reverse --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
+       echo "llama.cpp #25992 workaround is already present upstream"; \
+     else \
+       echo "ERROR: llama.cpp #25992 workaround no longer applies; review upstream #25863 and #26225"; \
+       exit 1; \
+     fi \
+  && if git apply --check docs/strix-halo/llama-cpp-qwen38-per-buffer-mmap.patch; then \
+       git apply docs/strix-halo/llama-cpp-qwen38-per-buffer-mmap.patch; \
+     elif grep -q 'tensor_uses_mmap' src/llama-model-loader.cpp; then \
+       echo "per-buffer mmap loader behavior is already present upstream"; \
+     else \
+       echo "ERROR: required per-buffer mmap loader behavior is missing"; \
+       exit 1; \
+     fi \
+  && patch -p1 < /tmp/llama-grammar.patch \
+  && cmake -S . -B build \
+  -DGGML_HIP=ON \
+  -DAMDGPU_TARGETS=gfx1151 \
+  -DGGML_HIP_NO_VMM=ON \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DGGML_RPC=ON \
+  -DROCM_PATH=/opt/rocm \
+  -DHIP_PLATFORM=amd \
+  && cmake --build build --config Release -- -j$(nproc) \
+  && cmake --install build --config Release
+
+RUN mkdir -p /usr/local/lib64 \
+  && find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/local/lib64/ \; \
+  && ldconfig
+
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# runtime stage
+FROM registry.fedoraproject.org/fedora-minimal:44
+
+# ROCm 10.0 Core SDK repository (TheRock release stream)
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[amdrocm-stable]
+name=ROCm 10.0.0
+baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg
+REPO
+EOF
+
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
+  install \
+  bash ca-certificates libatomic libstdc++ libgcc libgomp libibverbs sudo \
+  amdrocm10.0-gfx1151 \
+  radeontop procps-ng \
+  && microdnf clean all && rm -rf /var/cache/dnf/* \
+  && ln -s core-10.0 /opt/rocm/core \
+  && ln -s core-10.0/bin /opt/rocm/bin \
+  && ln -s core-10.0/include /opt/rocm/include \
+  && ln -s core-10.0/lib /opt/rocm/lib \
+  && ln -s core-10.0/libexec /opt/rocm/libexec \
+  && ln -s core-10.0/lib/llvm /opt/rocm/llvm \
+  && ln -s core-10.0/share /opt/rocm/share \
+  && ln -s core-10.0/lib/llvm/amdgcn /opt/rocm/amdgcn
+
+ENV ROCM_PATH=/opt/rocm \
+  HIP_PATH=/opt/rocm \
+  PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+  LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
+
+COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /opt/llama.cpp/build/bin/ggml-rpc-* /usr/local/bin/
+
+RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf \
+  && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+  && echo "/opt/rocm/core/lib" > /etc/ld.so.conf.d/rocm.conf \
+  && echo "/opt/rocm/core/lib/rocm_sysdeps/lib" >> /etc/ld.so.conf.d/rocm.conf \
+  && ldconfig \
+  && find /usr/local/lib /usr/local/lib64 -maxdepth 1 -type f -name 'libllama*.so*' \
+     -exec cp -n {} /usr/lib64/ \; \
+  && ldconfig
+
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+CMD ["/bin/bash"]
