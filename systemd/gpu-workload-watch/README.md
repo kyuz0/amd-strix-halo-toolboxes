@@ -5,6 +5,7 @@ This systemd service manages cooling and the TuneD power profile on a Framework 
 ## Behavior
 
 - Detects `llama-*`, `ds4-*`, `hipfire`, and vLLM executables, process names, and Python entry points. Idle containers whose names contain these strings do not trigger the watcher.
+- Detects the Halogen Flash server through `python3 /halogen/tools/serve_api.py`, including when it runs inside Podman. The container name alone does not trigger the watcher.
 - Selects the TuneD `accelerator-performance` profile as soon as a matching process starts, even while the GPU is idle.
 - Verifies that TuneD actually applied `accelerator-performance`, reconciles the real daemon state every 15 seconds, and retries instead of caching a successful request as a successful transition.
 - Runs TuneD reconciliation in a supervised worker so TuneD failures cannot block fan control. TuneD commands are bounded to 20 seconds; after two consecutive failures the worker restarts `tuned.service`, reapplies the requested profile, and continues retrying if recovery fails.

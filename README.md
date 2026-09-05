@@ -16,6 +16,8 @@ ai-toolbox-cockpit
 
 The repository's [`refresh-toolboxes.sh`](refresh-toolboxes.sh) remains available for manual Toolbx refreshes. The Cockpit is recommended for normal installation and updates.
 
+For automatic Framework cooling and TuneD profile switching, see the [GPU workload watcher](systemd/gpu-workload-watch/README.md). It detects llama.cpp, DS4, hipfire, vLLM, and the Halogen Flash API server, including containerized processes.
+
 ### ❤️ Support
 
 This is a hobby project maintained in my spare time. If you find these toolboxes and tutorials useful, you can **[buy me a coffee](https://buymeacoffee.com/dcapitella)** to support the work! ☕

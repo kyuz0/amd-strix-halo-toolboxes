@@ -80,6 +80,11 @@ gpu_workload_is_running() {
                             ;;
                     esac
                 elif (( ${#argv[@]} > 1 )); then
+                    # Halogen's API server has a generic script basename.
+                    # Match its container path, not a container monitor's args.
+                    if [[ "${argv[1]}" == "/halogen/tools/serve_api.py" ]]; then
+                        return 0
+                    fi
                     lower="${argv[1],,}"
                     lower="${lower##*/}"
                     case "${lower}" in
