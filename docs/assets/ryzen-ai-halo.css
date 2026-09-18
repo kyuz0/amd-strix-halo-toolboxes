@@ -52,6 +52,21 @@ h1 {
     color: #d0d5dd;
 }
 
+.page-header .benchmark-legacy-notice {
+    max-width: 820px;
+    margin-top: 12px;
+    padding: 8px 10px;
+    color: #7a2e0a;
+    background: #fff4e8;
+    border: 1px solid #f6c78f;
+    border-radius: 6px;
+}
+
+.benchmark-legacy-notice a {
+    color: inherit;
+    font-weight: 700;
+}
+
 .page-header .intro {
     max-width: 780px;
     margin-top: 12px;

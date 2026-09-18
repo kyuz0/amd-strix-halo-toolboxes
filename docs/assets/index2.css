@@ -44,6 +44,21 @@ header p {
     color: var(--muted);
 }
 
+.benchmark-legacy-notice {
+    max-width: 820px;
+    margin: 10px 0 !important;
+    padding: 8px 10px;
+    color: #7a2e0a !important;
+    background: #fff4e8;
+    border: 1px solid #f6c78f;
+    border-radius: 6px;
+}
+
+.benchmark-legacy-notice a {
+    color: #9a3412;
+    font-weight: 600;
+}
+
 .controls,
 .panel {
     background: var(--card);

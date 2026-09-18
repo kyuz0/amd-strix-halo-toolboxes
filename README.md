@@ -31,7 +31,7 @@ This is a hobby project maintained in my spare time. If you find these toolboxes
 - [Supported Toolboxes](#supported-toolboxes)
 - [Temporary llama.cpp ROCm inference workaround](#temporary-llamacpp-rocm-inference-workaround)
 - [Manual container setup](#manual-container-setup)
-- [Performance Benchmarks](#performance-benchmarks)
+- [Legacy Benchmark Archive](#legacy-benchmark-archive)
 - [Memory Planning and VRAM Estimator](#memory-planning-and-vram-estimator)
 - [Building Locally](#building-locally)
 - [Distributed Inference](#distributed-inference)
@@ -185,13 +185,13 @@ AI Toolbox Cockpit is the recommended update path. If you created the Toolbx con
 ./refresh-toolboxes.sh all
 ```
 
-## Performance Benchmarks
+## Legacy Benchmark Archive
 
-🌐 **Interactive Viewer**: [https://kyuz0.github.io/amd-strix-halo-toolboxes/](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
+The benchmark results in this repository are legacy and are no longer updated. For recent benchmarks, improved methodology, and interactive benchmark curves, visit [local-llm-benchmarks.dev](https://local-llm-benchmarks.dev/).
 
-🔬 **Toolbox Comparison**: [Compare depth curves across Vulkan RADV, ROCm, and experimental toolbox builds](https://kyuz0.github.io/amd-strix-halo-toolboxes/toolbox-performance.html)
+The previous results remain available as an archive in the [interactive viewer](https://kyuz0.github.io/amd-strix-halo-toolboxes/) and its [toolbox comparison](https://kyuz0.github.io/amd-strix-halo-toolboxes/toolbox-performance.html).
 
-See [docs/benchmarks.md](docs/benchmarks.md) for full logs.
+Historical benchmark logs are retained in the repository.
 
 ## Memory Planning and VRAM Estimator
 
@@ -218,7 +218,7 @@ Run models across a cluster of Strix Halo machines using `run_distributed_llama.
 
 ## More Documentation
 
-*   [docs/benchmarks.md](docs/benchmarks.md)
+*   [Legacy benchmark archive](https://kyuz0.github.io/amd-strix-halo-toolboxes/)
 *   [docs/vram-estimator.md](docs/vram-estimator.md)
 *   [docs/building.md](docs/building.md)
 *   [docs/troubleshooting-firmware.md](docs/troubleshooting-firmware.md)

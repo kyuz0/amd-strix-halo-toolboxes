@@ -79,11 +79,11 @@ $ gguf-vram-estimator.py models/qwen3-235B-Q3_K-XL/UD-Q3_K_XL/Qwen3-235B-A22B-In
 
 * “Est. Total VRAM” is the minimum you’ll need for the model + context, but does not include OS, other processes, or toolbox/container overhead—leave a margin.
 * For detailed methodology or custom scenarios, check the script source.
-* Benchmark speed for large context sizes is often the real bottleneck—see `docs/benchmarks.md` for real throughput figures.
+* Benchmark speed for large context sizes is often the real bottleneck—see [local-llm-benchmarks.dev](https://local-llm-benchmarks.dev/) for current throughput figures, improved methodology, and benchmark curves. The repository's historical results are available in the [legacy archive](https://kyuz0.github.io/amd-strix-halo-toolboxes/).
 
 ---
 
 ## 5. Related
 
 * Main README section [Memory Planning & VRAM Estimator](../Readme#4--memory-planning--vram-estimator)
-* [docs/benchmarks.md](benchmarks.md) for full speed/compat charts
+* [local-llm-benchmarks.dev](https://local-llm-benchmarks.dev/) for current speed and compatibility charts
