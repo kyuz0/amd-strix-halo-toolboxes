@@ -1,0 +1,312 @@
+# ROCm 10.0 + Strix Halo community fork of llama.cpp, on the custom retained-PM4
+# ROCr/HIP runtime from pwilkin/rocm-systems:ilintar-experiments.
+#
+# Engine:  https://github.com/halo-box/strix-llama.cpp
+# Runtime: https://github.com/pwilkin/rocm-systems (ilintar-experiments)
+# Build recipe follows https://github.com/pwilkin/strix-halo install.sh, with the
+# installer's host-side parts (package probing, driver checks, model downloads,
+# ~/.local launchers) removed: everything lands in image layers.
+#
+# The custom libamdhip64/libhsa-runtime64 shadow the ROCm 10 SDK copies through
+# LD_LIBRARY_PATH ordering. Never add /opt/strix/lib to ld.so.conf.
+
+# build stage
+FROM registry.fedoraproject.org/fedora:44 AS builder
+
+# ROCm 10.0 Core SDK repository (TheRock release stream)
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[amdrocm-stable]
+name=ROCm 10.0.0
+baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg
+REPO
+EOF
+
+# amdrocm-core-devel10.0-gfx1151: hipcc, LLVM, and the cmake packages the ROCm and
+# llama.cpp builds look for (hip, hipblas, rocblas, amd_comgr, rocprofiler-register,
+# hsa-runtime64). amdrocm10.0-gfx1151: runtime libraries incl. gfx1151 rocBLAS kernels.
+# The rest is install.sh's Fedora dependency list, preinstalled so nothing needs sudo.
+RUN dnf -y --nodocs --setopt=install_weak_deps=False \
+  install \
+  make gcc gcc-c++ cmake ninja-build git-core curl rsync patch which vim-common \
+  libcurl-devel rdma-core-devel elfutils-libelf-devel libdrm-devel libglvnd-devel \
+  libpciaccess-devel libstdc++-devel libzstd-devel numactl-devel openssl-devel \
+  pciutils pkgconf-pkg-config python3 python3-devel python3-pip \
+  amdrocm-core-devel10.0-gfx1151 amdrocm10.0-gfx1151 \
+  && dnf clean all && rm -rf /var/cache/dnf/*
+
+# The Core SDK installs into /opt/rocm/core-<version>; expose the usual /opt/rocm layout.
+RUN <<'EOF'
+set -eux
+v=$(basename "$(realpath /opt/rocm/core-*)")
+ln -sfn "$v" /opt/rocm/core
+for d in bin include lib libexec share; do
+  ln -sfn "$v/$d" "/opt/rocm/$d"
+done
+ln -sfn "$v/lib/llvm" /opt/rocm/llvm
+ln -sfn "$v/lib/llvm/amdgcn" /opt/rocm/amdgcn
+EOF
+
+ENV ROCM_PATH=/opt/rocm \
+  HIP_PATH=/opt/rocm \
+  ROCM_ROOT=/opt/rocm \
+  PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+  LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
+
+# Upstream branches, never commit pins: a --no-cache build always takes branch HEAD.
+ARG ROCM_SYSTEMS_REPO=https://github.com/pwilkin/rocm-systems.git
+ARG ROCM_SYSTEMS_BRANCH=ilintar-experiments
+# CppHeaderParser generates headers during the HIP (CLR) build.
+RUN <<'EOF'
+set -eux
+python3 -m venv /opt/strix/venv
+/opt/strix/venv/bin/pip install --no-cache-dir --upgrade pip
+/opt/strix/venv/bin/pip install --no-cache-dir 'CppHeaderParser==2.7.4'
+# Blobless rather than shallow: these trees resolve their version from git history.
+git clone --filter=blob:none --single-branch -b "${ROCM_SYSTEMS_BRANCH}" "${ROCM_SYSTEMS_REPO}" /opt/strix/src/rocm-systems
+EOF
+
+# Custom ROCr runtime: the retained-PM4 command lists live here and in HIP below.
+RUN <<'EOF'
+set -eux
+PATH=/opt/strix/venv/bin:$PATH cmake \
+  -S /opt/strix/src/rocm-systems/projects/rocr-runtime \
+  -B /opt/strix/build/rocr \
+  -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=/opt/strix/rocr \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_PREFIX_PATH=/opt/rocm \
+  -DBUILD_SHARED_LIBS=ON
+PATH=/opt/strix/venv/bin:$PATH cmake --build /opt/strix/build/rocr --parallel "$(nproc)"
+PATH=/opt/strix/venv/bin:$PATH cmake --install /opt/strix/build/rocr
+test -e /opt/strix/rocr/lib/libhsa-runtime64.so.1
+EOF
+
+# Custom HIP runtime, linked against the custom ROCr above and the SDK LLVM.
+RUN <<'EOF'
+set -eux
+PATH=/opt/strix/venv/bin:$PATH \
+LD_LIBRARY_PATH=/opt/strix/rocr/lib:/opt/rocm/core/lib:/opt/rocm/core/lib/llvm/lib \
+cmake \
+  -S /opt/strix/src/rocm-systems/projects/clr \
+  -B /opt/strix/build/hip \
+  -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=/opt/strix/hip \
+  -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_PREFIX_PATH="/opt/strix/rocr;/opt/rocm" \
+  -DCLR_BUILD_HIP=ON \
+  -DCLR_BUILD_OCL=OFF \
+  -DHIP_PLATFORM=amd \
+  -DHIP_COMMON_DIR=/opt/strix/src/rocm-systems/projects/hip \
+  -DHIPCC_BIN_DIR=/opt/rocm/bin \
+  -DLLVM_ROOT=/opt/rocm/lib/llvm \
+  -DClang_ROOT=/opt/rocm/lib/llvm \
+  -DROCM_PATH=/opt/strix/rocr \
+  -Dhsa-runtime64_DIR=/opt/strix/rocr/lib/cmake/hsa-runtime64 \
+  -DROCCLR_ENABLE_HSA=ON \
+  -DROCCLR_ENABLE_PAL=OFF \
+  -DHIP_ENABLE_ROCPROFILER_REGISTER=ON \
+  -DUSE_PROF_API=ON \
+  -D__HIP_ENABLE_PCH=ON
+PATH=/opt/strix/venv/bin:$PATH \
+LD_LIBRARY_PATH=/opt/strix/rocr/lib:/opt/rocm/core/lib:/opt/rocm/core/lib/llvm/lib \
+cmake --build /opt/strix/build/hip --parallel "$(nproc)"
+PATH=/opt/strix/venv/bin:$PATH \
+LD_LIBRARY_PATH=/opt/strix/rocr/lib:/opt/rocm/core/lib:/opt/rocm/core/lib/llvm/lib \
+cmake --install /opt/strix/build/hip
+# The retained-PM4 patch must survive; a branch that loses it has to fail the build
+# rather than ship a stock-HIP image under this name.
+test -n "$(find /opt/strix/hip/lib -name 'libamdhip64.so.*' -type f)"
+grep -aq DEBUG_HIP_GRAPH_PM4 "$(find /opt/strix/hip/lib -name 'libamdhip64.so.*' -type f | head -n1)"
+EOF
+
+WORKDIR /opt/llama.cpp
+ARG REPO=https://github.com/halo-box/strix-llama.cpp.git
+ARG BRANCH=master
+RUN git clone -b ${BRANCH} --single-branch ${REPO} .
+
+COPY llama-grammar.patch /tmp/llama-grammar.patch
+COPY llama-cpp-25992-rocm-host-buffer.patch /tmp/llama-cpp-25992-rocm-host-buffer.patch
+
+# GGML_HIP_GRAPHS=ON is required for retained PM4; GGML_HIP_NO_VMM=ON is what gfx1151
+# needs alongside graphs. Linking happens against the SDK's HIP; the custom libraries
+# take over at run time through LD_LIBRARY_PATH. Tests are compiled only so that
+# test-backend-sched-ring can gate the build; none of them is installed.
+RUN git clean -xdf \
+  && if git apply --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
+       git apply /tmp/llama-cpp-25992-rocm-host-buffer.patch; \
+     elif git apply --reverse --check /tmp/llama-cpp-25992-rocm-host-buffer.patch; then \
+       echo "llama.cpp #25992 workaround is already present upstream"; \
+     else \
+       echo "ERROR: llama.cpp #25992 workaround no longer applies; review upstream #25863 and #26225"; \
+       exit 1; \
+     fi \
+  && (patch -p1 -N --fuzz=3 < /tmp/llama-grammar.patch || \
+      grep -q 'MAX_REPETITION_THRESHOLD 100000' src/llama-grammar.cpp || \
+      { echo "ERROR: grammar patch no longer applies to ${REPO} ${BRANCH}"; exit 1; }) \
+  && cmake -S . -B build \
+  -G Ninja \
+  -DGGML_HIP=ON \
+  -DGGML_VULKAN=OFF \
+  -DGGML_HIP_GRAPHS=ON \
+  -DGGML_HIP_NO_VMM=ON \
+  -DGGML_HIP_MMQ_MFMA=ON \
+  -DGGML_HIP_RCCL=OFF \
+  -DGGML_CUDA_FA=ON \
+  -DGGML_CUDA_FA_ALL_QUANTS=OFF \
+  -DGPU_TARGETS=gfx1151 \
+  -DCMAKE_HIP_ARCHITECTURES=gfx1151 \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DGGML_RPC=ON \
+  -DLLAMA_BUILD_TESTS=ON \
+  -DLLAMA_TESTS_INSTALL=OFF \
+  -DCMAKE_PREFIX_PATH=/opt/rocm \
+  -DROCM_PATH=/opt/rocm \
+  -DHIP_PATH=/opt/rocm \
+  -DHIP_PLATFORM=amd \
+  && cmake --build build --parallel "$(nproc)" \
+  && build/bin/test-backend-sched-ring \
+  && cmake --install build
+
+# Record what went into the image: nothing here is pinned, so this is the only
+# trace of the upstream revisions a given tag was built from.
+RUN <<'EOF'
+set -eux
+{
+  printf 'build_date=%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  printf 'rocm_systems=%s (%s)\n' \
+    "$(git -C /opt/strix/src/rocm-systems rev-parse --short HEAD)" "${ROCM_SYSTEMS_BRANCH}"
+  printf 'llama_cpp=%s (%s)\n' \
+    "$(git -C /opt/llama.cpp rev-parse --short HEAD)" "${BRANCH}"
+} > /opt/strix/versions.txt
+cat /opt/strix/versions.txt
+EOF
+
+# Correctness gate: with the custom libraries first, libggml-hip must resolve both
+# libamdhip64 and libhsa-runtime64 from them, exactly as the runtime stage orders them.
+RUN <<'EOF'
+set -eux
+lib=$(find /opt/llama.cpp/build -name 'libggml-hip.so*' -type f | head -n1)
+test -n "$lib"
+out=$(LD_LIBRARY_PATH=/opt/strix/hip/lib:/opt/strix/rocr/lib:/opt/rocm/core/lib:/opt/rocm/core/lib/llvm/lib ldd "$lib")
+echo "$out" | grep -F '/opt/strix/hip/lib/libamdhip64.so'
+echo "$out" | grep -F '/opt/strix/rocr/lib/libhsa-runtime64.so'
+EOF
+
+# Stage the custom runtime libraries in one directory. cp -a, not a COPY glob: COPY
+# dereferences symlinks, which would duplicate libamdhip64 three times over.
+RUN <<'EOF'
+set -eux
+mkdir -p /opt/strix/lib
+cp -a /opt/strix/rocr/lib/libhsa-runtime64.so* /opt/strix/lib/
+cp -a /opt/strix/hip/lib/libamdhip64.so* /opt/strix/lib/
+cp -a /opt/strix/hip/lib/libhiprtc*.so* /opt/strix/lib/
+EOF
+
+# libs
+RUN mkdir -p /usr/local/lib64 \
+  && find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/local/lib64/ \; \
+  && ldconfig
+
+# helper
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# runtime stage
+FROM registry.fedoraproject.org/fedora-minimal:44
+
+# ROCm 10.0 Core SDK repository (TheRock release stream)
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[amdrocm-stable]
+name=ROCm 10.0.0
+baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg
+REPO
+EOF
+
+# Runtime components required by llama.cpp's HIP backend. AMD's gfx1151 base
+# meta-package supplies the runtime libraries while avoiding developer tools.
+# libdrm, elfutils-libs and numactl-libs are needed here and not in rocm-10.0: AMD's
+# ROCr links the vendored librocm_sysdeps_{drm,elf,numa} libraries, the custom one
+# links the distribution's own libdrm/libelf/libnuma.
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
+  install \
+  bash ca-certificates libatomic libstdc++ libgcc libgomp libibverbs sudo \
+  elfutils-libs libdrm numactl-libs \
+  amdrocm10.0-gfx1151 \
+  radeontop procps-ng \
+  && microdnf clean all && rm -rf /var/cache/dnf/* \
+  && ln -s core-10.0 /opt/rocm/core \
+  && ln -s core-10.0/bin /opt/rocm/bin \
+  && ln -s core-10.0/include /opt/rocm/include \
+  && ln -s core-10.0/lib /opt/rocm/lib \
+  && ln -s core-10.0/libexec /opt/rocm/libexec \
+  && ln -s core-10.0/lib/llvm /opt/rocm/llvm \
+  && ln -s core-10.0/share /opt/rocm/share \
+  && ln -s core-10.0/lib/llvm/amdgcn /opt/rocm/amdgcn
+
+# Custom retained-PM4 ROCr + HIP shared objects only: no headers, no static libs,
+# no hipcc. They must be found before the SDK copies, so they stay on LD_LIBRARY_PATH
+# and out of /etc/ld.so.conf. Staged as a directory to keep the soname symlinks intact.
+COPY --from=builder /opt/strix/lib /opt/strix/lib
+COPY --from=builder /opt/strix/versions.txt /opt/strix/versions.txt
+
+# copy
+COPY --from=builder /usr/local/ /usr/local/
+COPY --from=builder /opt/llama.cpp/build/bin/*rpc-server /usr/local/bin/
+
+# ld
+RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf \
+  && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+  && echo "/opt/rocm/core/lib" > /etc/ld.so.conf.d/rocm.conf \
+  && echo "/opt/rocm/core/lib/rocm_sysdeps/lib" >> /etc/ld.so.conf.d/rocm.conf \
+  && ldconfig \
+  && find /usr/local/lib /usr/local/lib64 -maxdepth 1 -type f -name 'libllama*.so*' \
+     -exec cp -n {} /usr/lib64/ \; \
+  && ldconfig \
+  && test -e /opt/strix/lib/libhsa-runtime64.so.1 \
+  && grep -aq DEBUG_HIP_GRAPH_PM4 "$(find /opt/strix/lib -name 'libamdhip64.so.7.*' -type f | head -n1)" \
+  && if LD_LIBRARY_PATH=/opt/strix/lib:/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib \
+       ldd /opt/strix/lib/libhsa-runtime64.so.1 /opt/strix/lib/libamdhip64.so.7 | grep 'not found'; then \
+       echo 'ERROR: custom ROCm libraries have unresolved dependencies'; exit 1; fi
+
+# ROCm environment. LD_LIBRARY_PATH leads with /opt/strix/lib; the retained-PM4 defaults are
+# what make this image faster than rocm-10.0, and they are confirmed live on gfx1151, not
+# assumed: with AMD_LOG_LEVEL=3 the runtime logs "[hipGraph][PM4] retained 3147 dispatches in
+# 92846 dwords" per lowered batch, with no ROCR fallback lines. GGML_CUDA_DISABLE_GRAPHS or
+# HIP_LAUNCH_BLOCKING override the fast path for bisection and must not be baked in.
+#
+# Measured on an 8060S with Qwen3.8-Flash-Next Q4_K_XL + shared MTP head: 1207 tok/s pp2048
+# at depth 0, 1055 at depth 32k, 43.9 tok/s decode.
+#
+# Do NOT add GGML_CUDA_ENABLE_UNIFIED_MEMORY here. It routes every allocation through
+# hipMallocManaged, and with it set the MTP draft context corrupts under HIP graphs: the server
+# dies with "init: invalid token" or emits garbage tokens. Unset, graphs + retained PM4 produce
+# byte-identical output to GGML_CUDA_DISABLE_GRAPHS=1 and DEBUG_HIP_GRAPH_CLASSIC_PATH=1, and faster
+# (sweep 2026-09-17). pwilkin's launcher exports GGML_HIP_ENABLE_UNIFIED_MEMORY, which no code reads,
+# so the validated host stack has always run plain hipMalloc. The whole 124 GiB is already visible to
+# the iGPU here, so managed memory buys nothing on Strix Halo anyway.
+ENV ROCM_PATH=/opt/rocm \
+  HIP_PATH=/opt/rocm \
+  PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+  LD_LIBRARY_PATH=/opt/strix/lib:/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib \
+  HSA_OVERRIDE_GFX_VERSION=11.5.1 \
+  DEBUG_HIP_GRAPH_PM4=1 \
+  GPU_MAX_HW_QUEUES=1
+
+# helper
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# shell
+CMD ["/bin/bash"]
