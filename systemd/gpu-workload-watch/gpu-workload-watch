@@ -53,7 +53,7 @@ gpu_workload_is_running() {
         read -r comm < "${proc}/comm" || continue
         lower="${comm,,}"
         case "${lower}" in
-            llama-*|ds4-*|*hipfire*|*vllm*)
+            llama-*|ds4*|*hipfire*|*vllm*)
                 return 0
                 ;;
         esac
@@ -65,7 +65,7 @@ gpu_workload_is_running() {
         executable="${argv[0]##*/}"
         lower="${executable,,}"
         case "${lower}" in
-            llama-*|ds4-*|*hipfire*|*vllm*)
+            llama-*|ds4*|*hipfire*|*vllm*)
                 return 0
                 ;;
         esac
@@ -75,7 +75,7 @@ gpu_workload_is_running() {
                 if (( ${#argv[@]} > 2 )) && [[ "${argv[1]}" == "-m" ]]; then
                     module="${argv[2],,}"
                     case "${module}" in
-                        llama-*|ds4-*|hipfire*|vllm*)
+                        llama-*|ds4*|hipfire*|vllm*)
                             return 0
                             ;;
                     esac
@@ -88,7 +88,7 @@ gpu_workload_is_running() {
                     lower="${argv[1],,}"
                     lower="${lower##*/}"
                     case "${lower}" in
-                        llama-*|ds4-*|*hipfire*|*vllm*)
+                        llama-*|ds4*|*hipfire*|*vllm*)
                             return 0
                             ;;
                     esac
