@@ -1,0 +1,90 @@
+# Experimental source-pinned Gufo ROCm 10.0 toolbox for gfx1151.
+FROM registry.fedoraproject.org/fedora:44 AS builder
+
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[amdrocm-stable]
+name=ROCm 10.0.0
+baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg
+REPO
+EOF
+
+RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
+      gcc gcc-c++ cmake ninja-build pkgconf-pkg-config git-core \
+      libicu-devel libcurl-devel openssl-devel libpng-devel libjpeg-turbo-devel \
+      amdrocm-core-devel10.0-gfx1151 \
+    && dnf clean all && rm -rf /var/cache/dnf/*
+
+ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
+    PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
+
+ARG GUFO_REPOSITORY=https://github.com/kyuz0/gufo.git
+ARG GUFO_COMMIT=b42fa8c89cbbeb0941f8deb7947f598702ed5125
+WORKDIR /opt/gufo
+RUN git clone --filter=blob:none --no-checkout "$GUFO_REPOSITORY" . \
+    && git checkout --detach "$GUFO_COMMIT" \
+    && test "$(git rev-parse HEAD)" = "$GUFO_COMMIT" \
+    && cmake -S . -B build/release -G Ninja \
+         -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+         -DCMAKE_CXX_FLAGS='-include format' \
+         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+         -DBUILD_TESTING=OFF -DGUFO_BUILD_TOOLS=OFF -DENGINE_ENABLE_HIP=ON \
+         -DCMAKE_HIP_ARCHITECTURES=gfx1151 \
+         -DGUFO_VERSION="$GUFO_COMMIT" \
+         -DCMAKE_INSTALL_PREFIX=/usr/local \
+    && cmake --build build/release --parallel 4 \
+    && cmake --install build/release \
+    && /usr/local/bin/gufo --help
+
+FROM registry.fedoraproject.org/fedora-minimal:44
+
+ARG GUFO_REPOSITORY=https://github.com/kyuz0/gufo.git
+ARG GUFO_COMMIT=b42fa8c89cbbeb0941f8deb7947f598702ed5125
+LABEL org.opencontainers.image.source="$GUFO_REPOSITORY" \
+      org.opencontainers.image.revision="$GUFO_COMMIT" \
+      org.opencontainers.image.title="Gufo ROCm 10.0 for Strix Halo"
+
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[amdrocm-stable]
+name=ROCm 10.0.0
+baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg
+REPO
+EOF
+
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
+      bash ca-certificates git-core libatomic libstdc++ libgcc libgomp sudo \
+      libicu libcurl openssl-libs libpng libjpeg-turbo python3 procps-ng \
+      amdrocm10.0-gfx1151 \
+    && microdnf clean all && rm -rf /var/cache/dnf/* \
+    && ln -s core-10.0 /opt/rocm/core \
+    && ln -s core-10.0/bin /opt/rocm/bin \
+    && ln -s core-10.0/include /opt/rocm/include \
+    && ln -s core-10.0/lib /opt/rocm/lib \
+    && ln -s core-10.0/libexec /opt/rocm/libexec \
+    && ln -s core-10.0/lib/llvm /opt/rocm/llvm \
+    && ln -s core-10.0/share /opt/rocm/share \
+    && ln -s core-10.0/lib/llvm/amdgcn /opt/rocm/amdgcn
+
+ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
+    PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
+
+COPY --from=builder /usr/local/ /usr/local/
+RUN echo /usr/local/lib > /etc/ld.so.conf.d/gufo.conf \
+    && echo /usr/local/lib64 >> /etc/ld.so.conf.d/gufo.conf \
+    && echo /opt/rocm/core/lib >> /etc/ld.so.conf.d/gufo.conf \
+    && echo /opt/rocm/core/lib/rocm_sysdeps/lib >> /etc/ld.so.conf.d/gufo.conf \
+    && ldconfig
+
+ENV PYTHONNOUSERSITE=1
+CMD ["/bin/bash"]

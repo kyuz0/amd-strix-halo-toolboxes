@@ -61,6 +61,7 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 
 | Container Tag | Backend/Stack | Purpose / Notes |
 | :--- | :--- | :--- |
+| `rocm-10.0-gufo` | Gufo + ROCm 10.0 (Experimental) | Builds the reviewed [Gufo benchmark API branch](https://github.com/gufo-org/gufo/pull/286) at pinned commit `b42fa8c89cbbeb0941f8deb7947f598702ed5125`. Validated on Qwen3.8 Flash Next UD-Q4_K_XL with shared-Q8 MTP, DeepSeek V4 Flash 0731 mixed IQ2/Q2/Q8 with DSpark, and Qwen3.8 27B UD-Q4_K_XL. Manual GitHub Actions build with workflow argument `rocm-10.0-gufo`. |
 | `rocm-10.0-qwen-3.8-flash-next` | ROCm 10.0 (Experimental) | Tracks [`drluoto/llama.cpp:strix-halo-flash-next`](https://github.com/drluoto/llama.cpp/tree/strix-halo-flash-next) for Qwen3.8-Flash-Next (`qwen4exp`), native MTP, ngram-mod, and GPU TOP_K changes. Uses the fork's required `GGML_HIP_NO_VMM=ON`; it does not use rocWMMA. See the fork's [usage and tuning notes](https://github.com/drluoto/flash-next-strix-halo). Manual build only with the `rocm-10.0-qwen-3.8-flash-next` workflow argument. |
 | `rocm-10.0-engramhalo` | ROCm 10.0 (Experimental) | ROCm 10.0 port of [`Aristo94/EngramHalo.cpp:strix-halo-qwen4exp`](https://github.com/Aristo94/EngramHalo.cpp/tree/strix-halo-qwen4exp), tuned for Qwen3.8-Flash-Next on Strix Halo with sparse QSA gather, SSD-backed engram loading, and a standalone MTP sidecar. The fork's published validation uses ROCm 7.14; this ROCm 10.0 image is experimental and manual-build only. Read the [required configuration and limitations](https://github.com/Aristo94/EngramHalo.cpp/blob/strix-halo-qwen4exp/docs/strix-halo/README.md) before use. |
 | `rocm-10.0-strix-llama` | ROCm 10.0 (Experimental) | Builds [`halo-box/strix-llama.cpp:master`](https://github.com/halo-box/strix-llama.cpp) against a **retained-PM4 ROCr + HIP** runtime compiled from [`pwilkin/rocm-systems:ilintar-experiments`](https://github.com/pwilkin/rocm-systems/tree/ilintar-experiments). Measured on Qwen3.8-Flash-Next Q4_K_XL with Unsloth's shared Q8 MTP head: 1207 t/s prompt processing (`pp2048`, depth 0), 1055 t/s at depth 32k, 43.9 t/s decode. Manual build only; it compiles ROCm runtime - takes few minutes more than other toolboxes to build. See [local build steps, the measured launch flags, and the bisection switches](docs/building.md#retained-pm4-strix-halo-build-rocm-100-strix-llama). |
@@ -71,6 +72,26 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 | `rocm-7.2.4-turboquant` | ROCm 7.2.4 (Custom) | Custom TurboQuant build for AMD Strix Halo. Manual build only. |
 | `therock-nightly` | TheRock Nightly | Tracks the latest TheRock `gfx1151` nightly tarball from AMD's current `nightly.repo.amd.com` release stream using the [official release layout](https://github.com/ROCm/TheRock/blob/main/RELEASES.md). A dedicated poller auto-builds it when AMD publishes a new tarball. |
 | `hrx-staging` | HRX (Experimental) | Builds AMD's [HRX-enabled llama.cpp staging tree](https://github.com/ROCm/ggml-staging-automation) with its pinned `hrx-system`, `llama.cpp`, and TheRock revisions. The upstream build bundles the runtime libraries, so the image needs no separate ROCm installation. Intended here for Strix Halo (`gfx1151`) on Linux; model coverage is still evolving. Manual build only. See [local build and validation steps](docs/building.md#experimental-hrx-toolbox). |
+
+### Gufo ROCm 10.0 toolbox
+
+[`toolboxes/Dockerfile.rocm-10.0-gufo`](toolboxes/Dockerfile.rocm-10.0-gufo) builds the standalone [Gufo](https://github.com/gufo-org/gufo) engine from the reviewed [benchmark API pull request](https://github.com/gufo-org/gufo/pull/286), pinned to fork commit `b42fa8c89cbbeb0941f8deb7947f598702ed5125`, against the gfx1151 ROCm 10.0 package set. The published experimental channel is `docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-gufo`.
+
+```sh
+podman pull docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-gufo
+podman run --rm -it --name gufo-server \
+  --userns keep-id --security-opt label=disable \
+  --device /dev/kfd --device /dev/dri --group-add keep-groups --ipc=host \
+  -p 127.0.0.1:18080:18080 \
+  -v /absolute/path/to/Qwen3.8-Flash-Next-GGUF:/models:ro \
+  docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-gufo \
+  gufo serve --host 0.0.0.0 --port 18080 --sessions 1 llm \
+  --model /models/UD-Q4_K_XL/Qwen3.8-Flash-Next-UD-Q4_K_XL-00001-of-00004.gguf \
+  --context 133760 --max-tokens 8192 \
+  --served-model-name Qwen3.8-Flash-Next-UD-Q4_K_XL
+```
+
+Point `--model` at the first shard; Gufo loads the remaining numbered shards. Add `--speculative mtp --mtp-model /models/MTP/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf` for the tested Flash Next MTP path. DeepSeek uses its own `--dspark-model` sidecar flag. Keep these auxiliary GGUFs separate from the target weights.
 
 > [!IMPORTANT]
 > `rocm-10.0-engramhalo` is the exception to the usual Strix Halo `--no-mmap`
