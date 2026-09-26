@@ -64,6 +64,11 @@ gpu_workload_is_running() {
 
         executable="${argv[0]##*/}"
         lower="${executable,,}"
+        # Gufo serving is the benchmark workload; ignore other gufo subcommands.
+        if [[ "${lower}" == "gufo" && "${argv[1]:-}" == "serve" ]]; then
+            return 0
+        fi
+
         case "${lower}" in
             llama-*|ds4*|*hipfire*|*vllm*)
                 return 0
