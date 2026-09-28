@@ -85,8 +85,11 @@ podman build --no-cache -t llama-rocm-10.0-strix-llama -f Dockerfile.rocm-10.0-s
 `--build-arg REPO=https://github.com/pwilkin/llama.cpp.git --build-arg BRANCH=strix-halo`) and
 `ROCM_SYSTEMS_REPO`/`ROCM_SYSTEMS_BRANCH` the runtime. Tests are compiled so that
 `test-backend-sched-ring` can gate the build, and `LLAMA_TESTS_INSTALL=OFF` keeps every test binary out
-of the image. The workflow can build it on demand with `backends=rocm-10.0-strix-llama`; it is not in
-the automatic `all` set.
+of the image. [`poll-strix-llama.yaml`](../.github/workflows/poll-strix-llama.yaml) watches
+[`halo-box/strix-llama.cpp:master`](https://github.com/halo-box/strix-llama.cpp) and dispatches the build
+whenever that branch moves; it is not in the `all` set, so it does not rebuild on upstream llama.cpp
+commits. The workflow can also be run on demand with `backends=rocm-10.0-strix-llama`; it builds with
+`--no-cache`, so every published tag recompiles the custom ROCm runtime from branch HEAD too.
 
 ```sh
 toolbox create llama-rocm-10.0-strix-llama --image localhost/llama-rocm-10.0-strix-llama \
