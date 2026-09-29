@@ -36,7 +36,7 @@ RUN git clone --filter=blob:none --single-branch --branch main --no-checkout "$G
          -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
          -DBUILD_TESTING=OFF -DGUFO_BUILD_TOOLS=OFF -DENGINE_ENABLE_HIP=ON \
          -DCMAKE_HIP_ARCHITECTURES=gfx1151 \
-         -DGUFO_VERSION="$GUFO_COMMIT" \
+         -DGUFO_REVISION="$GUFO_COMMIT" \
          -DCMAKE_INSTALL_PREFIX=/usr/local \
     && cmake --build build/release --parallel 4 \
     && cmake --install build/release \

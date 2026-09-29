@@ -106,7 +106,7 @@ jobs:
 
           echo "→ Running smoke test..."
           if [[ "${B}" == "rocm-10.0-gufo" ]]; then
-            docker run --rm "${LI}" gufo --version
+            docker run --rm "${LI}" gufo --version | grep -F "(${GUFO_MAIN_SHA})"
             docker run --rm "${LI}" gufo --help
           else
             docker run --rm "${LI}" bash -c "if command -v llama >/dev/null; then llama version; else llama-cli --version; fi"
