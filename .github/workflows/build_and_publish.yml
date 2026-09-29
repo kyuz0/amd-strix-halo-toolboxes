@@ -95,7 +95,14 @@ jobs:
 
           test -f "${DF}" || { echo "Unknown backend: ${B} (${DF} missing)" >&2; exit 1; }
           echo "→ Building ${DF}"
-          docker build --no-cache -t "${LI}" -f "${DF}" .
+          if [[ "${B}" == "rocm-10.0-gufo" ]]; then
+            GUFO_MAIN_SHA=$(git ls-remote https://github.com/gufo-org/gufo.git refs/heads/main | cut -f1)
+            [[ "${GUFO_MAIN_SHA}" =~ ^[0-9a-f]{40}$ ]] || { echo "Could not resolve Gufo main" >&2; exit 1; }
+            echo "→ Gufo upstream main: ${GUFO_MAIN_SHA}"
+            docker build --no-cache --build-arg "GUFO_COMMIT=${GUFO_MAIN_SHA}" -t "${LI}" -f "${DF}" .
+          else
+            docker build --no-cache -t "${LI}" -f "${DF}" .
+          fi
 
           echo "→ Running smoke test..."
           if [[ "${B}" == "rocm-10.0-gufo" ]]; then
