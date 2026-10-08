@@ -14,8 +14,8 @@ REPO
 EOF
 
 RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
-      gcc gcc-c++ cmake ninja-build pkgconf-pkg-config git-core \
-      libicu-devel libcurl-devel openssl-devel libpng-devel libjpeg-turbo-devel \
+      gcc gcc-c++ cmake ninja-build pkgconf-pkg-config git-core libicu-devel \
+      libcurl-devel openssl-devel libpng-devel libjpeg-turbo-devel libwebp-devel \
       amdrocm-core-devel10.0-gfx1151 \
     && dnf clean all && rm -rf /var/cache/dnf/*
 
@@ -24,7 +24,7 @@ ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
     LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
 
 ARG GUFO_REPOSITORY=https://github.com/gufo-org/gufo.git
-ARG GUFO_COMMIT=992113b750066760b9a660d6a3084bd2088267d8
+ARG GUFO_COMMIT=f17e37b8bb7df5fb83ea7ce6d4dc4ef6d6677253
 WORKDIR /opt/gufo
 RUN git clone --filter=blob:none --single-branch --branch main --no-checkout "$GUFO_REPOSITORY" . \
     && git checkout --detach "$GUFO_COMMIT" \
@@ -45,7 +45,7 @@ RUN git clone --filter=blob:none --single-branch --branch main --no-checkout "$G
 FROM registry.fedoraproject.org/fedora-minimal:44
 
 ARG GUFO_REPOSITORY=https://github.com/gufo-org/gufo.git
-ARG GUFO_COMMIT=992113b750066760b9a660d6a3084bd2088267d8
+ARG GUFO_COMMIT=f17e37b8bb7df5fb83ea7ce6d4dc4ef6d6677253
 LABEL org.opencontainers.image.source="$GUFO_REPOSITORY" \
       org.opencontainers.image.revision="$GUFO_COMMIT" \
       org.opencontainers.image.title="Gufo ROCm 10.0 for Strix Halo"
@@ -64,7 +64,7 @@ EOF
 
 RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
       bash ca-certificates git-core libatomic libstdc++ libgcc libgomp sudo \
-      libicu libcurl openssl-libs libpng libjpeg-turbo python3 procps-ng \
+      libicu libcurl openssl-libs libpng libjpeg-turbo libwebp python3 procps-ng \
       amdrocm10.0-gfx1151 \
     && microdnf clean all && rm -rf /var/cache/dnf/* \
     && ln -s core-10.0 /opt/rocm/core \
