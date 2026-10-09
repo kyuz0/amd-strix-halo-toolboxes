@@ -7,6 +7,7 @@ declare -A TOOLBOXES
 
 TOOLBOXES["llama-vulkan-radv"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-vulkan-radv-performance"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-radv-performance --device /dev/dri --group-add video --security-opt seccomp=unconfined"
+TOOLBOXES["llama-vulkan-strix-llama"]="docker.io/kyuz0/amd-strix-halo-toolboxes:vulkan-strix-llama --device /dev/dri --group-add video --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-10.0"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0 --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["gufo-rocm-10.0"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-gufo --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
 TOOLBOXES["llama-rocm-10.0-qwen-3.8-flash-next"]="docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-qwen-3.8-flash-next --device /dev/dri --device /dev/kfd --group-add video --group-add render --group-add sudo --security-opt seccomp=unconfined"
@@ -32,6 +33,7 @@ function usage() {
   echo "  - llama-rocm-10.0-engramhalo"
   echo "  - llama-rocm-10.0-strix-llama"
   echo "  - llama-vulkan-radv-performance"
+  echo "  - llama-vulkan-strix-llama"
   echo "  - llama-rocm-7.2.4-rdma-fix"
   echo "  - llama-rocm-10.0-rocmfpx"
   echo "  - llama-vulkan-rocmfpx"
