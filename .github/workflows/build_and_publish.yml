@@ -9,6 +9,10 @@ on:
           Use "all" to build the standard auto-built set.
         required: false
         default: all
+      gufo_commit:
+        description: Exact upstream main commit for Gufo; empty resolves current main.
+        required: false
+        default: ''
       source_state_name:
         description: Artifact name used by an upstream poller after a successful build.
         required: false
@@ -50,6 +54,9 @@ jobs:
   build-and-push:
     needs: prepare
     runs-on: ubuntu-latest
+    concurrency:
+      group: toolbox-publish-${{ matrix.backend }}
+      cancel-in-progress: false
     strategy:
       fail-fast: false
       matrix:
@@ -83,6 +90,8 @@ jobs:
       - name: Build & push ${{ matrix.backend }}
         working-directory: toolboxes
         shell: bash
+        env:
+          GUFO_REQUESTED_COMMIT: ${{ inputs.gufo_commit }}
         run: |
           set -euo pipefail
           B="${{ matrix.backend }}"
@@ -96,7 +105,10 @@ jobs:
           test -f "${DF}" || { echo "Unknown backend: ${B} (${DF} missing)" >&2; exit 1; }
           echo "→ Building ${DF}"
           if [[ "${B}" == "rocm-10.0-gufo" ]]; then
-            GUFO_MAIN_SHA=$(git ls-remote https://github.com/gufo-org/gufo.git refs/heads/main | cut -f1)
+            GUFO_MAIN_SHA="${GUFO_REQUESTED_COMMIT}"
+            if [[ -z "${GUFO_MAIN_SHA}" ]]; then
+              GUFO_MAIN_SHA=$(git ls-remote https://github.com/gufo-org/gufo.git refs/heads/main | cut -f1)
+            fi
             [[ "${GUFO_MAIN_SHA}" =~ ^[0-9a-f]{40}$ ]] || { echo "Could not resolve Gufo main" >&2; exit 1; }
             echo "→ Gufo upstream main: ${GUFO_MAIN_SHA}"
             docker build --no-cache --build-arg "GUFO_COMMIT=${GUFO_MAIN_SHA}" -t "${LI}" -f "${DF}" .

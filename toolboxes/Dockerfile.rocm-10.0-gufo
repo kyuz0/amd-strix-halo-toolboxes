@@ -24,7 +24,7 @@ ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
     LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
 
 ARG GUFO_REPOSITORY=https://github.com/gufo-org/gufo.git
-ARG GUFO_COMMIT=f17e37b8bb7df5fb83ea7ce6d4dc4ef6d6677253
+ARG GUFO_COMMIT=b3facce1180e4bb44ac25c8f8a0fee348ae36da9
 WORKDIR /opt/gufo
 RUN git clone --filter=blob:none --single-branch --branch main --no-checkout "$GUFO_REPOSITORY" . \
     && git checkout --detach "$GUFO_COMMIT" \
@@ -37,6 +37,7 @@ RUN git clone --filter=blob:none --single-branch --branch main --no-checkout "$G
          -DBUILD_TESTING=OFF -DGUFO_BUILD_TOOLS=OFF -DENGINE_ENABLE_HIP=ON \
          -DCMAKE_HIP_ARCHITECTURES=gfx1151 \
          -DGUFO_REVISION="$GUFO_COMMIT" \
+         -DGUFO_RELEASE_VERSION="$(cat version.txt)" \
          -DCMAKE_INSTALL_PREFIX=/usr/local \
     && cmake --build build/release --parallel 4 \
     && cmake --install build/release \
@@ -45,7 +46,7 @@ RUN git clone --filter=blob:none --single-branch --branch main --no-checkout "$G
 FROM registry.fedoraproject.org/fedora-minimal:44
 
 ARG GUFO_REPOSITORY=https://github.com/gufo-org/gufo.git
-ARG GUFO_COMMIT=f17e37b8bb7df5fb83ea7ce6d4dc4ef6d6677253
+ARG GUFO_COMMIT=b3facce1180e4bb44ac25c8f8a0fee348ae36da9
 LABEL org.opencontainers.image.source="$GUFO_REPOSITORY" \
       org.opencontainers.image.revision="$GUFO_COMMIT" \
       org.opencontainers.image.title="Gufo ROCm 10.0 for Strix Halo"

@@ -1,0 +1,64 @@
+name: Poll Gufo & Trigger Build
+
+on:
+  schedule:
+    - cron: '40 */4 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - toolboxes/Dockerfile.rocm-10.0-gufo
+      - .github/workflows/poll-gufo.yaml
+      - .github/workflows/build_and_publish.yml
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: poll-gufo
+  cancel-in-progress: false
+
+jobs:
+  poll-and-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install registry inspector
+        run: sudo apt-get update && sudo apt-get install -y skopeo
+
+      - name: Compare upstream with published image and trigger build
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          LATEST_SHA=$(git ls-remote https://github.com/gufo-org/gufo.git refs/heads/main | cut -f1)
+          [[ "$LATEST_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "Could not resolve Gufo main" >&2; exit 1; }
+          # Inspect the published config, not an expiring workflow artifact.
+          # Fail on registry errors rather than treating them as a source change.
+          PUBLISHED_SHA=$(skopeo inspect --config docker://docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-gufo | jq -er '.config.Labels["org.opencontainers.image.revision"]')
+          [[ "$PUBLISHED_SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "Invalid published Gufo revision" >&2; exit 1; }
+          echo "Upstream main: $LATEST_SHA"
+          echo "Published image: $PUBLISHED_SHA"
+          if [[ "$EVENT_NAME" != push && "$LATEST_SHA" == "$PUBLISHED_SHA" ]]; then
+            echo "Published image is current; no rebuild needed."
+            exit 0
+          fi
+          # Avoid dispatching duplicates while any Gufo publication is active.
+          if [[ "$EVENT_NAME" != push ]]; then
+            for STATUS in queued in_progress pending waiting requested; do
+              RUNS=$(gh api "repos/$GH_REPO/actions/workflows/build_and_publish.yml/runs?status=$STATUS&per_page=100")
+              while read -r RUN_ID; do
+                JOBS=$(gh api --paginate "repos/$GH_REPO/actions/runs/$RUN_ID/jobs?per_page=100")
+                if jq -e '.jobs[] | select(.name | contains("rocm-10.0-gufo"))' <<< "$JOBS" >/dev/null; then
+                  echo "Gufo build $RUN_ID is active; next poll will retry if needed."
+                  exit 0
+                fi
+              done < <(jq -r '.workflow_runs[].id' <<< "$RUNS")
+            done
+          fi
+          gh workflow run build_and_publish.yml --repo "$GH_REPO" --ref main \
+            -f backends=rocm-10.0-gufo -f gufo_commit="$LATEST_SHA"
+          echo "Dispatched Gufo build for $LATEST_SHA"
