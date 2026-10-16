@@ -83,7 +83,7 @@ These use nightly or custom backend stacks. Their rebuild policy is noted below.
 
 ### Temporary llama.cpp ROCm Inference Workaround
 
-The `rocm-10.0`, `rocm-10.0-qwen-3.8-flash-next`, `rocm-10.0-engramhalo`, `rocm-10.0-strix-llama`,
+The `rocm-10.0`, `rocm-10.0-qwen-3.8-flash-next`, `rocm-10.0-engramhalo`
 and `therock-nightly` images currently apply a
 temporary workaround for [llama.cpp issue #25992](https://github.com/ggml-org/llama.cpp/issues/25992),
 based on [pull request #25863](https://github.com/ggml-org/llama.cpp/pull/25863).
