@@ -93,28 +93,13 @@ podman run --rm -it --name gufo-server \
 Add `--log-progress` to show prefill, decode, speed, and speculative-acceptance progress in the server output. Point `--model` at the first shard; Gufo loads the remaining numbered shards. Add `--speculative mtp --mtp-model /models/MTP/mtp-Qwen3.8-Flash-Next-shared-Q8_0.gguf` for the tested Flash Next MTP path. DeepSeek uses its own `--dspark-model` sidecar flag. Keep these auxiliary GGUFs separate from the target weights.
 
 > [!IMPORTANT]
-> `rocm-10.0-engramhalo` is the exception to the usual Strix Halo `--no-mmap`
+> `rocm-10.0-engramhalo` is the exception to the usual Strix Halo `--load-mode none`
 > guidance. Its SSD-resident engram profile requires `-lm mmap --lazy-mode on`;
-> `--no-mmap` disables that path. With the external MTP
+> `--load-mode none` disables that path. With the external MTP
 > sidecar, use one slot and at most `-c 163840` until the fork validates larger
 > MTP contexts. AI Toolbox Cockpit includes this tested profile and its notes.
 
 > Legacy images (`rocm-6.4.2`, `rocm-6.4.3`, `rocm-7.1.1`) are excluded from these lists.
-
-### Temporary llama.cpp ROCm Inference Workaround
-
-The `rocm-10.0`, `rocm-10.0-engramhalo`, `rocm-10.0-strix-llama`,
-and `therock-nightly` images currently apply a
-temporary workaround for [llama.cpp issue #25992](https://github.com/ggml-org/llama.cpp/issues/25992),
-based on [pull request #25863](https://github.com/ggml-org/llama.cpp/pull/25863).
-It prevents llama.cpp from selecting ROCm host buffers for computation on
-integrated GPUs, which addresses the reported inference failures while retaining
-pinned host memory for transfers.
-
-The workaround is isolated in
-[`toolboxes/llama-cpp-25992-rocm-host-buffer.patch`](toolboxes/llama-cpp-25992-rocm-host-buffer.patch)
-and the corresponding Dockerfile build steps. It is intended to be removed once
-llama.cpp incorporates an equivalent upstream fix.
 
 The images include RDMA support for llama.cpp RPC. On Linux hosts with a
 RoCEv2-capable NIC, llama.cpp automatically negotiates the RDMA transport when
@@ -176,12 +161,12 @@ HF_XET_HIGH_PERFORMANCE=1 hf download unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF 
 ```
 
 ### 4. Run Inference
-> ⚠️ **IMPORTANT**: Always use **flash attention** (`-fa 1`) and **no-mmap** (`--no-mmap`) on Strix Halo to avoid crashes/slowdowns.
+> ⚠️ **IMPORTANT**: Always use **flash attention** (`-fa 1`) and **resident loading** (`--load-mode none`) on Strix Halo to avoid crashes/slowdowns.
 
 **Server Mode (API):**
 ```sh
 llama-server -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
-  -c 8192 -ngl 999 -fa 1 --no-mmap
+  -c 8192 -ngl 999 -fa 1 --load-mode none
 ```
 
 **Router Mode:**
@@ -192,7 +177,7 @@ llama-server --models-preset models.ini --host 0.0.0.0 --port 8080 --models-max 
 
 **CLI Mode:**
 ```sh
-llama-cli --no-mmap -ngl 999 -fa 1 \
+llama-cli --load-mode none -ngl 999 -fa 1 \
   -m models/qwen3-coder-30B-A3B/BF16/Qwen3-Coder-30B-A3B-Instruct-BF16-00001-of-00002.gguf \
   -p "Write a Strix Halo toolkit haiku."
 ```

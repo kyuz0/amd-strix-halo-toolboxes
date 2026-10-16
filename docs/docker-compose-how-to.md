@@ -15,7 +15,7 @@
 
 ```
 # shell
-CMD ["/bin/bash", "-c", "llama-server --host $HOST --port $PORT -c $CONTEXT_LENGTH --temp $TEMPERATURE --jinja --no-mmap -ngl $NGL -fa $FA -m $MODEL_PATH"]
+CMD ["/bin/bash", "-c", "llama-server --host $HOST --port $PORT -c $CONTEXT_LENGTH --temp $TEMPERATURE --jinja --load-mode none -ngl $NGL -fa $FA -m $MODEL_PATH"]
 ```
 
 3.  Build container with:
@@ -71,7 +71,7 @@ docker compose up -d
 
 ```
 # shell
-CMD ["/bin/bash", "-c", "llama-server --host $HOST --port $PORT -c $CONTEXT_LENGTH --temp $TEMPERATURE --jinja --no-mmap -ngl $NGL -fa $FA -m $MODEL_PATH"]
+CMD ["/bin/bash", "-c", "llama-server --host $HOST --port $PORT -c $CONTEXT_LENGTH --temp $TEMPERATURE --jinja --load-mode none -ngl $NGL -fa $FA -m $MODEL_PATH"]
 ```
 
 3.  Build container with:
