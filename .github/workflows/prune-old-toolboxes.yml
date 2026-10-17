@@ -55,8 +55,9 @@ jobs:
       - name: Prune old tags
         env:
           TOKEN: ${{ steps.login.outputs.token }}
-          KEEP: ${{ github.event.inputs.keep }}
+          KEEP: ${{ github.event.inputs.keep || '3' }}
         run: |
+          [[ "$KEEP" =~ ^[1-9][0-9]*$ ]] || { echo "keep must be a positive integer"; exit 1; }
           BACKENDS='${{ steps.mk.outputs.list }}'
           mapfile -t ARR < <(jq -r '.[]' <<< "$BACKENDS")
           base_url="https://hub.docker.com/v2/repositories/${NS}/${REPO}/tags"
