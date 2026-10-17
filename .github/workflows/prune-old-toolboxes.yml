@@ -80,6 +80,8 @@ jobs:
               echo "Nothing to delete."
               continue
             fi
+            # Build timestamps determine recency even after an old tag is restored.
+            mapfile -t tags < <(printf '%s\n' "${tags[@]}" | LC_ALL=C sort -ru)
             to_delete=("${tags[@]:KEEP}")
             for t in "${to_delete[@]}"; do
               echo "Deleting tag ${t}..."
