@@ -1,0 +1,68 @@
+# build:
+#> podman build -t rocm-toolbox:7.1.1 -f Toolboxfile.rocm-7.1.1
+#
+# run:
+#> toolbox create -i rocm-toolbox:7.1.1 rocm-toolbox-7.1.1
+#> toolbox enter rocm-toolbox-7.1.1
+#>>  /opt/llama.cpp/bin/llama-cli -m openai_gpt-oss-120b/MXFP4.gguf --jinja --ctx-size 0
+#
+
+#------------------------------------------------------------------------------------------
+# build stage
+FROM registry.fedoraproject.org/fedora:44 AS builder
+
+# build dep
+RUN  dnf -y --nodocs upgrade --refresh \
+  && dnf -y --nodocs --setopt=install_weak_deps=False \
+       install \
+         git git-lfs patch \
+         make gcc-c++ cmake libcurl-devel ninja-build \
+         hipblas-devel rocm-hip-devel rocblas-devel
+
+# llama.cpp
+WORKDIR /tmp/llama.cpp
+RUN git clone --recursive https://github.com/ggerganov/llama.cpp.git .
+
+# build
+RUN git clean -xdf \
+  && git submodule update --recursive \
+  && cmake -S . -B build \
+      -DCMAKE_INSTALL_PREFIX="/opt/llama.cpp" \
+      -DGGML_HIP=ON \
+      -DAMDGPU_TARGETS=gfx1151 \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DGGML_RPC=ON \
+  && cmake --build build --config Release -- -j$(nproc) \
+  && cmake --install build --config Release
+
+#------------------------------------------------------------------------------------------
+# runtime stage
+FROM registry.fedoraproject.org/fedora-toolbox:44
+
+# runtime deps
+RUN  dnf -y --nodocs upgrade --refresh \
+  && dnf -y --nodocs --setopt=install_weak_deps=0 \
+       install \
+         libatomic libgomp \
+         rocm-hip rocblas hipblas \
+         rocminfo radeontop procps-ng \
+  && dnf clean all && rm -rf /var/cache/dnf/*
+
+# copy llama.cpp
+COPY --from=builder /opt/llama.cpp /opt/llama.cpp
+
+# ld
+RUN echo "/opt/llama.cpp/lib64" >> /etc/ld.so.conf.d/local.conf \
+ && ldconfig
+
+# helper
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# default run parameter for llama.cpp :
+ENV GGML_CUDA_ENABLE_UNIFIED_MEMORY=ON \
+    LLAMA_ARG_UBATCH=2048 \
+    LLAMA_ARG_FLASH_ATTN=1 \
+    LLAMA_ARG_NO_MMAP=1 \
+    LLAMA_ARG_N_GPU_LAYERS=999
+
