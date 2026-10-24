@@ -66,19 +66,24 @@ llama-cli --list-devices
 
 Look for an `HRX0` `gfx1151` device before testing a model. Start with the [Qwen3-30B-A3B-Instruct-2507 Q4_K_M model](https://github.com/ggml-org/llama.cpp/discussions/27219) used for the initial HRX work, with `-fa 1 --no-mmap` as in the main README. AMD's staging branch is experimental and may not support every model or operation yet. The build downloads a pinned TheRock SDK and compiles HRX, so allow substantial disk space and build time. The existing workflow can build this image on demand with `backends=hrx-staging`; it is not in the automatic `all` set.
 
-### Retained-PM4 Strix Halo build (`rocm-10.0-strix-llama`)
+### Retained-PM4 Strix Halo build (`rocm-10.1-strix-llama`)
 
 This image builds two things: a custom ROCm runtime (ROCr + HIP from
 [`pwilkin/rocm-systems:ilintar-experiments`](https://github.com/pwilkin/rocm-systems/tree/ilintar-experiments))
-and the engine ([`halo-box/strix-llama.cpp:master`](https://github.com/halo-box/strix-llama.cpp)). The
+and the engine ([`halo-box/strix-llama.cpp:master`](https://github.com/halo-box/strix-llama.cpp)). It
+is built on Ubuntu 26.04 and pulls the ROCm 10.1 Core SDK from AMD's `ubuntu2604` deb stream. The
 custom libraries install to `/opt/strix/lib` and lead `LD_LIBRARY_PATH`, and the build fails if the
-retained-PM4 patch has disappeared from the runtime branch. Nothing is pinned, so `--no-cache` is the
+retained-PM4 patch has disappeared from the runtime branch. Leading with `LD_LIBRARY_PATH` only works
+while the engine's own libraries carry `DT_RUNPATH`: ROCm's linker writes the rpath CMake hands it as the
+older `DT_RPATH`, which `ld.so` searches before `LD_LIBRARY_PATH` and which would pin the SDK's HIP and
+ROCr, so the image rewrites them with `patchelf` and then checks every installed binary against
+`/opt/strix/lib`. Nothing is pinned, so `--no-cache` is the
 refresh mechanism, and `/opt/strix/versions.txt` records the two revisions that went in. Allow 40-60
 minutes and several GB of free disk.
 
 ```sh
 cd toolboxes
-podman build --no-cache -t llama-rocm-10.0-strix-llama -f Dockerfile.rocm-10.0-strix-llama .
+podman build --no-cache -t llama-rocm-10.1-strix-llama -f Dockerfile.rocm-10.1-strix-llama .
 ```
 
 `REPO`/`BRANCH` select the engine (the tracked fallback is
@@ -88,11 +93,11 @@ podman build --no-cache -t llama-rocm-10.0-strix-llama -f Dockerfile.rocm-10.0-s
 of the image. [`poll-strix-llama.yaml`](../.github/workflows/poll-strix-llama.yaml) watches
 [`halo-box/strix-llama.cpp:master`](https://github.com/halo-box/strix-llama.cpp) and dispatches the build
 whenever that branch moves; it is not in the `all` set, so it does not rebuild on upstream llama.cpp
-commits. The workflow can also be run on demand with `backends=rocm-10.0-strix-llama`; it builds with
+commits. The workflow can also be run on demand with `backends=rocm-10.1-strix-llama`; it builds with
 `--no-cache`, so every published tag recompiles the custom ROCm runtime from branch HEAD too.
 
 ```sh
-toolbox create llama-rocm-10.0-strix-llama --image localhost/llama-rocm-10.0-strix-llama \
+toolbox create llama-rocm-10.1-strix-llama --image localhost/llama-rocm-10.1-strix-llama \
   -- --device /dev/dri --device /dev/kfd --group-add video --group-add render \
   --security-opt seccomp=unconfined
 ```
@@ -119,6 +124,14 @@ llama-server -m model.gguf --mmproj mmproj-BF16.gguf --mmproj-device ROCm0 -dev 
   decode), `DEBUG_HIP_GRAPH_CLASSIC_PATH=1` (graphs on, classic topological dispatch), and
   `AMD_LOG_LEVEL=3`, which logs `[hipGraph][PM4] retained N dispatches in M dwords` per lowered batch -
   the direct proof that the fast path is live.
+* Tuning candidates, one at a time against the launch line above — all read from the source, none
+  re-measured on ROCm 10.1: `GGML_CUDA_GRAPH_OPT=1` runs an extra optimisation pass over the captured
+  graph and is off by default (`ggml-cuda.cu:7623-7630`); `GGML_SCHED_UMA_RING=3|4` deepens the ring of
+  graph input copies on UMA devices, 2 by default and capped by `GGML_SCHED_MAX_COPIES` = 4
+  (`ggml-backend.cpp:2183-2188`, `ggml/CMakeLists.txt:188`); `GGML_GDN_TILE_CFG=1|2|3` picks the
+  gated-delta-net prefill tile shape, default `0`, or `1` when `H == 48` (`gated_delta_net.cu:1142-1160`);
+  `GGML_CUDA_CUBLAS_COMPUTE_TYPE=f16|f32|bf16|auto` forces the compute type of matmuls dispatched to
+  rocBLAS (`ggml-cuda.cu:1734-1749`).
 * Under rootless Docker, do not use host networking. It masks `/sys`, `/sys/class/kfd` disappears, and
   ROCr then reports `no ROCm-capable device is detected` even with `/dev/kfd` passed through. Publish
   ports instead.

@@ -1,43 +1,56 @@
-# ROCm 10.0 + Strix Halo community fork of llama.cpp, on the custom retained-PM4
+# ROCm 10.1 + Strix Halo community fork of llama.cpp, on the custom retained-PM4
 # ROCr/HIP runtime from pwilkin/rocm-systems:ilintar-experiments.
 #
 # Engine:  https://github.com/halo-box/strix-llama.cpp
 # Runtime: https://github.com/pwilkin/rocm-systems (ilintar-experiments)
 # Build recipe follows https://github.com/pwilkin/strix-halo install.sh, with the
 # installer's host-side parts (package probing, driver checks, model downloads,
-# ~/.local launchers) removed: everything lands in image layers.
+# ~/.local launchers) removed: everything lands in image layers. Base image is
+# Ubuntu 26.04, packages come from apt and AMD's ubuntu2604 deb stream.
 #
 # The custom libamdhip64/libhsa-runtime64 shadow the ROCm 10 SDK copies through
 # LD_LIBRARY_PATH ordering. Never add /opt/strix/lib to ld.so.conf.
 
 # build stage
-FROM registry.fedoraproject.org/fedora:44 AS builder
+FROM docker.io/library/ubuntu:26.04 AS builder
 
-# ROCm 10.0 Core SDK repository (TheRock release stream)
+# ROCm 10.1 Core SDK repository (TheRock release stream, Ubuntu 26.04 deb index).
+# AMD ships the key ASCII-armored under a .gpg name, so dearmor it for apt.
 RUN <<'EOF'
-tee /etc/yum.repos.d/rocm.repo <<REPO
-[amdrocm-stable]
-name=ROCm 10.0.0
-baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64
-enabled=1
-priority=50
-gpgcheck=1
-gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg
-REPO
+set -eux
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y --no-install-recommends ca-certificates curl gpg
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://stable.repo.amd.com/rocm/gpg/packages.gpg \
+  | gpg --batch --yes --dearmor -o /etc/apt/keyrings/amd-rocm.gpg
+cat > /etc/apt/sources.list.d/rocm.sources <<'SRC'
+Types: deb
+URIs: https://stable.repo.amd.com/rocm/core/packages/ubuntu2604
+Suites: stable
+Components: main
+Signed-By: /etc/apt/keyrings/amd-rocm.gpg
+SRC
 EOF
 
-# amdrocm-core-devel10.0-gfx1151: hipcc, LLVM, and the cmake packages the ROCm and
-# llama.cpp builds look for (hip, hipblas, rocblas, amd_comgr, rocprofiler-register,
-# hsa-runtime64). amdrocm10.0-gfx1151: runtime libraries incl. gfx1151 rocBLAS kernels.
-# The rest is install.sh's Fedora dependency list, preinstalled so nothing needs sudo.
-RUN dnf -y --nodocs --setopt=install_weak_deps=False \
-  install \
-  make gcc gcc-c++ cmake ninja-build git-core curl rsync patch which vim-common \
-  libcurl-devel rdma-core-devel elfutils-libelf-devel libdrm-devel libglvnd-devel \
-  libpciaccess-devel libstdc++-devel libzstd-devel numactl-devel openssl-devel \
-  pciutils pkgconf-pkg-config python3 python3-devel python3-pip \
-  amdrocm-core-devel10.0-gfx1151 amdrocm10.0-gfx1151 \
-  && dnf clean all && rm -rf /var/cache/dnf/*
+# amdrocm-core-dev10.1-gfx1151: hipcc, LLVM, and the cmake packages the ROCm and llama.cpp builds
+# look for (hip, hipblas, rocblas, amd_comgr, rocprofiler-register, hsa-runtime64). amdrocm10.1-gfx1151:
+# runtime libraries incl. gfx1151 rocBLAS kernels. The rest is the usual build dependency set.
+# python3-venv is required: Ubuntu splits ensurepip out of python3, and the HIP (CLR) build needs the
+# venv for CppHeaderParser. libstdc++-devel and which have no Ubuntu counterpart (g++ pulls
+# libstdc++-dev; `which` is not packaged in 26.04).
+RUN <<'EOF'
+set -eux
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y --no-install-recommends \
+  make gcc g++ cmake ninja-build git curl ca-certificates rsync patch xxd patchelf \
+  libcurl4-openssl-dev libibverbs-dev libelf-dev libdrm-dev libglvnd-dev \
+  libpciaccess-dev libzstd-dev libnuma-dev libssl-dev pkg-config pciutils \
+  python3 python3-dev python3-pip python3-venv \
+  amdrocm-core-dev10.1-gfx1151 amdrocm10.1-gfx1151
+rm -rf /var/lib/apt/lists/*
+EOF
 
 # The Core SDK installs into /opt/rocm/core-<version>; expose the usual /opt/rocm layout.
 RUN <<'EOF'
@@ -165,6 +178,18 @@ RUN git clean -xdf \
   && build/bin/test-backend-sched-ring \
   && cmake --install build
 
+# ROCm's linker hands the rpath CMake passes back as old-style DT_RPATH, and ld.so searches
+# DT_RPATH before LD_LIBRARY_PATH: the SDK copies of libamdhip64/libhsa-runtime64 would win
+# and the retained-PM4 libraries in /opt/strix/lib would never load. Rewrite it as DT_RUNPATH,
+# same search list, but LD_LIBRARY_PATH leads - which is how the libraries behave on Fedora.
+RUN <<'EOF'
+set -eu
+for f in $(find /opt/llama.cpp/build/bin /usr/local/bin /usr/local/lib -type f); do
+  r=$(patchelf --print-rpath "$f" 2>/dev/null) || continue
+  if [ -n "$r" ]; then patchelf --set-rpath "$r" "$f"; fi
+done
+EOF
+
 # Record what went into the image: nothing here is pinned, so this is the only
 # trace of the upstream revisions a given tag was built from.
 RUN <<'EOF'
@@ -188,6 +213,10 @@ test -n "$lib"
 out=$(LD_LIBRARY_PATH=/opt/strix/hip/lib:/opt/strix/rocr/lib:/opt/rocm/core/lib:/opt/rocm/core/lib/llvm/lib ldd "$lib")
 echo "$out" | grep -F '/opt/strix/hip/lib/libamdhip64.so'
 echo "$out" | grep -F '/opt/strix/rocr/lib/libhsa-runtime64.so'
+# The custom HIP has to lead with the custom ROCr as well, not the SDK's.
+LD_LIBRARY_PATH=/opt/strix/hip/lib:/opt/strix/rocr/lib:/opt/rocm/core/lib \
+  ldd "$(find /opt/strix/hip/lib -name 'libamdhip64.so.*' -type f | head -n1)" \
+  | grep -F '/opt/strix/rocr/lib/libhsa-runtime64.so'
 EOF
 
 # Stage the custom runtime libraries in one directory. cp -a, not a COPY glob: COPY
@@ -210,41 +239,51 @@ COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
 
 # runtime stage
-FROM registry.fedoraproject.org/fedora-minimal:44
+FROM docker.io/library/ubuntu:26.04
 
-# ROCm 10.0 Core SDK repository (TheRock release stream)
+# ROCm 10.1 Core SDK repository. The keyring is dearmored once in the builder and copied in, so the
+# runtime image never needs gpg. The base image ships no CA bundle and Ubuntu's own mirrors are plain
+# http, so ca-certificates has to come from there before apt can read AMD's https repository.
+COPY --from=builder /etc/apt/keyrings/amd-rocm.gpg /etc/apt/keyrings/amd-rocm.gpg
 RUN <<'EOF'
-tee /etc/yum.repos.d/rocm.repo <<REPO
-[amdrocm-stable]
-name=ROCm 10.0.0
-baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64
-enabled=1
-priority=50
-gpgcheck=1
-gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg
-REPO
+set -eux
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y --no-install-recommends ca-certificates
+rm -rf /var/lib/apt/lists/*
 EOF
 
-# Runtime components required by llama.cpp's HIP backend. AMD's gfx1151 base
-# meta-package supplies the runtime libraries while avoiding developer tools.
-# libdrm, elfutils-libs and numactl-libs are needed here and not in rocm-10.0: AMD's
-# ROCr links the vendored librocm_sysdeps_{drm,elf,numa} libraries, the custom one
-# links the distribution's own libdrm/libelf/libnuma.
-RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
-  install \
-  bash ca-certificates libatomic libstdc++ libgcc libgomp libibverbs sudo \
-  elfutils-libs libdrm numactl-libs \
-  amdrocm10.0-gfx1151 \
-  radeontop procps-ng \
-  && microdnf clean all && rm -rf /var/cache/dnf/* \
-  && ln -s core-10.0 /opt/rocm/core \
-  && ln -s core-10.0/bin /opt/rocm/bin \
-  && ln -s core-10.0/include /opt/rocm/include \
-  && ln -s core-10.0/lib /opt/rocm/lib \
-  && ln -s core-10.0/libexec /opt/rocm/libexec \
-  && ln -s core-10.0/lib/llvm /opt/rocm/llvm \
-  && ln -s core-10.0/share /opt/rocm/share \
-  && ln -s core-10.0/lib/llvm/amdgcn /opt/rocm/amdgcn
+# Runtime components required by llama.cpp's HIP backend. AMD's gfx1151 base meta-package supplies
+# the runtime libraries while avoiding developer tools. libelf1t64, libdrm2/libdrm-amdgpu1 and
+# libnuma1 are needed here: AMD's ROCr links its vendored librocm_sysdeps_{drm,elf,numa}, the custom
+# ROCr links the distribution's own libdrm/libdrm_amdgpu/libelf/libnuma, and Debian/Ubuntu keep the
+# amdgpu DRM backend in a package of its own.
+RUN <<'EOF'
+set -eux
+cat > /etc/apt/sources.list.d/rocm.sources <<'SRC'
+Types: deb
+URIs: https://stable.repo.amd.com/rocm/core/packages/ubuntu2604
+Suites: stable
+Components: main
+Signed-By: /etc/apt/keyrings/amd-rocm.gpg
+SRC
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get install -y --no-install-recommends \
+  bash libatomic1 libstdc++6 libgcc-s1 libgomp1 libibverbs1 sudo \
+  libelf1t64 libdrm2 libdrm-amdgpu1 libnuma1 \
+  radeontop procps \
+  amdrocm10.1-gfx1151
+rm -rf /var/lib/apt/lists/*
+ln -s core-10.1 /opt/rocm/core
+ln -s core-10.1/bin /opt/rocm/bin
+ln -s core-10.1/include /opt/rocm/include
+ln -s core-10.1/lib /opt/rocm/lib
+ln -s core-10.1/libexec /opt/rocm/libexec
+ln -s core-10.1/lib/llvm /opt/rocm/llvm
+ln -s core-10.1/share /opt/rocm/share
+ln -s core-10.1/lib/llvm/amdgcn /opt/rocm/amdgcn
+EOF
 
 # Custom retained-PM4 ROCr + HIP shared objects only: no headers, no static libs,
 # no hipcc. They must be found before the SDK copies, so they stay on LD_LIBRARY_PATH
@@ -256,23 +295,31 @@ COPY --from=builder /opt/strix/versions.txt /opt/strix/versions.txt
 COPY --from=builder /usr/local/ /usr/local/
 COPY --from=builder /opt/llama.cpp/build/bin/*rpc-server /usr/local/bin/
 
-# ld
+# ld: set the search paths, then prove that every installed binary resolves cleanly and
+# takes libamdhip64/libhsa-runtime64 from /opt/strix/lib rather than from the SDK.
 RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf \
   && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
   && echo "/opt/rocm/core/lib" > /etc/ld.so.conf.d/rocm.conf \
   && echo "/opt/rocm/core/lib/rocm_sysdeps/lib" >> /etc/ld.so.conf.d/rocm.conf \
   && ldconfig \
   && find /usr/local/lib /usr/local/lib64 -maxdepth 1 -type f -name 'libllama*.so*' \
-     -exec cp -n {} /usr/lib64/ \; \
+     -exec cp -n {} /usr/lib/x86_64-linux-gnu/ \; \
   && ldconfig \
   && test -e /opt/strix/lib/libhsa-runtime64.so.1 \
-  && grep -aq DEBUG_HIP_GRAPH_PM4 "$(find /opt/strix/lib -name 'libamdhip64.so.7.*' -type f | head -n1)" \
+  && grep -aq DEBUG_HIP_GRAPH_PM4 "$(find /opt/strix/lib -name 'libamdhip64.so.*' -type f | head -n1)" \
   && if LD_LIBRARY_PATH=/opt/strix/lib:/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib \
-       ldd /opt/strix/lib/libhsa-runtime64.so.1 /opt/strix/lib/libamdhip64.so.7 | grep 'not found'; then \
-       echo 'ERROR: custom ROCm libraries have unresolved dependencies'; exit 1; fi
+       ldd /opt/strix/lib/libhsa-runtime64.so.1 /opt/strix/lib/libamdhip64.so.* | grep 'not found'; then \
+       echo 'ERROR: custom ROCm libraries have unresolved dependencies'; exit 1; fi \
+  && for b in /usr/local/bin/llama* /usr/local/bin/*rpc-server; do \
+       out=$(LD_LIBRARY_PATH=/opt/strix/lib:/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib ldd "$b"); \
+       if echo "$out" | grep 'not found'; then \
+         echo "ERROR: unresolved libraries for $b"; exit 1; fi; \
+       if echo "$out" | grep -E 'lib(amdhip64|hsa-runtime64)\.so' | grep -vF '/opt/strix/lib/'; then \
+         echo "ERROR: $b does not run on the retained-PM4 libraries"; exit 1; fi; \
+     done
 
 # ROCm environment. LD_LIBRARY_PATH leads with /opt/strix/lib; the retained-PM4 defaults are
-# what make this image faster than rocm-10.0, and they are confirmed live on gfx1151, not
+# what make this image faster than the stock ROCm images, and they are confirmed live on gfx1151, not
 # assumed: with AMD_LOG_LEVEL=3 the runtime logs "[hipGraph][PM4] retained 3147 dispatches in
 # 92846 dwords" per lowered batch, with no ROCR fallback lines. GGML_CUDA_DISABLE_GRAPHS or
 # HIP_LAUNCH_BLOCKING override the fast path for bisection and must not be baked in.
