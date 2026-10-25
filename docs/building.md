@@ -98,9 +98,14 @@ commits. The workflow can also be run on demand with `backends=rocm-10.1-strix-l
 
 ```sh
 toolbox create llama-rocm-10.1-strix-llama --image localhost/llama-rocm-10.1-strix-llama \
-  -- --device /dev/dri --device /dev/kfd --group-add video --group-add render \
-  --security-opt seccomp=unconfined
+  -- --device /dev/dri --device /dev/kfd --security-opt seccomp=unconfined
 ```
+
+No `--group-add` here: the image is Ubuntu 26.04-based and has no `render` group, and both Docker and
+podman resolve `--group-add` names against the image's `/etc/group`, so the lookup fails outright
+(`unable to find group render: no matching entries in group file`). The groups are not needed - the
+container runs as root and `/dev/kfd` plus `/dev/dri/renderD128` are world `rw`, so the GPU is
+reachable without any supplementary group.
 
 The image carries no wrapper and no baked server flags. This is the configuration measured at 1207 t/s
 prompt processing (`pp2048`, depth 0) and 43.9 t/s decode on Qwen3.8-Flash-Next with its shared MTP

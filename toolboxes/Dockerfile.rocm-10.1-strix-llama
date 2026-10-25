@@ -342,6 +342,22 @@ ENV ROCM_PATH=/opt/rocm \
   DEBUG_HIP_GRAPH_PM4=1 \
   GPU_MAX_HW_QUEUES=1
 
+# Toolbx creates the invoking host user inside the container with the host's UID, so any
+# stock account on UID 1000 in the image collides with it: the init container aborts with
+# "useradd: UID 1000 is not unique" and the toolbox never starts. Ubuntu's base image ships
+# exactly such a user, so drop it (userdel also takes its private group) and leave UID 1000
+# free for the host user.
+RUN <<'EOF'
+set -eux
+userdel --remove ubuntu
+if getent passwd 1000; then
+  echo 'ERROR: UID 1000 is still taken' >&2; exit 1
+fi
+if getent group 1000; then
+  echo 'ERROR: GID 1000 is still taken' >&2; exit 1
+fi
+EOF
+
 # helper
 COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
 RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
