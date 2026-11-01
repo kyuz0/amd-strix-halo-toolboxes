@@ -16,6 +16,8 @@ EOF
 RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
       gcc gcc-c++ cmake ninja-build pkgconf-pkg-config git-core libicu-devel \
       libcurl-devel openssl-devel libpng-devel libjpeg-turbo-devel libwebp-devel \
+      libsndfile-devel soxr-devel libavformat-free-devel libavcodec-free-devel \
+      libavutil-free-devel libswscale-free-devel \
       amdrocm-core-devel10.0-gfx1151 \
     && dnf clean all && rm -rf /var/cache/dnf/*
 
@@ -66,6 +68,8 @@ EOF
 RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
       bash ca-certificates git-core libatomic libstdc++ libgcc libgomp sudo \
       libicu libcurl openssl-libs libpng libjpeg-turbo libwebp python3 procps-ng \
+      libsndfile soxr ffmpeg-free \
+      libavformat-free libavcodec-free libavutil-free libswscale-free \
       amdrocm10.0-gfx1151 \
     && microdnf clean all && rm -rf /var/cache/dnf/* \
     && ln -s core-10.0 /opt/rocm/core \
@@ -86,7 +90,9 @@ RUN echo /usr/local/lib > /etc/ld.so.conf.d/gufo.conf \
     && echo /usr/local/lib64 >> /etc/ld.so.conf.d/gufo.conf \
     && echo /opt/rocm/core/lib >> /etc/ld.so.conf.d/gufo.conf \
     && echo /opt/rocm/core/lib/rocm_sysdeps/lib >> /etc/ld.so.conf.d/gufo.conf \
-    && ldconfig
+    && ldconfig \
+    && ffmpeg -version \
+    && ffprobe -version
 
 ENV PYTHONNOUSERSITE=1
 CMD ["/bin/bash"]
