@@ -1,0 +1,60 @@
+name: Poll Maya Releases
+
+on:
+  schedule:
+    - cron: '20 */4 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - toolboxes/Dockerfile.rocm-10.0-maya
+      - toolboxes/maya-toolbox.py
+      - .github/workflows/build-maya.yml
+      - .github/workflows/poll-maya.yml
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: poll-maya
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install registry inspector
+        run: sudo apt-get update && sudo apt-get install -y skopeo
+      - name: Compare release and dispatch build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=$(gh api repos/mw00/project-maya/releases/latest --jq .tag_name)
+          [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          git init "$RUNNER_TEMP/maya-source"
+          git -C "$RUNNER_TEMP/maya-source" fetch --depth 1 https://github.com/mw00/project-maya.git "refs/tags/$VERSION"
+          COMMIT=$(git -C "$RUNNER_TEMP/maya-source" rev-parse 'FETCH_HEAD^{commit}')
+          [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          # Recipe pushes force a build, including the first publication. Registry
+          # errors during scheduled polling fail visibly instead of causing rebuilds.
+          if [[ "$EVENT_NAME" != push ]]; then
+            skopeo inspect --config docker://docker.io/kyuz0/amd-strix-halo-toolboxes:rocm-10.0-maya > published.json
+            PUBLISHED=$(jq -er '.config.Labels["org.opencontainers.image.revision"]' published.json)
+            if [[ "$PUBLISHED" == "$COMMIT" ]]; then
+              echo "Maya $VERSION is already published."
+              exit 0
+            fi
+          fi
+          for STATUS in queued in_progress pending waiting requested; do
+            RUNS=$(gh api "repos/$GH_REPO/actions/workflows/build-maya.yml/runs?status=$STATUS&per_page=100")
+            if jq -e '.workflow_runs | length > 0' <<< "$RUNS" >/dev/null; then
+              echo 'Maya build is active; the next poll will recheck.'
+              exit 0
+            fi
+          done
+          gh workflow run build-maya.yml --repo "$GH_REPO" --ref main -f version="$VERSION" -f commit="$COMMIT"

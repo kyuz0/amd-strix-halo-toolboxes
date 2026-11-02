@@ -1,0 +1,76 @@
+# Maya release build for the gfx1151 Strix Halo APU.
+FROM registry.fedoraproject.org/fedora:44 AS builder
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN printf '%s\n' '[amdrocm-stable]' 'name=ROCm 10.0.0' \
+    'baseurl=https://stable.repo.amd.com/rocm/core/packages/rhel10/x86_64' \
+    'enabled=1' 'priority=50' 'gpgcheck=1' 'gpgkey=https://stable.repo.amd.com/rocm/gpg/packages.gpg' \
+    > /etc/yum.repos.d/rocm.repo
+RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
+    gcc gcc-c++ cmake ninja-build git-core python3 tar \
+    amdrocm-core-devel10.0-gfx1151 \
+    && dnf clean all
+ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
+    PATH=/opt/rocm/bin:/opt/rocm/core/bin:/opt/rocm/core/lib/llvm/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
+ARG MAYA_VERSION=v1.1.49
+ARG MAYA_COMMIT=26aacb6bcea9333e4f408a68ee60c4c1c316bd68
+RUN git init /opt/maya && git -C /opt/maya remote add origin https://github.com/mw00/project-maya.git \
+    && git -C /opt/maya fetch --depth 1 origin "refs/tags/$MAYA_VERSION" \
+    && git -C /opt/maya checkout --detach FETCH_HEAD \
+    && test "$(git -C /opt/maya rev-parse HEAD)" = "$MAYA_COMMIT" \
+    && test "v$(cat /opt/maya/VERSION | tr -d '\r\n')" = "$MAYA_VERSION"
+RUN git init /opt/llama-pinned \
+    && git -C /opt/llama-pinned remote add origin https://github.com/ggml-org/llama.cpp.git \
+    && git -C /opt/llama-pinned fetch --depth 1 origin 3cf03257f219afbe7334045ff7c6a06ac68c627d \
+    && git -C /opt/llama-pinned checkout --detach FETCH_HEAD
+RUN if ! test -r /opt/rocm/core/include/rocwmma/rocwmma.hpp; then \
+    git init /opt/rocwmma \
+    && git -C /opt/rocwmma remote add origin https://github.com/ROCm/rocWMMA.git \
+    && git -C /opt/rocwmma fetch --depth 1 origin 27a847f610bfdb4e58dd257889734168b0ef8626 \
+    && git -C /opt/rocwmma checkout --detach FETCH_HEAD \
+    && cp -a /opt/rocwmma/library/include/rocwmma /opt/rocm/core/include/; fi
+RUN cmake -S /opt/maya -B /opt/maya/build-hip -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DSTRATA_ENABLE_CUDA=OFF -DSTRATA_ENABLE_HIP=ON \
+    -DSTRATA_PREFILL_MMQ=ON -DSTRATA_PORTABLE=ON -DSTRATA_BUILD_TESTS=OFF \
+    -DCMAKE_HIP_ARCHITECTURES=gfx1151 -DSTRATA_GGML_DIR=/opt/llama-pinned \
+    -DCMAKE_PREFIX_PATH=/opt/rocm/core \
+    -DCMAKE_HIP_COMPILER=/opt/rocm/core/lib/llvm/bin/clang++ -DMAYA_BUILD_ID="$MAYA_COMMIT" \
+    && cmake --build /opt/maya/build-hip --target maya maya-ds4 strata-device --parallel 4
+RUN mkdir -p /runtime/maya/build-hip \
+    && tar -C /opt/maya --exclude=.git --exclude=build-hip -cf - . | tar -C /runtime/maya -xf -
+RUN cp /opt/maya/build-hip/maya /opt/maya/build-hip/maya-ds4 /opt/maya/build-hip/strata-device /runtime/maya/build-hip/ \
+    && ln /runtime/maya/build-hip/maya /runtime/maya/build-hip/ds4-server-maya-glm \
+    && ln /runtime/maya/build-hip/maya-ds4 /runtime/maya/build-hip/ds4-server-maya \
+    && printf '{"version":"%s","source":"%s","ggml":"%s","runtime":"ROCm 10.0","architecture":"gfx1151"}\n' \
+       "$MAYA_VERSION" "$MAYA_COMMIT" 3cf03257f219afbe7334045ff7c6a06ac68c627d > /runtime/maya/toolbox-provenance.json
+
+FROM registry.fedoraproject.org/fedora:44
+ARG MAYA_VERSION=v1.1.49
+ARG MAYA_COMMIT=26aacb6bcea9333e4f408a68ee60c4c1c316bd68
+LABEL org.opencontainers.image.source="https://github.com/mw00/project-maya" \
+      org.opencontainers.image.revision="$MAYA_COMMIT" \
+      org.opencontainers.image.version="$MAYA_VERSION" \
+      org.opencontainers.image.title="Maya ROCm 10.0 for Strix Halo"
+COPY --from=builder /etc/yum.repos.d/rocm.repo /etc/yum.repos.d/rocm.repo
+RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
+    bash ca-certificates sudo passwd shadow-utils util-linux procps-ng \
+    libatomic libstdc++ libgcc libgomp amdrocm10.0-gfx1151 \
+    python3 python3-numpy python3-jinja2 python3-regex python3-pyyaml \
+    python3-tqdm python3-requests python3-pillow python3-psutil python3-jsonschema \
+    && dnf clean all \
+    && ln -s core-10.0 /opt/rocm/core
+ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
+    PATH=/opt/maya/build-hip:/opt/rocm/core/bin:$PATH \
+    LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib \
+    PYTHONPATH=/opt/maya PYTHONNOUSERSITE=1
+COPY --from=builder /runtime/maya /opt/maya
+COPY --from=builder /opt/llama-pinned/gguf-py /opt/maya/third_party/llama.cpp/gguf-py
+COPY maya-toolbox.py /usr/local/libexec/maya-toolbox.py
+RUN chmod 755 /usr/local/libexec/maya-toolbox.py \
+    && ln -s /usr/local/libexec/maya-toolbox.py /usr/local/bin/maya-serve \
+    && ln -s /usr/local/libexec/maya-toolbox.py /usr/local/bin/maya-prepare \
+    && ln -s /usr/local/libexec/maya-toolbox.py /usr/local/bin/maya-version \
+    && maya-version && maya-ds4 --version && maya-serve --help && maya-prepare --help \
+    && python3 -c 'from serve import server; from tools import iq_pack; from tools._paths import add_gguf_py; add_gguf_py(); import gguf'
+WORKDIR /opt/maya
+CMD ["/bin/bash"]

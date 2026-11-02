@@ -1,0 +1,93 @@
+name: Build & Publish Maya
+
+on:
+  push:
+    branches: [codex/maya-publication]
+    paths:
+      - toolboxes/Dockerfile.rocm-10.0-maya
+      - toolboxes/maya-toolbox.py
+      - .github/workflows/build-maya.yml
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Upstream release tag; empty selects the latest stable release.
+        default: ''
+      commit:
+        description: Expected upstream commit; empty resolves the release tag.
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: toolbox-publish-maya
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Resolve release
+        id: source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REQUESTED_VERSION: ${{ inputs.version }}
+          REQUESTED_COMMIT: ${{ inputs.commit }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$REQUESTED_VERSION"
+          if [[ -z "$VERSION" ]]; then
+            VERSION=$(gh api repos/mw00/project-maya/releases/latest --jq .tag_name)
+          fi
+          [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          git init "$RUNNER_TEMP/maya-source"
+          git -C "$RUNNER_TEMP/maya-source" fetch --depth 1 https://github.com/mw00/project-maya.git "refs/tags/$VERSION"
+          COMMIT=$(git -C "$RUNNER_TEMP/maya-source" rev-parse 'FETCH_HEAD^{commit}')
+          [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          [[ -z "$REQUESTED_COMMIT" || "$COMMIT" == "$REQUESTED_COMMIT" ]] || exit 1
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "commit=$COMMIT" >> "$GITHUB_OUTPUT"
+      - name: Free runner build space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h /
+      - uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build, check and publish
+        working-directory: toolboxes
+        env:
+          MAYA_VERSION: ${{ steps.source.outputs.version }}
+          MAYA_COMMIT: ${{ steps.source.outputs.commit }}
+          PUBLICATION_BRANCH: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          IMAGE=docker.io/kyuz0/amd-strix-halo-toolboxes
+          TAG="rocm-10.0-maya_$(date -u +%Y%m%dT%H%M%S)_${GITHUB_RUN_ID}_${GITHUB_RUN_ATTEMPT}"
+          docker build --build-arg "MAYA_VERSION=$MAYA_VERSION" --build-arg "MAYA_COMMIT=$MAYA_COMMIT" \
+            -f Dockerfile.rocm-10.0-maya -t maya-candidate .
+          docker run --rm maya-candidate maya-version | tee provenance.json
+          jq -e --arg version "$MAYA_VERSION" --arg commit "$MAYA_COMMIT" \
+            '.version == $version and .source == $commit' provenance.json
+          docker run --rm maya-candidate maya-ds4 --version
+          docker run --rm maya-candidate maya-serve --help
+          docker run --rm maya-candidate maya-prepare --help
+          docker tag maya-candidate "$IMAGE:$TAG"
+          docker push "$IMAGE:$TAG"
+          CHANNEL=rocm-10.0-maya-candidate
+          if [[ "$PUBLICATION_BRANCH" == main ]]; then CHANNEL=rocm-10.0-maya; fi
+          docker tag maya-candidate "$IMAGE:$CHANNEL"
+          docker push "$IMAGE:$CHANNEL"
+          {
+            echo "Maya $MAYA_VERSION ($MAYA_COMMIT)"
+            echo "Published: $IMAGE:$TAG"
+            echo 'CI checks version, dependencies and CLI startup. GPU qualification is recorded separately.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: maya-provenance
+          path: toolboxes/provenance.json
