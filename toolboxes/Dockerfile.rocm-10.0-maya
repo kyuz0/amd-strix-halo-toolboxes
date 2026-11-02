@@ -64,12 +64,13 @@ ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
     LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib \
     PYTHONPATH=/opt/maya PYTHONNOUSERSITE=1
 COPY --from=builder /runtime/maya /opt/maya
+COPY --from=builder /opt/llama-pinned/gguf-py /opt/maya/third_party/llama.cpp/gguf-py
 COPY maya-toolbox.py /usr/local/libexec/maya-toolbox.py
 RUN chmod 755 /usr/local/libexec/maya-toolbox.py \
     && ln -s /usr/local/libexec/maya-toolbox.py /usr/local/bin/maya-serve \
     && ln -s /usr/local/libexec/maya-toolbox.py /usr/local/bin/maya-prepare \
     && ln -s /usr/local/libexec/maya-toolbox.py /usr/local/bin/maya-version \
     && maya-version && maya-ds4 --version && maya-serve --help && maya-prepare --help \
-    && python3 -c 'from serve import server; from tools import iq_pack'
+    && python3 -c 'from serve import server; from tools import iq_pack; from tools._paths import add_gguf_py; add_gguf_py(); import gguf'
 WORKDIR /opt/maya
 CMD ["/bin/bash"]
