@@ -39,7 +39,7 @@ def configuration(args):
         exe = SOURCE / 'build-hip/ds4-server-maya'
         native = ['--pack', str(pack), '--max-context', str(args.context),
                   '--vram-experts', '0.5', '--reserve-mib', '4096', '--mmap-experts', 'on',
-                  '--vision', 'off', '--tp', '1', '--dspark', 'on' if args.mode == 'dspark' else 'none']
+                  '--vision', 'off', '--tp', '1', '--suffix-draft', '0', '--dspark', 'on' if args.mode == 'dspark' else 'none']
         if args.mode == 'dspark':
             env['DS4_DSPARK_MAX'] = '5'
     return {'exe': str(exe), 'args': native, 'cwd': str(SOURCE),
