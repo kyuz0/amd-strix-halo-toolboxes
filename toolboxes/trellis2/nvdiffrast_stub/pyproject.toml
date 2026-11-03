@@ -1,0 +1,8 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nvdiffrast"
+version = "0.4.0"
+description = "nvdiffrast stub for ROCm — raises NotImplementedError on use"
