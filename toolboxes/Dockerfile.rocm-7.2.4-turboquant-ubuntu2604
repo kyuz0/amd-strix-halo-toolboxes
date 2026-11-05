@@ -1,0 +1,114 @@
+# build stage
+FROM registry.fedoraproject.org/fedora:43 AS builder
+
+# rocm 7.2.4 repo
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[ROCm-7.2.4]
+name=ROCm7.2.4
+baseurl=https://repo.radeon.com/rocm/rhel10/7.2.4/main
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
+REPO
+EOF
+
+# deps (Patched docs exclusion & rocm package names)
+RUN dnf -y --nodocs --setopt=install_weak_deps=False \
+  --exclude='*sdk*' --exclude='*samples*' \
+  install \
+  make gcc cmake lld clang clang-devel compiler-rt libcurl-devel ninja-build rdma-core-devel \
+  rocm-llvm rocm-device-libs rocm-hip rocm-hip-devel \
+  rocblas rocblas-devel hipblas hipblas-devel rocm-cmake libomp-devel libomp \
+  rocminfo radeontop \
+  git-core vim sudo rsync patch \
+  && dnf clean all && rm -rf /var/cache/dnf/*
+
+# rocm env (Patched legacy paths to standard /usr)
+ENV ROCM_PATH=/usr \
+  HIP_PATH=/usr \
+  HIP_CLANG_PATH=/usr/bin \
+  HIP_DEVICE_LIB_PATH=/usr/lib64/amdgcn/bitcode \
+  PATH=/usr/bin:/usr/bin:$PATH
+
+# llama.cpp
+WORKDIR /opt/llama.cpp
+ARG REPO=https://github.com/TheTom/llama-cpp-turboquant.git
+RUN git clone --single-branch --recursive ${REPO} .
+
+COPY llama-grammar.patch /tmp/llama-grammar.patch
+
+# build (Patched UI zero-day and dynamic LLVM bitcode resolution)
+RUN dnf install -y nodejs npm && git clean -xdf \
+  && git submodule update --recursive \
+  && patch -p1 < /tmp/llama-grammar.patch \
+  && BITCODE=$(dirname $(find /usr -name "ocml.bc" | head -n 1)) && cmake -S . -B build \
+  -DGGML_HIP=ON \
+  -DAMDGPU_TARGETS=gfx1151 \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DGGML_RPC=ON \
+  -DLLAMA_HIP_UMA=ON \
+  -DGGML_CUDA_ENABLE_UNIFIED_MEMORY=ON \
+  -DROCM_PATH=/usr \
+  -DHIP_PATH=/usr \
+  -DHIP_PLATFORM=amd -DCMAKE_HIP_FLAGS="--rocm-path=/usr --rocm-device-lib-path=${BITCODE}" \
+  && cmake --build build --config Release -- -j$(nproc) \
+  && cmake --install build --config Release
+
+# libs
+RUN mkdir -p /usr/local/lib64 \
+  && find /opt/llama.cpp/build -type f -name 'lib*.so*' -exec cp {} /usr/local/lib64/ \; \
+  && ldconfig
+
+# helper
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# runtime stage
+FROM registry.fedoraproject.org/fedora-minimal:43
+
+# rocm 7.2.4 repo
+RUN <<'EOF'
+tee /etc/yum.repos.d/rocm.repo <<REPO
+[ROCm-7.2.4]
+name=ROCm7.2.4
+baseurl=https://repo.radeon.com/rocm/rhel10/7.2.4/main
+enabled=1
+priority=50
+gpgcheck=1
+gpgkey=https://repo.radeon.com/rocm/rocm.gpg.key
+REPO
+EOF
+
+# runtime deps (Patched docs exclusion & rocm package names)
+RUN microdnf -y --nodocs --setopt=install_weak_deps=0 \
+  --exclude='*sdk*' --exclude='*samples*' \
+  install \
+  bash ca-certificates libatomic libstdc++ libgcc libgomp libibverbs sudo \
+  rocm-hip rocblas hipblas \
+  rocminfo radeontop procps-ng \
+  && microdnf clean all && rm -rf /var/cache/dnf/*
+
+# copy (RPC copy stripped)
+COPY --from=builder /usr/local/ /usr/local/
+
+# ld
+RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/local.conf \
+  && echo "/usr/local/lib64" >> /etc/ld.so.conf.d/local.conf \
+  && ldconfig \
+  && cp -n /usr/local/lib/libllama*.so* /usr/lib64/ 2>/dev/null || true \
+  && cp -n /usr/local/lib64/libllama*.so* /usr/lib64/ 2>/dev/null || true \
+  && ldconfig
+
+# helper
+COPY gguf-vram-estimator.py /usr/local/bin/gguf-vram-estimator.py
+RUN chmod +x /usr/local/bin/gguf-vram-estimator.py
+
+# profile
+RUN printf '%s\n' \
+  > /etc/profile.d/rocm.sh && chmod +x /etc/profile.d/rocm.sh \
+  && echo 'source /etc/profile.d/rocm.sh' >> /etc/bashrc
+
+# shell
+CMD ["/bin/bash"]
