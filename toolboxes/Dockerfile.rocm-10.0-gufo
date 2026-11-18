@@ -1,4 +1,37 @@
 # Experimental source-pinned Gufo ROCm 10.0 toolbox for gfx1151.
+FROM registry.fedoraproject.org/fedora:44 AS xrt
+
+# Gufo's upstream XRT pin. Build the shared library used by its NPU module.
+ARG XRT_COMMIT=06c43a7f93fee129d32def1d372e17a8e69c05d2
+ARG BUILD_JOBS=4
+RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
+      gcc gcc-c++ cmake ninja-build git-core pkgconf-pkg-config boost-devel \
+      libdrm-devel ocl-icd-devel opencl-headers rapidjson-devel \
+      protobuf-devel protobuf-compiler elfutils-libelf-devel systemd-devel \
+      libcurl-devel openssl-devel libuuid-devel libxcrypt-devel ncurses-devel \
+      python3 python3-pyyaml python3-markdown python3-jinja2 pybind11-devel \
+    && dnf clean all && rm -rf /var/cache/dnf/*
+
+WORKDIR /opt/xrt-source
+RUN git init -q \
+    && git fetch --depth=1 https://github.com/Xilinx/XRT.git "$XRT_COMMIT" \
+    && git checkout --detach FETCH_HEAD \
+    && test "$(git rev-parse HEAD)" = "$XRT_COMMIT" \
+    && git submodule update --init --recursive --depth=1 \
+    && cmake -S src -B build -G Ninja \
+         -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/xilinx/xrt \
+         -DCMAKE_INSTALL_LIBDIR=lib -DXRT_BASE=ON -DXRT_ENABLE_HIP=OFF \
+         -DXRT_ENABLE_USDT=OFF -DXRT_ENABLE_PYXRT=OFF -DXRT_ENABLE_WERROR=OFF \
+         -DXRT_UPSTREAM_DEBIAN=ON \
+    && cmake --build build --target xrt_coreutil --parallel "$BUILD_JOBS" \
+    && cmake -DCMAKE_INSTALL_COMPONENT=base-devel -P build/runtime_src/core/include/cmake_install.cmake \
+    && test -f /opt/xilinx/xrt/include/xrt/xrt_bo.h \
+    && install -d /opt/xilinx/xrt/lib /opt/xilinx/xrt/license \
+    && cp -a build/runtime_src/core/common/libxrt_coreutil.so* /opt/xilinx/xrt/lib/ \
+    && install -m 0644 LICENSE /opt/xilinx/xrt/license/LICENSE
+RUN install -m 0644 build/gen/xrt/detail/version-git.h build/gen/xrt/detail/version-slim.h \
+      /opt/xilinx/xrt/include/xrt/detail/
+
 FROM registry.fedoraproject.org/fedora:44 AS builder
 
 RUN <<'EOF'
@@ -17,7 +50,7 @@ RUN dnf -y --nodocs --setopt=install_weak_deps=False install \
       gcc gcc-c++ cmake ninja-build pkgconf-pkg-config git-core libicu-devel \
       libcurl-devel openssl-devel libpng-devel libjpeg-turbo-devel libwebp-devel \
       libsndfile-devel soxr-devel libavformat-free-devel libavcodec-free-devel \
-      libavutil-free-devel libswscale-free-devel \
+      libavutil-free-devel libswscale-free-devel cargo rust opus-devel libuuid-devel \
       amdrocm-core-devel10.0-gfx1151 \
     && dnf clean all && rm -rf /var/cache/dnf/*
 
@@ -26,7 +59,9 @@ ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
     LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
 
 ARG GUFO_REPOSITORY=https://github.com/gufo-org/gufo.git
-ARG GUFO_COMMIT=b3facce1180e4bb44ac25c8f8a0fee348ae36da9
+COPY --from=xrt /opt/xilinx/xrt /opt/xilinx/xrt
+ARG GUFO_COMMIT=425e3513cfe62d99646f0222c471b24506223505
+ARG BUILD_JOBS=4
 WORKDIR /opt/gufo
 RUN git clone --filter=blob:none --single-branch --branch main --no-checkout "$GUFO_REPOSITORY" . \
     && git checkout --detach "$GUFO_COMMIT" \
@@ -41,14 +76,14 @@ RUN git clone --filter=blob:none --single-branch --branch main --no-checkout "$G
          -DGUFO_REVISION="$GUFO_COMMIT" \
          -DGUFO_RELEASE_VERSION="$(cat version.txt)" \
          -DCMAKE_INSTALL_PREFIX=/usr/local \
-    && cmake --build build/release --parallel 4 \
+    && cmake --build build/release --parallel "$BUILD_JOBS" \
     && cmake --install build/release \
     && /usr/local/bin/gufo --help
 
 FROM registry.fedoraproject.org/fedora-minimal:44
 
 ARG GUFO_REPOSITORY=https://github.com/gufo-org/gufo.git
-ARG GUFO_COMMIT=b3facce1180e4bb44ac25c8f8a0fee348ae36da9
+ARG GUFO_COMMIT=425e3513cfe62d99646f0222c471b24506223505
 LABEL org.opencontainers.image.source="$GUFO_REPOSITORY" \
       org.opencontainers.image.revision="$GUFO_COMMIT" \
       org.opencontainers.image.title="Gufo ROCm 10.0 for Strix Halo"
@@ -68,7 +103,7 @@ EOF
 RUN microdnf -y --nodocs --setopt=install_weak_deps=0 install \
       bash ca-certificates git-core libatomic libstdc++ libgcc libgomp sudo \
       libicu libcurl openssl-libs libpng libjpeg-turbo libwebp python3 procps-ng \
-      libsndfile soxr ffmpeg-free \
+      libsndfile soxr ffmpeg-free opus libuuid \
       libavformat-free libavcodec-free libavutil-free libswscale-free \
       amdrocm10.0-gfx1151 \
     && microdnf clean all && rm -rf /var/cache/dnf/* \
@@ -86,11 +121,18 @@ ENV ROCM_PATH=/opt/rocm HIP_PATH=/opt/rocm \
     LD_LIBRARY_PATH=/opt/rocm/core/lib/rocm_sysdeps/lib:/opt/rocm/core/lib
 
 COPY --from=builder /usr/local/ /usr/local/
+COPY --from=xrt /opt/xilinx/xrt/lib/ /opt/xilinx/xrt/lib/
+COPY --from=xrt /opt/xilinx/xrt/license/ /opt/xilinx/xrt/license/
 RUN echo /usr/local/lib > /etc/ld.so.conf.d/gufo.conf \
     && echo /usr/local/lib64 >> /etc/ld.so.conf.d/gufo.conf \
     && echo /opt/rocm/core/lib >> /etc/ld.so.conf.d/gufo.conf \
     && echo /opt/rocm/core/lib/rocm_sysdeps/lib >> /etc/ld.so.conf.d/gufo.conf \
+    && echo /opt/xilinx/xrt/lib >> /etc/ld.so.conf.d/gufo.conf \
     && ldconfig \
+    && ldd /usr/local/lib/gufo/libgufo_npu_xrt.so > /tmp/gufo-xrt-linkage \
+    && cat /tmp/gufo-xrt-linkage \
+    && ! grep -F 'not found' /tmp/gufo-xrt-linkage \
+    && rm /tmp/gufo-xrt-linkage \
     && ffmpeg -version \
     && ffprobe -version
 
